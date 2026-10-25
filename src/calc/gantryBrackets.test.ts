@@ -199,7 +199,11 @@ describe('custom brackets', () => {
       // the carried axis's holes lie between the kit hole patterns at both ends
       expect(meta.window[0]).toBeGreaterThan(300)
       expect(meta.window[1]).toBeLessThan(meta.length - 300)
-      expect(b.mass).toBeCloseTo(b.beam!.massPerMeter * (meta.length / 1000), 1)
+      // `mass` from the STEP, kg/m of the tube (taken for the app's load, on the safe side): holes and the Y beams'
+      // access slots remove less than 1 %
+      const tube = b.beam!.massPerMeter * (meta.length / 1000)
+      expect(b.mass).toBeLessThanOrEqual(tube + 0.05)
+      expect(b.mass).toBeGreaterThan(tube * 0.99)
     }
   })
 

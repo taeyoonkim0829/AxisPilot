@@ -311,7 +311,7 @@
       "layout": null,
       "carriedStroke": null,
       "wall": null,
-      "mass": 14.52,
+      "mass": 14.44,
       "custom": true,
       "drawing": "data/adapters/Custom/Drawings/BR-ELGT-BS-90-ELGT-BS-90-2_BR-ELGT-BS-90-ELGT-BS-90-2.pdf",
       "beam": {
@@ -346,7 +346,7 @@
           "model": "ISO 4762 M6x16-8.8",
           "partNumber": "ISO 4762-M6x16-8.8",
           "quantity": 24,
-          "note": "12 kit walls into the beam ends (6 per end, instead of the kits' screws; tighten 8 Nm) + 12 Y profile onto the front wall (heads inside, through the back-wall access holes, with washers; 6 at the Y drive end, up to 6 at its far end)"
+          "note": "12 kit walls into the beam ends (6 per end, instead of the kits' screws; tighten 8 Nm) + 12 Y profile onto the front wall (heads inside, through the back-wall access slots, with washers; 6 at the Y drive end, up to 6 at its far end)"
         },
         {
           "model": "ISO 7092-6 200HV",
@@ -361,7 +361,7 @@
           "note": "pressed into the front wall (H7), into the Y profile's pin bores at its drive end (both rows)"
         }
       ],
-      "dataSource": "AxisPilot custom design 2026-10-24 (cad/brackets/elgt_twin_beam.py, reports/brackets/2026-10-24-2340-BR-ELGT-BS-twin-X-Y.md); interfaces measured on the Festo STEP models of EHAM-AK-L9 and ELGT-BS"
+      "dataSource": "AxisPilot custom design 2026-10-24 (cad/brackets/elgt_twin_beam.py, reports/brackets/2026-10-24-2340-BR-ELGT-BS-twin-X-Y.md; REV B access slots: reports/brackets/2026-10-25-1100-BR-ELGT-BS-twin-X-Y-access-slots.md); interfaces measured on the Festo STEP models of EHAM-AK-L9 and ELGT-BS"
     },
     {
       "id": "BR-ELGT-BS-120-ELGT-BS-90-2",
@@ -395,7 +395,7 @@
       "layout": null,
       "carriedStroke": null,
       "wall": null,
-      "mass": 14.52,
+      "mass": 14.44,
       "custom": true,
       "drawing": "data/adapters/Custom/Drawings/BR-ELGT-BS-120-ELGT-BS-90-2_BR-ELGT-BS-120-ELGT-BS-90-2.pdf",
       "beam": {
@@ -430,7 +430,7 @@
           "model": "ISO 4762 M6x16-8.8",
           "partNumber": "ISO 4762-M6x16-8.8",
           "quantity": 24,
-          "note": "12 kit walls into the beam ends (6 per end, instead of the kits' screws; tighten 8 Nm) + 12 Y profile onto the front wall (heads inside, through the back-wall access holes, with washers; 6 at the Y drive end, up to 6 at its far end)"
+          "note": "12 kit walls into the beam ends (6 per end, instead of the kits' screws; tighten 8 Nm) + 12 Y profile onto the front wall (heads inside, through the back-wall access slots, with washers; 6 at the Y drive end, up to 6 at its far end)"
         },
         {
           "model": "ISO 7092-6 200HV",
@@ -445,7 +445,7 @@
           "note": "pressed into the front wall (H7), into the Y profile's pin bores at its drive end (both rows)"
         }
       ],
-      "dataSource": "AxisPilot custom design 2026-10-24 (cad/brackets/elgt_twin_beam.py, reports/brackets/2026-10-24-2340-BR-ELGT-BS-twin-X-Y.md); interfaces measured on the Festo STEP models of EHAM-AK-L9 and ELGT-BS"
+      "dataSource": "AxisPilot custom design 2026-10-24 (cad/brackets/elgt_twin_beam.py, reports/brackets/2026-10-24-2340-BR-ELGT-BS-twin-X-Y.md; REV B access slots: reports/brackets/2026-10-25-1100-BR-ELGT-BS-twin-X-Y-access-slots.md); interfaces measured on the Festo STEP models of EHAM-AK-L9 and ELGT-BS"
     },
     {
       "id": "BR-ELGT-BS-120-ELGT-BS-120-2",
@@ -479,7 +479,7 @@
       "layout": null,
       "carriedStroke": null,
       "wall": null,
-      "mass": 14.52,
+      "mass": 14.44,
       "custom": true,
       "drawing": "data/adapters/Custom/Drawings/BR-ELGT-BS-120-ELGT-BS-120-2_BR-ELGT-BS-120-ELGT-BS-120-2.pdf",
       "beam": {
@@ -514,7 +514,7 @@
           "model": "ISO 4762 M6x16-8.8",
           "partNumber": "ISO 4762-M6x16-8.8",
           "quantity": 24,
-          "note": "12 kit walls into the beam ends (6 per end, instead of the kits' screws; tighten 8 Nm) + 12 Y profile onto the front wall (heads inside, through the back-wall access holes, with washers; 6 at the Y drive end, up to 6 at its far end)"
+          "note": "12 kit walls into the beam ends (6 per end, instead of the kits' screws; tighten 8 Nm) + 12 Y profile onto the front wall (heads inside, through the back-wall access slots, with washers; 6 at the Y drive end, up to 6 at its far end)"
         },
         {
           "model": "ISO 7092-6 200HV",
@@ -529,7 +529,7 @@
           "note": "pressed into the front wall (H7), into the Y profile's pin bores at its drive end (round bore + slot)"
         }
       ],
-      "dataSource": "AxisPilot custom design 2026-10-24 (cad/brackets/elgt_twin_beam.py, reports/brackets/2026-10-24-2340-BR-ELGT-BS-twin-X-Y.md); interfaces measured on the Festo STEP models of EHAM-AK-L9 and ELGT-BS"
+      "dataSource": "AxisPilot custom design 2026-10-24 (cad/brackets/elgt_twin_beam.py, reports/brackets/2026-10-24-2340-BR-ELGT-BS-twin-X-Y.md; REV B access slots: reports/brackets/2026-10-25-1100-BR-ELGT-BS-twin-X-Y-access-slots.md); interfaces measured on the Festo STEP models of EHAM-AK-L9 and ELGT-BS"
     },
     {
       "id": "BR-ELGT-BS-160-ELGT-BS-120-2",
@@ -563,7 +563,7 @@
       "layout": null,
       "carriedStroke": null,
       "wall": null,
-      "mass": 21.05,
+      "mass": 20.94,
       "custom": true,
       "drawing": "data/adapters/Custom/Drawings/BR-ELGT-BS-160-ELGT-BS-120-2_BR-ELGT-BS-160-ELGT-BS-120-2.pdf",
       "beam": {
@@ -604,7 +604,7 @@
           "model": "ISO 4762 M6x16-8.8",
           "partNumber": "ISO 4762-M6x16-8.8",
           "quantity": 12,
-          "note": "Y profile onto the front wall: heads inside, through the back-wall access holes, with washers; 6 at the Y drive end, up to 6 at its far end"
+          "note": "Y profile onto the front wall: heads inside, through the back-wall access slots, with washers; 6 at the Y drive end, up to 6 at its far end"
         },
         {
           "model": "ISO 7092-6 200HV",
@@ -619,7 +619,7 @@
           "note": "pressed into the front wall (H7), into the Y profile's pin bores at its drive end (round bore + slot)"
         }
       ],
-      "dataSource": "AxisPilot custom design 2026-10-24 (cad/brackets/elgt_twin_beam.py, reports/brackets/2026-10-24-2340-BR-ELGT-BS-twin-X-Y.md); interfaces measured on the Festo STEP models of EHAM-AK-L9 and ELGT-BS"
+      "dataSource": "AxisPilot custom design 2026-10-24 (cad/brackets/elgt_twin_beam.py, reports/brackets/2026-10-24-2340-BR-ELGT-BS-twin-X-Y.md; REV B access slots: reports/brackets/2026-10-25-1100-BR-ELGT-BS-twin-X-Y-access-slots.md); interfaces measured on the Festo STEP models of EHAM-AK-L9 and ELGT-BS"
     },
     {
       "id": "BR-ELGT-BS-160-ELGT-BS-160-2",
@@ -653,7 +653,7 @@
       "layout": null,
       "carriedStroke": null,
       "wall": null,
-      "mass": 21.02,
+      "mass": 20.88,
       "custom": true,
       "drawing": "data/adapters/Custom/Drawings/BR-ELGT-BS-160-ELGT-BS-160-2_BR-ELGT-BS-160-ELGT-BS-160-2.pdf",
       "beam": {
@@ -688,7 +688,7 @@
           "model": "ISO 4762 M8x20-8.8",
           "partNumber": "ISO 4762-M8x20-8.8",
           "quantity": 24,
-          "note": "12 kit walls into the beam ends (6 per end, instead of the kits' screws; tighten 18 Nm) + 12 Y profile onto the front wall (heads inside, through the back-wall access holes, with washers; 6 at the Y drive end, up to 6 at its far end)"
+          "note": "12 kit walls into the beam ends (6 per end, instead of the kits' screws; tighten 18 Nm) + 12 Y profile onto the front wall (heads inside, through the back-wall access slots, with washers; 6 at the Y drive end, up to 6 at its far end)"
         },
         {
           "model": "ISO 7092-8 200HV",
@@ -703,7 +703,7 @@
           "note": "pressed into the front wall (H7), into the Y profile's pin bores at its drive end (round bore + slot)"
         }
       ],
-      "dataSource": "AxisPilot custom design 2026-10-24 (cad/brackets/elgt_twin_beam.py, reports/brackets/2026-10-24-2340-BR-ELGT-BS-twin-X-Y.md); interfaces measured on the Festo STEP models of EHAM-AK-L9 and ELGT-BS"
+      "dataSource": "AxisPilot custom design 2026-10-24 (cad/brackets/elgt_twin_beam.py, reports/brackets/2026-10-24-2340-BR-ELGT-BS-twin-X-Y.md; REV B access slots: reports/brackets/2026-10-25-1100-BR-ELGT-BS-twin-X-Y-access-slots.md); interfaces measured on the Festo STEP models of EHAM-AK-L9 and ELGT-BS"
     }
   ]
 }

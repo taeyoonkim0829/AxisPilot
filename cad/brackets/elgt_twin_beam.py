@@ -184,18 +184,22 @@ class YSize:
     base_length: float  # axis length - stroke (data/axes/Festo/ELGT.json baseLength)
     thread: str
     clear: float  # front wall: through hole for the screw (ISO 273 medium)
-    access: float  # back wall: access hole for screw head + washer + key
+    # back wall: access slot (height across the beam, length along it) on each screw axis, for screw + washer and a hex
+    # bit, tilted if need be. Height capped by the lowest screw row: the slot clear of the inner corner radius (X90/Y90
+    # row 21.5 above the bottom: 21.5 - 17/2 = 13 > t + r 12; X160/Y160: 25.5 - 10 = 15.5 > 14); stiffness with the
+    # slots in reports/brackets/2026-10-25-1100-BR-ELGT-BS-twin-X-Y-access-slots.md (L_max kept)
+    access: tuple[float, float]
     pin_d: float
     pins: tuple[float, ...]  # from the drive flange
     pin_rows: bool
 
 
 YSIZES: dict[int, YSize] = {
-    90: YSize("90", row=36, first=81.5, flange_end=31.5, base_length=230, thread="M6", clear=6.6, access=12,
+    90: YSize("90", row=36, first=81.5, flange_end=31.5, base_length=230, thread="M6", clear=6.6, access=(17, 34),
               pin_d=5, pins=(131.5,), pin_rows=True),
-    120: YSize("120", row=50, first=81.5, flange_end=31.5, base_length=216, thread="M6", clear=6.6, access=12,
+    120: YSize("120", row=50, first=81.5, flange_end=31.5, base_length=216, thread="M6", clear=6.6, access=(17, 34),
                pin_d=6, pins=(131.5, 231.5), pin_rows=False),
-    160: YSize("160", row=67, first=84.5, flange_end=34.5, base_length=261, thread="M8", clear=9.0, access=16,
+    160: YSize("160", row=67, first=84.5, flange_end=34.5, base_length=261, thread="M8", clear=9.0, access=(20, 40),
                pin_d=8, pins=(134.5, 234.5), pin_rows=False),
 }
 PITCH = 100.0
@@ -216,7 +220,7 @@ def y_flange(s: Size, y: YSize, length: float, stroke: float, y_pos: float = 0.0
 
 
 def y_holes(s: Size, y: YSize, length: float, stroke: float, y_pos: float = 0.0) -> dict[str, list[tuple[float, float]]]:
-    """Hole centres (x, z) of the Y fastening: screws (front through hole + back access hole) and pins (front)."""
+    """Hole centres (x, z) of the Y fastening: screws (front through hole + back access slot) and pins (front)."""
     c = zc(s)
     xf = y_flange(s, y, length, stroke, y_pos)
     screws = [(xf - a, z) for a in y_threads(y, stroke) for z in (c - y.row, c + y.row)]
@@ -227,13 +231,14 @@ def y_holes(s: Size, y: YSize, length: float, stroke: float, y_pos: float = 0.0)
 
 def make_y_beam(s: Size, y: YSize, length: float, stroke: float, y_pos: float = 0.0) -> bd.Part:
     """The finished Y beam (XY): kit patterns at the ends (as the Z beam), the Y axis pinned and screwed on the front
-    face through the front wall (heads inside, reached through the back wall)."""
+    face through the front wall (heads inside, reached through access slots in the back wall)."""
     body = _tube(s, length)
     cutters = _end_cutters(s, holes(s, length))
     h = y_holes(s, y, length, stroke, y_pos)
     for x, z in h["screws"]:
         cutters.append(bore_y(x, z, y.clear, -s.B - 1, -(s.t + 2)))  # front wall
-        cutters.append(bore_y(x, z, y.access, 1, s.t + 2))  # back wall
+        slot = bd.SlotOverall(y.access[1], y.access[0])  # along local x (the beam)
+        cutters.append(bd.Pos(x, 1, z) * bd.extrude(bd.Plane.XZ * slot, amount=s.t + 2))  # back wall, towards -y
     for x, z in h["pins"]:
         cutters.append(bore_y(x, z, y.pin_d, -s.B - 1, -(s.t + 2)))
     beam = body

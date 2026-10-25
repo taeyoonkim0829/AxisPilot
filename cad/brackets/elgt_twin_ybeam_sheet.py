@@ -44,15 +44,15 @@ def sheet_for(x: int, y: int, beam_id: str) -> Sheet:
         f"FRONT = ELGT-BS-{y} PROFILE UNDERSIDE: Y CENTRE AT L/2 + Y_POS, DRIVE FLANGE xf = L/2 + Y_POS + (STROKE + {ys.base_length:g})/2.",
         f"Y SCREW HOLES AT xf - ({ys.first:g} + k x 100), k = 0,1,2 AND kmax-2 ... kmax, kmax = INT((STROKE + 100)/100).",
         f"DRAWN FOR Y STROKE {Y_STROKE:g}, Y_POS 0 (xf = {xf:g}). Y SCREWS ISO 4762 {SCREW[y]} + ISO 7092 WASHER, HEADS INSIDE.",
-        f"BACK WALL: ACCESS HOLES DIA {ys.access:g} THRU, ON THE Y SCREW HOLE AXES (SCREW HEAD, WASHER, KEY).",
+        f"BACK WALL: ACCESS SLOTS {ys.access[0]:g} x {ys.access[1]:g} (LONG ALONG THE BEAM) THRU, CENTRED ON THE Y SCREW HOLES, EDGES C0.5.",
         f"Y PINS ISO 8734 {PIN[(x, y)]} PRESSED IN FRONT WALL. FINISH ANODIZED NATURAL 10-15 um; H7 REAMED AFTER ANODIZING.",
     ]
     sheet = Sheet(
         "A2", scale=0.25, title=f"Y BEAM X{x} / Y{y}", part_number=beam_id,
         # material and author left out of the title block: it joins them with a dot the PDF font lacks, and the long
         # part number fills the field (the material is in the notes)
-        revision="A", general_tolerance="ISO 2768-mK",
-        notes=notes, revisions=[("A", "2026-10-24", "INITIAL RELEASE")],
+        revision="B", general_tolerance="ISO 2768-mK",
+        notes=notes, revisions=[("A", "2026-10-24", "INITIAL RELEASE"), ("B", "2026-10-25", "BACK WALL ACCESS SLOTS (WERE HOLES)")],
     )
     front = sheet.view(part, "front", at=(230, 365 - 0.125 * s.H), label="FRONT (Y SIDE)", hidden=False)
     back = sheet.view(part, "back", at=(230, 365 - 0.25 * s.H - 70 - 0.125 * s.H), label="BACK (KIT SIDE), END A RIGHT", hidden=False)
