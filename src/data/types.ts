@@ -386,12 +386,17 @@ export interface AdapterAxis {
   threads?: { first: number; pitch: number }
   /** pinned: the kit's screws into the profile, nearest and farthest from the base slide centre along the body (mm) */
   screws?: [number, number]
-  /** pinned angle kits: the profile mountings clamping the carried profile on the second kit under two base axes
-   *  (EAHF-L2-45-P in the wall's M5 holes: two rows at the EAHF hole spacing B3, three pairs at L9 = 40 mm 90 mm
-   *  apart; the axis can sit anywhere along them). `quantity` per kit (every pair), `mass` kg each, `span` mm from
-   *  the base slide centre along the body: the mountings' nearest and farthest ends, `endCap` mm: the carried axis's
-   *  far end cap (L7), where the profile slot ends */
-  mountings?: { model: string; partNumber: string; quantity: number; mass: number; span: [number, number]; endCap: number }
+  /** angle kits: the profile mountings clamping the carried profile in its slot on the second kit under two base
+   *  axes, so the axis can sit anywhere along them. `span` mm from the base slide centre along the body: the
+   *  mountings' nearest and farthest ends; `endCap` mm: the carried axis's longer end head, where the profile slot
+   *  ends. `mountings`: parts ordered for the second kit on top of the kit (EHAM-AK-L9: EAHF-L2-45-P in the wall's
+   *  M5 holes, two rows at the EAHF hole spacing B3, three pairs at L9 = 40 mm 90 mm apart; `quantity` per kit,
+   *  `mass` kg each); EHAM-AK-E24 clamps with the EAHF-E24-60-P-B4 in its `accessories` */
+  clamp?: {
+    span: [number, number]
+    endCap: number
+    mountings?: { model: string; partNumber: string; quantity: number; mass: number }
+  }
 }
 
 /**

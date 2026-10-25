@@ -31,16 +31,18 @@
             92,
             292
           ],
-          "mountings": {
-            "model": "EAHF-L2-45-P",
-            "partNumber": "4835728",
-            "quantity": 6,
-            "mass": 0.035,
+          "clamp": {
             "span": [
               65.5,
               298.5
             ],
-            "endCap": 14.5
+            "endCap": 14.5,
+            "mountings": {
+              "model": "EAHF-L2-45-P",
+              "partNumber": "4835728",
+              "quantity": 6,
+              "mass": 0.035
+            }
           }
         }
       ],
@@ -89,16 +91,18 @@
             92,
             292
           ],
-          "mountings": {
-            "model": "EAHF-L2-45-P",
-            "partNumber": "4835728",
-            "quantity": 6,
-            "mass": 0.035,
+          "clamp": {
             "span": [
               65.5,
               298.5
             ],
-            "endCap": 14.5
+            "endCap": 14.5,
+            "mountings": {
+              "model": "EAHF-L2-45-P",
+              "partNumber": "4835728",
+              "quantity": 6,
+              "mass": 0.035
+            }
           }
         }
       ],
@@ -147,16 +151,18 @@
             121,
             321
           ],
-          "mountings": {
-            "model": "EAHF-L2-45-P",
-            "partNumber": "4835728",
-            "quantity": 6,
-            "mass": 0.035,
+          "clamp": {
             "span": [
               94.5,
               327.5
             ],
-            "endCap": 14.5
+            "endCap": 14.5,
+            "mountings": {
+              "model": "EAHF-L2-45-P",
+              "partNumber": "4835728",
+              "quantity": 6,
+              "mass": 0.035
+            }
           }
         }
       ],
@@ -205,16 +211,18 @@
             121,
             321
           ],
-          "mountings": {
-            "model": "EAHF-L2-45-P",
-            "partNumber": "4835728",
-            "quantity": 6,
-            "mass": 0.035,
+          "clamp": {
             "span": [
               94.5,
               327.5
             ],
-            "endCap": 14.5
+            "endCap": 14.5,
+            "mountings": {
+              "model": "EAHF-L2-45-P",
+              "partNumber": "4835728",
+              "quantity": 6,
+              "mass": 0.035
+            }
           }
         }
       ],
@@ -263,16 +271,18 @@
             126,
             326
           ],
-          "mountings": {
-            "model": "EAHF-L2-45-P",
-            "partNumber": "4835728",
-            "quantity": 6,
-            "mass": 0.035,
+          "clamp": {
             "span": [
               99.5,
               332.5
             ],
-            "endCap": 11.5
+            "endCap": 11.5,
+            "mountings": {
+              "model": "EAHF-L2-45-P",
+              "partNumber": "4835728",
+              "quantity": 6,
+              "mass": 0.035
+            }
           }
         }
       ],
@@ -321,16 +331,18 @@
             126,
             326
           ],
-          "mountings": {
-            "model": "EAHF-L2-45-P",
-            "partNumber": "4835728",
-            "quantity": 6,
-            "mass": 0.035,
+          "clamp": {
             "span": [
               99.5,
               332.5
             ],
-            "endCap": 11.5
+            "endCap": 11.5,
+            "mountings": {
+              "model": "EAHF-L2-45-P",
+              "partNumber": "4835728",
+              "quantity": 6,
+              "mass": 0.035
+            }
           }
         }
       ],
@@ -379,16 +391,18 @@
             153,
             353
           ],
-          "mountings": {
-            "model": "EAHF-L2-45-P",
-            "partNumber": "4835728",
-            "quantity": 6,
-            "mass": 0.035,
+          "clamp": {
             "span": [
               126.5,
               359.5
             ],
-            "endCap": 11.5
+            "endCap": 11.5,
+            "mountings": {
+              "model": "EAHF-L2-45-P",
+              "partNumber": "4835728",
+              "quantity": 6,
+              "mass": 0.035
+            }
           }
         }
       ],
@@ -437,16 +451,18 @@
             153,
             353
           ],
-          "mountings": {
-            "model": "EAHF-L2-45-P",
-            "partNumber": "4835728",
-            "quantity": 6,
-            "mass": 0.035,
+          "clamp": {
             "span": [
               126.5,
               359.5
             ],
-            "endCap": 11.5
+            "endCap": 11.5,
+            "mountings": {
+              "model": "EAHF-L2-45-P",
+              "partNumber": "4835728",
+              "quantity": 6,
+              "mass": 0.035
+            }
           }
         }
       ],
@@ -495,16 +511,18 @@
             148,
             348
           ],
-          "mountings": {
-            "model": "EAHF-L2-45-P",
-            "partNumber": "4835728",
-            "quantity": 6,
-            "mass": 0.035,
+          "clamp": {
             "span": [
               121.5,
               354.5
             ],
-            "endCap": 13.5
+            "endCap": 13.5,
+            "mountings": {
+              "model": "EAHF-L2-45-P",
+              "partNumber": "4835728",
+              "quantity": 6,
+              "mass": 0.035
+            }
           }
         }
       ],
@@ -553,16 +571,18 @@
             148,
             348
           ],
-          "mountings": {
-            "model": "EAHF-L2-45-P",
-            "partNumber": "4835728",
-            "quantity": 6,
-            "mass": 0.035,
+          "clamp": {
             "span": [
               121.5,
               354.5
             ],
-            "endCap": 13.5
+            "endCap": 13.5,
+            "mountings": {
+              "model": "EAHF-L2-45-P",
+              "partNumber": "4835728",
+              "quantity": 6,
+              "mass": 0.035
+            }
           }
         }
       ],
@@ -786,7 +806,14 @@
           "size": 60,
           "drive": "spindle",
           "end": 34.5,
-          "pinned": false
+          "pinned": false,
+          "clamp": {
+            "span": [
+              66,
+              246
+            ],
+            "endCap": 41
+          }
         }
       ],
       "hand": "left",
@@ -837,7 +864,14 @@
           "size": 60,
           "drive": "spindle",
           "end": 34.5,
-          "pinned": false
+          "pinned": false,
+          "clamp": {
+            "span": [
+              66,
+              246
+            ],
+            "endCap": 41
+          }
         }
       ],
       "hand": "right",
@@ -888,7 +922,14 @@
           "size": 80,
           "drive": "spindle",
           "end": 34.5,
-          "pinned": false
+          "pinned": false,
+          "clamp": {
+            "span": [
+              66,
+              146
+            ],
+            "endCap": 41
+          }
         },
         {
           "family": "ELGD",
@@ -896,7 +937,14 @@
           "size": 80,
           "drive": "belt",
           "end": 34.5,
-          "pinned": false
+          "pinned": false,
+          "clamp": {
+            "span": [
+              66,
+              146
+            ],
+            "endCap": 70
+          }
         },
         {
           "family": "ELGD",
@@ -904,7 +952,14 @@
           "size": 100,
           "drive": "spindle",
           "end": 34.5,
-          "pinned": false
+          "pinned": false,
+          "clamp": {
+            "span": [
+              66,
+              146
+            ],
+            "endCap": 41
+          }
         },
         {
           "family": "ELGD",
@@ -912,7 +967,14 @@
           "size": 100,
           "drive": "belt",
           "end": 34.5,
-          "pinned": false
+          "pinned": false,
+          "clamp": {
+            "span": [
+              66,
+              146
+            ],
+            "endCap": 70
+          }
         },
         {
           "family": "ELGD",
@@ -920,7 +982,14 @@
           "size": 120,
           "drive": "spindle",
           "end": 34.5,
-          "pinned": false
+          "pinned": false,
+          "clamp": {
+            "span": [
+              66,
+              146
+            ],
+            "endCap": 41
+          }
         },
         {
           "family": "ELGD",
@@ -928,7 +997,14 @@
           "size": 120,
           "drive": "belt",
           "end": 34.5,
-          "pinned": false
+          "pinned": false,
+          "clamp": {
+            "span": [
+              66,
+              146
+            ],
+            "endCap": 70
+          }
         }
       ],
       "hand": "left",
@@ -979,7 +1055,14 @@
           "size": 80,
           "drive": "spindle",
           "end": 34.5,
-          "pinned": false
+          "pinned": false,
+          "clamp": {
+            "span": [
+              66,
+              146
+            ],
+            "endCap": 41
+          }
         },
         {
           "family": "ELGD",
@@ -987,7 +1070,14 @@
           "size": 80,
           "drive": "belt",
           "end": 34.5,
-          "pinned": false
+          "pinned": false,
+          "clamp": {
+            "span": [
+              66,
+              146
+            ],
+            "endCap": 70
+          }
         },
         {
           "family": "ELGD",
@@ -995,7 +1085,14 @@
           "size": 100,
           "drive": "spindle",
           "end": 34.5,
-          "pinned": false
+          "pinned": false,
+          "clamp": {
+            "span": [
+              66,
+              146
+            ],
+            "endCap": 41
+          }
         },
         {
           "family": "ELGD",
@@ -1003,7 +1100,14 @@
           "size": 100,
           "drive": "belt",
           "end": 34.5,
-          "pinned": false
+          "pinned": false,
+          "clamp": {
+            "span": [
+              66,
+              146
+            ],
+            "endCap": 70
+          }
         },
         {
           "family": "ELGD",
@@ -1011,7 +1115,14 @@
           "size": 120,
           "drive": "spindle",
           "end": 34.5,
-          "pinned": false
+          "pinned": false,
+          "clamp": {
+            "span": [
+              66,
+              146
+            ],
+            "endCap": 41
+          }
         },
         {
           "family": "ELGD",
@@ -1019,7 +1130,14 @@
           "size": 120,
           "drive": "belt",
           "end": 34.5,
-          "pinned": false
+          "pinned": false,
+          "clamp": {
+            "span": [
+              66,
+              146
+            ],
+            "endCap": 70
+          }
         }
       ],
       "hand": "right",

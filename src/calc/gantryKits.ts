@@ -29,17 +29,16 @@ export interface GantryJoint {
   pinned: boolean
   flange: number | null
   driveSign: 1 | -1
-  /** two base slides: the carried axis is held at the first; `mismatch` (mm) is how far the entered base spacing is
-   *  off the fitting one (pinned: the second kit clamps the profile with its profile mountings, `mountings`, so any
-   *  spacing fits that is clear and that the profile slot reaches across all of them; clamped: the far end against
-   *  the second bracket's end position); `spacing` the base spacing that fits (nearest the entered one, the kits
-   *  clear of each other, the carried axis reaching the second kit; null when none), `clear` the smallest base
+  /** two base slides: the carried axis is held at the first, the second kit clamps its profile with profile
+   *  mountings anywhere along the slot (`AdapterAxis.clamp`), so any spacing fits at which the kits are clear and the
+   *  profile slot covers all its mountings. `mismatch` (mm): how far the entered base spacing is off the fitting one;
+   *  `spacing` the base spacing that fits (nearest the entered one; null when none), `clear` the smallest base
    *  spacing at which the two kits' walls do not collide */
   span?: { mismatch: number; spacing: number | null; clear: number }
   /** two base slides: the kits' walls reaching towards each other overlap at this spacing */
   interference: boolean
-  /** two base slides on pinned angle kits: the profile mountings clamping the carried profile on the second kit
-   *  (quantity for that kit, `mass` kg for all of them) */
+  /** two base slides: profile mountings ordered for the second kit on top of it (EHAM-AK-L9: EAHF-L2-45-P;
+   *  quantity for that kit, `mass` kg for all of them) */
   mountings?: { model: string; partNumber: string; quantity: number; mass: number }
   /** a custom cross beam (data/adapters/Custom) bolted between the two kits in place of the carried profile, the base
    *  spacing kept: carrying the Y axis on its front face, or the Z axis on an EHAM-MA plate (`plate`) on its pad */
@@ -162,33 +161,23 @@ function placement(
     driveSign: (pinned ? -r0 : 1) as 1 | -1,
     interference: false,
   }
-  if (kits.length < 2) return placed
+  if (kits.length < 2 || !fit.clamp) return placed
   const d = r0 * (foot(1) - foot(0))
   const spacing = Math.abs(slides[1] - slides[0])
   // the mirrored walls reach towards each other: they collide below twice their reach (2 mm clearance)
   const clear = 2 * Math.max(...kits.map((k) => k.wall?.[1] ?? 0)) + 2
   const interference = spacing < clear
-  if (pinned && fit.mountings) {
-    // the second kit (mirrored) clamps the profile with its profile mountings, anywhere along it: every mounting
-    // under the profile slot, so the slot (far end less the end cap) reaches past the farthest one, d − span[0]
-    const m = fit.mountings
-    const reach = fit.end + length - m.endCap + m.span[0]
-    const fitting = reach >= clear ? Math.min(Math.max(d, clear), reach) : null
-    return {
-      ...placed,
-      span: { mismatch: d - (fitting ?? d), spacing: fitting, clear },
-      interference,
-      mountings: { model: m.model, partNumber: m.partNumber, quantity: m.quantity, mass: m.quantity * m.mass },
-      short: d > reach,
-    }
-  }
-  // clamped: the far end against the second bracket's position for it (both ends at their brackets)
-  const ideal = 2 * fit.end + length
+  // the second kit (mirrored) clamps the profile with its profile mountings, anywhere along it: every mounting under
+  // the profile slot, so the slot (far end less the end head) reaches past the farthest one, d − span[0]
+  const { span, endCap, mountings: m } = fit.clamp
+  const reach = fit.end + length - endCap + span[0]
+  const fitting = reach >= clear ? Math.min(Math.max(d, clear), reach) : null
   return {
     ...placed,
-    span: { mismatch: ideal - spacing, spacing: ideal >= clear ? ideal : null, clear },
+    span: { mismatch: d - (fitting ?? d), spacing: fitting, clear },
     interference,
-    short: fit.end + length < d,
+    ...(m && { mountings: { model: m.model, partNumber: m.partNumber, quantity: m.quantity, mass: m.quantity * m.mass } }),
+    short: d > reach,
   }
 }
 
@@ -230,7 +219,7 @@ export function gantryJoint(
   }
   const warn = (note: string) => ({ ...joint, ...place, status: 'warn' as const, note, noteArgs: args })
   if (joint.status === 'ok' && span) {
-    // the kits colliding, then the second kit off the carried axis's bores or the carried axis not reaching it
+    // the kits colliding, then the carried axis not reaching the second kit's profile mountings
     if (span.spacing == null)
       return warn(
         place.interference
@@ -239,11 +228,7 @@ export function gantryJoint(
       )
     if (place.interference) return warn('두 {base}축의 조합 키트가 서로 겹칩니다(간섭). {base}축 간격을 {spacing} mm로 하면 겹치지 않고 맞습니다.')
     if (short)
-      return warn(
-        place.pinned
-          ? '{axis}축이 두 번째 {base}축 키트의 프로파일 마운팅(EAHF)까지 모두 닿지 않습니다. {base}축 간격을 {spacing} mm로 하면 맞습니다.'
-          : '{axis}축이 두 번째 {base}축의 브래킷까지 닿지 않습니다. {base}축 간격을 {spacing} mm로 하면 양 끝이 브래킷 끝에 맞습니다.',
-      )
+      return warn('{axis}축이 두 번째 {base}축 키트의 프로파일 마운팅(EAHF)까지 모두 닿지 않습니다. {base}축 간격을 {spacing} mm로 하면 맞습니다.')
   }
   return { ...joint, ...place }
 }

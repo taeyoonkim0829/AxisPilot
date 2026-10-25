@@ -427,10 +427,6 @@ export const en: Record<string, string> = {
   '키트 없음': 'No kit',
   '조합 키트 미정': 'Gantry kits not yet known',
   '브래킷 벽은 {axis}축이 놓인 쪽으로 뻗습니다(ML/MR, 조립 설명서).': 'The bracket wall reaches towards the side the {axis} axis lies on (ML/MR, assembly instructions).',
-  '다른 끝은 두 번째 브래킷 끝과 {d} mm 어긋납니다. {base}축 간격을 {spacing} mm로 하면 양 끝이 맞습니다.':
-    'The other end is {d} mm off the second bracket end. A {base} axis spacing of {spacing} mm puts both ends at their brackets.',
-  '{axis}축이 두 번째 {base}축의 브래킷까지 닿지 않습니다. {base}축 간격을 {spacing} mm로 하면 양 끝이 브래킷 끝에 맞습니다.':
-    "The {axis} axis does not reach the second {base} axis's bracket. A {base} axis spacing of {spacing} mm puts both ends at their bracket ends.",
   '{axis}축은 키트의 핀과 볼트가 프로파일 아랫면의 핀 구멍과 나사 구멍에 들어가도록 모터 쪽 끝을 키트에 고정합니다(조립 설명서).':
     "The {axis} axis is fixed to the kit at its motor end, the kit's pins and screws in the pin and threaded holes of the profile underside (assembly instructions).",
   '{axis}축은 키트의 원통 핀 위에 얹고 끝을 콘솔 끝에서 77.5 mm(간격 A)에 맞춥니다(조립 설명서).':
@@ -442,6 +438,8 @@ export const en: Record<string, string> = {
   '두 번째 {base}축 키트에서는 {axis}축 프로파일을 {model} {n}개로 클램프합니다(키트 벽의 M5 구멍, 프로파일 홈 어디서나). {base}축 간격을 나사 구멍 간격(100 mm)에 맞출 필요가 없습니다.':
     "On the second {base} axis kit the {axis} profile is clamped with {n} × {model} (in the kit wall's M5 holes, anywhere along the profile slot), so the {base} axis spacing need not match the threaded hole pitch (100 mm).",
   '프로파일 마운팅': 'Profile mounting',
+  '두 번째 {base}축 키트에서도 {axis}축 프로파일을 프로파일 마운팅(EAHF)으로 클램프하므로, {base}축 간격은 {axis}축이 그 마운팅을 모두 덮는 범위에서 자유롭게 정할 수 있습니다.':
+    'The second {base} axis kit also clamps the {axis} profile with profile mountings (EAHF), so the {base} axis spacing can be chosen freely as long as the {axis} axis covers all of them.',
   '앵글 키트(EHAM-AK)를 쓰면 Y축은 첫 번째 X축의 키트가 잡는 위치(조립 설명서)에 놓이고, Y 값은 쓰지 않습니다.':
     "With an angle kit (EHAM-AK) the Y axis sits where the first X axis's kit holds it (assembly instructions); the Y value is not used.",
   '앵글 키트(EHAM-AK)를 쓰면 Y축은 키트가 잡는 위치(조립 설명서)에 놓이고, Y 값은 놓이는 쪽(+/−)만 정합니다.':

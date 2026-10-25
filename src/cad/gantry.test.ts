@@ -108,6 +108,23 @@ describe('gantry kits', () => {
     expect(ok.kits.map((k) => k.model)).toEqual(['EHAM-AK-E24-80-E24-80-MR-S', 'EHAM-AK-E24-80-E24-80-ML-S'])
   })
 
+  it('clamps the ELGD on the second angle kit with its profile mountings, at any spacing it reaches', () => {
+    const [x, y] = [find('ELGD', 80, 'belt', true), find('ELGD', 80, 'belt')]
+    const twin = (spacing: number) => ({ ...wallY, parallel: { ...wallY.parallel, x: { ...wallY.parallel.x, mode: 'twinMotor' as const, spacing } } })
+    // an 800 mm Y: its near end 34.5 mm from the first foot, the slot (less the 70 mm belt head) covers the second
+    // console's EAHF-E24-60-P-B4 (66 … 146 mm back from its foot) up to 34.5 + 800 − 70 + 66 = 830.5 mm
+    const fit = gantryJoint(twin(600), 'x', 'y', x, y, 500, adapters, 800)
+    expect(fit.status).toBe('ok')
+    expect(fit.span!.spacing).toBeCloseTo(600)
+    // the B4 come with the kits (accessories), nothing on top
+    expect(fit.mountings).toBeUndefined()
+    const far = gantryJoint(twin(900), 'x', 'y', x, y, 500, adapters, 800)
+    expect(far.status).toBe('warn')
+    expect(far.span!.spacing).toBeCloseTo(830.5)
+    // the walls (162 mm ahead of each foot) clear from 326 mm
+    expect(gantryJoint(twin(300), 'x', 'y', x, y, 500, adapters, 800).span).toMatchObject({ clear: 326, spacing: 326 })
+  })
+
   it('takes the angle kit hand whose wall reaches towards the carried axis', () => {
     const [x, y] = [find('ELGT', 160, 'spindle'), find('ELGT', 120, 'spindle')]
     const single = { ...wallY, parallel: { ...wallY.parallel, x: { ...wallY.parallel.x, mode: 'single' as const } } }

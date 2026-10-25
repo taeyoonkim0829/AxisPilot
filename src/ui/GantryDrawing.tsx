@@ -260,10 +260,10 @@ function placementNotes(j: GantryJoint): { text: string; args: Record<string, st
       text: '두 번째 {base}축 키트에서는 {axis}축 프로파일을 {model} {n}개로 클램프합니다(키트 벽의 M5 구멍, 프로파일 홈 어디서나). {base}축 간격을 나사 구멍 간격(100 mm)에 맞출 필요가 없습니다.',
       args: { ...args, model: j.mountings.model, n: String(j.mountings.quantity) },
     })
-  if (j.span && j.status === 'ok' && !j.pinned && Math.abs(j.span.mismatch) > 1)
+  else if (j.span && !j.pinned)
     out.push({
-      text: '다른 끝은 두 번째 브래킷 끝과 {d} mm 어긋납니다. {base}축 간격을 {spacing} mm로 하면 양 끝이 맞습니다.',
-      args: { ...args, d: fmt(j.span.mismatch, 1), spacing: fmt(j.span.spacing, 1) },
+      text: '두 번째 {base}축 키트에서도 {axis}축 프로파일을 프로파일 마운팅(EAHF)으로 클램프하므로, {base}축 간격은 {axis}축이 그 마운팅을 모두 덮는 범위에서 자유롭게 정할 수 있습니다.',
+      args,
     })
   return out
 }
