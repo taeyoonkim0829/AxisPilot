@@ -4,6 +4,7 @@ import type { Axis, Gearbox, Motor } from '../data/types'
 import { axisOrder, curveAt, evaluateAxis, guideLoads, memberLoads, parallelLayout, selectAxes, G } from './axisSelection'
 import { evaluateDrive, gearboxOptionsFor, gearboxStatus, selectMotors } from './motorSelection'
 import { moveProfile } from './motionProfile'
+import { comboInputs, shaftTooShort } from '../ui/comboInputs'
 import { defaultParallel, defaultPress, defaultSettings as appDefaults, verticalForward, type Requirements } from './types'
 
 // every axis and motor filter on (the app's defaults narrow the lists)
@@ -77,6 +78,11 @@ describe('parallel arrangement', () => {
     // too close: below the 200 mm minimum length
     const close = evaluateAxis(belt, { ...req, parallel: { ...req.parallel!, spacing: 250 } }, defaultSettings, shafts)!
     expect(close.checks.find((c) => c.label === '연결축 공칭 길이 LN')!.status).toBe('fail')
+    // and the drawing leaves the shaft out (its model, at the shortest length, cannot be shortened further)
+    expect(shaftTooShort(ev)).toBe(false)
+    expect(comboInputs(ev, null, null, req).twin?.shaft?.model).toBe('KSK-80-318')
+    expect(shaftTooShort(close)).toBe(true)
+    expect(comboInputs(close, null, null, { ...req, parallel: { ...req.parallel!, spacing: 250 } }).twin?.shaft).toBeUndefined()
     // no KSK for a spindle axis: the entered inertia, with a warning
     const other = evaluateAxis(spindle, req, defaultSettings, shafts)!
     expect(other.shaft).toBeNull()

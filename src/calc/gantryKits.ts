@@ -437,10 +437,16 @@ function beamJoint(
         args: { ...name, max: Math.max(0, Math.round(free)) },
       })
   }
-  if (L < beam.length[0] || L > beam.length[1])
+  // the spacing the beam's length range allows: D = L + 2 · end
+  if (L < beam.length[0])
     issues.unshift({
-      note: '{beam}: 빔 길이 L {length} mm가 범위 {min} … {max} mm를 벗어납니다(최소: 키트 벽 간섭, 최대: 처짐 0.05 mm · 고유진동수 50 Hz). {base}축 간격을 조정하세요.',
-      args: { ...name, length: Math.round(L), min: beam.length[0], max: beam.length[1] },
+      note: '{base}축 간격 {spacing} mm가 짧습니다: {beam} 빔 길이 L {length} mm가 최소 {min} mm보다 짧아 키트 벽이 부딪힙니다. {base}축 간격을 {need} mm 이상으로 늘리세요.',
+      args: { ...name, spacing: Math.round(spacing), length: Math.round(L), min: beam.length[0], need: Math.ceil(beam.length[0] + 2 * beam.end) },
+    })
+  else if (L > beam.length[1])
+    issues.unshift({
+      note: '{base}축 간격 {spacing} mm가 깁니다: {beam} 빔 길이 L {length} mm가 최대 {max} mm보다 길어 처짐(0.05 mm)이나 고유진동수(50 Hz) 기준을 넘습니다. {base}축 간격을 {need} mm 이하로 줄이세요.',
+      args: { ...name, spacing: Math.round(spacing), length: Math.round(L), max: beam.length[1], need: Math.floor(beam.length[1] + 2 * beam.end) },
     })
   const offset = vec(across.map((x, i) => x + (centre ?? dot(v, c.t)) * c.t[i]))
   // kits and beam about the beam's centre (the arrangement centre), across as entered

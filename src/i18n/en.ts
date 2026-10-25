@@ -468,7 +468,16 @@ export const en: Record<string, string> = {
   '크로스 빔 (주문 제작)': 'Cross beam (made to order)',
   '{beam}: {axis}축 고정 구멍({from} … {to} mm)이 키트 벽 뒤에 걸립니다. 빔 위 {axis}축 위치(장착 위치)를 옮기거나 {base}축 간격을 늘리세요(벽 사이 −{free} … {free} mm).': '{beam}: the {axis} axis fixing holes ({from} … {to} mm) lie behind a kit wall. Move the {axis} axis along the beam (mounting position) or widen the {base} axis spacing (between the walls −{free} … {free} mm).',
   '{beam}: 패드({axis}축 장착 위치)가 키트에 너무 가깝습니다. 빔 가운데에서 {max} mm 이내로 옮기세요.': '{beam}: the pad ({axis} axis mounting position) is too close to a kit. Keep it within {max} mm of the beam centre.',
-  '{beam}: 빔 길이 L {length} mm가 범위 {min} … {max} mm를 벗어납니다(최소: 키트 벽 간섭, 최대: 처짐 0.05 mm · 고유진동수 50 Hz). {base}축 간격을 조정하세요.': '{beam}: beam length L {length} mm is outside {min} … {max} mm (min: kit walls colliding, max: deflection 0.05 mm · natural frequency 50 Hz). Adjust the {base} axis spacing.',
+  '{base}축 간격 {spacing} mm가 짧습니다: {beam} 빔 길이 L {length} mm가 최소 {min} mm보다 짧아 키트 벽이 부딪힙니다. {base}축 간격을 {need} mm 이상으로 늘리세요.':
+    'The {base} axis spacing {spacing} mm is too short: {beam} beam length L {length} mm is below the minimum {min} mm, the kit walls collide. Increase the {base} axis spacing to {need} mm or more.',
+  '{base}축 간격 {spacing} mm가 깁니다: {beam} 빔 길이 L {length} mm가 최대 {max} mm보다 길어 처짐(0.05 mm)이나 고유진동수(50 Hz) 기준을 넘습니다. {base}축 간격을 {need} mm 이하로 줄이세요.':
+    'The {base} axis spacing {spacing} mm is too long: {beam} beam length L {length} mm is above the maximum {max} mm, beyond the deflection (0.05 mm) or natural frequency (50 Hz) limit. Reduce the {base} axis spacing to {need} mm or less.',
+  '축 간격이 짧아 연결축 공칭 길이 LN {length} mm가 최소 {min} mm보다 짧습니다. 도면에서 연결축을 뺐습니다. 축 간격을 {need} mm 이상으로 늘리세요.':
+    'The axis spacing is too short: the connecting shaft nominal length LN {length} mm is below the minimum {min} mm. The shaft is left out of the drawing. Increase the axis spacing to {need} mm or more.',
+  '{axis}축: 축 간격이 짧아 연결축 공칭 길이 LN {length} mm가 최소 {min} mm보다 짧습니다. 도면에서 연결축을 뺐습니다. 축 간격을 {need} mm 이상으로 늘리세요.':
+    '{axis} axis: the axis spacing is too short, the connecting shaft nominal length LN {length} mm is below the minimum {min} mm. The shaft is left out of the drawing. Increase the axis spacing to {need} mm or more.',
+  '{pair}: {base}축 간격이 짧아 빔(L {length} mm, 최소 {min} mm)을 도면에서 뺐습니다. {base}축 간격을 늘리세요.':
+    '{pair}: the {base} axis spacing is too short, so the beam (L {length} mm, min. {min} mm) is left out of the drawing. Increase the {base} axis spacing.',
   '{beam}: 주문 제작 크로스 빔, 길이 L {length} mm ({base}축 간격 {spacing} mm − 2 × {end} mm), {kits} 사이에 볼트 고정.': '{beam}: cross beam made to order, length L {length} mm ({base} axis spacing {spacing} mm − 2 × {end} mm), bolted between {kits}.',
   '제작 도면 (PDF)': 'Shop drawing (PDF)',
   '{axis}축은 빔 앞면 패드의 {plate}에 구동부를 위로 매답니다(패드 중심: 빔 가운데에서 {at} mm, 장착 위치).': 'The {axis} axis hangs, drive end up, from the {plate} on the pad on the beam front (pad centre {at} mm from the beam centre, the mounting position).',

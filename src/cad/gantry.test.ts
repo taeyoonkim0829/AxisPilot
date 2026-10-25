@@ -5,7 +5,7 @@ import { adapters, axes, kits, motors } from '../data'
 import type { Axis, AxisAdapter } from '../data/types'
 import { buildCombo, comboDrawings, defaultComboOptions, type ComboSelection } from './combo'
 import { parseDrawingPath, type AdapterMeta, type BeamMeta, type Drawing } from './drawings'
-import { beamAtLength, buildGantry, type GantryAxisDrawing } from './gantry'
+import { beamAtLength, beamTooShort, buildGantry, type GantryAxisDrawing } from './gantry'
 import { writeStep } from './step'
 
 // loaded on demand: the drawing folders hold gigabytes of STEP text; Custom: the custom brackets
@@ -247,8 +247,9 @@ describe('custom cross beams in the gantry drawing', () => {
   const box = (b: { lo: number[]; hi: number[] }, k: number) => b.hi[k] - b.lo[k]
 
   it('cuts the carried axis holes out and changes the beam length in the middle, the kit patterns kept', async () => {
-    for (const model of ['BR-ELGT-BS-120-ELGT-BS-120-2', 'BR-ELGT-BS-160-ELGT-BS-120-1']) {
-      const bracket = adapters.find((k) => k.model === model)!
+    const beams = adapters.filter((k) => k.custom && k.joint === 'beam')
+    expect(beams.length).toBe(8)
+    for (const bracket of beams) {
       const d = kitDrawing(bracket) as Drawing<BeamMeta>
       const text = await load(d)
       for (const length of [bracket.beam!.length[0], 1234, bracket.beam!.length[1]]) {
@@ -300,5 +301,18 @@ describe('custom cross beams in the gantry drawing', () => {
     const profile = found.find((b) => /ELGT-BS-90-200--/.test(b.name))!
     expect(profile.hi[1]).toBeCloseTo(plate.lo[1], 0)
     expect(profile.hi[2]).toBeGreaterThan(102 + 181.5 - 1)
+  }, 120000)
+
+  it('leaves a beam out of the drawing, with a warning, when the base spacing is too short for it', async () => {
+    // Y spacing 400: L = 400 − 21 = 379 < 609
+    const g: GantryInputs = { ...defaultGantry, config: 'yz', yMounting: 'floor', parallel: { ...defaultGantry.parallel, y: { ...defaultGantry.parallel.y, mode: 'twinMotor', spacing: 400 } } }
+    const [y, z] = [elgt(90), elgt(90)]
+    const j = gantryJoint(g, 'y', 'z', y, z, 200, adapters, 200 + z.baseLength!)
+    expect(j.beam && beamTooShort(j.beam)).toBe(true)
+    expect(j.status).toBe('warn')
+    expect(j.noteArgs).toMatchObject({ spacing: 400, length: 379, need: 630 })
+    const combo = await buildGantry(g, [{ ...axisDrawing('y', y, 500, g), twin: { spacing: 400, drive: true } }, axisDrawing('z', z, 200, g)], [jointDrawing(j)], load)
+    expect(combo.unkitted).toEqual(['Y–Z'])
+    expect((await boxes(combo.step, /BR-/)).filter((b) => /BR-/.test(b.name))).toEqual([])
   }, 120000)
 })

@@ -3,12 +3,12 @@ import type { AxisAdapter } from '../data/types'
 import type { GantryAxis } from '../calc/gantry'
 import type { ComboOptions } from '../cad/combo'
 import { adapterDrawingFor, bracketDrawingUrl, type BeamMeta, type Drawing } from '../cad/drawings'
-import { buildGantry, type GantryAxisDrawing, type GantryJointDrawing } from '../cad/gantry'
+import { beamTooShort, buildGantry, type GantryAxisDrawing, type GantryJointDrawing } from '../cad/gantry'
 import { useT } from '../i18n'
 import type { GantryAxisResult } from '../selection'
 import { beamHardware, type GantryJoint } from '../calc/gantryKits'
 import { adapters } from '../data'
-import { comboInputs, comboKey } from './comboInputs'
+import { comboInputs, comboKey, shaftTooShort } from './comboInputs'
 import { ComboPreviewPanel } from './ComboPreviewPanel'
 import { StatusBadge } from './common'
 import { fmt } from './format'
@@ -86,6 +86,30 @@ export function GantryDrawing({
   ]
   const missing = inputs.flatMap((i) => (i.found?.missing.length ? [`${i.a.toUpperCase()}: ${i.found.missing.map((m) => t(roleWords[m] ?? m)).join(', ')}`] : []))
   const unkitted = state.shown?.combo.unkitted ?? []
+  // parts the drawing leaves out because a spacing is too short (the checks above fail or warn for the same reason)
+  const shortened = [
+    ...joints.flatMap((j) =>
+      j.beam && beamTooShort(j.beam)
+        ? [t('{pair}: {base}축 간격이 짧아 빔(L {length} mm, 최소 {min} mm)을 도면에서 뺐습니다. {base}축 간격을 늘리세요.', {
+            pair: `${j.base.toUpperCase()}–${j.carried.toUpperCase()}`,
+            base: j.base.toUpperCase(),
+            length: Math.round(j.beam.length),
+            min: j.beam.bracket.beam!.length[0],
+          })]
+        : [],
+    ),
+    ...results.flatMap((r) => {
+      const axis = r.sel?.selectedAxis
+      return axis?.shaft && axis.layout.mode === 'twinShaft' && shaftTooShort(axis)
+        ? [t('{axis}축: 축 간격이 짧아 연결축 공칭 길이 LN {length} mm가 최소 {min} mm보다 짧습니다. 도면에서 연결축을 뺐습니다. 축 간격을 {need} mm 이상으로 늘리세요.', {
+            axis: r.axis.toUpperCase(),
+            length: axis.shaft.length,
+            min: axis.shaft.shaft.lengthRange[0],
+            need: axis.shaft.shaft.lengthRange[0] + axis.shaft.driveWidth,
+          })]
+        : []
+    }),
+  ]
 
   return (
     <section className="panel step" id="gantry-drawing">
@@ -173,6 +197,11 @@ export function GantryDrawing({
               <span className="warn-text"> {t('키트 없이 배치한 결합: {pairs}', { pairs: unkitted.join(', ') })}</span>
             )}
           </p>
+          {shortened.map((w) => (
+            <p key={w} className="warn-text small-print">
+              {w}
+            </p>
+          ))}
           {missing.length > 0 && (
             <p className="muted small-print">{t('도면이 없는 부품이 있어 조합할 수 없습니다: {parts}. 관리자에게 문의하세요.',{ parts: missing.join(' · ') })}</p>
           )}

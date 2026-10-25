@@ -29,13 +29,19 @@ export function comboInputs(
       ? {
           spacing: input.parallel.spacing,
           drive: axis.layout.mode === 'twinMotor',
-          ...(axis.shaft && shaftDrawing && axis.shaft.length > 0
+          ...(axis.shaft && shaftDrawing && !shaftTooShort(axis)
             ? { shaft: { model: axis.shaft.model, length: axis.shaft.length, drawing: shaftDrawing } }
             : {}),
         }
       : undefined
   return { selection, found, twin, req }
 }
+
+/**
+ * The KSK is shorter than its order range (the axis spacing too short): it is left out of the drawing, as its model,
+ * drawn at the shortest nominal length, cannot be shortened (the calc fails `연결축 공칭 길이 LN`)
+ */
+export const shaftTooShort = (axis: AxisEvaluation): boolean => !!axis.shaft && axis.shaft.length < axis.shaft.shaft.lengthRange[0]
 
 /** The part of a rebuild key that a combination's inputs give */
 export const comboKey = (selection: ComboSelection, req: Requirements, twin: TwinAxis | undefined) =>

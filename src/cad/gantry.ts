@@ -75,6 +75,9 @@ function placeKit(meta: AdapterMeta, at: Vec3, n: Vec3, travel: Vec3, carriedNor
 /** mm from the beam ends: the length change stays clear of the kit hole patterns (last bore 284.5 + its radius) */
 const BEAM_END_ZONE = 300
 
+/** A beam below its minimum length (`AxisAdapter.beam.length`, the kit walls colliding): left out of the drawing */
+export const beamTooShort = (beam: { bracket: AxisAdapter; length: number }): boolean => beam.length < beam.bracket.beam!.length[0]
+
 /**
  * A custom beam's STEP at length `length`: the carried axis's holes (`meta.window`, at the reference position)
  * cut out first, so they are not drawn at a wrong place, then the middle lengthened or shortened; the kit hole
@@ -190,8 +193,9 @@ export async function buildGantry(
     const sign = joint?.driveSign ?? 1
     const upward = drawn?.[0].kit.joint === 'plate' && joint?.flange != null ? scale(w.t, -sign) : undefined
     // a custom beam: the kits hold it as they would a profile running from the first slide to the second, its front
-    // (the carried slide's side) facing where the carried slide faces
-    const beam = joint?.beam?.drawing?.meta && slides.length === 2 ? joint.beam : null
+    // (the carried slide's side) facing where the carried slide faces. A beam shorter than its minimum (the base
+    // spacing too short: `beamTooShort`) cannot be shortened that far between its kit hole patterns: not drawn
+    const beam = joint?.beam?.drawing?.meta && slides.length === 2 && !beamTooShort(joint.beam) ? joint.beam : null
     const run = beam ? scale(sub(slides[1], slides[0]), 1 / Math.hypot(...sub(slides[1], slides[0]))) : w.t
     const aim = beam ? centre : target
     const first = meta ? placeKit(meta, slides[0], wb.n, run, w.n, upward) : null

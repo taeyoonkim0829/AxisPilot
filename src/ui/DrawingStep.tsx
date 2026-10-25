@@ -19,7 +19,7 @@ import {
 import { shaftDrawingFor, type AxisMeta, type Drawing } from '../cad/drawings'
 import type { Kit } from '../data/types'
 import { useT } from '../i18n'
-import { comboInputs, comboKey } from './comboInputs'
+import { comboInputs, comboKey, shaftTooShort } from './comboInputs'
 import { ComboPreviewPanel } from './ComboPreviewPanel'
 import { RadioGroup } from './common'
 import { mountingLabel, sideLabel } from './format'
@@ -132,7 +132,7 @@ export function DrawingStep({ axis, drive, kit, req: input, sides, onSides, faci
     'Third-angle projection, units: mm. 3D models: manufacturer CAD data (see STEP header for licence).',
   ]
 
-  const rows: { role: PartRole; model: string; drawing: Drawing | null; note: string | null }[] =
+  const rows: { role: PartRole; model: string; drawing: Drawing | null; note: string | null; warn?: boolean }[] =
     selection && found
       ? [
           {
@@ -176,8 +176,14 @@ export function DrawingStep({ axis, drive, kit, req: input, sides, onSides, faci
                   role: 'shaft' as const,
                   model: axis!.shaft.model,
                   drawing: shaftDrawing,
-                  note:
-                    shaftDrawing && shaftDrawing.meta && (shaftDrawing.meta as { length: number }).length !== axis!.shaft.length
+                  warn: shaftTooShort(axis!),
+                  note: shaftTooShort(axis!)
+                    ? t('축 간격이 짧아 연결축 공칭 길이 LN {length} mm가 최소 {min} mm보다 짧습니다. 도면에서 연결축을 뺐습니다. 축 간격을 {need} mm 이상으로 늘리세요.', {
+                        length: axis!.shaft.length,
+                        min: axis!.shaft.shaft.lengthRange[0],
+                        need: axis!.shaft.shaft.lengthRange[0] + axis!.shaft.driveWidth,
+                      })
+                    : shaftDrawing && shaftDrawing.meta && (shaftDrawing.meta as { length: number }).length !== axis!.shaft.length
                       ? t('공칭 길이 {from} mm 모델을 {to} mm로 길이 보정', {
                           from: (shaftDrawing.meta as { length: number }).length,
                           to: axis!.shaft.length,
@@ -219,7 +225,7 @@ export function DrawingStep({ axis, drive, kit, req: input, sides, onSides, faci
                     <td className={r.drawing ? undefined : 'fail-text'}>
                       {r.drawing ? [r.drawing.partNumber, r.drawing.model].filter(Boolean).join(' ') : t('도면 없음')}
                     </td>
-                    <td className="muted">{r.note ?? ''}</td>
+                    <td className={r.warn ? 'warn-text' : 'muted'}>{r.note ?? ''}</td>
                   </tr>
                 ))}
               </tbody>
