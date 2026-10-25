@@ -53,20 +53,23 @@ describe('custom brackets', () => {
       for (const k of j.kits) expect(k.custom).toBeFalsy()
       expect(j.beam).toBeUndefined()
     }
-    // X120 / Y120 716 mm: the second kit fits at 752 or 852 mm, within one thread pitch of 800
+    // X120 / Y120 716 mm: the second kit clamps the profile with EAHF anywhere up to 848.5 mm (end 44.5 + 716 −
+    // end cap 11.5 + the farthest mounting 99.5 from the foot): 800 as entered
     const near = gantryJoint(twinX(800), 'x', 'y', elgt(120), elgt(120), 500, adapters, 716)
     expect(near.beam).toBeUndefined()
-    expect(near.span!.spacing).toBeCloseTo(752)
+    expect(near.span!.spacing).toBeCloseTo(800)
+    expect(near.mountings).toMatchObject({ model: 'EAHF-L2-45-P', partNumber: '4835728', quantity: 6 })
+    expect(near.status).toBe('ok')
   })
 
-  it('takes a beam only when the fitting spacing is more than a thread pitch off, or none', () => {
+  it('takes a beam only when the carried axis does not reach the second kit at the entered spacing', () => {
     const span = { mismatch: 0, spacing: 900, clear: 698 }
-    expect(wantsBeam(span, 950, 100)).toBe(false)
-    expect(wantsBeam(span, 1000, 100)).toBe(false)
-    expect(wantsBeam(span, 1001, 100)).toBe(true)
-    expect(wantsBeam({ ...span, spacing: null }, 1000, 100)).toBe(true)
+    expect(wantsBeam(span, 900)).toBe(false)
+    expect(wantsBeam(span, 901)).toBe(true)
+    expect(wantsBeam({ ...span, spacing: null }, 1000)).toBe(true)
     // the kits' walls collide below `clear`: no beam fits either
-    expect(wantsBeam({ ...span, spacing: null }, 650, 100)).toBe(false)
+    expect(wantsBeam({ ...span, spacing: 698 }, 650)).toBe(false)
+    expect(wantsBeam({ ...span, spacing: null }, 650)).toBe(false)
   })
 
   it('puts a Y beam between the kits when the X axes are too far apart for the Y axis', () => {

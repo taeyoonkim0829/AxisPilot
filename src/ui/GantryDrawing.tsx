@@ -6,7 +6,7 @@ import { adapterDrawingFor, bracketDrawingUrl, type BeamMeta, type Drawing } fro
 import { beamTooShort, buildGantry, type GantryAxisDrawing, type GantryJointDrawing } from '../cad/gantry'
 import { useT } from '../i18n'
 import type { GantryAxisResult } from '../selection'
-import { beamHardware, type GantryJoint } from '../calc/gantryKits'
+import { jointAccessories, type GantryJoint } from '../calc/gantryKits'
 import { adapters } from '../data'
 import { comboInputs, comboKey, shaftTooShort } from './comboInputs'
 import { ComboPreviewPanel } from './ComboPreviewPanel'
@@ -174,11 +174,11 @@ export function GantryDrawing({
                           )}
                         </span>
                       )}
-                      {(j.beam ? beamHardware(j, adapters) : (j.kit?.accessories ?? [])).map((x) => (
+                      {jointAccessories(j, adapters).map((x) => (
                         <span key={x.partNumber}>
                           {' '}
-                          {x.quantity
-                            ? t('함께 주문: {model} ({partNumber}) × {n}', { model: x.model, partNumber: x.partNumber, n: x.quantity * (j.beam ? 1 : j.quantity) })
+                          {x.n
+                            ? t('함께 주문: {model} ({partNumber}) × {n}', { model: x.model, partNumber: x.partNumber, n: x.n })
                             : t('함께 주문: {model} ({partNumber})', { model: x.model, partNumber: x.partNumber })}
                         </span>
                       ))}
@@ -191,7 +191,7 @@ export function GantryDrawing({
           </div>
           <p className="muted small-print">
             {t(
-              '조합 키트는 ELGT-BS, ELGD 데이터시트의 조합표 기준입니다(EGC는 해당 키트 데이터 없음). 축은 시작 위치에 그리며, 위쪽 축은 조립 설명서대로 키트가 잡는 위치(핀과 볼트 구멍)에 붙이고, 그 데이터가 없는 키트는 입력한 장착 오프셋을 따릅니다. 키트가 없는 결합은 입력한 장착 위치에 축만 배치합니다. 키트에 축을 고정하는 프로파일 마운팅(EAHF-…-B4)은 도면에 없습니다.',
+              '조합 키트는 ELGT-BS, ELGD 데이터시트의 조합표 기준입니다(EGC는 해당 키트 데이터 없음). 축은 시작 위치에 그리며, 위쪽 축은 조립 설명서대로 키트가 잡는 위치(핀과 볼트 구멍)에 붙이고, 그 데이터가 없는 키트는 입력한 장착 오프셋을 따릅니다. 키트가 없는 결합은 입력한 장착 위치에 축만 배치합니다. 키트에 축을 고정하는 프로파일 마운팅(EAHF)은 도면에 없습니다.',
             )}
             {unkitted.length > 0 && (
               <span className="warn-text"> {t('키트 없이 배치한 결합: {pairs}', { pairs: unkitted.join(', ') })}</span>
@@ -255,6 +255,11 @@ function placementNotes(j: GantryJoint): { text: string; args: Record<string, st
       ? { text: '장착 위치의 {axis} 이동 방향 값은 쓰지 않습니다.', args }
       : { text: '장착 위치의 {axis} 이동 방향 값은 놓이는 쪽(+/−)만 정합니다.', args },
   ]
+  if (j.mountings)
+    out.push({
+      text: '두 번째 {base}축 키트에서는 {axis}축 프로파일을 {model} {n}개로 클램프합니다(키트 벽의 M5 구멍, 프로파일 홈 어디서나). {base}축 간격을 나사 구멍 간격(100 mm)에 맞출 필요가 없습니다.',
+      args: { ...args, model: j.mountings.model, n: String(j.mountings.quantity) },
+    })
   if (j.span && j.status === 'ok' && !j.pinned && Math.abs(j.span.mismatch) > 1)
     out.push({
       text: '다른 끝은 두 번째 브래킷 끝과 {d} mm 어긋납니다. {base}축 간격을 {spacing} mm로 하면 양 끝이 맞습니다.',

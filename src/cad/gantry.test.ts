@@ -131,28 +131,34 @@ describe('gantry kits', () => {
     expect(j.kitAt).toEqual({ x: 0, y: 0, z: 0 })
   })
 
-  it('checks the second kit under two X axes against the threaded holes of the pinned carried axis', () => {
+  it('clamps the pinned carried axis on the second kit under two X axes with profile mountings, at any spacing it reaches', () => {
     const [x, y] = [find('ELGT', 160, 'spindle'), find('ELGT', 120, 'spindle')]
     const twin = (spacing: number) => ({ ...wallY, parallel: { ...wallY.parallel, x: { ...wallY.parallel.x, mode: 'twinMotor' as const, spacing } } })
-    // first X at −500 (MR, reaching +Y): bores at 153 + k·100 from its foot, the mirrored kit's screws at d − 153 − k·100
-    const far = gantryJoint(twin(1000), 'x', 'y', x, y, 500, adapters, 716)
-    expect(far.flange).toBeCloseTo(-500 + 71.5)
-    expect(far.span!.mismatch).toBeCloseTo(-6)
-    // 1006 fits the bores but a 716 mm Y does not reach its screws: 906
-    expect(far.span!.spacing).toBeCloseTo(906)
-    expect(far.status).toBe('warn')
-    const fit = gantryJoint(twin(906), 'x', 'y', x, y, 500, adapters, 716)
+    const festo = adapters.filter((k) => !k.custom)
+    // first X at −450 (MR, reaching +Y); the mirrored kit's EAHF reach 126.5 … 333.5 mm back from its foot, and the
+    // 716 mm Y slot (less the 11.5 mm end cap) covers them all up to 71.5 + 716 − 11.5 + 126.5 = 902.5 mm
+    const fit = gantryJoint(twin(900), 'x', 'y', x, y, 500, festo, 716)
+    expect(fit.flange).toBeCloseTo(-450 + 71.5)
     expect(fit.status).toBe('ok')
+    expect(fit.span!.spacing).toBeCloseTo(900)
     expect(fit.span!.mismatch).toBeCloseTo(0)
+    expect(fit.mountings).toMatchObject({ model: 'EAHF-L2-45-P', quantity: 6 })
+    expect(fit.mountings!.mass).toBeCloseTo(0.21)
+    // farther apart: the Y axis does not reach them all; without a beam the spacing that fits is suggested
+    const far = gantryJoint(twin(1000), 'x', 'y', x, y, 500, festo, 716)
+    expect(far.span!.spacing).toBeCloseTo(902.5)
+    expect(far.status).toBe('warn')
+    // with the custom beams in the data, the beam takes its place at the entered spacing
+    expect(gantryJoint(twin(1000), 'x', 'y', x, y, 500, adapters, 716).kind).toBe('beam')
   })
 
   it('finds the two mirrored angle kits overlapping when the X axes are close', () => {
     const [x, y] = [find('ELGT', 160, 'spindle'), find('ELGT', 120, 'spindle')]
     const close = gantryJoint({ ...wallY, parallel: { ...wallY.parallel, x: { ...wallY.parallel.x, mode: 'twinMotor', spacing: 600 } } }, 'x', 'y', x, y, 500, adapters, 716)
-    // the walls reach 375 mm from each foot: they clear from 752 mm; 806 is the nearest fitting spacing
+    // the walls reach 375 mm from each foot: they clear from 752 mm, the nearest fitting spacing
     expect(close.interference).toBe(true)
     expect(close.span!.clear).toBe(752)
-    expect(close.span!.spacing).toBe(806)
+    expect(close.span!.spacing).toBe(752)
     expect(close.status).toBe('warn')
     // a Y axis too short to reach the second kit at any clear spacing
     const short = gantryJoint({ ...wallY, parallel: { ...wallY.parallel, x: { ...wallY.parallel.x, mode: 'twinMotor', spacing: 600 } } }, 'x', 'y', x, y, 100, adapters, 316)
@@ -225,7 +231,7 @@ describe('gantry drawing', () => {
   }, 120000)
 
   it('mirrors the angle kits under two X axes, both walls reaching inwards', async () => {
-    // Y 1000 + 216 mm long, pinned at the first kit; 1006 puts the second kit's screws on its threaded bores
+    // Y 1000 + 216 mm long, pinned at the first kit, clamped on the second kit's profile mountings
     const g: GantryInputs = { ...defaultGantry, config: 'xy', yMounting: 'wall', parallel: { ...defaultGantry.parallel, x: { ...defaultGantry.parallel.x, mode: 'twinMotor', spacing: 1006 } } }
     const elgt = (size: number) => axes.find((x) => x.family === 'ELGT' && x.drive === 'spindle' && x.size === size)!
     const [x, y] = [elgt(160), elgt(120)]

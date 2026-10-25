@@ -4,7 +4,7 @@ import type { KitMatch } from '../calc/kitSelection'
 import { accelTimeFor } from '../calc/motionProfile'
 import { gearboxChecks, type DriveEvaluation } from '../calc/motorSelection'
 import type { GantryInputs } from '../calc/gantry'
-import { beamHardware, type GantryJoint } from '../calc/gantryKits'
+import { jointAccessories, type GantryJoint } from '../calc/gantryKits'
 import { adapters } from '../data'
 import { verticalForward, type Requirements, type Settings, type Status } from '../calc/types'
 import type { KitEvaluation } from '../calc/kitSelection'
@@ -605,7 +605,7 @@ export function GantryOverview({ gantry, axes }: { gantry: GantryInputs; axes: G
                   ...(j.beam ? [{ model: `${j.beam.bracket.model} (L ${fmt(j.beam.length, 0)} mm)`, partNumber: null, n: 1 }] : []),
                   ...(j.beam?.plate ? [{ model: j.beam.plate.model, partNumber: j.beam.plate.partNumber, n: 1 }] : []),
                 ]
-                const extra = j.beam ? beamHardware(j, adapters).map((x) => ({ ...x, n: x.quantity })) : j.kit.accessories.map((x) => ({ ...x, n: x.quantity ? x.quantity * j.quantity : null }))
+                const extra = jointAccessories(j, adapters)
                 return [
                   ...kits.map((k, i) => (
                     <tr key={`${where(j)}${k.model}`}>

@@ -30,7 +30,18 @@
           "screws": [
             92,
             292
-          ]
+          ],
+          "mountings": {
+            "model": "EAHF-L2-45-P",
+            "partNumber": "4835728",
+            "quantity": 6,
+            "mass": 0.035,
+            "span": [
+              65.5,
+              298.5
+            ],
+            "endCap": 14.5
+          }
         }
       ],
       "hand": "left",
@@ -77,7 +88,18 @@
           "screws": [
             92,
             292
-          ]
+          ],
+          "mountings": {
+            "model": "EAHF-L2-45-P",
+            "partNumber": "4835728",
+            "quantity": 6,
+            "mass": 0.035,
+            "span": [
+              65.5,
+              298.5
+            ],
+            "endCap": 14.5
+          }
         }
       ],
       "hand": "right",
@@ -124,7 +146,18 @@
           "screws": [
             121,
             321
-          ]
+          ],
+          "mountings": {
+            "model": "EAHF-L2-45-P",
+            "partNumber": "4835728",
+            "quantity": 6,
+            "mass": 0.035,
+            "span": [
+              94.5,
+              327.5
+            ],
+            "endCap": 14.5
+          }
         }
       ],
       "hand": "left",
@@ -171,7 +204,18 @@
           "screws": [
             121,
             321
-          ]
+          ],
+          "mountings": {
+            "model": "EAHF-L2-45-P",
+            "partNumber": "4835728",
+            "quantity": 6,
+            "mass": 0.035,
+            "span": [
+              94.5,
+              327.5
+            ],
+            "endCap": 14.5
+          }
         }
       ],
       "hand": "right",
@@ -218,7 +262,18 @@
           "screws": [
             126,
             326
-          ]
+          ],
+          "mountings": {
+            "model": "EAHF-L2-45-P",
+            "partNumber": "4835728",
+            "quantity": 6,
+            "mass": 0.035,
+            "span": [
+              99.5,
+              332.5
+            ],
+            "endCap": 11.5
+          }
         }
       ],
       "hand": "left",
@@ -265,7 +320,18 @@
           "screws": [
             126,
             326
-          ]
+          ],
+          "mountings": {
+            "model": "EAHF-L2-45-P",
+            "partNumber": "4835728",
+            "quantity": 6,
+            "mass": 0.035,
+            "span": [
+              99.5,
+              332.5
+            ],
+            "endCap": 11.5
+          }
         }
       ],
       "hand": "right",
@@ -312,7 +378,18 @@
           "screws": [
             153,
             353
-          ]
+          ],
+          "mountings": {
+            "model": "EAHF-L2-45-P",
+            "partNumber": "4835728",
+            "quantity": 6,
+            "mass": 0.035,
+            "span": [
+              126.5,
+              359.5
+            ],
+            "endCap": 11.5
+          }
         }
       ],
       "hand": "left",
@@ -359,7 +436,18 @@
           "screws": [
             153,
             353
-          ]
+          ],
+          "mountings": {
+            "model": "EAHF-L2-45-P",
+            "partNumber": "4835728",
+            "quantity": 6,
+            "mass": 0.035,
+            "span": [
+              126.5,
+              359.5
+            ],
+            "endCap": 11.5
+          }
         }
       ],
       "hand": "right",
@@ -406,7 +494,18 @@
           "screws": [
             148,
             348
-          ]
+          ],
+          "mountings": {
+            "model": "EAHF-L2-45-P",
+            "partNumber": "4835728",
+            "quantity": 6,
+            "mass": 0.035,
+            "span": [
+              121.5,
+              354.5
+            ],
+            "endCap": 13.5
+          }
         }
       ],
       "hand": "left",
@@ -453,7 +552,18 @@
           "screws": [
             148,
             348
-          ]
+          ],
+          "mountings": {
+            "model": "EAHF-L2-45-P",
+            "partNumber": "4835728",
+            "quantity": 6,
+            "mass": 0.035,
+            "span": [
+              121.5,
+              354.5
+            ],
+            "endCap": 13.5
+          }
         }
       ],
       "hand": "right",

@@ -148,7 +148,7 @@ export function computeGantry(g: GantryInputs, settings: Record<GantryAxis, Sett
     }
     let { req, sel, drive, joint } = evaluate(g)
     // two base axes (X, or Y in yz) carrying the next on gantry kits: their spacing set to the one that fits the kits
-    // (clear of each other, the second kit's screws on the carried axis's bores or its far end at the bracket);
+    // (clear of each other, the carried profile reaching the second kit's profile mountings or its far end at the bracket);
     // twice, as the base axis (and so its kit) may change with it. A custom cross beam (`joint.beam`) has no `span`: the
     // entered spacing stays
     let spacing: GantryAxisResult['spacing']
@@ -163,6 +163,8 @@ export function computeGantry(g: GantryInputs, settings: Record<GantryAxis, Sett
     const kitLoad = joint?.kit
       ? [
           { label: '조합 키트', model: kitList(joint.kits), mass: joint.kits.reduce((m, k) => m + k.mass, 0) },
+          // the profile mountings clamping the carried axis on the second kit
+          ...(joint.mountings ? [{ label: '프로파일 마운팅', model: `${joint.mountings.model} × ${joint.mountings.quantity}`, mass: joint.mountings.mass }] : []),
           // a custom cross beam at its length, with the Z plate on it
           ...(joint.beam
             ? [{ label: '크로스 빔 (주문 제작)', model: `${joint.beam.bracket.model} L ${Math.round(joint.beam.length)} mm`, mass: jointMass({ kits: [], beam: { ...joint.beam, plate: null } }) }]

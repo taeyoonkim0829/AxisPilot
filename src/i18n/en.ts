@@ -437,8 +437,11 @@ export const en: Record<string, string> = {
     "The {axis} axis rests on the kit's cylindrical pin, its end 77.5 mm from the console end (clearance A, assembly instructions).",
   '장착 위치의 {axis} 이동 방향 값은 쓰지 않습니다.': "The mounting position's {axis} travel value is not used.",
   '장착 위치의 {axis} 이동 방향 값은 놓이는 쪽(+/−)만 정합니다.': "The mounting position's {axis} travel value only picks the side (+/−).",
-  '두 번째 {base}축 키트의 볼트가 {axis}축 나사 구멍에 맞지 않거나 {axis}축이 닿지 않습니다. {base}축 간격을 {spacing} mm로 하면 맞습니다.':
-    "The second {base} axis kit's screws miss the {axis} axis's threaded holes, or the {axis} axis does not reach it. A {base} axis spacing of {spacing} mm fits.",
+  '{axis}축이 두 번째 {base}축 키트의 프로파일 마운팅(EAHF)까지 모두 닿지 않습니다. {base}축 간격을 {spacing} mm로 하면 맞습니다.':
+    "The {axis} axis does not reach all the profile mountings (EAHF) of the second {base} axis kit. A {base} axis spacing of {spacing} mm fits.",
+  '두 번째 {base}축 키트에서는 {axis}축 프로파일을 {model} {n}개로 클램프합니다(키트 벽의 M5 구멍, 프로파일 홈 어디서나). {base}축 간격을 나사 구멍 간격(100 mm)에 맞출 필요가 없습니다.':
+    "On the second {base} axis kit the {axis} profile is clamped with {n} × {model} (in the kit wall's M5 holes, anywhere along the profile slot), so the {base} axis spacing need not match the threaded hole pitch (100 mm).",
+  '프로파일 마운팅': 'Profile mounting',
   '앵글 키트(EHAM-AK)를 쓰면 Y축은 첫 번째 X축의 키트가 잡는 위치(조립 설명서)에 놓이고, Y 값은 쓰지 않습니다.':
     "With an angle kit (EHAM-AK) the Y axis sits where the first X axis's kit holds it (assembly instructions); the Y value is not used.",
   '앵글 키트(EHAM-AK)를 쓰면 Y축은 키트가 잡는 위치(조립 설명서)에 놓이고, Y 값은 놓이는 쪽(+/−)만 정합니다.':
@@ -483,8 +486,8 @@ export const en: Record<string, string> = {
   '{axis}축은 빔 앞면 패드의 {plate}에 구동부를 위로 매답니다(패드 중심: 빔 가운데에서 {at} mm, 장착 위치).': 'The {axis} axis hangs, drive end up, from the {plate} on the pad on the beam front (pad centre {at} mm from the beam centre, the mounting position).',
   '{axis}축은 키트처럼 핀과 볼트로 빔 앞면에 고정합니다(프로파일 아랫면의 핀 구멍과 나사 구멍, 볼트 머리는 빔 안쪽). {axis}축 중심: 빔 가운데에서 {at} mm(장착 위치).': 'The {axis} axis is pinned and screwed onto the beam front as a kit holds it (the pin and threaded bores in the profile underside, screw heads inside the beam). {axis} axis centre: {at} mm from the beam centre (mounting position).',
   '{base}축 간격은 입력값 그대로 씁니다(빔 길이로 맞춤).': 'The {base} axis spacing is used as entered (the beam length is made to it).',
-  '조합 키트는 ELGT-BS, ELGD 데이터시트의 조합표 기준입니다(EGC는 해당 키트 데이터 없음). 축은 시작 위치에 그리며, 위쪽 축은 조립 설명서대로 키트가 잡는 위치(핀과 볼트 구멍)에 붙이고, 그 데이터가 없는 키트는 입력한 장착 오프셋을 따릅니다. 키트가 없는 결합은 입력한 장착 위치에 축만 배치합니다. 키트에 축을 고정하는 프로파일 마운팅(EAHF-…-B4)은 도면에 없습니다.':
-    'Gantry kits follow the combination tables of the ELGT-BS and ELGD data sheets (no kit data for EGC). The axes are drawn at their start position; a carried axis sits where the kit holds it as in the assembly instructions (pin and screw holes), else at the entered mounting offset. A joint without a kit places the axis alone at the entered mounting point. The profile mountings holding an axis on a kit (EAHF-…-B4) are not drawn.',
+  '조합 키트는 ELGT-BS, ELGD 데이터시트의 조합표 기준입니다(EGC는 해당 키트 데이터 없음). 축은 시작 위치에 그리며, 위쪽 축은 조립 설명서대로 키트가 잡는 위치(핀과 볼트 구멍)에 붙이고, 그 데이터가 없는 키트는 입력한 장착 오프셋을 따릅니다. 키트가 없는 결합은 입력한 장착 위치에 축만 배치합니다. 키트에 축을 고정하는 프로파일 마운팅(EAHF)은 도면에 없습니다.':
+    'Gantry kits follow the combination tables of the ELGT-BS and ELGD data sheets (no kit data for EGC). The axes are drawn at their start position; a carried axis sits where the kit holds it as in the assembly instructions (pin and screw holes), else at the entered mounting offset. A joint without a kit places the axis alone at the entered mounting point. The profile mountings holding an axis on a kit (EAHF) are not drawn.',
   '키트 없이 배치한 결합: {pairs}': 'Joints placed without a kit: {pairs}',
   '도면이 없는 부품이 있어 조합할 수 없습니다: {parts}. 관리자에게 문의하세요.':
     'Some parts have no drawing, so they cannot be assembled: {parts}. Please contact the administrator.',

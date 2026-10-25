@@ -29,14 +29,18 @@ export interface GantryJoint {
   pinned: boolean
   flange: number | null
   driveSign: 1 | -1
-  /** two base slides: the carried axis is held at the first; `mismatch` (mm) is how far the second kit misses its
-   *  place on it (pinned: its screws against the profile's threaded bores, modulo their pitch; clamped: the far end
-   *  against the second bracket's end position); `spacing` the base spacing that fits (nearest the entered one, the
-   *  kits clear of each other, the carried axis reaching the second kit; null when none), `clear` the smallest base
+  /** two base slides: the carried axis is held at the first; `mismatch` (mm) is how far the entered base spacing is
+   *  off the fitting one (pinned: the second kit clamps the profile with its profile mountings, `mountings`, so any
+   *  spacing fits that is clear and that the profile slot reaches across all of them; clamped: the far end against
+   *  the second bracket's end position); `spacing` the base spacing that fits (nearest the entered one, the kits
+   *  clear of each other, the carried axis reaching the second kit; null when none), `clear` the smallest base
    *  spacing at which the two kits' walls do not collide */
   span?: { mismatch: number; spacing: number | null; clear: number }
   /** two base slides: the kits' walls reaching towards each other overlap at this spacing */
   interference: boolean
+  /** two base slides on pinned angle kits: the profile mountings clamping the carried profile on the second kit
+   *  (quantity for that kit, `mass` kg for all of them) */
+  mountings?: { model: string; partNumber: string; quantity: number; mass: number }
   /** a custom cross beam (data/adapters/Custom) bolted between the two kits in place of the carried profile, the base
    *  spacing kept: carrying the Y axis on its front face, or the Z axis on an EHAM-MA plate (`plate`) on its pad */
   beam?: GantryBeam
@@ -128,7 +132,7 @@ function placement(
   kits: AxisAdapter[],
   slides: number[],
   length: number | null,
-): Pick<GantryJoint, 'offset' | 'kitAt' | 'aligned' | 'pinned' | 'flange' | 'driveSign' | 'span' | 'interference'> & { short?: boolean } {
+): Pick<GantryJoint, 'offset' | 'kitAt' | 'aligned' | 'pinned' | 'flange' | 'driveSign' | 'span' | 'interference' | 'mountings'> & { short?: boolean } {
   const b = axisFrame(g, base)
   const c = axisFrame(g, carried)
   const o = carried === 'z' ? g.offsets.yz : g.offsets.xy
@@ -164,20 +168,19 @@ function placement(
   // the mirrored walls reach towards each other: they collide below twice their reach (2 mm clearance)
   const clear = 2 * Math.max(...kits.map((k) => k.wall?.[1] ?? 0)) + 2
   const interference = spacing < clear
-  if (pinned && fit.threads && fit.screws) {
-    // the second kit (mirrored) only screws on: its screws at d − a, the profile's bores at end + first + k·pitch
-    // (the first kit's screws sit on them, so a ≡ end + first): d ≡ 2·(end + first) modulo the pitch
-    const { first, pitch } = fit.threads
-    const target = 2 * (fit.end + first)
-    const mismatch = ((((d - target) % pitch) + pitch * 1.5) % pitch) - pitch / 2
-    // the profile has to reach past the second kit's farthest screw: d ≤ end + length + nearest screw − 5
-    const reaches = (x: number) => fit.end! + length >= x - fit.screws![0] + 5
-    let fitting: number | null = null
-    for (let k = Math.ceil((clear - target) / pitch); target + k * pitch <= fit.end + length + fit.screws[0] - 5; k++) {
-      const x = target + k * pitch
-      if (x >= clear && reaches(x) && (fitting == null || Math.abs(x - spacing) < Math.abs(fitting - spacing))) fitting = x
+  if (pinned && fit.mountings) {
+    // the second kit (mirrored) clamps the profile with its profile mountings, anywhere along it: every mounting
+    // under the profile slot, so the slot (far end less the end cap) reaches past the farthest one, d − span[0]
+    const m = fit.mountings
+    const reach = fit.end + length - m.endCap + m.span[0]
+    const fitting = reach >= clear ? Math.min(Math.max(d, clear), reach) : null
+    return {
+      ...placed,
+      span: { mismatch: d - (fitting ?? d), spacing: fitting, clear },
+      interference,
+      mountings: { model: m.model, partNumber: m.partNumber, quantity: m.quantity, mass: m.quantity * m.mass },
+      short: d > reach,
     }
-    return { ...placed, span: { mismatch, spacing: fitting, clear }, interference, short: !reaches(d) || Math.abs(mismatch) > 0.5 }
   }
   // clamped: the far end against the second bracket's position for it (both ends at their brackets)
   const ideal = 2 * fit.end + length
@@ -216,8 +219,7 @@ export function gantryJoint(
   // two base axes carrying the next on pinned angle kits, too far apart for it: the custom Y beam (`wantsBeam`)
   if (joint.status === 'ok' && joint.kind === 'angle' && span && place.pinned && joint.kits.length === 2) {
     const bracket = beamBracketFor(adapters, baseAxis, carriedAxis, 'y')
-    const pitch = fits(joint.kit!.carried, carriedAxis)?.threads?.pitch
-    if (bracket && pitch && wantsBeam(span, Math.abs(slides[1] - slides[0]), pitch))
+    if (bracket && wantsBeam(span, Math.abs(slides[1] - slides[0])))
       return beamJoint(g, base, carried, carriedAxis, carriedStroke, adapters, slides, carriedLength, bracket)
   }
   const args = {
@@ -239,7 +241,7 @@ export function gantryJoint(
     if (short)
       return warn(
         place.pinned
-          ? '두 번째 {base}축 키트의 볼트가 {axis}축 나사 구멍에 맞지 않거나 {axis}축이 닿지 않습니다. {base}축 간격을 {spacing} mm로 하면 맞습니다.'
+          ? '{axis}축이 두 번째 {base}축 키트의 프로파일 마운팅(EAHF)까지 모두 닿지 않습니다. {base}축 간격을 {spacing} mm로 하면 맞습니다.'
           : '{axis}축이 두 번째 {base}축의 브래킷까지 닿지 않습니다. {base}축 간격을 {spacing} mm로 하면 양 끝이 브래킷 끝에 맞습니다.',
       )
   }
@@ -337,14 +339,14 @@ export function beamBracketFor(adapters: AxisAdapter[], baseAxis: Axis, carriedA
 }
 
 /**
- * The rule for the Y beam: two base axes carrying the next axis on pinned Festo angle kits keep them (the spacing
- * adjusted to the fitting one) when the carried axis reaches the second kit at, or within one thread pitch of, the
- * entered spacing; otherwise (the fitting spacing farther off, or none: the carried axis too short) a custom beam
- * takes its place at the entered spacing, unless the kits' walls collide there (then no beam fits either).
+ * The rule for the Y beam: two base axes carrying the next axis on pinned Festo angle kits keep them when the
+ * carried axis reaches all the second kit's profile mountings at the entered spacing; otherwise (the carried axis
+ * too short for it) a custom beam takes its place at the entered spacing, unless the kits' walls collide there
+ * (then no beam fits either).
  */
-export function wantsBeam(span: NonNullable<GantryJoint['span']>, spacing: number, pitch: number): boolean {
+export function wantsBeam(span: NonNullable<GantryJoint['span']>, spacing: number): boolean {
   if (spacing < span.clear) return false
-  return span.spacing == null || Math.abs(span.spacing - spacing) > pitch + 1e-6
+  return span.spacing == null || span.spacing < spacing - 0.05
 }
 
 /** mm: how far the Y beam's fixing holes stay clear of the kit walls' ends (access hole radius and a margin) */
@@ -478,9 +480,20 @@ export function beamHardware(j: Pick<GantryJoint, 'beam'>, adapters: AxisAdapter
   return (j.beam?.bracket.accessories ?? []).filter((x) => (x.quantity ?? 0) > 0 && !adapters.some((k) => k.model === x.model))
 }
 
-/** kg of a joint's parts carried by the base axis: the kits, a beam at its length and its plate */
-export function jointMass(j: Pick<GantryJoint, 'kits' | 'beam'>): number {
-  const kits = j.kits.reduce((m, k) => m + k.mass, 0)
+/** What to order with a joint's kits (total for the joint, null when unknown): a beam's hardware, else the kits'
+ *  accessories and the second kit's profile mountings */
+export function jointAccessories(j: Pick<GantryJoint, 'kit' | 'quantity' | 'beam' | 'mountings'>, adapters: AxisAdapter[]): { model: string; partNumber: string; n: number | null }[] {
+  if (j.beam) return beamHardware(j, adapters).map((x) => ({ model: x.model, partNumber: x.partNumber, n: x.quantity ?? null }))
+  return [
+    ...(j.kit?.accessories ?? []).map((x) => ({ model: x.model, partNumber: x.partNumber, n: x.quantity ? x.quantity * j.quantity : null })),
+    ...(j.mountings ? [{ model: j.mountings.model, partNumber: j.mountings.partNumber, n: j.mountings.quantity }] : []),
+  ]
+}
+
+/** kg of a joint's parts carried by the base axis: the kits (with the profile mountings), a beam at its length and
+ *  its plate */
+export function jointMass(j: Pick<GantryJoint, 'kits' | 'beam' | 'mountings'>): number {
+  const kits = j.kits.reduce((m, k) => m + k.mass, 0) + (j.mountings?.mass ?? 0)
   if (!j.beam) return kits
   return kits + (j.beam.bracket.beam!.massPerMeter * j.beam.length) / 1000 + (j.beam.plate?.mass ?? 0)
 }
