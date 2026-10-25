@@ -7,6 +7,9 @@ of its heads behind the wall's back end (where the app puts it, `end`, and just 
 bracket), and its slide moved over the bracket. Plates: the base axis (Y) behind the
 plate, both ways round; the carried axis (Z) on the front face, both ways up, its upper head above the plate top.
 Belt (TB-KF) and ball screw (BS-KF) axes. Reports every overlapping solid pair (mm³ > 0.01); contact faces give 0.
+Angle brackets also: tool access, every counterbore's cylinder carried 60 mm out of its face (the wall's back face
+for the slot nut screws, the foot top for the base screws) clear of the bracket itself (a gusset over a counterbore
+leaves no room for the screw head or the key).
 
     python check_egc_brackets.py [pair filter, e.g. EGC-120]
 """
@@ -92,10 +95,29 @@ def far_head_out(parts, lo, hi, sg):
     return out
 
 
+def access(g, part) -> list:
+    """Counterbores whose screw head / key path (the counterbore cylinder 60 mm out of its face) the bracket blocks."""
+    wall_back = g.u_w - g.tw
+    found = []
+    for s, z in g.carried_screws:
+        probe = bd.Pos(wall_back - 30, s, z) * bd.Rot(0, 90, 0) * bd.Cylinder(g.carried.screw.cb / 2, 60 - 0.02)
+        v = (part & probe).volume
+        if v > 0.01:
+            found.append(("access", "wall screw", s, z, round(v, 2)))
+    screws = [(u, s, g.base.screw) for u, s in g.base_screws] + [(u, s, g.base.sleeve_screw) for u, s in g.sleeve_screws]
+    for u, s, screw in screws:
+        probe = bd.Pos(u, s, g.tf0 + 30.01) * bd.Cylinder(screw.cb / 2, 60 - 0.02)
+        v = (part & probe).volume
+        if v > 0.01:
+            found.append(("access", "foot screw", u, s, round(v, 2)))
+    return found
+
+
 def check_angle(bk: str, ck: str) -> list:
     g = angle_geo(bk, ck)
-    bracket = [("bracket", s) for s in make_angle(g, "ML").solids()]
-    hits = []
+    part = make_angle(g, "ML")
+    bracket = [("bracket", s) for s in part.solids()]
+    hits = access(g, part)
     b = BASES[bk]
     c = CARRIED[ck]
     # base axis: pattern centre (slide origin - e along file x) on the origin, slide normal up, travel along x

@@ -24,6 +24,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from egc_brackets import CARRIED, PAIRS, angle_geo, plate_geo  # noqa: E402
 
 E, RP, G0, MU = 70000.0, 240.0, 9.81, 0.12
+G_SHEAR = 26000.0
 A_X = 5.0  # X acceleration (m/s²) in every case
 # preload (N): standard 8.8 values x 0.7 into aluminium; slot nut screws
 PRE = {"M3": 0.7 * 2300, "M5": 0.7 * 6900, "M6": 0.7 * 9700, "M8": 0.7 * 17800}
@@ -83,6 +84,19 @@ def angle(bk: str, ck: str) -> dict:
     hg_eff = min(hg, h_load)
     d_gus = Mo * hg_eff**2 / (2 * E * I) + Mo * (h_load - hg_eff) ** 2 / (2 * E * I_wall) + Mo * hg_eff * (h_load - hg_eff) / (E * I)
     theta = Mo * hg_eff / (E * I) + Mo * (h_load - hg_eff) / (E * I_wall)
+    # wall between the two end gussets (none between them): its own strip, root along the whole wall (flange and rear
+    # foot), carrying the moment share of the screw columns inside, end gussets not counted
+    span = (g.ribs[-1] - tg / 2) - (g.ribs[0] + tg / 2)
+    share = sum(1 for s, _ in g.carried_screws if g.ribs[0] < s < g.ribs[-1]) / len(g.carried_screws)
+    I_strip = span * g.tw**3 / 12
+    sig_strip = Mo * share * (g.tw / 2) / I_strip * 2.0
+    d_strip = Mo * share * h_load**2 / (2 * E * I_strip)
+    # the wall beyond the foot twisting as an open L section (wall, rear foot, flange) back to the foot: COG
+    # displacement, the carried profile's own torsional stiffness (which bridges it) not counted
+    J = (g.hw * g.tw**3 + (g.u_w - g.tw - min(g.foot_u[0], g.u_w - g.tw - dg)) * g.tf0**3 + g.flange * g.tf0**3) / 3
+    over = max(0.0, g.s_front - g.foot_s[1])
+    n_over = sum(1 for s, _ in g.carried_screws if s > g.foot_s[1]) / len(g.carried_screws)
+    d_twist = Mo * n_over * over / (G_SHEAR * J) * d_u
     # 2) wall in plane beyond the foot: all of Fz at the farthest screw pair, section tw x hw at the foot edge
     s_far = max(s for s, _ in g.carried_screws)
     Mip = Fz * max(0.0, s_far - g.foot_s[1]) + Fs * h_load
@@ -122,7 +136,8 @@ def angle(bk: str, ck: str) -> dict:
     slip_c = min(MU * (pre_c - t_c) * len(levers) / max(Fs, 1e-9), cap / max(M_tip, 1e-9))
     return dict(
         m=m, Fz=Fz, Fu=Fu, Fs=Fs, Mo=Mo / 1000, sig_root=sig_root, sf_root=RP / sig_root, d_wall=d_wall, d_gus=d_gus,
-        theta_mrad=theta * 1000, d_cog=theta * d_u, sig_ip=sig_ip, sf_ip=RP / max(sig_ip, 1e-9), Mx=Mx / 1000,
+        theta_mrad=theta * 1000, d_cog=theta * d_u, sig_strip=sig_strip, sf_strip=RP / sig_strip, d_strip=d_strip,
+        d_twist=d_twist, sig_ip=sig_ip, sf_ip=RP / max(sig_ip, 1e-9), Mx=Mx / 1000,
         My=My / 1000, t_screw=tension, pre=pre, sep_sf=sep_sf, slip_sf=slip_sf, t_nut=t_c, slip_nut=slip_c,
     )
 

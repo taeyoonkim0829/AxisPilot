@@ -362,11 +362,12 @@ describe('custom EGC brackets in the gantry drawing', () => {
     expect(plate).toHaveLength(1)
     const [a, p] = [angle[0], plate[0]]
     // the bracket on the X slide (its surface at z = 0), its foot on the slide hole pattern 25 mm beside the slide
-    // centre (EGC-120 KF): its extent along Y is the pattern centre −39 … +264.5 or mirrored
+    // centre (EGC-120 KF): its extent along Y is the pattern centre −39 … +249.5 (room for the end gusset beyond the
+    // last slot nut screw) or mirrored
     expect(a.lo[2]).toBeCloseTo(0, 0)
     const spans = [25, -25].flatMap((c) => [
-      [c - 39, c + 239.5],
-      [c - 239.5, c + 39],
+      [c - 39, c + 249.5],
+      [c - 249.5, c + 39],
     ])
     expect(spans.some(([lo, hi]) => Math.abs(lo - a.lo[1]) < 0.5 && Math.abs(hi - a.hi[1]) < 0.5)).toBe(true)
     // the Y profile (the EGC-120 profile running along Y) on the wall face, 55.75 mm from the pattern centre along X

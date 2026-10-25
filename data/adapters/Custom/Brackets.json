@@ -759,14 +759,14 @@
       "hand": "left",
       "layout": null,
       "carriedStroke": [
-        110,
+        120,
         8500
       ],
       "wall": [
         -52,
-        138
+        145.5
       ],
-      "mass": 0.803,
+      "mass": 0.942,
       "custom": true,
       "drawing": "data/adapters/Custom/Drawings/BR-EGC-70-EGC-70-1_BR-EGC-70-EGC-70-1.pdf",
       "accessories": [
@@ -851,14 +851,14 @@
       "hand": "right",
       "layout": null,
       "carriedStroke": [
-        110,
+        120,
         8500
       ],
       "wall": [
         -52,
-        138
+        145.5
       ],
-      "mass": 0.803,
+      "mass": 0.942,
       "custom": true,
       "drawing": "data/adapters/Custom/Drawings/BR-EGC-70-EGC-70-1_BR-EGC-70-EGC-70-1.pdf",
       "accessories": [
@@ -1004,14 +1004,14 @@
       "hand": "left",
       "layout": null,
       "carriedStroke": [
-        80,
+        90,
         8500
       ],
       "wall": [
         -52,
-        96.25
+        102
       ],
-      "mass": 0.438,
+      "mass": 0.494,
       "custom": true,
       "drawing": "data/adapters/Custom/Drawings/BR-EGC-70-EGC-50-1_BR-EGC-70-EGC-50-1.pdf",
       "accessories": [
@@ -1082,14 +1082,14 @@
       "hand": "right",
       "layout": null,
       "carriedStroke": [
-        80,
+        90,
         8500
       ],
       "wall": [
         -52,
-        96.25
+        102
       ],
-      "mass": 0.438,
+      "mass": 0.494,
       "custom": true,
       "drawing": "data/adapters/Custom/Drawings/BR-EGC-70-EGC-50-1_BR-EGC-70-EGC-50-1.pdf",
       "accessories": [
@@ -1242,14 +1242,14 @@
       "hand": "left",
       "layout": null,
       "carriedStroke": [
-        110,
+        120,
         8500
       ],
       "wall": [
         -53,
-        159
+        166.5
       ],
-      "mass": 1.043,
+      "mass": 1.275,
       "custom": true,
       "drawing": "data/adapters/Custom/Drawings/BR-EGC-80-EGC-80-1_BR-EGC-80-EGC-80-1.pdf",
       "accessories": [
@@ -1340,14 +1340,14 @@
       "hand": "right",
       "layout": null,
       "carriedStroke": [
-        110,
+        120,
         8500
       ],
       "wall": [
         -53,
-        159
+        166.5
       ],
-      "mass": 1.043,
+      "mass": 1.275,
       "custom": true,
       "drawing": "data/adapters/Custom/Drawings/BR-EGC-80-EGC-80-1_BR-EGC-80-EGC-80-1.pdf",
       "accessories": [
@@ -1519,14 +1519,14 @@
       "hand": "left",
       "layout": null,
       "carriedStroke": [
-        110,
+        120,
         8500
       ],
       "wall": [
         -53,
-        139
+        146.5
       ],
-      "mass": 0.902,
+      "mass": 1.096,
       "custom": true,
       "drawing": "data/adapters/Custom/Drawings/BR-EGC-80-EGC-70-1_BR-EGC-80-EGC-70-1.pdf",
       "accessories": [
@@ -1617,14 +1617,14 @@
       "hand": "right",
       "layout": null,
       "carriedStroke": [
-        110,
+        120,
         8500
       ],
       "wall": [
         -53,
-        139
+        146.5
       ],
-      "mass": 0.902,
+      "mass": 1.096,
       "custom": true,
       "drawing": "data/adapters/Custom/Drawings/BR-EGC-80-EGC-70-1_BR-EGC-80-EGC-70-1.pdf",
       "accessories": [
@@ -1796,14 +1796,14 @@
       "hand": "left",
       "layout": null,
       "carriedStroke": [
-        160,
+        170,
         8500
       ],
       "wall": [
         -64,
-        264.5
+        274.5
       ],
-      "mass": 2.261,
+      "mass": 2.793,
       "custom": true,
       "drawing": "data/adapters/Custom/Drawings/BR-EGC-120-EGC-120-1_BR-EGC-120-EGC-120-1.pdf",
       "accessories": [
@@ -1894,14 +1894,14 @@
       "hand": "right",
       "layout": null,
       "carriedStroke": [
-        160,
+        170,
         8500
       ],
       "wall": [
         -64,
-        264.5
+        274.5
       ],
-      "mass": 2.261,
+      "mass": 2.793,
       "custom": true,
       "drawing": "data/adapters/Custom/Drawings/BR-EGC-120-EGC-120-1_BR-EGC-120-EGC-120-1.pdf",
       "accessories": [
@@ -2046,11 +2046,11 @@
           "variant": null,
           "size": 80,
           "drive": "belt",
-          "end": -132,
+          "end": -137.5,
           "clamp": {
             "span": [
-              -64,
-              158
+              -69.5,
+              152.5
             ],
             "endCap": 67
           }
@@ -2060,11 +2060,11 @@
           "variant": null,
           "size": 80,
           "drive": "spindle",
-          "end": -132,
+          "end": -137.5,
           "clamp": {
             "span": [
-              -64,
-              158
+              -69.5,
+              152.5
             ],
             "endCap": 43
           }
@@ -2073,14 +2073,14 @@
       "hand": "left",
       "layout": null,
       "carriedStroke": [
-        130,
+        140,
         8500
       ],
       "wall": [
-        -64,
-        162
+        -69.5,
+        164
       ],
-      "mass": 1.184,
+      "mass": 1.403,
       "custom": true,
       "drawing": "data/adapters/Custom/Drawings/BR-EGC-120-EGC-80-1_BR-EGC-120-EGC-80-1.pdf",
       "accessories": [
@@ -2144,11 +2144,11 @@
           "variant": null,
           "size": 80,
           "drive": "belt",
-          "end": -132,
+          "end": -137.5,
           "clamp": {
             "span": [
-              -64,
-              158
+              -69.5,
+              152.5
             ],
             "endCap": 67
           }
@@ -2158,11 +2158,11 @@
           "variant": null,
           "size": 80,
           "drive": "spindle",
-          "end": -132,
+          "end": -137.5,
           "clamp": {
             "span": [
-              -64,
-              158
+              -69.5,
+              152.5
             ],
             "endCap": 43
           }
@@ -2171,14 +2171,14 @@
       "hand": "right",
       "layout": null,
       "carriedStroke": [
-        130,
+        140,
         8500
       ],
       "wall": [
-        -64,
-        162
+        -69.5,
+        164
       ],
-      "mass": 1.184,
+      "mass": 1.403,
       "custom": true,
       "drawing": "data/adapters/Custom/Drawings/BR-EGC-120-EGC-80-1_BR-EGC-120-EGC-80-1.pdf",
       "accessories": [
@@ -2350,14 +2350,14 @@
       "hand": "left",
       "layout": null,
       "carriedStroke": [
-        230,
+        240,
         8500
       ],
       "wall": [
         -96.5,
-        351
+        364
       ],
-      "mass": 5.84,
+      "mass": 7.13,
       "custom": true,
       "drawing": "data/adapters/Custom/Drawings/BR-EGC-185-EGC-185-1_BR-EGC-185-EGC-185-1.pdf",
       "accessories": [
@@ -2448,14 +2448,14 @@
       "hand": "right",
       "layout": null,
       "carriedStroke": [
-        230,
+        240,
         8500
       ],
       "wall": [
         -96.5,
-        351
+        364
       ],
-      "mass": 5.84,
+      "mass": 7.13,
       "custom": true,
       "drawing": "data/adapters/Custom/Drawings/BR-EGC-185-EGC-185-1_BR-EGC-185-EGC-185-1.pdf",
       "accessories": [
@@ -2600,11 +2600,11 @@
           "variant": null,
           "size": 120,
           "drive": "belt",
-          "end": -199.5,
+          "end": -207,
           "clamp": {
             "span": [
-              -96.5,
-              254
+              -104,
+              246.5
             ],
             "endCap": 102
           }
@@ -2614,11 +2614,11 @@
           "variant": null,
           "size": 120,
           "drive": "spindle",
-          "end": -199.5,
+          "end": -207,
           "clamp": {
             "span": [
-              -96.5,
-              254
+              -104,
+              246.5
             ],
             "endCap": 60.5
           }
@@ -2627,14 +2627,14 @@
       "hand": "left",
       "layout": null,
       "carriedStroke": [
-        190,
+        200,
         8500
       ],
       "wall": [
-        -96.5,
-        258
+        -104,
+        260.5
       ],
-      "mass": 3.061,
+      "mass": 3.601,
       "custom": true,
       "drawing": "data/adapters/Custom/Drawings/BR-EGC-185-EGC-120-1_BR-EGC-185-EGC-120-1.pdf",
       "accessories": [
@@ -2698,11 +2698,11 @@
           "variant": null,
           "size": 120,
           "drive": "belt",
-          "end": -199.5,
+          "end": -207,
           "clamp": {
             "span": [
-              -96.5,
-              254
+              -104,
+              246.5
             ],
             "endCap": 102
           }
@@ -2712,11 +2712,11 @@
           "variant": null,
           "size": 120,
           "drive": "spindle",
-          "end": -199.5,
+          "end": -207,
           "clamp": {
             "span": [
-              -96.5,
-              254
+              -104,
+              246.5
             ],
             "endCap": 60.5
           }
@@ -2725,14 +2725,14 @@
       "hand": "right",
       "layout": null,
       "carriedStroke": [
-        190,
+        200,
         8500
       ],
       "wall": [
-        -96.5,
-        258
+        -104,
+        260.5
       ],
-      "mass": 3.061,
+      "mass": 3.601,
       "custom": true,
       "drawing": "data/adapters/Custom/Drawings/BR-EGC-185-EGC-120-1_BR-EGC-185-EGC-120-1.pdf",
       "accessories": [

@@ -194,6 +194,7 @@ LEDGE = 4.0  # ledge strip height above the foot top (clears heads, KF slide and
 GROOVE = (3.0, 1.5)  # relief groove at the wall root along the strip (width, depth): the profile's sharp corner
 EDGE = 6.0  # material beyond a counterbore
 CORNER_R = 5.0  # inner vertical corners (in plan, 3-axis milled with a D10 end mill from the top)
+RIB_CLEAR = 1.5  # gusset (with its root radii) clear of a counterbore edge
 NUT_HALF = 10.0  # half a slot nut's length along the slot (NST-8: 16 ... 20 long), with margin
 
 # --- angle brackets -----------------------------------------------------------------------------------------------
@@ -217,6 +218,7 @@ class AngleGeo:
     strip_w: float
     flange: float  # flange width in front of the wall face
     gusset: tuple[float, float, float]  # thickness (along s), depth behind the wall, height above the foot
+    ribs: list[float] = field(default_factory=list)  # gusset centres along s
     base_screws: list[tuple[float, float]] = field(default_factory=list)  # (u, s)
     sleeve_screws: list[tuple[float, float]] = field(default_factory=list)  # (u, s), ZBH under them
     sleeves_used: list[tuple[float, float]] = field(default_factory=list)
@@ -272,6 +274,26 @@ def _two_sleeves(sleeve_screws):
     return [p, (-p[0], -p[1])]
 
 
+def _ribs(b: Base, c: Carried, carried_s, s_back, s_front, wall_back, tg, dg, cb_r, foot_holes) -> list[float]:
+    """Gusset centres along s: one at each wall end (the wall root runs along the whole wall on the flange and the
+    rear foot, so the wall alone carries the moment between them: calc_egc_brackets.py), each clear of (a) the
+    carried screws' counterbores on the wall's back face (screwed in from behind: the gusset and its R5 root radii
+    at least RIB_CLEAR from the counterbore) and (b) the base screws' counterbores in the foot under the gusset
+    (head and key from the top: RIB_CLEAR from the counterbore)."""
+    half = tg / 2
+    keep_out = [(s - c.screw.cb / 2 - RIB_CLEAR - CORNER_R - half, s + c.screw.cb / 2 + RIB_CLEAR + CORNER_R + half)
+                for s in carried_s]
+    keep_out += [(s - cb_r - RIB_CLEAR - half, s + cb_r + RIB_CLEAR + half)
+                 for u, s in foot_holes if wall_back - dg - cb_r - RIB_CLEAR < u < wall_back + cb_r]
+
+    def free(x: float) -> bool:
+        return s_back + half - 1e-6 <= x <= s_front - half + 1e-6 and all(not (lo < x < hi) for lo, hi in keep_out)
+
+    out = [s_back + half, s_front - half]
+    assert all(free(x) for x in out), f"{b.name}/{c.name}: end gussets collide"
+    return out
+
+
 def angle_geo(base_key: str, carried_key: str) -> AngleGeo:
     b, c = BASES[base_key], CARRIED[carried_key]
     tf0 = b.tf
@@ -316,22 +338,28 @@ def angle_geo(base_key: str, carried_key: str) -> AngleGeo:
     pins = [(along, across) for across, along in b.pins]
     zc = tf + c.W / 2
     hw = min(zc + c.sc + c.screw.cb / 2 + 6, tf + c.W - 1)
-    # gussets behind the wall at both ends of the foot (out-of-plane stiffness of the wall root)
+    # gussets behind the wall, on a rear foot along the whole wall (out-of-plane stiffness of the wall root), up to
+    # just below the wall top
     tg = 10.0 if c.size <= 80 else (12.0 if c.size <= 120 else 15.0)
     dg = round(0.45 * hw / 5) * 5
-    hg = round(0.75 * hw)
+    hg = round(hw - tf0 - 2, 2)
     us = [u for u, _ in base_screws + sleeve_screws + pins] + [0.0]
     ss = [s for _, s in base_screws + sleeve_screws + pins] + [0.0]
     foot_u = (min(min(us) - cb_r - EDGE, u_w - tw - dg), max(us) + cb_r + EDGE)
     half_s = max(max(abs(s) for s in ss) + cb_r + EDGE, 35.0)
     foot_s = (-half_s, half_s)
-    s_back = -half_s
+    # the wall's back end: its end gusset clear of the base counterbores in the rear foot under it
+    wall_back = u_w - tw
+    under = [s for u, s in base_screws + sleeve_screws if wall_back - dg - cb_r - RIB_CLEAR < u < wall_back + cb_r]
+    s_back = min([-half_s] + [s - cb_r - RIB_CLEAR - tg for s in under if s < 0])
     first = s_back + tg + CORNER_R + c.screw.cb / 2 + 2  # first slot nut screw clear of the gusset and its radius
     carried_s = [round(first + i * c.pitch, 2) for i in range(c.pairs)]
-    s_front = carried_s[-1] + NUT_HALF + 4
+    # the wall's front end leaves room for an end gusset (with its corner radius) clear of the last screw's counterbore
+    s_front = carried_s[-1] + max(NUT_HALF + 4, c.screw.cb / 2 + RIB_CLEAR + CORNER_R + tg)
     carried_screws = [(s, zc + dz) for s in carried_s for dz in (-c.sc, c.sc)]
+    ribs = _ribs(b, c, carried_s, s_back, s_front, u_w - tw, tg, dg, cb_r, base_screws + sleeve_screws)
     g = AngleGeo(b, c, tf0, tf, tw, u_w, round(hw, 2), foot_u, foot_s, s_back, s_front, strip_w, flange, (tg, dg, hg),
-                 base_screws, sleeve_screws, sleeves_used, pins, carried_screws)
+                 ribs, base_screws, sleeve_screws, sleeves_used, pins, carried_screws)
     g.base_cb_depth, g.base_len = _screw_fit(b.screw, tf0, 0.0, b.thread_depth)
     if b.sleeve_screw:
         g.sleeve_cb_depth, g.sleeve_len = _screw_fit(b.sleeve_screw, tf0, *b.sleeve_thread)
@@ -372,8 +400,12 @@ def _gusset(x0, z0, depth, height, y0, y1) -> bd.Part:
     """Triangular rib in the x-z plane: right angle at (x0, z0), reaching -x by `depth` and +z by `height`, from y0
     to y1."""
     tri = bd.Polygon((x0, z0), (x0 - depth, z0), (x0, z0 + height), align=None)
-    solid = bd.extrude(bd.Plane.XZ * tri, amount=y1 - y0)  # Plane.XZ normal is -y: extrude towards -y
-    return solid.moved(bd.Location((0, y1, 0)))
+    solid = bd.extrude(bd.Plane.XZ * tri, amount=y1 - y0)
+    # place it by its extent: Plane.XZ's normal direction is not relied on (it once put the gussets tg off)
+    solid = solid.moved(bd.Location((0, y0 - solid.bounding_box().min.Y, 0)))
+    bb = solid.bounding_box()
+    assert abs(bb.min.Y - y0) < 1e-6 and abs(bb.max.Y - y1) < 1e-6, (bb.min.Y, bb.max.Y, y0, y1)
+    return solid
 
 
 def _corner_radii(body: bd.Part, g: AngleGeo) -> bd.Part:
@@ -381,7 +413,7 @@ def _corner_radii(body: bd.Part, g: AngleGeo) -> bd.Part:
     the foot's front end against the wall back and the flange side (DFM)."""
     wall_back = g.u_w - g.tw
     tg = g.gusset[0]
-    ys_gusset = (g.foot_s[0] + tg, g.foot_s[1] - tg)
+    ys_gusset = [s + d for s in g.ribs for d in (-tg / 2, tg / 2) if g.s_back + 1e-6 < s + d < g.s_front - 1e-6]
     picks = []
     for e in body.edges():
         if e.geom_type != bd.GeomType.LINE:
@@ -393,7 +425,7 @@ def _corner_radii(body: bd.Part, g: AngleGeo) -> bd.Part:
         at = lambda x, y: abs(c.X - x) < 1e-3 and abs(c.Y - y) < 1e-3  # noqa: E731
         if any(at(wall_back, y) for y in ys_gusset) and c.Z > g.tf0:
             picks.append(e)
-        elif (at(wall_back, g.foot_s[1]) and g.foot_u[0] < wall_back - 1) or at(g.u_w + g.flange, g.foot_s[1]):
+        elif at(g.u_w + g.flange, g.foot_s[1]):
             picks.append(e)
     assert len(picks) >= 3, f"corner edges: {len(picks)}"
     return bd.fillet(picks, radius=CORNER_R)
@@ -406,10 +438,11 @@ def make_angle(g: AngleGeo, hand: str = "ML") -> bd.Part:
     tg, dg, hg = g.gusset
     body = _box(*g.foot_u, *g.foot_s, 0, g.tf0)  # foot on the slide
     body = body + _box(wall_back, g.u_w + g.flange, g.s_back, g.s_front, 0, g.tf0)  # flange along the wall
+    body = body + _box(min(g.foot_u[0], wall_back - dg), wall_back, g.s_back, g.s_front, 0, g.tf0)  # rear foot
     body = body + _box(wall_back, g.u_w, g.s_back, g.s_front, 0, g.hw)  # wall
     body = body + _box(g.u_w, g.u_w + g.strip_w, g.s_back, g.s_front, g.tf0, g.tf)  # ledge strip
-    for y0 in (g.foot_s[0], g.foot_s[1] - tg):  # gussets behind the wall at both ends of the foot
-        body = body + _gusset(wall_back + 0.01, g.tf0 - 0.01, dg, hg, y0, y0 + tg)
+    for s in g.ribs:  # gussets behind the wall, clear of every counterbore (`_ribs`)
+        body = body + _gusset(wall_back + 0.01, g.tf0 - 0.01, dg, hg, s - tg / 2, s + tg / 2)
     body = _corner_radii(body, g)
     cuts = []
     # relief groove at the wall root along the strip (profiles with sharp underside edges)

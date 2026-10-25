@@ -12,6 +12,8 @@ from egc_brackets import LEDGE, angle_geo, angle_id, make_angle, make_plate, pla
 FINISH = "ANODIZED NATURAL 10-15 um; H7 BORES REAMED AFTER ANODIZING."
 MATERIAL = "EN AW-6082-T6 (ALT. 6061-T6) PLATE"
 REV = [("A", "2026-10-26", "INITIAL RELEASE")]
+# angle brackets: gussets moved clear of the counterbores, rear foot along the whole wall, end gussets only
+REV_ANGLE = REV + [("B", "2026-10-27", "GUSSETS REVISED")]
 
 
 def _mass(part) -> float:
@@ -55,6 +57,8 @@ def angle_sheet(base: str, carried: str) -> Sheet:
         + (" + 2x ZBS-5 PINS" if g.pins else "") + " INTO THE SLIDE, FITTED BEFORE THE CARRIED AXIS.",
         f"WALL: {len(g.carried_screws)}x ISO 4762 {c.screw.d}x{c.screw_len:g} INTO {c.nut[0]} SLOT NUTS ({c.name} UNDERSIDE SLOTS).",
         f"CARRIED AXIS SIDE FACE ON THE LEDGE, ITS NEAR END HEAD BEHIND THE WALL END (Y < {g.s_back:g}).",
+        f"{len(g.ribs)}x GUSSET t = {tg:g} AT THE WALL ENDS, Y = " + " / ".join(f"{s - tg / 2:g} ... {s + tg / 2:g}" for s in g.ribs)
+        + f", {dg:g} DEEP, TO Z = {g.tf0 + hg:g}; CLEAR OF EVERY COUNTERBORE.",
     ]
     if not c.chamfer:
         notes.append("RELIEF GROOVE 3 x 1.5 AT THE WALL ROOT ALONG THE LEDGE (PROFILE EDGE).")
@@ -64,7 +68,7 @@ def angle_sheet(base: str, carried: str) -> Sheet:
     if g.pins:
         notes.append("ZBS-5 BORES AT Y = 0, X = " + ", ".join(f"{u:g}" for u, _ in g.pins) + " (2 OF THEM USED, EITHER WAY ROUND).")
     sheet, (top, front, right, iso) = _sheet(part, title=f"ANGLE BRACKET {b.size}/{c.size}", part_number=f"{bid}-ML",
-                                             revision="A", general_tolerance="ISO 2768-mK", notes=notes, revisions=REV)
+                                             revision="B", general_tolerance="ISO 2768-mK", notes=notes, revisions=REV_ANGLE)
     top.overall()
     right.overall()
     # foot: hole pattern from the origin (centring bores), wall face
