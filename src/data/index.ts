@@ -48,7 +48,15 @@ export const motorFamilies = Object.fromEntries(
   ]),
 ) as Record<Motor['maker'], string[]>
 
-/** Gearboxes whose compatibility list names this motor (Apex lists Mitsubishi frame codes like "KP053"). */
+/**
+ * Gearboxes whose compatibility list names this motor (Apex lists Mitsubishi frame codes like "KP053"). The code must
+ * not run on into another digit: "SR52" is HG-SR52(B), not the 400 V HG-SR524.
+ */
 export function gearboxesFor(motor: Motor, all: Gearbox[] = gearboxes): Gearbox[] {
-  return all.filter((g) => g.compatibleMotors?.some((code) => motor.model.includes(code)))
+  const names = (code: string) => {
+    for (let i = motor.model.indexOf(code); i >= 0; i = motor.model.indexOf(code, i + 1))
+      if (!/\d/.test(motor.model[i + code.length] ?? '')) return true
+    return false
+  }
+  return all.filter((g) => g.compatibleMotors?.some(names))
 }

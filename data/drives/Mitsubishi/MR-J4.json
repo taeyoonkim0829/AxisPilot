@@ -1,0 +1,539 @@
+{
+  "items": [
+    {
+      "id": "MR-J4-10A",
+      "model": "MR-J4-10A",
+      "family": "MR-J4",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J4-10A",
+      "motorType": null,
+      "supply": "1~/3~ 200–240 V AC",
+      "voltageClass": "200V",
+      "motors": "^(HG-KR053|HG-KR13)B?$",
+      "nominalCurrent": 1.1,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 100,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": null,
+      "externalResistance": [
+        40,
+        40
+      ],
+      "externalMaxPower": 30,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J4-20A",
+      "model": "MR-J4-20A",
+      "family": "MR-J4",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J4-20A",
+      "motorType": null,
+      "supply": "1~/3~ 200–240 V AC",
+      "voltageClass": "200V",
+      "motors": "^(HG-KR23)B?$",
+      "nominalCurrent": 1.5,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 200,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 10
+      },
+      "externalResistance": [
+        40,
+        40
+      ],
+      "externalMaxPower": 100,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J4-40A",
+      "model": "MR-J4-40A",
+      "family": "MR-J4",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J4-40A",
+      "motorType": null,
+      "supply": "1~/3~ 200–240 V AC",
+      "voltageClass": "200V",
+      "motors": "^(HG-KR43)B?$",
+      "nominalCurrent": 2.8,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 400,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 10
+      },
+      "externalResistance": [
+        40,
+        40
+      ],
+      "externalMaxPower": 100,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J4-60A",
+      "model": "MR-J4-60A",
+      "family": "MR-J4",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J4-60A",
+      "motorType": null,
+      "supply": "1~/3~ 200–240 V AC",
+      "voltageClass": "200V",
+      "motors": "^(HG-SR51|HG-SR52|HG-JR53)B?$",
+      "nominalCurrent": 3.2,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 600,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 10
+      },
+      "externalResistance": [
+        40,
+        40
+      ],
+      "externalMaxPower": 100,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J4-70A",
+      "model": "MR-J4-70A",
+      "family": "MR-J4",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J4-70A",
+      "motorType": null,
+      "supply": "1~/3~ 200–240 V AC",
+      "voltageClass": "200V",
+      "motors": "^(HG-KR73|HG-JR73)B?$",
+      "nominalCurrent": 5.8,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 700,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 20
+      },
+      "externalResistance": [
+        40,
+        40
+      ],
+      "externalMaxPower": 300,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J4-100A",
+      "model": "MR-J4-100A",
+      "family": "MR-J4",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J4-100A",
+      "motorType": null,
+      "supply": "1~/3~ 200–240 V AC",
+      "voltageClass": "200V",
+      "motors": "^(HG-SR81|HG-SR102|HG-JR103)B?$",
+      "nominalCurrent": 6,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 1000,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 20
+      },
+      "externalResistance": [
+        40,
+        40
+      ],
+      "externalMaxPower": 300,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J4-200A",
+      "model": "MR-J4-200A",
+      "family": "MR-J4",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J4-200A",
+      "motorType": null,
+      "supply": "1~/3~ 200–240 V AC",
+      "voltageClass": "200V",
+      "motors": "^(HG-SR121|HG-SR201|HG-SR152|HG-SR202|HG-JR153|HG-JR203)B?$",
+      "nominalCurrent": 11,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 2000,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 100
+      },
+      "externalResistance": [
+        13,
+        13
+      ],
+      "externalMaxPower": 500,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J4-350A",
+      "model": "MR-J4-350A",
+      "family": "MR-J4",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J4-350A",
+      "motorType": null,
+      "supply": "3~ 200–240 V AC",
+      "voltageClass": "200V",
+      "motors": "^(HG-SR301|HG-SR352|HG-JR353)B?$",
+      "nominalCurrent": 17,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 3500,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 100
+      },
+      "externalResistance": [
+        9,
+        9
+      ],
+      "externalMaxPower": 500,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J4-500A",
+      "model": "MR-J4-500A",
+      "family": "MR-J4",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J4-500A",
+      "motorType": null,
+      "supply": "3~ 200–240 V AC",
+      "voltageClass": "200V",
+      "motors": "^(HG-SR421|HG-SR502|HG-JR503)B?$",
+      "nominalCurrent": 28,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 5000,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 130
+      },
+      "externalResistance": [
+        6.7,
+        6.7
+      ],
+      "externalMaxPower": 500,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J4-700A",
+      "model": "MR-J4-700A",
+      "family": "MR-J4",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J4-700A",
+      "motorType": null,
+      "supply": "3~ 200–240 V AC",
+      "voltageClass": "200V",
+      "motors": "^(HG-SR702|HG-JR703)B?$",
+      "nominalCurrent": 37,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 7000,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 170
+      },
+      "externalResistance": [
+        6.7,
+        6.7
+      ],
+      "externalMaxPower": 500,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J4-11KA",
+      "model": "MR-J4-11KA",
+      "family": "MR-J4",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J4-11KA",
+      "motorType": null,
+      "supply": "3~ 200–240 V AC",
+      "voltageClass": "200V",
+      "motors": "^(HG-JR903)B?$",
+      "nominalCurrent": 68,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 11000,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 500
+      },
+      "externalResistance": [
+        3.2,
+        3.2
+      ],
+      "externalMaxPower": 500,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J4-60A4",
+      "model": "MR-J4-60A4",
+      "family": "MR-J4",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J4-60A4",
+      "motorType": null,
+      "supply": "3~ 380–480 V AC",
+      "voltageClass": "400V",
+      "motors": "^(HG-SR524|HG-JR534)B?$",
+      "nominalCurrent": 1.5,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 600,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 15
+      },
+      "externalResistance": [
+        82,
+        120
+      ],
+      "externalMaxPower": 300,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J4-100A4",
+      "model": "MR-J4-100A4",
+      "family": "MR-J4",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J4-100A4",
+      "motorType": null,
+      "supply": "3~ 380–480 V AC",
+      "voltageClass": "400V",
+      "motors": "^(HG-SR1024|HG-JR734|HG-JR1034)B?$",
+      "nominalCurrent": 2.8,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 1000,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 15
+      },
+      "externalResistance": [
+        82,
+        120
+      ],
+      "externalMaxPower": 300,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J4-200A4",
+      "model": "MR-J4-200A4",
+      "family": "MR-J4",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J4-200A4",
+      "motorType": null,
+      "supply": "3~ 380–480 V AC",
+      "voltageClass": "400V",
+      "motors": "^(HG-SR1524|HG-SR2024|HG-JR1534|HG-JR2034)B?$",
+      "nominalCurrent": 5.4,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 2000,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 100
+      },
+      "externalResistance": [
+        47,
+        47
+      ],
+      "externalMaxPower": 500,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J4-350A4",
+      "model": "MR-J4-350A4",
+      "family": "MR-J4",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J4-350A4",
+      "motorType": null,
+      "supply": "3~ 380–480 V AC",
+      "voltageClass": "400V",
+      "motors": "^(HG-SR3524|HG-JR3534)B?$",
+      "nominalCurrent": 8.6,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 3500,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 100
+      },
+      "externalResistance": [
+        47,
+        47
+      ],
+      "externalMaxPower": 500,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J4-500A4",
+      "model": "MR-J4-500A4",
+      "family": "MR-J4",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J4-500A4",
+      "motorType": null,
+      "supply": "3~ 380–480 V AC",
+      "voltageClass": "400V",
+      "motors": "^(HG-SR5024|HG-JR5034)B?$",
+      "nominalCurrent": 14,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 5000,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 130
+      },
+      "externalResistance": [
+        26,
+        26
+      ],
+      "externalMaxPower": 500,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J4-700A4",
+      "model": "MR-J4-700A4",
+      "family": "MR-J4",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J4-700A4",
+      "motorType": null,
+      "supply": "3~ 380–480 V AC",
+      "voltageClass": "400V",
+      "motors": "^(HG-SR7024|HG-JR7034)B?$",
+      "nominalCurrent": 17,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 7000,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 170
+      },
+      "externalResistance": [
+        22,
+        22
+      ],
+      "externalMaxPower": 500,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J4-11KA4",
+      "model": "MR-J4-11KA4",
+      "family": "MR-J4",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J4-11KA4",
+      "motorType": null,
+      "supply": "3~ 380–480 V AC",
+      "voltageClass": "400V",
+      "motors": "^(HG-JR9034)B?$",
+      "nominalCurrent": 32,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 11000,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 500
+      },
+      "externalResistance": [
+        10,
+        10
+      ],
+      "externalMaxPower": 500,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    }
+  ]
+}

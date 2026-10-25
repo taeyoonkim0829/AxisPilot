@@ -73,7 +73,7 @@ describe('selectController', () => {
   it('folds the drive package verdict into the motor and skips other makers', () => {
     const { ev, drive, settings } = run('ELGD-BS-KF-60-…10P', 'EMMT-AS-60-M-HS')
     expect(attachController(ev, drive, settings, data).controller!.controller).not.toBeNull()
-    const other = evaluateDrive(ev, motors.find((m) => m.maker === 'Mitsubishi')!, null, settings)
+    const other = evaluateDrive(ev, { ...motors.find((m) => m.maker === 'Mitsubishi')!, controller: null }, null, settings)
     expect(selectController(ev, other, settings, data)).toBeNull()
   })
 
@@ -109,6 +109,29 @@ describe('Siemens drive packages (data)', () => {
     expect(fl6.cables.map((c) => c.role)).toContain('encoder')
     // no motor cable limit in the V90 manual: no cable length check
     expect(fl6.checks.find((c) => c.label === '모터 케이블 길이')).toBeUndefined()
+  })
+})
+
+describe('Mitsubishi drive packages (data)', () => {
+  it('pairs HK with MR-J5 and HG with MR-J4 from the combination tables, with cables', () => {
+    const at = (motor: string, cableLength = 5) =>
+      run('ELGD-BS-KF-60-…10P', motor, { velocity: 0.2, acceleration: 2, payload: 2 }, { cableLength }).selection
+    const hk = at('HK-KT43W (200V)')
+    expect(hk.controller).toMatchObject({ model: 'MR-J5-40A', family: 'MR-J5', voltageClass: '200V' })
+    // dual cable (power + encoder) up to 10 m; beyond it the junction cable and a user-made extension
+    expect(hk.cables).toEqual([expect.objectContaining({ role: 'motor', partNumber: 'MR-AEP2CBL5M-A1-H' })])
+    const hkLong = at('HK-KT43WB (200V)', 15).cables
+    expect(hkLong.find((c) => c.role === 'motor')).toMatchObject({ partNumber: 'MR-AEPB2J20CBL03M-A1-L', order: 'variable' })
+    expect(hkLong.find((c) => c.role === 'encoder')).toMatchObject({ partNumber: 'MR-AENSCBL20M-H', order: 'rounded' })
+    expect(at('HK-KT13W (400V)').controller).toMatchObject({ model: 'MR-J5-60A4', voltageClass: '400V' })
+    const hg = at('HG-KR43B')
+    expect(hg.controller).toMatchObject({ model: 'MR-J4-40A', family: 'MR-J4' })
+    expect(hg.cables.map((c) => c.role)).toEqual(['motor', 'encoder', 'brake'])
+    // HG-SR: power by connector set and user-made cable
+    expect(at('HG-SR52').cables.find((c) => c.role === 'motor')).toMatchObject({ partNumber: 'MR-PWCNS4', type: 'MR-PWCNS4 + power cable 5 m (user-made)' })
+    // no peak current or pulse rating in the Mitsubishi manuals: not checked
+    expect(hg.checks.find((c) => c.label === '드라이브 최대 전류')!.limit).toBeNull()
+    expect(hg.checks.find((c) => c.label === '제동 에너지 (내장)')).toBeUndefined()
   })
 })
 

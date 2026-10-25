@@ -1,0 +1,241 @@
+{
+  "items": [
+    {
+      "id": "MR-AEP2CBL-A1-H",
+      "maker": "Mitsubishi",
+      "family": "MR-J5",
+      "brakeOnly": false,
+      "configurable": null,
+      "role": "motor",
+      "controller": "MR-J5",
+      "motors": "^HK-(KT|MT)\\w+W \\(|^HK-RT(103|153|203)4?W \\(",
+      "range": [
+        0,
+        10
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-AEP2CBL{L}M-A1-H",
+      "partNumbers": {
+        "2": "MR-AEP2CBL2M-A1-H",
+        "5": "MR-AEP2CBL5M-A1-H",
+        "10": "MR-AEP2CBL10M-A1-H"
+      }
+    },
+    {
+      "id": "MR-AEPB2CBL-A1-H",
+      "maker": "Mitsubishi",
+      "family": "MR-J5",
+      "brakeOnly": true,
+      "configurable": null,
+      "role": "motor",
+      "controller": "MR-J5",
+      "motors": "^HK-(KT|MT)\\w+WB \\(|^HK-RT(103|153|203)4?WB \\(",
+      "range": [
+        0,
+        10
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-AEPB2CBL{L}M-A1-H",
+      "partNumbers": {
+        "2": "MR-AEPB2CBL2M-A1-H",
+        "5": "MR-AEPB2CBL5M-A1-H",
+        "10": "MR-AEPB2CBL10M-A1-H"
+      }
+    },
+    {
+      "id": "MR-AEP2J20CBL03M-A1-L",
+      "maker": "Mitsubishi",
+      "family": "MR-J5",
+      "brakeOnly": false,
+      "configurable": {
+        "kind": "variable",
+        "type": "MR-AEP2J20CBL03M-A1-L + power extension cable {L} m (user-made)",
+        "partNumber": "MR-AEP2J20CBL03M-A1-L",
+        "step": 1,
+        "min": 1,
+        "max": 50
+      },
+      "role": "motor",
+      "controller": "MR-J5",
+      "motors": "^HK-(KT|MT)\\w+W \\(|^HK-RT(103|153|203)4?W \\(",
+      "range": [
+        10,
+        50
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-AEP2J20CBL03M-A1-L",
+      "partNumbers": {}
+    },
+    {
+      "id": "MR-AEPB2J20CBL03M-A1-L",
+      "maker": "Mitsubishi",
+      "family": "MR-J5",
+      "brakeOnly": true,
+      "configurable": {
+        "kind": "variable",
+        "type": "MR-AEPB2J20CBL03M-A1-L + power/brake extension cable {L} m (user-made)",
+        "partNumber": "MR-AEPB2J20CBL03M-A1-L",
+        "step": 1,
+        "min": 1,
+        "max": 50
+      },
+      "role": "motor",
+      "controller": "MR-J5",
+      "motors": "^HK-(KT|MT)\\w+WB \\(|^HK-RT(103|153|203)4?WB \\(",
+      "range": [
+        10,
+        50
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-AEPB2J20CBL03M-A1-L",
+      "partNumbers": {}
+    },
+    {
+      "id": "MR-AENSCBL-H-HK-small",
+      "maker": "Mitsubishi",
+      "family": "MR-J5",
+      "brakeOnly": false,
+      "configurable": null,
+      "role": "encoder",
+      "controller": "MR-J5",
+      "motors": "^HK-(KT|MT)\\w+W \\(|^HK-RT(103|153|203)4?W \\(|^HK-(KT|MT)\\w+WB \\(|^HK-RT(103|153|203)4?WB \\(",
+      "range": [
+        10,
+        50
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-AENSCBL{L}M-H",
+      "partNumbers": {
+        "20": "MR-AENSCBL20M-H",
+        "30": "MR-AENSCBL30M-H",
+        "40": "MR-AENSCBL40M-H",
+        "50": "MR-AENSCBL50M-H"
+      }
+    },
+    {
+      "id": "MR-APWCNS4",
+      "maker": "Mitsubishi",
+      "family": "MR-J5",
+      "brakeOnly": false,
+      "configurable": {
+        "kind": "variable",
+        "type": "MR-APWCNS4 + power cable {L} m (user-made)",
+        "partNumber": "MR-APWCNS4",
+        "step": 1,
+        "min": 1,
+        "max": 50
+      },
+      "role": "motor",
+      "controller": "MR-J5",
+      "motors": "^HK-ST(52|102|172|202A|302|353|503|524|1024|1724|2024A|3024|3534|5034)WB? \\(",
+      "range": [
+        0,
+        50
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-APWCNS4",
+      "partNumbers": {}
+    },
+    {
+      "id": "MR-APWCNS5",
+      "maker": "Mitsubishi",
+      "family": "MR-J5",
+      "brakeOnly": false,
+      "configurable": {
+        "kind": "variable",
+        "type": "MR-APWCNS5 + power cable {L} m (user-made)",
+        "partNumber": "MR-APWCNS5",
+        "step": 1,
+        "min": 1,
+        "max": 50
+      },
+      "role": "motor",
+      "controller": "MR-J5",
+      "motors": "^HK-ST(7M2U|172U|202|352|502|702|703|903|2024|3524|5024|7024|7034|9034)WB? \\(|^HK-RT(353|503|703|3534|5034|7034)WB? \\(",
+      "range": [
+        0,
+        50
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-APWCNS5",
+      "partNumbers": {}
+    },
+    {
+      "id": "MR-BKCNS1-HK",
+      "maker": "Mitsubishi",
+      "family": "MR-J5",
+      "brakeOnly": true,
+      "configurable": {
+        "kind": "variable",
+        "type": "MR-BKCNS1 + brake cable {L} m (user-made)",
+        "partNumber": "MR-BKCNS1",
+        "step": 1,
+        "min": 1,
+        "max": 50
+      },
+      "role": "brake",
+      "controller": "MR-J5",
+      "motors": "^HK-ST\\w+WB \\(|^HK-RT(353|503|703)4?WB \\(",
+      "range": [
+        0,
+        50
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-BKCNS1",
+      "partNumbers": {}
+    },
+    {
+      "id": "MR-J3ENSCBL-H-HK",
+      "maker": "Mitsubishi",
+      "family": "MR-J5",
+      "brakeOnly": false,
+      "configurable": null,
+      "role": "encoder",
+      "controller": "MR-J5",
+      "motors": "^HK-ST\\w+W \\(|^HK-RT(353|503|703)4?W \\(|^HK-ST\\w+WB \\(|^HK-RT(353|503|703)4?WB \\(",
+      "range": [
+        0,
+        10
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-J3ENSCBL{L}M-H",
+      "partNumbers": {
+        "2": "MR-J3ENSCBL2M-H",
+        "5": "MR-J3ENSCBL5M-H",
+        "10": "MR-J3ENSCBL10M-H"
+      }
+    },
+    {
+      "id": "MR-AENSCBL-H-HK-large",
+      "maker": "Mitsubishi",
+      "family": "MR-J5",
+      "brakeOnly": false,
+      "configurable": null,
+      "role": "encoder",
+      "controller": "MR-J5",
+      "motors": "^HK-ST\\w+W \\(|^HK-RT(353|503|703)4?W \\(|^HK-ST\\w+WB \\(|^HK-RT(353|503|703)4?WB \\(",
+      "range": [
+        10,
+        50
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-AENSCBL{L}M-H",
+      "partNumbers": {
+        "20": "MR-AENSCBL20M-H",
+        "30": "MR-AENSCBL30M-H",
+        "40": "MR-AENSCBL40M-H",
+        "50": "MR-AENSCBL50M-H"
+      }
+    }
+  ]
+}

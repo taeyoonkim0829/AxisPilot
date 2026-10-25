@@ -1,5 +1,5 @@
-// Drive package of a motor with drive data (Festo CMMT-AS / CMMT-ST, Siemens S210 / V90): servo drive, cables and
-// braking resistor.
+// Drive package of a motor with drive data (Festo CMMT-AS / CMMT-ST, Siemens S210 / V90, Mitsubishi MR-J5 / MR-J4):
+// servo drive, cables and braking resistor.
 import type { BrakingResistor, Cable, Controller } from '../data/types'
 import type { AxisEvaluation } from './axisSelection'
 import { motorTorqueFn, type DriveEvaluation } from './motorSelection'
@@ -101,7 +101,9 @@ export function selectController(
   const fits = (c: Controller) =>
     motor.openLoop
       ? c.nominalCurrent >= (motor.nominalCurrent ?? 0)
-      : c.nominalCurrent >= rmsCurrent && c.peakCurrent >= peakCurrent && (c.peakDuration == null || overTime(c) <= c.peakDuration)
+      : c.nominalCurrent >= rmsCurrent &&
+        (c.peakCurrent == null || c.peakCurrent >= peakCurrent) &&
+        (c.peakDuration == null || overTime(c) <= c.peakDuration)
   const controller = candidates.find(fits) ?? candidates.at(-1) ?? null
   const preferredItem = data.controllers.find((c) => c.model === motor.preferredController) ?? null
   const preferred = preferredItem && preferredItem.id !== controller?.id ? preferredItem : null
@@ -225,15 +227,19 @@ export function selectController(
   if (controller) {
     const internal = controller.internalResistor
     const needed = internal
-      ? averagePower > internal.nominalPower || eventEnergy > internal.pulseEnergy || peakRegen > internal.pulsePower
+      ? averagePower > internal.nominalPower ||
+        (internal.pulseEnergy != null && eventEnergy > internal.pulseEnergy) ||
+        (internal.pulsePower != null && peakRegen > internal.pulsePower)
       : eventEnergy > ST_REGEN_LIMIT
     if (internal) {
-      checks.push(
+      // pulse values are not documented for every drive (Mitsubishi: continuous regenerative power only)
+      const own = [
         check('제동저항 정격 전력 (내장)', averagePower, internal.nominalPower, 'W'),
-        check('제동 에너지 (내장)', eventEnergy, internal.pulseEnergy, 'Ws'),
-      )
+        ...(internal.pulseEnergy != null ? [check('제동 에너지 (내장)', eventEnergy, internal.pulseEnergy, 'Ws')] : []),
+      ]
       // the internal resistor only informs here: an external one takes over when it is exceeded
-      for (const c of checks.slice(-2)) if (c.status === 'fail') Object.assign(c, { status: 'ok', note: '외부 제동저항으로 보완' })
+      for (const c of own) if (c.status === 'fail') Object.assign(c, { status: 'ok', note: '외부 제동저항으로 보완' })
+      checks.push(...own)
     }
     if (needed) {
       const options = controller.brakingResistors

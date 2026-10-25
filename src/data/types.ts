@@ -174,7 +174,8 @@ export interface Controller {
   motors?: string
   /** A rms per phase */
   nominalCurrent: number
-  peakCurrent: number
+  /** A; null = not documented (Mitsubishi: the combination table guarantees the motor's max. current) */
+  peakCurrent: number | null
   /** s, max. time at peak current; null = not documented (not checked) */
   peakDuration: number | null
   /** W */
@@ -182,8 +183,8 @@ export interface Controller {
   peakPower: number | null
   /** m, without external mains filter; null = not documented */
   maxCableLength: number | null
-  /** integrated braking resistor: Ω, W (pulse), Ws, W (nominal); null = none */
-  internalResistor: { resistance: number | null; pulsePower: number; pulseEnergy: number; nominalPower: number } | null
+  /** integrated braking resistor: Ω, W (pulse), Ws, W (nominal); null = none. Pulse values null = not documented (Mitsubishi) */
+  internalResistor: { resistance: number | null; pulsePower: number | null; pulseEnergy: number | null; nominalPower: number } | null
   /** Ω [min, max] for an external braking resistor (Siemens: minimum only) */
   externalResistance: [number, number | null]
   /** W, max. continuous power of an external braking resistor */

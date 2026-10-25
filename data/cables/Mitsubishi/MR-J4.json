@@ -1,0 +1,315 @@
+{
+  "items": [
+    {
+      "id": "MR-PWS1CBL-A1-H",
+      "maker": "Mitsubishi",
+      "family": "MR-J4",
+      "brakeOnly": false,
+      "configurable": null,
+      "role": "motor",
+      "controller": "MR-J4",
+      "motors": "^HG-KR\\d+$|^HG-KR\\d+B$",
+      "range": [
+        0,
+        10
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-PWS1CBL{L}M-A1-H",
+      "partNumbers": {
+        "2": "MR-PWS1CBL2M-A1-H",
+        "5": "MR-PWS1CBL5M-A1-H",
+        "10": "MR-PWS1CBL10M-A1-H"
+      }
+    },
+    {
+      "id": "MR-J3ENCBL-A1-H",
+      "maker": "Mitsubishi",
+      "family": "MR-J4",
+      "brakeOnly": false,
+      "configurable": null,
+      "role": "encoder",
+      "controller": "MR-J4",
+      "motors": "^HG-KR\\d+$|^HG-KR\\d+B$",
+      "range": [
+        0,
+        10
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-J3ENCBL{L}M-A1-H",
+      "partNumbers": {
+        "2": "MR-J3ENCBL2M-A1-H",
+        "5": "MR-J3ENCBL5M-A1-H",
+        "10": "MR-J3ENCBL10M-A1-H"
+      }
+    },
+    {
+      "id": "MR-BKS1CBL-A1-H",
+      "maker": "Mitsubishi",
+      "family": "MR-J4",
+      "brakeOnly": true,
+      "configurable": null,
+      "role": "brake",
+      "controller": "MR-J4",
+      "motors": "^HG-KR\\d+B$",
+      "range": [
+        0,
+        10
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-BKS1CBL{L}M-A1-H",
+      "partNumbers": {
+        "2": "MR-BKS1CBL2M-A1-H",
+        "5": "MR-BKS1CBL5M-A1-H",
+        "10": "MR-BKS1CBL10M-A1-H"
+      }
+    },
+    {
+      "id": "MR-PWS2CBL03M-A1-L",
+      "maker": "Mitsubishi",
+      "family": "MR-J4",
+      "brakeOnly": false,
+      "configurable": {
+        "kind": "variable",
+        "type": "MR-PWS2CBL03M-A1-L + power extension cable {L} m (user-made)",
+        "partNumber": "MR-PWS2CBL03M-A1-L",
+        "step": 1,
+        "min": 1,
+        "max": 50
+      },
+      "role": "motor",
+      "controller": "MR-J4",
+      "motors": "^HG-KR\\d+$|^HG-KR\\d+B$",
+      "range": [
+        10,
+        50
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-PWS2CBL03M-A1-L",
+      "partNumbers": {}
+    },
+    {
+      "id": "MR-J3JSCBL03M-A1-L",
+      "maker": "Mitsubishi",
+      "family": "MR-J4",
+      "brakeOnly": false,
+      "configurable": null,
+      "role": "adapter",
+      "controller": "MR-J4",
+      "motors": "^HG-KR\\d+$|^HG-KR\\d+B$",
+      "range": [
+        10,
+        50
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-J3JSCBL03M-A1-L",
+      "partNumbers": {
+        "0.3": "MR-J3JSCBL03M-A1-L"
+      },
+      "fixedLength": 0.3
+    },
+    {
+      "id": "MR-J3ENSCBL-H-KR",
+      "maker": "Mitsubishi",
+      "family": "MR-J4",
+      "brakeOnly": false,
+      "configurable": null,
+      "role": "encoder",
+      "controller": "MR-J4",
+      "motors": "^HG-KR\\d+$|^HG-KR\\d+B$",
+      "range": [
+        10,
+        50
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-J3ENSCBL{L}M-H",
+      "partNumbers": {
+        "20": "MR-J3ENSCBL20M-H",
+        "30": "MR-J3ENSCBL30M-H",
+        "40": "MR-J3ENSCBL40M-H",
+        "50": "MR-J3ENSCBL50M-H"
+      }
+    },
+    {
+      "id": "MR-BKS2CBL03M-A1-L",
+      "maker": "Mitsubishi",
+      "family": "MR-J4",
+      "brakeOnly": true,
+      "configurable": {
+        "kind": "variable",
+        "type": "MR-BKS2CBL03M-A1-L + brake extension cable {L} m (user-made)",
+        "partNumber": "MR-BKS2CBL03M-A1-L",
+        "step": 1,
+        "min": 1,
+        "max": 50
+      },
+      "role": "brake",
+      "controller": "MR-J4",
+      "motors": "^HG-KR\\d+B$",
+      "range": [
+        10,
+        50
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-BKS2CBL03M-A1-L",
+      "partNumbers": {}
+    },
+    {
+      "id": "MR-PWCNS4",
+      "maker": "Mitsubishi",
+      "family": "MR-J4",
+      "brakeOnly": false,
+      "configurable": {
+        "kind": "variable",
+        "type": "MR-PWCNS4 + power cable {L} m (user-made)",
+        "partNumber": "MR-PWCNS4",
+        "step": 1,
+        "min": 1,
+        "max": 50
+      },
+      "role": "motor",
+      "controller": "MR-J4",
+      "motors": "^(HG-SR(51|81|52|102|152|524|1024|1524)|HG-JR(53|73|103|153|203|534|734|1034|1534|2034|3534|5034))B?$",
+      "range": [
+        0,
+        50
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-PWCNS4",
+      "partNumbers": {}
+    },
+    {
+      "id": "MR-PWCNS5",
+      "maker": "Mitsubishi",
+      "family": "MR-J4",
+      "brakeOnly": false,
+      "configurable": {
+        "kind": "variable",
+        "type": "MR-PWCNS5 + power cable {L} m (user-made)",
+        "partNumber": "MR-PWCNS5",
+        "step": 1,
+        "min": 1,
+        "max": 50
+      },
+      "role": "motor",
+      "controller": "MR-J4",
+      "motors": "^(HG-SR(121|201|301|202|352|502|2024|3524|5024)|HG-JR(353|503))B?$",
+      "range": [
+        0,
+        50
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-PWCNS5",
+      "partNumbers": {}
+    },
+    {
+      "id": "MR-PWCNS3",
+      "maker": "Mitsubishi",
+      "family": "MR-J4",
+      "brakeOnly": false,
+      "configurable": {
+        "kind": "variable",
+        "type": "MR-PWCNS3 + power cable {L} m (user-made)",
+        "partNumber": "MR-PWCNS3",
+        "step": 1,
+        "min": 1,
+        "max": 50
+      },
+      "role": "motor",
+      "controller": "MR-J4",
+      "motors": "^(HG-SR(421|702|7024)|HG-JR(703|903|7034|9034))B?$",
+      "range": [
+        0,
+        50
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-PWCNS3",
+      "partNumbers": {}
+    },
+    {
+      "id": "MR-BKCNS1-HG",
+      "maker": "Mitsubishi",
+      "family": "MR-J4",
+      "brakeOnly": true,
+      "configurable": {
+        "kind": "variable",
+        "type": "MR-BKCNS1 + brake cable {L} m (user-made)",
+        "partNumber": "MR-BKCNS1",
+        "step": 1,
+        "min": 1,
+        "max": 50
+      },
+      "role": "brake",
+      "controller": "MR-J4",
+      "motors": "^HG-(SR|JR)\\d+B$",
+      "range": [
+        0,
+        50
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-BKCNS1",
+      "partNumbers": {}
+    },
+    {
+      "id": "MR-J3ENSCBL-H-HG",
+      "maker": "Mitsubishi",
+      "family": "MR-J4",
+      "brakeOnly": false,
+      "configurable": null,
+      "role": "encoder",
+      "controller": "MR-J4",
+      "motors": "^(HG-SR\\d+|HG-JR(53|73|103|153|203|353|503|534|734|1034|1534|2034|3534|5034))B?$",
+      "range": [
+        0,
+        50
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-J3ENSCBL{L}M-H",
+      "partNumbers": {
+        "2": "MR-J3ENSCBL2M-H",
+        "5": "MR-J3ENSCBL5M-H",
+        "10": "MR-J3ENSCBL10M-H",
+        "20": "MR-J3ENSCBL20M-H",
+        "30": "MR-J3ENSCBL30M-H",
+        "40": "MR-J3ENSCBL40M-H",
+        "50": "MR-J3ENSCBL50M-H"
+      }
+    },
+    {
+      "id": "MR-J3SCNSA",
+      "maker": "Mitsubishi",
+      "family": "MR-J4",
+      "brakeOnly": false,
+      "configurable": {
+        "kind": "variable",
+        "type": "MR-J3SCNSA + encoder cable {L} m (user-made)",
+        "partNumber": "MR-J3SCNSA",
+        "step": 1,
+        "min": 1,
+        "max": 50
+      },
+      "role": "encoder",
+      "controller": "MR-J4",
+      "motors": "^HG-JR(703|903|7034|9034)B?$",
+      "range": [
+        0,
+        50
+      ],
+      "code": null,
+      "crossSection": null,
+      "type": "MR-J3SCNSA",
+      "partNumbers": {}
+    }
+  ]
+}

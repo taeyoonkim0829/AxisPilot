@@ -436,6 +436,9 @@ describe('selection on real data', () => {
     const fits = (model: string) => gearboxOptionsFor(motors.find((m) => m.model === model)!).map((g) => g.id)
     expect(fits('HG-KR13')).toContain('AB042-3')
     expect(fits('HG-SR102').length).toBeGreaterThan(0)
+    expect(fits('HG-SR102B')).toEqual(fits('HG-SR102'))
+    // "SR102" does not name the 400 V HG-SR1024
+    expect(fits('HG-SR1024')).toEqual([])
     // The gearbox input side must take the motor's mounting interface.
     for (const m of motors.filter((x) => x.maker === 'Mitsubishi'))
       for (const g of gearboxOptionsFor(m)) if (g.driveCode) expect(g.driveCode, `${m.model} ${g.id}`).toBe(m.interfaceCode)

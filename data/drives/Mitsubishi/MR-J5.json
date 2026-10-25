@@ -1,0 +1,539 @@
+{
+  "items": [
+    {
+      "id": "MR-J5-10A",
+      "model": "MR-J5-10A",
+      "family": "MR-J5",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J5-10A",
+      "motorType": null,
+      "supply": "1~/3~ 200–240 V AC",
+      "voltageClass": "200V",
+      "motors": "^(HK-KT053W|HK-KT13W|HK-KT13UW|HK-MT053W|HK-MT13W|HK-MT053VW|HK-MT13VW)B? \\(",
+      "nominalCurrent": 1.3,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 100,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": null,
+      "externalResistance": [
+        40,
+        40
+      ],
+      "externalMaxPower": 30,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J5-20A",
+      "model": "MR-J5-20A",
+      "family": "MR-J5",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J5-20A",
+      "motorType": null,
+      "supply": "1~/3~ 200–240 V AC",
+      "voltageClass": "200V",
+      "motors": "^(HK-KT1M3W|HK-KT23W|HK-KT23UW|HK-KT434W|HK-MT1M3W|HK-MT23W|HK-MT1M3VW|HK-MT23VW)B? \\(",
+      "nominalCurrent": 1.8,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 200,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 10
+      },
+      "externalResistance": [
+        40,
+        40
+      ],
+      "externalMaxPower": 100,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J5-40A",
+      "model": "MR-J5-40A",
+      "family": "MR-J5",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J5-40A",
+      "motorType": null,
+      "supply": "1~/3~ 200–240 V AC",
+      "voltageClass": "200V",
+      "motors": "^(HK-KT43W|HK-KT43UW|HK-KT634W|HK-KT7M34W|HK-MT43W|HK-ST524W)B? \\(",
+      "nominalCurrent": 2.8,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 400,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 10
+      },
+      "externalResistance": [
+        40,
+        40
+      ],
+      "externalMaxPower": 100,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J5-60A",
+      "model": "MR-J5-60A",
+      "family": "MR-J5",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J5-60A",
+      "motorType": null,
+      "supply": "1~/3~ 200–240 V AC",
+      "voltageClass": "200V",
+      "motors": "^(HK-KT43W|HK-KT43UW|HK-KT63UW|HK-KT634W|HK-KT7M34W|HK-KT1034W|HK-MT43VW|HK-ST52W|HK-ST524W|HK-ST1024W)B? \\(",
+      "nominalCurrent": 3.2,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 600,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 10
+      },
+      "externalResistance": [
+        40,
+        40
+      ],
+      "externalMaxPower": 100,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J5-70A",
+      "model": "MR-J5-70A",
+      "family": "MR-J5",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J5-70A",
+      "motorType": null,
+      "supply": "1~/3~ 200–240 V AC",
+      "voltageClass": "200V",
+      "motors": "^(HK-KT63W|HK-KT7M3W|HK-KT7M3UW|HK-KT1534W|HK-MT63W|HK-MT7M3W|HK-MT63VW|HK-MT7M3VW|HK-ST7M2UW|HK-ST524W)B? \\(",
+      "nominalCurrent": 5.8,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 700,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 30
+      },
+      "externalResistance": [
+        26,
+        26
+      ],
+      "externalMaxPower": 300,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J5-100A",
+      "model": "MR-J5-100A",
+      "family": "MR-J5",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J5-100A",
+      "motorType": null,
+      "supply": "1~/3~ 200–240 V AC",
+      "voltageClass": "200V",
+      "motors": "^(HK-KT63W|HK-KT7M3W|HK-KT103W|HK-KT7M3UW|HK-KT103UW|HK-KT1534W|HK-KT2034W|HK-KT2024W|HK-MT103W|HK-ST102W|HK-ST7M2UW|HK-ST1724W|HK-ST2024AW|HK-RT103W)B? \\(",
+      "nominalCurrent": 6,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 1000,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 30
+      },
+      "externalResistance": [
+        26,
+        26
+      ],
+      "externalMaxPower": 300,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J5-200A",
+      "model": "MR-J5-200A",
+      "family": "MR-J5",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J5-200A",
+      "motorType": null,
+      "supply": "1~/3~ 200–240 V AC",
+      "voltageClass": "200V",
+      "motors": "^(HK-KT153W|HK-KT203W|HK-KT202W|HK-KT2024W|HK-MT103VW|HK-ST172W|HK-ST202AW|HK-ST172UW|HK-ST202W|HK-ST1724W|HK-ST2024AW|HK-ST3024W|HK-ST2024W|HK-ST3524W|HK-RT153W|HK-RT203W)B? \\(",
+      "nominalCurrent": 11,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 2000,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 100
+      },
+      "externalResistance": [
+        13,
+        13
+      ],
+      "externalMaxPower": 500,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J5-350A",
+      "model": "MR-J5-350A",
+      "family": "MR-J5",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J5-350A",
+      "motorType": null,
+      "supply": "3~ 200–240 V AC",
+      "voltageClass": "200V",
+      "motors": "^(HK-KT2024W|HK-ST172W|HK-ST302W|HK-ST353W|HK-ST352W|HK-ST1724W|HK-ST2024AW|HK-ST3024W|HK-ST2024W|HK-ST5024W|HK-ST7034W|HK-RT353W)B? \\(",
+      "nominalCurrent": 17,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 3500,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 100
+      },
+      "externalResistance": [
+        9,
+        9
+      ],
+      "externalMaxPower": 500,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J5-500A",
+      "model": "MR-J5-500A",
+      "family": "MR-J5",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J5-500A",
+      "motorType": null,
+      "supply": "3~ 200–240 V AC",
+      "voltageClass": "200V",
+      "motors": "^(HK-ST503W|HK-ST502W|HK-ST5024W|HK-ST7024W|HK-ST9034W|HK-RT503W)B? \\(",
+      "nominalCurrent": 28,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 5000,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 130
+      },
+      "externalResistance": [
+        6.7,
+        6.7
+      ],
+      "externalMaxPower": 500,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J5-700A",
+      "model": "MR-J5-700A",
+      "family": "MR-J5",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J5-700A",
+      "motorType": null,
+      "supply": "3~ 200–240 V AC",
+      "voltageClass": "200V",
+      "motors": "^(HK-ST702W|HK-ST703W|HK-ST7024W|HK-RT703W)B? \\(",
+      "nominalCurrent": 37,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 7000,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 170
+      },
+      "externalResistance": [
+        5.5,
+        5.5
+      ],
+      "externalMaxPower": 500,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J5-12KA",
+      "model": "MR-J5-12KA",
+      "family": "MR-J5",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J5-12KA",
+      "motorType": null,
+      "supply": "3~ 200–240 V AC",
+      "voltageClass": "200V",
+      "motors": "^(HK-ST903W)B? \\(",
+      "nominalCurrent": 68,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 12000,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": 3.2,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 500
+      },
+      "externalResistance": [
+        3.2,
+        3.2
+      ],
+      "externalMaxPower": 500,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J5-60A4",
+      "model": "MR-J5-60A4",
+      "family": "MR-J5",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J5-60A4",
+      "motorType": null,
+      "supply": "3~ 380–480 V AC",
+      "voltageClass": "400V",
+      "motors": "^(HK-KT053W|HK-KT13W|HK-KT1M3W|HK-KT434W|HK-KT634UW|HK-ST524W)B? \\(",
+      "nominalCurrent": 1.6,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 600,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 15
+      },
+      "externalResistance": [
+        82,
+        120
+      ],
+      "externalMaxPower": 300,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J5-100A4",
+      "model": "MR-J5-100A4",
+      "family": "MR-J5",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J5-100A4",
+      "motorType": null,
+      "supply": "3~ 380–480 V AC",
+      "voltageClass": "400V",
+      "motors": "^(HK-KT634W|HK-KT7M34W|HK-KT1034W|HK-KT1034UW|HK-ST1024W|HK-RT1034W)B? \\(",
+      "nominalCurrent": 2.8,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 1000,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 15
+      },
+      "externalResistance": [
+        82,
+        120
+      ],
+      "externalMaxPower": 300,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J5-200A4",
+      "model": "MR-J5-200A4",
+      "family": "MR-J5",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J5-200A4",
+      "motorType": null,
+      "supply": "3~ 380–480 V AC",
+      "voltageClass": "400V",
+      "motors": "^(HK-KT1534W|HK-KT2034W|HK-KT2024W|HK-ST1724W|HK-ST2024AW|HK-ST2024W|HK-RT1534W|HK-RT2034W)B? \\(",
+      "nominalCurrent": 5.5,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 2000,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 100
+      },
+      "externalResistance": [
+        47,
+        47
+      ],
+      "externalMaxPower": 500,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J5-350A4",
+      "model": "MR-J5-350A4",
+      "family": "MR-J5",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J5-350A4",
+      "motorType": null,
+      "supply": "3~ 380–480 V AC",
+      "voltageClass": "400V",
+      "motors": "^(HK-ST1724W|HK-ST3024W|HK-ST3534W|HK-ST3524W|HK-RT3534W)B? \\(",
+      "nominalCurrent": 8.6,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 3500,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 120
+      },
+      "externalResistance": [
+        36,
+        36
+      ],
+      "externalMaxPower": 500,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J5-500A4",
+      "model": "MR-J5-500A4",
+      "family": "MR-J5",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J5-500A4",
+      "motorType": null,
+      "supply": "3~ 380–480 V AC",
+      "voltageClass": "400V",
+      "motors": "^(HK-ST1724W|HK-ST5034W|HK-ST5024W|HK-RT5034W)B? \\(",
+      "nominalCurrent": 14,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 5000,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 130
+      },
+      "externalResistance": [
+        26,
+        26
+      ],
+      "externalMaxPower": 500,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J5-700A4",
+      "model": "MR-J5-700A4",
+      "family": "MR-J5",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J5-700A4",
+      "motorType": null,
+      "supply": "3~ 380–480 V AC",
+      "voltageClass": "400V",
+      "motors": "^(HK-ST7024W|HK-ST7034W|HK-RT7034W)B? \\(",
+      "nominalCurrent": 17,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 7000,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 170
+      },
+      "externalResistance": [
+        22,
+        22
+      ],
+      "externalMaxPower": 500,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    },
+    {
+      "id": "MR-J5-12KA4",
+      "model": "MR-J5-12KA4",
+      "family": "MR-J5",
+      "maker": "Mitsubishi",
+      "partNumber": "MR-J5-12KA4",
+      "motorType": null,
+      "supply": "3~ 380–480 V AC",
+      "voltageClass": "400V",
+      "motors": "^(HK-ST9034W)B? \\(",
+      "nominalCurrent": 32,
+      "peakCurrent": null,
+      "peakDuration": null,
+      "nominalPower": 12000,
+      "peakPower": null,
+      "maxCableLength": 50,
+      "internalResistor": {
+        "resistance": 10,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 500
+      },
+      "externalResistance": [
+        10,
+        10
+      ],
+      "externalMaxPower": 500,
+      "resistorVoltage": null,
+      "brakingResistors": []
+    }
+  ]
+}
