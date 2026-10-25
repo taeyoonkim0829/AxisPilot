@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Language
+
+Talk to the user in Korean, always: every reply, question, progress note, summary and report (also the reports agents write, e.g. `reports/brackets/`). Code, comments, identifiers, commit messages and this file stay in English; UI text follows `src/i18n/` (Korean source strings with English in `en.ts`).
+
 ## Project status
 
 AxisPilot (formerly Axis Selection) is a browser-only web app (React 19 + TypeScript + Vite, no backend; product data bundled as JSON). UI text is Korean with an English toggle (see `src/i18n/`). Mounting kits are matched by interface code and checked against their data sheet values (transferable torque, max. speed, inertia, no-load torque); the motor step's verdict includes the recommended kit's.
