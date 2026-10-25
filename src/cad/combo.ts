@@ -405,6 +405,9 @@ export interface ComboParts {
   profile: Frame
   /** world point of the first axis's drive flange (its JSON's drive origin, where `baseLength` is measured from) */
   driveFlange: Vec3
+  /** world vectors from each slide's centre (first axis, then a twin's) to its hole pattern centre, where a gantry kit
+   *  sits (`slide.pattern`, EGC-TB/BS-KF; zero elsewhere); a twin drawn mirrored has it on the other side */
+  patternOffsets: Vec3[]
 }
 
 export async function comboParts(
@@ -606,6 +609,11 @@ export async function comboParts(
       name += ` + ${shaftTwin.model}`
     }
   }
+  // the slide hole pattern beside the slide centre (EGC-TB/BS-KF), turned with the first axis; a twin drawn mirrored
+  // (turned end for end about its slide normal) has it on the other side, a plain copy on the same
+  const toPattern = axisMeta.slide.pattern ? rotate(axisToWorld, sub(axisMeta.slide.pattern, axisMeta.slide.origin)) : ([0, 0, 0] as Vec3)
+  const patternOffsets: Vec3[] = [toPattern]
+  if (twin) patternOffsets.push(turnable(sel.axis) && axisMeta.slide.front != null ? scale(toPattern, -1) : toPattern)
   // COG in the first slide's frame (x travel, y lateral, z normal); a facing pair turns it with the slide, y then
   // measured from the slide centre again (both slides at the same height), not from the arrangement's centre
   const cogY = facing ? req.cog.y - twin!.spacing / 2 : req.cog.y
@@ -622,5 +630,6 @@ export async function comboParts(
     slide: { origin: [0, 0, 0], axis: rotate(axisToWorld, slide.normal), up: rotate(axisToWorld, slide.travel) },
     profile: { origin: apply(axisToWorld, middle), axis: rotate(axisToWorld, own.normal), up: rotate(axisToWorld, slide.travel) },
     driveFlange: apply(axisToWorld, axisMeta.drive.origin),
+    patternOffsets,
   }
 }

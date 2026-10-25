@@ -1,5 +1,6 @@
 // Gantry kits: the Festo part joining a carried axis's profile to the slide of the axis below it (EHAM angle and
-// adapter kits, EAHF-E24 profile mountings), from the axis data sheets' combination tables (data/adapters).
+// adapter kits, EAHF-E24 profile mountings), from the axis data sheets' combination tables (data/adapters); where no
+// Festo kit exists (EGC), a custom angle bracket or plate (data/adapters/Custom, made to order).
 import type { Axis, AxisAdapter, AdapterAxis } from '../data/types'
 import { axisFrame, baseParallel, gantryBase, zAcrossTwinY, type GantryAxis, type GantryInputs, type Vec } from './gantry'
 import type { Status } from './types'
@@ -182,8 +183,8 @@ function placement(
 }
 
 /**
- * The kit for a joint: the data's kits of that geometry fitting both axes, the one for the carried stroke first, the
- * left-hand version of mirror-image pairs. Warns when the base axis needs the long slide, the carried stroke is out
+ * The kit for a joint: the data's kits of that geometry fitting both axes (Festo kits; custom brackets only when no
+ * Festo kit fits), the one for the carried stroke first, the left-hand version of mirror-image pairs. Warns when the base axis needs the long slide, the carried stroke is out
  * of the kit's range, or no kit fits.
  */
 export function gantryJoint(
@@ -228,7 +229,11 @@ export function gantryJoint(
       )
     if (place.interference) return warn('두 {base}축의 조합 키트가 서로 겹칩니다(간섭). {base}축 간격을 {spacing} mm로 하면 겹치지 않고 맞습니다.')
     if (short)
-      return warn('{axis}축이 두 번째 {base}축 키트의 프로파일 마운팅(EAHF)까지 모두 닿지 않습니다. {base}축 간격을 {spacing} mm로 하면 맞습니다.')
+      return warn(
+        joint.kit?.custom
+          ? '{axis}축이 두 번째 {base}축 브래킷의 슬롯 너트 나사를 모두 지나 벽 뒤까지 닿지 않습니다. {base}축 간격을 {spacing} mm로 하면 맞습니다.'
+          : '{axis}축이 두 번째 {base}축 키트의 프로파일 마운팅(EAHF)까지 모두 닿지 않습니다. {base}축 간격을 {spacing} mm로 하면 맞습니다.',
+      )
   }
   return { ...joint, ...place }
 }
@@ -261,10 +266,13 @@ function pickJoint(
       noteArgs: { pair },
     }
   const inRange = (k: AxisAdapter) => !k.carriedStroke || (carriedStroke >= k.carriedStroke[0] && carriedStroke <= k.carriedStroke[1])
-  const candidates = adapters
-    // Festo kits only: custom brackets (made to order) are listed by `beamBrackets`
-    .filter((k) => !k.custom && k.joint === kind && fits(k.base, baseAxis) && fits(k.carried, carriedAxis))
-    .sort((a, b) => Number(inRange(b)) - Number(inRange(a)) || Number(b.hand !== 'right') - Number(a.hand !== 'right'))
+  const fitting = adapters.filter((k) => k.joint === kind && fits(k.base, baseAxis) && fits(k.carried, carriedAxis))
+  // Festo kits first; a custom angle bracket or plate (data/adapters/Custom, made to order: EGC) only where no Festo kit
+  // fits (custom cross beams have their own joint, `beamJoint`)
+  const festo = fitting.filter((k) => !k.custom)
+  const candidates = (festo.length ? festo : fitting.filter((k) => k.custom)).sort(
+    (a, b) => Number(inRange(b)) - Number(inRange(a)) || Number(b.hand !== 'right') - Number(a.hand !== 'right'),
+  )
   // the same kit in the hand each slide needs (the mirror image, when the data has it)
   const kits = candidates.length
     ? slides.map((at) => {

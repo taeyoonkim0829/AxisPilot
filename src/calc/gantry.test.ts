@@ -3,6 +3,7 @@ import { axes } from '../data'
 import { computeGantry, noPicks } from '../selection'
 import { evaluateAxis, G, guideLoads } from './axisSelection'
 import { defaultGantry as appGantry, gantryRequirements, initialGantrySettings as appGantrySettings, slideFrame, stageOf, type GantryInputs } from './gantry'
+import { jointMass } from './gantryKits'
 import { defaultSettings as appDefaults, type Requirements } from './types'
 
 // every axis and motor filter on (the app's defaults narrow the lists)
@@ -107,9 +108,10 @@ describe('computeGantry', () => {
     expect(results.map((r) => r.axis)).toEqual(['z', 'y', 'x'])
     for (const r of results) expect(r.sel?.selectedAxis).toBeTruthy()
     const [z, y, x] = results
-    // each axis carries more than the one before it
-    expect(y.req!.payload).toBeCloseTo(z.stage!.mass)
-    expect(x.req!.payload).toBeCloseTo(y.stage!.mass)
+    // each axis carries more than the one before it, and the gantry kits joining it to the axis it carries
+    const kitMass = (r: typeof x) => (r.joint?.kit ? jointMass(r.joint) : 0)
+    expect(y.req!.payload).toBeCloseTo(z.stage!.mass + kitMass(y))
+    expect(x.req!.payload).toBeCloseTo(y.stage!.mass + kitMass(x))
     expect(x.req!.payload).toBeGreaterThan(y.req!.payload)
     expect(x.req!.parallel?.mode).toBe('twinMotor')
   })

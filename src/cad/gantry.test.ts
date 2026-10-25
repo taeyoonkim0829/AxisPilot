@@ -339,3 +339,62 @@ describe('custom cross beams in the gantry drawing', () => {
     expect((await boxes(combo.step, /BR-/)).filter((b) => /BR-/.test(b.name))).toEqual([])
   }, 120000)
 })
+
+describe('custom EGC brackets in the gantry drawing', () => {
+  const egc = (size: number, drive: Axis['drive']) =>
+    axes.find((a) => a.family === 'EGC' && !a.variant && a.size === size && a.drive === drive && a.slide === 'GK')!
+  const named = <T extends { name: string }>(found: T[], re: RegExp) => found.filter((b) => re.test(b.name))
+
+  it('stands Y on the X slide with an angle bracket on the slide hole pattern and hangs Z on a plate (EGC)', async () => {
+    const g: GantryInputs = { ...defaultGantry, yMounting: 'wall', parallel: { ...defaultGantry.parallel, x: { ...defaultGantry.parallel.x, mode: 'single' } } }
+    const [x, y, z] = [egc(120, 'belt'), egc(120, 'belt'), egc(80, 'spindle')]
+    const parts = [axisDrawing('x', x, 800, g), axisDrawing('y', y, 500, g), axisDrawing('z', z, 300, g)]
+    const xy = gantryJoint(g, 'x', 'y', x, y, 500, adapters, 500 + y.baseLength!)
+    const yz = gantryJoint(g, 'y', 'z', y, z, 300, adapters, 300 + z.baseLength!)
+    expect(xy.kit?.model).toBe('BR-EGC-120-EGC-120-1-ML')
+    expect(yz.kit?.model).toBe('BR-EGC-120-EGC-80-2')
+    const combo = await buildGantry(g, parts, [jointDrawing(xy), jointDrawing(yz)], load)
+    expect(combo.unkitted).toEqual([])
+    const found = await boxes(combo.step, /BR-EGC|EGC-120-TB|EGC-80-BS/)
+    const angle = named(found, /BR-EGC-120-EGC-120-1/)
+    const plate = named(found, /BR-EGC-120-EGC-80-2/)
+    expect(angle).toHaveLength(1)
+    expect(plate).toHaveLength(1)
+    const [a, p] = [angle[0], plate[0]]
+    // the bracket on the X slide (its surface at z = 0), its foot on the slide hole pattern 25 mm beside the slide
+    // centre (EGC-120 KF): its extent along Y is the pattern centre −39 … +264.5 or mirrored
+    expect(a.lo[2]).toBeCloseTo(0, 0)
+    const spans = [25, -25].flatMap((c) => [
+      [c - 39, c + 239.5],
+      [c - 239.5, c + 39],
+    ])
+    expect(spans.some(([lo, hi]) => Math.abs(lo - a.lo[1]) < 0.5 && Math.abs(hi - a.hi[1]) < 0.5)).toBe(true)
+    // the Y profile (the EGC-120 profile running along Y) on the wall face, 55.75 mm from the pattern centre along X
+    // (its body on the far side), resting on the ledge (z = 20)
+    const along = (k: number) => (b: { lo: number[]; hi: number[] }) => b.hi[k] - b.lo[k] > 300
+    const yProfile = named(found, /EGC-120-TB\d+GK0/).find(along(1))!
+    expect(yProfile.hi[0]).toBeCloseTo(55.75, 0)
+    expect(yProfile.lo[2]).toBeCloseTo(20, 0)
+    // the plate on the Y slide (111.5 above the Y profile underside), the Z profile on the plate's front (15 thick)
+    expect(p.hi[0]).toBeCloseTo(55.75 - 111.5, 0)
+    const zProfile = named(found, /EGC-80-BS\d+GK0/).find(along(2))!
+    expect(zProfile.hi[0]).toBeCloseTo(p.hi[0] - 15, 0)
+  }, 120000)
+
+  it('mirrors the EGC angle brackets under two X axes, both walls reaching inwards, on each slide hole pattern', async () => {
+    const g: GantryInputs = { ...defaultGantry, config: 'xy', yMounting: 'wall', parallel: { ...defaultGantry.parallel, x: { ...defaultGantry.parallel.x, mode: 'twinMotor', spacing: 1000 } } }
+    const [x, y] = [egc(120, 'belt'), egc(120, 'belt')]
+    const yd = axisDrawing('y', y, 1200, g)
+    const xy = gantryJoint(g, 'x', 'y', x, y, 1200, adapters, 1200 + y.baseLength!)
+    expect(xy.status).toBe('ok')
+    const combo = await buildGantry(g, [{ ...axisDrawing('x', x, 800, g), twin: { spacing: 1000, drive: true } }, yd], [jointDrawing(xy)], load)
+    const found = named(await boxes(combo.step, /BR-EGC/), /BR-EGC/)
+    expect(found.map((b) => b.name.replace(/^.*(BR-EGC-120-EGC-120-1-M[LR]).*$/, '$1')).sort()).toEqual(['BR-EGC-120-EGC-120-1-ML', 'BR-EGC-120-EGC-120-1-MR'])
+    // feet over the X axes at ∓500 (± the 25 mm pattern offset, mirrored with the second axis), walls inwards
+    for (const b of found) {
+      const footSide = Math.abs(b.lo[1]) > Math.abs(b.hi[1]) ? b.lo[1] : b.hi[1]
+      expect(Math.abs(Math.abs(footSide) - 500 - 39)).toBeLessThanOrEqual(25.5)
+      expect(Math.abs((b.lo[1] + b.hi[1]) / 2)).toBeLessThan(500)
+    }
+  }, 120000)
+})

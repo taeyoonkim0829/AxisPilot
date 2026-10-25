@@ -10,7 +10,7 @@ import { defaultSettings } from './types'
 // Custom cross beams (data/adapters/Custom) between a pair of EHAM-AK-L9 angle kits on two ELGT-BS base axes: Z beams
 // (the Z axis on an EHAM-MA plate on the pad) and Y beams (the Y axis pinned on the front face)
 const elgt = (size: number, pitch = 10) => axes.find((x) => x.family === 'ELGT' && x.drive === 'spindle' && x.size === size && x.model.includes(`${pitch}P`))!
-const custom = adapters.filter((k) => k.custom)
+const custom = adapters.filter((k) => k.custom && k.joint === 'beam')
 const twinX = (spacing: number): GantryInputs => ({
   ...defaultGantry,
   config: 'xy',

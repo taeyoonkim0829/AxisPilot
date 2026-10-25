@@ -1,7 +1,7 @@
 {
   "stroke": 500,
   "drive": { "origin": [41, 34.5, -363], "axis": [1, 0, 0], "up": [0, 1, 0] },
-  "slide": { "origin": [0, 76.5, -250], "normal": [0, 1, 0], "travel": [0, 0, 1], "front": [-1, 0, 0] },
+  "slide": { "origin": [0, 76.5, -250], "normal": [0, 1, 0], "travel": [0, 0, 1], "front": [-1, 0, 0], "pattern": [-18, 76.5, -250] },
   "stretch": { "part": "EGC-80-TB65678GK0--0----0_0_R0L22000", "axis": 2, "dir": 1, "range": [-185, 321], "move": [10413, 10437, 10443, 10444] },
   "profile": { "origin": [0, 0, 0], "normal": [0, -1, 0] }
 }

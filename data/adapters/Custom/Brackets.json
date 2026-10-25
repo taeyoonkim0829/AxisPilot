@@ -704,6 +704,2151 @@
         }
       ],
       "dataSource": "AxisPilot custom design 2026-10-24 (cad/brackets/elgt_twin_beam.py, reports/brackets/2026-10-24-2340-BR-ELGT-BS-twin-X-Y.md; REV B access slots: reports/brackets/2026-10-25-1100-BR-ELGT-BS-twin-X-Y-access-slots.md); interfaces measured on the Festo STEP models of EHAM-AK-L9 and ELGT-BS"
+    },
+    {
+      "id": "BR-EGC-70-EGC-70-1-ML",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-70-EGC-70-1-ML",
+      "partNumber": null,
+      "joint": "angle",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "belt",
+          "end": -112.3,
+          "clamp": {
+            "span": [
+              -52,
+              134
+            ],
+            "endCap": 59.3
+          }
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "spindle",
+          "end": -112.3,
+          "clamp": {
+            "span": [
+              -52,
+              134
+            ],
+            "endCap": 37
+          }
+        }
+      ],
+      "hand": "left",
+      "layout": null,
+      "carriedStroke": [
+        110,
+        8500
+      ],
+      "wall": [
+        -52,
+        138
+      ],
+      "mass": 0.803,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-70-EGC-70-1_BR-EGC-70-EGC-70-1.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M5x12-8.8",
+          "partNumber": "ISO 4762-M5x12-8.8",
+          "quantity": 4,
+          "note": "base slide threads M5 (foot / plate onto the EGC-70 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ZBS-5",
+          "partNumber": "150928",
+          "quantity": 2,
+          "note": "centring pins into the slide's D5 H7 bores (2 come with the axis; PU 10)"
+        },
+        {
+          "model": "NST-5-M5",
+          "partNumber": "150914",
+          "quantity": 6,
+          "note": "slot nuts in the EGC-70 profile's underside mounting slots (+-20 mm)"
+        },
+        {
+          "model": "ISO 4762 M5x12-8.8",
+          "partNumber": "ISO 4762-M5x12-8.8",
+          "quantity": 6,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-70-EGC-70-1-MR",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-70-EGC-70-1-MR",
+      "partNumber": null,
+      "joint": "angle",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "belt",
+          "end": -112.3,
+          "clamp": {
+            "span": [
+              -52,
+              134
+            ],
+            "endCap": 59.3
+          }
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "spindle",
+          "end": -112.3,
+          "clamp": {
+            "span": [
+              -52,
+              134
+            ],
+            "endCap": 37
+          }
+        }
+      ],
+      "hand": "right",
+      "layout": null,
+      "carriedStroke": [
+        110,
+        8500
+      ],
+      "wall": [
+        -52,
+        138
+      ],
+      "mass": 0.803,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-70-EGC-70-1_BR-EGC-70-EGC-70-1.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M5x12-8.8",
+          "partNumber": "ISO 4762-M5x12-8.8",
+          "quantity": 4,
+          "note": "base slide threads M5 (foot / plate onto the EGC-70 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ZBS-5",
+          "partNumber": "150928",
+          "quantity": 2,
+          "note": "centring pins into the slide's D5 H7 bores (2 come with the axis; PU 10)"
+        },
+        {
+          "model": "NST-5-M5",
+          "partNumber": "150914",
+          "quantity": 6,
+          "note": "slot nuts in the EGC-70 profile's underside mounting slots (+-20 mm)"
+        },
+        {
+          "model": "ISO 4762 M5x12-8.8",
+          "partNumber": "ISO 4762-M5x12-8.8",
+          "quantity": 6,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-70-EGC-70-2",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-70-EGC-70-2",
+      "partNumber": null,
+      "joint": "plate",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "belt",
+          "end": -145.8
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "spindle",
+          "end": -145.8
+        }
+      ],
+      "hand": null,
+      "layout": null,
+      "carriedStroke": [
+        90,
+        8500
+      ],
+      "wall": null,
+      "mass": 0.494,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-70-EGC-70-2_BR-EGC-70-EGC-70-2.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M5x12-8.8",
+          "partNumber": "ISO 4762-M5x12-8.8",
+          "quantity": 4,
+          "note": "base slide threads M5 (foot / plate onto the EGC-70 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ZBS-5",
+          "partNumber": "150928",
+          "quantity": 2,
+          "note": "centring pins into the slide's D5 H7 bores (2 come with the axis; PU 10)"
+        },
+        {
+          "model": "NST-5-M5",
+          "partNumber": "150914",
+          "quantity": 4,
+          "note": "slot nuts in the EGC-70 profile's underside mounting slots (+-20 mm)"
+        },
+        {
+          "model": "ISO 4762 M5x12-8.8",
+          "partNumber": "ISO 4762-M5x12-8.8",
+          "quantity": 4,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-70-EGC-50-1-ML",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-70-EGC-50-1-ML",
+      "partNumber": null,
+      "joint": "angle",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 50,
+          "drive": "belt",
+          "end": -94.8,
+          "clamp": {
+            "span": [
+              -52,
+              92.25
+            ],
+            "endCap": 41.8
+          }
+        }
+      ],
+      "hand": "left",
+      "layout": null,
+      "carriedStroke": [
+        80,
+        8500
+      ],
+      "wall": [
+        -52,
+        96.25
+      ],
+      "mass": 0.438,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-70-EGC-50-1_BR-EGC-70-EGC-50-1.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M5x12-8.8",
+          "partNumber": "ISO 4762-M5x12-8.8",
+          "quantity": 4,
+          "note": "base slide threads M5 (foot / plate onto the EGC-70 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ZBS-5",
+          "partNumber": "150928",
+          "quantity": 2,
+          "note": "centring pins into the slide's D5 H7 bores (2 come with the axis; PU 10)"
+        },
+        {
+          "model": "ABAN-3-1 M3-4-M-P",
+          "partNumber": "558045",
+          "quantity": 6,
+          "note": "slot nuts in the EGC-50 profile's underside mounting slots (+-10 mm)"
+        },
+        {
+          "model": "ISO 4762 M3x8-8.8",
+          "partNumber": "ISO 4762-M3x8-8.8",
+          "quantity": 6,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-70-EGC-50-1-MR",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-70-EGC-50-1-MR",
+      "partNumber": null,
+      "joint": "angle",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 50,
+          "drive": "belt",
+          "end": -94.8,
+          "clamp": {
+            "span": [
+              -52,
+              92.25
+            ],
+            "endCap": 41.8
+          }
+        }
+      ],
+      "hand": "right",
+      "layout": null,
+      "carriedStroke": [
+        80,
+        8500
+      ],
+      "wall": [
+        -52,
+        96.25
+      ],
+      "mass": 0.438,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-70-EGC-50-1_BR-EGC-70-EGC-50-1.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M5x12-8.8",
+          "partNumber": "ISO 4762-M5x12-8.8",
+          "quantity": 4,
+          "note": "base slide threads M5 (foot / plate onto the EGC-70 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ZBS-5",
+          "partNumber": "150928",
+          "quantity": 2,
+          "note": "centring pins into the slide's D5 H7 bores (2 come with the axis; PU 10)"
+        },
+        {
+          "model": "ABAN-3-1 M3-4-M-P",
+          "partNumber": "558045",
+          "quantity": 6,
+          "note": "slot nuts in the EGC-50 profile's underside mounting slots (+-10 mm)"
+        },
+        {
+          "model": "ISO 4762 M3x8-8.8",
+          "partNumber": "ISO 4762-M3x8-8.8",
+          "quantity": 6,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-70-EGC-50-2",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-70-EGC-50-2",
+      "partNumber": null,
+      "joint": "plate",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 50,
+          "drive": "belt",
+          "end": -124.8
+        }
+      ],
+      "hand": null,
+      "layout": null,
+      "carriedStroke": [
+        100,
+        8500
+      ],
+      "wall": null,
+      "mass": 0.428,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-70-EGC-50-2_BR-EGC-70-EGC-50-2.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M5x12-8.8",
+          "partNumber": "ISO 4762-M5x12-8.8",
+          "quantity": 4,
+          "note": "base slide threads M5 (foot / plate onto the EGC-70 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ZBS-5",
+          "partNumber": "150928",
+          "quantity": 2,
+          "note": "centring pins into the slide's D5 H7 bores (2 come with the axis; PU 10)"
+        },
+        {
+          "model": "ABAN-3-1 M3-4-M-P",
+          "partNumber": "558045",
+          "quantity": 4,
+          "note": "slot nuts in the EGC-50 profile's underside mounting slots (+-10 mm)"
+        },
+        {
+          "model": "ISO 4762 M3x8-8.8",
+          "partNumber": "ISO 4762-M3x8-8.8",
+          "quantity": 4,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-80-EGC-80-1-ML",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-80-EGC-80-1-ML",
+      "partNumber": null,
+      "joint": "angle",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "belt",
+          "end": -121,
+          "clamp": {
+            "span": [
+              -53,
+              155
+            ],
+            "endCap": 67
+          }
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "spindle",
+          "end": -121,
+          "clamp": {
+            "span": [
+              -53,
+              155
+            ],
+            "endCap": 43
+          }
+        }
+      ],
+      "hand": "left",
+      "layout": null,
+      "carriedStroke": [
+        110,
+        8500
+      ],
+      "wall": [
+        -53,
+        159
+      ],
+      "mass": 1.043,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-80-EGC-80-1_BR-EGC-80-EGC-80-1.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M5x16-8.8",
+          "partNumber": "ISO 4762-M5x16-8.8",
+          "quantity": 4,
+          "note": "base slide threads M5 (foot / plate onto the EGC-80 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ISO 4762 M6x16-8.8",
+          "partNumber": "ISO 4762-M6x16-8.8",
+          "quantity": 2,
+          "note": "base slide M6 threads under the centring bores (2 of them through ZBH-9)"
+        },
+        {
+          "model": "ZBH-9-B",
+          "partNumber": "8137184",
+          "quantity": 2,
+          "note": "centring sleeves into the slide's D9 H7 bores (2 come with the axis)"
+        },
+        {
+          "model": "NST-5-M5",
+          "partNumber": "150914",
+          "quantity": 6,
+          "note": "slot nuts in the EGC-80 profile's underside mounting slots (+-20 mm)"
+        },
+        {
+          "model": "ISO 4762 M5x12-8.8",
+          "partNumber": "ISO 4762-M5x12-8.8",
+          "quantity": 6,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-80-EGC-80-1-MR",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-80-EGC-80-1-MR",
+      "partNumber": null,
+      "joint": "angle",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "belt",
+          "end": -121,
+          "clamp": {
+            "span": [
+              -53,
+              155
+            ],
+            "endCap": 67
+          }
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "spindle",
+          "end": -121,
+          "clamp": {
+            "span": [
+              -53,
+              155
+            ],
+            "endCap": 43
+          }
+        }
+      ],
+      "hand": "right",
+      "layout": null,
+      "carriedStroke": [
+        110,
+        8500
+      ],
+      "wall": [
+        -53,
+        159
+      ],
+      "mass": 1.043,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-80-EGC-80-1_BR-EGC-80-EGC-80-1.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M5x16-8.8",
+          "partNumber": "ISO 4762-M5x16-8.8",
+          "quantity": 4,
+          "note": "base slide threads M5 (foot / plate onto the EGC-80 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ISO 4762 M6x16-8.8",
+          "partNumber": "ISO 4762-M6x16-8.8",
+          "quantity": 2,
+          "note": "base slide M6 threads under the centring bores (2 of them through ZBH-9)"
+        },
+        {
+          "model": "ZBH-9-B",
+          "partNumber": "8137184",
+          "quantity": 2,
+          "note": "centring sleeves into the slide's D9 H7 bores (2 come with the axis)"
+        },
+        {
+          "model": "NST-5-M5",
+          "partNumber": "150914",
+          "quantity": 6,
+          "note": "slot nuts in the EGC-80 profile's underside mounting slots (+-20 mm)"
+        },
+        {
+          "model": "ISO 4762 M5x12-8.8",
+          "partNumber": "ISO 4762-M5x12-8.8",
+          "quantity": 6,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-80-EGC-80-2",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-80-EGC-80-2",
+      "partNumber": null,
+      "joint": "plate",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "belt",
+          "end": -162
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "spindle",
+          "end": -162
+        }
+      ],
+      "hand": null,
+      "layout": null,
+      "carriedStroke": [
+        90,
+        8500
+      ],
+      "wall": null,
+      "mass": 0.742,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-80-EGC-80-2_BR-EGC-80-EGC-80-2.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M5x16-8.8",
+          "partNumber": "ISO 4762-M5x16-8.8",
+          "quantity": 8,
+          "note": "base slide threads M5 (foot / plate onto the EGC-80 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ISO 4762 M6x16-8.8",
+          "partNumber": "ISO 4762-M6x16-8.8",
+          "quantity": 2,
+          "note": "base slide M6 threads under the centring bores (2 of them through ZBH-9)"
+        },
+        {
+          "model": "ZBH-9-B",
+          "partNumber": "8137184",
+          "quantity": 2,
+          "note": "centring sleeves into the slide's D9 H7 bores (2 come with the axis)"
+        },
+        {
+          "model": "NST-5-M5",
+          "partNumber": "150914",
+          "quantity": 4,
+          "note": "slot nuts in the EGC-80 profile's underside mounting slots (+-20 mm)"
+        },
+        {
+          "model": "ISO 4762 M5x12-8.8",
+          "partNumber": "ISO 4762-M5x12-8.8",
+          "quantity": 4,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-80-EGC-70-1-ML",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-80-EGC-70-1-ML",
+      "partNumber": null,
+      "joint": "angle",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "belt",
+          "end": -113.3,
+          "clamp": {
+            "span": [
+              -53,
+              135
+            ],
+            "endCap": 59.3
+          }
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "spindle",
+          "end": -113.3,
+          "clamp": {
+            "span": [
+              -53,
+              135
+            ],
+            "endCap": 37
+          }
+        }
+      ],
+      "hand": "left",
+      "layout": null,
+      "carriedStroke": [
+        110,
+        8500
+      ],
+      "wall": [
+        -53,
+        139
+      ],
+      "mass": 0.902,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-80-EGC-70-1_BR-EGC-80-EGC-70-1.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M5x16-8.8",
+          "partNumber": "ISO 4762-M5x16-8.8",
+          "quantity": 4,
+          "note": "base slide threads M5 (foot / plate onto the EGC-80 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ISO 4762 M6x16-8.8",
+          "partNumber": "ISO 4762-M6x16-8.8",
+          "quantity": 2,
+          "note": "base slide M6 threads under the centring bores (2 of them through ZBH-9)"
+        },
+        {
+          "model": "ZBH-9-B",
+          "partNumber": "8137184",
+          "quantity": 2,
+          "note": "centring sleeves into the slide's D9 H7 bores (2 come with the axis)"
+        },
+        {
+          "model": "NST-5-M5",
+          "partNumber": "150914",
+          "quantity": 6,
+          "note": "slot nuts in the EGC-70 profile's underside mounting slots (+-20 mm)"
+        },
+        {
+          "model": "ISO 4762 M5x12-8.8",
+          "partNumber": "ISO 4762-M5x12-8.8",
+          "quantity": 6,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-80-EGC-70-1-MR",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-80-EGC-70-1-MR",
+      "partNumber": null,
+      "joint": "angle",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "belt",
+          "end": -113.3,
+          "clamp": {
+            "span": [
+              -53,
+              135
+            ],
+            "endCap": 59.3
+          }
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "spindle",
+          "end": -113.3,
+          "clamp": {
+            "span": [
+              -53,
+              135
+            ],
+            "endCap": 37
+          }
+        }
+      ],
+      "hand": "right",
+      "layout": null,
+      "carriedStroke": [
+        110,
+        8500
+      ],
+      "wall": [
+        -53,
+        139
+      ],
+      "mass": 0.902,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-80-EGC-70-1_BR-EGC-80-EGC-70-1.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M5x16-8.8",
+          "partNumber": "ISO 4762-M5x16-8.8",
+          "quantity": 4,
+          "note": "base slide threads M5 (foot / plate onto the EGC-80 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ISO 4762 M6x16-8.8",
+          "partNumber": "ISO 4762-M6x16-8.8",
+          "quantity": 2,
+          "note": "base slide M6 threads under the centring bores (2 of them through ZBH-9)"
+        },
+        {
+          "model": "ZBH-9-B",
+          "partNumber": "8137184",
+          "quantity": 2,
+          "note": "centring sleeves into the slide's D9 H7 bores (2 come with the axis)"
+        },
+        {
+          "model": "NST-5-M5",
+          "partNumber": "150914",
+          "quantity": 6,
+          "note": "slot nuts in the EGC-70 profile's underside mounting slots (+-20 mm)"
+        },
+        {
+          "model": "ISO 4762 M5x12-8.8",
+          "partNumber": "ISO 4762-M5x12-8.8",
+          "quantity": 6,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-80-EGC-70-2",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-80-EGC-70-2",
+      "partNumber": null,
+      "joint": "plate",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "belt",
+          "end": -154.3
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 70,
+          "drive": "spindle",
+          "end": -154.3
+        }
+      ],
+      "hand": null,
+      "layout": null,
+      "carriedStroke": [
+        110,
+        8500
+      ],
+      "wall": null,
+      "mass": 0.662,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-80-EGC-70-2_BR-EGC-80-EGC-70-2.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M5x16-8.8",
+          "partNumber": "ISO 4762-M5x16-8.8",
+          "quantity": 8,
+          "note": "base slide threads M5 (foot / plate onto the EGC-80 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ISO 4762 M6x16-8.8",
+          "partNumber": "ISO 4762-M6x16-8.8",
+          "quantity": 2,
+          "note": "base slide M6 threads under the centring bores (2 of them through ZBH-9)"
+        },
+        {
+          "model": "ZBH-9-B",
+          "partNumber": "8137184",
+          "quantity": 2,
+          "note": "centring sleeves into the slide's D9 H7 bores (2 come with the axis)"
+        },
+        {
+          "model": "NST-5-M5",
+          "partNumber": "150914",
+          "quantity": 4,
+          "note": "slot nuts in the EGC-70 profile's underside mounting slots (+-20 mm)"
+        },
+        {
+          "model": "ISO 4762 M5x12-8.8",
+          "partNumber": "ISO 4762-M5x12-8.8",
+          "quantity": 4,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-120-EGC-120-1-ML",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-120-EGC-120-1-ML",
+      "partNumber": null,
+      "joint": "angle",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "belt",
+          "end": -167,
+          "clamp": {
+            "span": [
+              -64,
+              260.5
+            ],
+            "endCap": 102
+          }
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "spindle",
+          "end": -167,
+          "clamp": {
+            "span": [
+              -64,
+              260.5
+            ],
+            "endCap": 60.5
+          }
+        }
+      ],
+      "hand": "left",
+      "layout": null,
+      "carriedStroke": [
+        160,
+        8500
+      ],
+      "wall": [
+        -64,
+        264.5
+      ],
+      "mass": 2.261,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-120-EGC-120-1_BR-EGC-120-EGC-120-1.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M5x16-8.8",
+          "partNumber": "ISO 4762-M5x16-8.8",
+          "quantity": 4,
+          "note": "base slide threads M5 (foot / plate onto the EGC-120 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ISO 4762 M6x16-8.8",
+          "partNumber": "ISO 4762-M6x16-8.8",
+          "quantity": 4,
+          "note": "base slide M6 threads under the centring bores (2 of them through ZBH-9)"
+        },
+        {
+          "model": "ZBH-9-B",
+          "partNumber": "8137184",
+          "quantity": 2,
+          "note": "centring sleeves into the slide's D9 H7 bores (2 come with the axis)"
+        },
+        {
+          "model": "NST-8-M6",
+          "partNumber": "150915",
+          "quantity": 8,
+          "note": "slot nuts in the EGC-120 profile's underside mounting slots (+-20 mm)"
+        },
+        {
+          "model": "ISO 4762 M6x20-8.8",
+          "partNumber": "ISO 4762-M6x20-8.8",
+          "quantity": 8,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-120-EGC-120-1-MR",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-120-EGC-120-1-MR",
+      "partNumber": null,
+      "joint": "angle",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "belt",
+          "end": -167,
+          "clamp": {
+            "span": [
+              -64,
+              260.5
+            ],
+            "endCap": 102
+          }
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "spindle",
+          "end": -167,
+          "clamp": {
+            "span": [
+              -64,
+              260.5
+            ],
+            "endCap": 60.5
+          }
+        }
+      ],
+      "hand": "right",
+      "layout": null,
+      "carriedStroke": [
+        160,
+        8500
+      ],
+      "wall": [
+        -64,
+        264.5
+      ],
+      "mass": 2.261,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-120-EGC-120-1_BR-EGC-120-EGC-120-1.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M5x16-8.8",
+          "partNumber": "ISO 4762-M5x16-8.8",
+          "quantity": 4,
+          "note": "base slide threads M5 (foot / plate onto the EGC-120 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ISO 4762 M6x16-8.8",
+          "partNumber": "ISO 4762-M6x16-8.8",
+          "quantity": 4,
+          "note": "base slide M6 threads under the centring bores (2 of them through ZBH-9)"
+        },
+        {
+          "model": "ZBH-9-B",
+          "partNumber": "8137184",
+          "quantity": 2,
+          "note": "centring sleeves into the slide's D9 H7 bores (2 come with the axis)"
+        },
+        {
+          "model": "NST-8-M6",
+          "partNumber": "150915",
+          "quantity": 8,
+          "note": "slot nuts in the EGC-120 profile's underside mounting slots (+-20 mm)"
+        },
+        {
+          "model": "ISO 4762 M6x20-8.8",
+          "partNumber": "ISO 4762-M6x20-8.8",
+          "quantity": 8,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-120-EGC-120-2",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-120-EGC-120-2",
+      "partNumber": null,
+      "joint": "plate",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "belt",
+          "end": -255
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "spindle",
+          "end": -255
+        }
+      ],
+      "hand": null,
+      "layout": null,
+      "carriedStroke": [
+        140,
+        8500
+      ],
+      "wall": null,
+      "mass": 1.802,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-120-EGC-120-2_BR-EGC-120-EGC-120-2.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M5x16-8.8",
+          "partNumber": "ISO 4762-M5x16-8.8",
+          "quantity": 8,
+          "note": "base slide threads M5 (foot / plate onto the EGC-120 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ISO 4762 M6x16-8.8",
+          "partNumber": "ISO 4762-M6x16-8.8",
+          "quantity": 8,
+          "note": "base slide M6 threads under the centring bores (2 of them through ZBH-9)"
+        },
+        {
+          "model": "ZBH-9-B",
+          "partNumber": "8137184",
+          "quantity": 2,
+          "note": "centring sleeves into the slide's D9 H7 bores (2 come with the axis)"
+        },
+        {
+          "model": "NST-8-M6",
+          "partNumber": "150915",
+          "quantity": 8,
+          "note": "slot nuts in the EGC-120 profile's underside mounting slots (+-20 mm)"
+        },
+        {
+          "model": "ISO 4762 M6x20-8.8",
+          "partNumber": "ISO 4762-M6x20-8.8",
+          "quantity": 8,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-120-EGC-80-1-ML",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-120-EGC-80-1-ML",
+      "partNumber": null,
+      "joint": "angle",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "belt",
+          "end": -132,
+          "clamp": {
+            "span": [
+              -64,
+              158
+            ],
+            "endCap": 67
+          }
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "spindle",
+          "end": -132,
+          "clamp": {
+            "span": [
+              -64,
+              158
+            ],
+            "endCap": 43
+          }
+        }
+      ],
+      "hand": "left",
+      "layout": null,
+      "carriedStroke": [
+        130,
+        8500
+      ],
+      "wall": [
+        -64,
+        162
+      ],
+      "mass": 1.184,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-120-EGC-80-1_BR-EGC-120-EGC-80-1.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M5x16-8.8",
+          "partNumber": "ISO 4762-M5x16-8.8",
+          "quantity": 4,
+          "note": "base slide threads M5 (foot / plate onto the EGC-120 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ISO 4762 M6x16-8.8",
+          "partNumber": "ISO 4762-M6x16-8.8",
+          "quantity": 8,
+          "note": "base slide M6 threads under the centring bores (2 of them through ZBH-9)"
+        },
+        {
+          "model": "ZBH-9-B",
+          "partNumber": "8137184",
+          "quantity": 2,
+          "note": "centring sleeves into the slide's D9 H7 bores (2 come with the axis)"
+        },
+        {
+          "model": "NST-5-M5",
+          "partNumber": "150914",
+          "quantity": 6,
+          "note": "slot nuts in the EGC-80 profile's underside mounting slots (+-20 mm)"
+        },
+        {
+          "model": "ISO 4762 M5x12-8.8",
+          "partNumber": "ISO 4762-M5x12-8.8",
+          "quantity": 6,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-120-EGC-80-1-MR",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-120-EGC-80-1-MR",
+      "partNumber": null,
+      "joint": "angle",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "belt",
+          "end": -132,
+          "clamp": {
+            "span": [
+              -64,
+              158
+            ],
+            "endCap": 67
+          }
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "spindle",
+          "end": -132,
+          "clamp": {
+            "span": [
+              -64,
+              158
+            ],
+            "endCap": 43
+          }
+        }
+      ],
+      "hand": "right",
+      "layout": null,
+      "carriedStroke": [
+        130,
+        8500
+      ],
+      "wall": [
+        -64,
+        162
+      ],
+      "mass": 1.184,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-120-EGC-80-1_BR-EGC-120-EGC-80-1.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M5x16-8.8",
+          "partNumber": "ISO 4762-M5x16-8.8",
+          "quantity": 4,
+          "note": "base slide threads M5 (foot / plate onto the EGC-120 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ISO 4762 M6x16-8.8",
+          "partNumber": "ISO 4762-M6x16-8.8",
+          "quantity": 8,
+          "note": "base slide M6 threads under the centring bores (2 of them through ZBH-9)"
+        },
+        {
+          "model": "ZBH-9-B",
+          "partNumber": "8137184",
+          "quantity": 2,
+          "note": "centring sleeves into the slide's D9 H7 bores (2 come with the axis)"
+        },
+        {
+          "model": "NST-5-M5",
+          "partNumber": "150914",
+          "quantity": 6,
+          "note": "slot nuts in the EGC-80 profile's underside mounting slots (+-20 mm)"
+        },
+        {
+          "model": "ISO 4762 M5x12-8.8",
+          "partNumber": "ISO 4762-M5x12-8.8",
+          "quantity": 6,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-120-EGC-80-2",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-120-EGC-80-2",
+      "partNumber": null,
+      "joint": "plate",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "belt",
+          "end": -194
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 80,
+          "drive": "spindle",
+          "end": -194
+        }
+      ],
+      "hand": null,
+      "layout": null,
+      "carriedStroke": [
+        150,
+        8500
+      ],
+      "wall": null,
+      "mass": 1.145,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-120-EGC-80-2_BR-EGC-120-EGC-80-2.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M5x16-8.8",
+          "partNumber": "ISO 4762-M5x16-8.8",
+          "quantity": 8,
+          "note": "base slide threads M5 (foot / plate onto the EGC-120 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ISO 4762 M6x16-8.8",
+          "partNumber": "ISO 4762-M6x16-8.8",
+          "quantity": 8,
+          "note": "base slide M6 threads under the centring bores (2 of them through ZBH-9)"
+        },
+        {
+          "model": "ZBH-9-B",
+          "partNumber": "8137184",
+          "quantity": 2,
+          "note": "centring sleeves into the slide's D9 H7 bores (2 come with the axis)"
+        },
+        {
+          "model": "NST-5-M5",
+          "partNumber": "150914",
+          "quantity": 4,
+          "note": "slot nuts in the EGC-80 profile's underside mounting slots (+-20 mm)"
+        },
+        {
+          "model": "ISO 4762 M5x12-8.8",
+          "partNumber": "ISO 4762-M5x12-8.8",
+          "quantity": 4,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-185-EGC-185-1-ML",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-185-EGC-185-1-ML",
+      "partNumber": null,
+      "joint": "angle",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 185,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 185,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 185,
+          "drive": "belt",
+          "end": -239.5,
+          "clamp": {
+            "span": [
+              -96.5,
+              347
+            ],
+            "endCap": 142
+          }
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 185,
+          "drive": "spindle",
+          "end": -239.5,
+          "clamp": {
+            "span": [
+              -96.5,
+              347
+            ],
+            "endCap": 76
+          }
+        }
+      ],
+      "hand": "left",
+      "layout": null,
+      "carriedStroke": [
+        230,
+        8500
+      ],
+      "wall": [
+        -96.5,
+        351
+      ],
+      "mass": 5.84,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-185-EGC-185-1_BR-EGC-185-EGC-185-1.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M8x20-8.8",
+          "partNumber": "ISO 4762-M8x20-8.8",
+          "quantity": 4,
+          "note": "base slide threads M8 (foot / plate onto the EGC-185 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ISO 4762 M6x20-8.8",
+          "partNumber": "ISO 4762-M6x20-8.8",
+          "quantity": 8,
+          "note": "base slide M6 threads under the centring bores (2 of them through ZBH-9)"
+        },
+        {
+          "model": "ZBH-9-B",
+          "partNumber": "8137184",
+          "quantity": 2,
+          "note": "centring sleeves into the slide's D9 H7 bores (2 come with the axis)"
+        },
+        {
+          "model": "NST-8-M6",
+          "partNumber": "150915",
+          "quantity": 8,
+          "note": "slot nuts in the EGC-185 profile's underside mounting slots (+-40 mm)"
+        },
+        {
+          "model": "ISO 4762 M6x25-8.8",
+          "partNumber": "ISO 4762-M6x25-8.8",
+          "quantity": 8,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-185-EGC-185-1-MR",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-185-EGC-185-1-MR",
+      "partNumber": null,
+      "joint": "angle",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 185,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 185,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 185,
+          "drive": "belt",
+          "end": -239.5,
+          "clamp": {
+            "span": [
+              -96.5,
+              347
+            ],
+            "endCap": 142
+          }
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 185,
+          "drive": "spindle",
+          "end": -239.5,
+          "clamp": {
+            "span": [
+              -96.5,
+              347
+            ],
+            "endCap": 76
+          }
+        }
+      ],
+      "hand": "right",
+      "layout": null,
+      "carriedStroke": [
+        230,
+        8500
+      ],
+      "wall": [
+        -96.5,
+        351
+      ],
+      "mass": 5.84,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-185-EGC-185-1_BR-EGC-185-EGC-185-1.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M8x20-8.8",
+          "partNumber": "ISO 4762-M8x20-8.8",
+          "quantity": 4,
+          "note": "base slide threads M8 (foot / plate onto the EGC-185 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ISO 4762 M6x20-8.8",
+          "partNumber": "ISO 4762-M6x20-8.8",
+          "quantity": 8,
+          "note": "base slide M6 threads under the centring bores (2 of them through ZBH-9)"
+        },
+        {
+          "model": "ZBH-9-B",
+          "partNumber": "8137184",
+          "quantity": 2,
+          "note": "centring sleeves into the slide's D9 H7 bores (2 come with the axis)"
+        },
+        {
+          "model": "NST-8-M6",
+          "partNumber": "150915",
+          "quantity": 8,
+          "note": "slot nuts in the EGC-185 profile's underside mounting slots (+-40 mm)"
+        },
+        {
+          "model": "ISO 4762 M6x25-8.8",
+          "partNumber": "ISO 4762-M6x25-8.8",
+          "quantity": 8,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-185-EGC-185-2",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-185-EGC-185-2",
+      "partNumber": null,
+      "joint": "plate",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 185,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 185,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 185,
+          "drive": "belt",
+          "end": -354
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 185,
+          "drive": "spindle",
+          "end": -354
+        }
+      ],
+      "hand": null,
+      "layout": null,
+      "carriedStroke": [
+        200,
+        8500
+      ],
+      "wall": null,
+      "mass": 4.614,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-185-EGC-185-2_BR-EGC-185-EGC-185-2.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M8x20-8.8",
+          "partNumber": "ISO 4762-M8x20-8.8",
+          "quantity": 8,
+          "note": "base slide threads M8 (foot / plate onto the EGC-185 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ISO 4762 M6x25-8.8",
+          "partNumber": "ISO 4762-M6x25-8.8",
+          "quantity": 8,
+          "note": "base slide M6 threads under the centring bores (2 of them through ZBH-9)"
+        },
+        {
+          "model": "ZBH-9-B",
+          "partNumber": "8137184",
+          "quantity": 2,
+          "note": "centring sleeves into the slide's D9 H7 bores (2 come with the axis)"
+        },
+        {
+          "model": "NST-8-M6",
+          "partNumber": "150915",
+          "quantity": 8,
+          "note": "slot nuts in the EGC-185 profile's underside mounting slots (+-40 mm)"
+        },
+        {
+          "model": "ISO 4762 M6x25-8.8",
+          "partNumber": "ISO 4762-M6x25-8.8",
+          "quantity": 8,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-185-EGC-120-1-ML",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-185-EGC-120-1-ML",
+      "partNumber": null,
+      "joint": "angle",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 185,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 185,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "belt",
+          "end": -199.5,
+          "clamp": {
+            "span": [
+              -96.5,
+              254
+            ],
+            "endCap": 102
+          }
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "spindle",
+          "end": -199.5,
+          "clamp": {
+            "span": [
+              -96.5,
+              254
+            ],
+            "endCap": 60.5
+          }
+        }
+      ],
+      "hand": "left",
+      "layout": null,
+      "carriedStroke": [
+        190,
+        8500
+      ],
+      "wall": [
+        -96.5,
+        258
+      ],
+      "mass": 3.061,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-185-EGC-120-1_BR-EGC-185-EGC-120-1.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M8x20-8.8",
+          "partNumber": "ISO 4762-M8x20-8.8",
+          "quantity": 4,
+          "note": "base slide threads M8 (foot / plate onto the EGC-185 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ISO 4762 M6x20-8.8",
+          "partNumber": "ISO 4762-M6x20-8.8",
+          "quantity": 4,
+          "note": "base slide M6 threads under the centring bores (2 of them through ZBH-9)"
+        },
+        {
+          "model": "ZBH-9-B",
+          "partNumber": "8137184",
+          "quantity": 2,
+          "note": "centring sleeves into the slide's D9 H7 bores (2 come with the axis)"
+        },
+        {
+          "model": "NST-8-M6",
+          "partNumber": "150915",
+          "quantity": 8,
+          "note": "slot nuts in the EGC-120 profile's underside mounting slots (+-20 mm)"
+        },
+        {
+          "model": "ISO 4762 M6x20-8.8",
+          "partNumber": "ISO 4762-M6x20-8.8",
+          "quantity": 8,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-185-EGC-120-1-MR",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-185-EGC-120-1-MR",
+      "partNumber": null,
+      "joint": "angle",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 185,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 185,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "belt",
+          "end": -199.5,
+          "clamp": {
+            "span": [
+              -96.5,
+              254
+            ],
+            "endCap": 102
+          }
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "spindle",
+          "end": -199.5,
+          "clamp": {
+            "span": [
+              -96.5,
+              254
+            ],
+            "endCap": 60.5
+          }
+        }
+      ],
+      "hand": "right",
+      "layout": null,
+      "carriedStroke": [
+        190,
+        8500
+      ],
+      "wall": [
+        -96.5,
+        258
+      ],
+      "mass": 3.061,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-185-EGC-120-1_BR-EGC-185-EGC-120-1.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M8x20-8.8",
+          "partNumber": "ISO 4762-M8x20-8.8",
+          "quantity": 4,
+          "note": "base slide threads M8 (foot / plate onto the EGC-185 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ISO 4762 M6x20-8.8",
+          "partNumber": "ISO 4762-M6x20-8.8",
+          "quantity": 4,
+          "note": "base slide M6 threads under the centring bores (2 of them through ZBH-9)"
+        },
+        {
+          "model": "ZBH-9-B",
+          "partNumber": "8137184",
+          "quantity": 2,
+          "note": "centring sleeves into the slide's D9 H7 bores (2 come with the axis)"
+        },
+        {
+          "model": "NST-8-M6",
+          "partNumber": "150915",
+          "quantity": 8,
+          "note": "slot nuts in the EGC-120 profile's underside mounting slots (+-20 mm)"
+        },
+        {
+          "model": "ISO 4762 M6x20-8.8",
+          "partNumber": "ISO 4762-M6x20-8.8",
+          "quantity": 8,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
+    },
+    {
+      "id": "BR-EGC-185-EGC-120-2",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-EGC-185-EGC-120-2",
+      "partNumber": null,
+      "joint": "plate",
+      "base": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 185,
+          "drive": "belt"
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 185,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "belt",
+          "end": -314
+        },
+        {
+          "family": "EGC",
+          "variant": null,
+          "size": 120,
+          "drive": "spindle",
+          "end": -314
+        }
+      ],
+      "hand": null,
+      "layout": null,
+      "carriedStroke": [
+        260,
+        8500
+      ],
+      "wall": null,
+      "mass": 3.041,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-EGC-185-EGC-120-2_BR-EGC-185-EGC-120-2.pdf",
+      "accessories": [
+        {
+          "model": "ISO 4762 M8x16-8.8",
+          "partNumber": "ISO 4762-M8x16-8.8",
+          "quantity": 8,
+          "note": "base slide threads M8 (foot / plate onto the EGC-185 slide, before the carried axis goes on)"
+        },
+        {
+          "model": "ISO 4762 M6x20-8.8",
+          "partNumber": "ISO 4762-M6x20-8.8",
+          "quantity": 8,
+          "note": "base slide M6 threads under the centring bores (2 of them through ZBH-9)"
+        },
+        {
+          "model": "ZBH-9-B",
+          "partNumber": "8137184",
+          "quantity": 2,
+          "note": "centring sleeves into the slide's D9 H7 bores (2 come with the axis)"
+        },
+        {
+          "model": "NST-8-M6",
+          "partNumber": "150915",
+          "quantity": 8,
+          "note": "slot nuts in the EGC-120 profile's underside mounting slots (+-20 mm)"
+        },
+        {
+          "model": "ISO 4762 M6x20-8.8",
+          "partNumber": "ISO 4762-M6x20-8.8",
+          "quantity": 8,
+          "note": "carried profile, through the bracket into the slot nuts"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-26 (cad/brackets/egc_brackets.py, reports/brackets/2026-10-26-0400-BR-EGC.md); interfaces measured on the Festo STEP models of EGC-TB-KF / EGC-BS-KF (data/axes/Festo/Drawings/EGC), EGC-TB-KF catalogue 2025/06 (slot nut NST, ZBS/ZBH)"
     }
   ]
 }

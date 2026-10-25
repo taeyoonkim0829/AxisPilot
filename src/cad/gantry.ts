@@ -148,6 +148,12 @@ export async function buildGantry(
     const lateral = cross(c.slide.axis, c.slide.up)
     return [apply(t, c.slide.origin), ...(twin ? [apply(t, add(c.slide.origin, scale(lateral, twin.spacing)))] : [])]
   }
+  /** where the kits sit on those slides: the slide hole pattern centres (EGC-TB/BS-KF: beside the slide centre) */
+  const kitSeatsOf = (a: GantryAxis): Vec3[] => {
+    const c = built.get(a)!
+    const r = placed.get(a)!
+    return slidesOf(a).map((p, k) => add(p, rotate(r, c.patternOffsets[k] ?? c.patternOffsets[0])))
+  }
   const toWorld = (child: Frame, origin: Vec3, axis: Vec3, up: Vec3) => mate(identity, { origin, axis, up }, child)
 
   const bottom = chain[chain.length - 1]
@@ -198,7 +204,9 @@ export async function buildGantry(
     const beam = joint?.beam?.drawing?.meta && slides.length === 2 && !beamTooShort(joint.beam) ? joint.beam : null
     const run = beam ? scale(sub(slides[1], slides[0]), 1 / Math.hypot(...sub(slides[1], slides[0]))) : w.t
     const aim = beam ? centre : target
-    const first = meta ? placeKit(meta, slides[0], wb.n, run, w.n, upward) : null
+    // the kits sit on the slides' hole patterns (beside the slide centre on EGC-TB/BS-KF)
+    const seats = kitSeatsOf(below)
+    const first = meta ? placeKit(meta, seats[0], wb.n, run, w.n, upward) : null
     if (!meta || !first || !drawn || (joint?.beam && !beam)) {
       placed.set(a, toWorld(profile, target, w.n, scale(w.t, -1)))
       unkitted.push(pair)
@@ -207,7 +215,7 @@ export async function buildGantry(
     // each slide's kit with its wall reaching towards the carried axis's mounting point (two X axes, a beam: inwards,
     // a mirrored pair); on the slide itself the calc's choice
     const files = new Map<string, ReturnType<typeof parseStep>>()
-    slides.slice(0, drawn.length).forEach((p, k) => {
+    seats.slice(0, drawn.length).forEach((p, k) => {
       const want = dot(sub(aim, p), run)
       const fits = (d: { meta: AdapterMeta }) => {
         const t = placeKit(d.meta, p, wb.n, run, w.n)

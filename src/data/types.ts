@@ -406,7 +406,8 @@ export interface AdapterAxis {
  * Custom brackets (data/adapters/Custom, `custom: true`, made to order) have no part number; `beam`: a cross beam
  * bolted between the walls of two Festo angle kits on the twin base axes (in place of the carried ELGT profile),
  * carrying a Z axis on a Festo EHAM-MA plate on its pad (`beam.carries` z) or the Y axis pinned on its front face
- * (y); `gantryJoint` takes one where no Festo kit spans the twin base axes.
+ * (y); `gantryJoint` takes one where no Festo kit spans the twin base axes. Custom `angle` / `plate` brackets (EGC, which
+ * has no Festo kits) clamp the carried profile with slot nuts and are taken only where no Festo kit fits.
  */
 export interface AxisAdapter {
   id: string

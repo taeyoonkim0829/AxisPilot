@@ -438,6 +438,16 @@ export const en: Record<string, string> = {
   '두 번째 {base}축 키트에서는 {axis}축 프로파일을 {model} {n}개로 클램프합니다(키트 벽의 M5 구멍, 프로파일 홈 어디서나). {base}축 간격을 나사 구멍 간격(100 mm)에 맞출 필요가 없습니다.':
     "On the second {base} axis kit the {axis} profile is clamped with {n} × {model} (in the kit wall's M5 holes, anywhere along the profile slot), so the {base} axis spacing need not match the threaded hole pitch (100 mm).",
   '프로파일 마운팅': 'Profile mounting',
+  '{axis}축이 두 번째 {base}축 브래킷의 슬롯 너트 나사를 모두 지나 벽 뒤까지 닿지 않습니다. {base}축 간격을 {spacing} mm로 하면 맞습니다.':
+    "The {axis} axis does not reach past all the slot nut screws of the second {base} axis bracket to behind its wall. A {base} axis spacing of {spacing} mm fits.",
+  '{axis}축은 플레이트 앞면에 프로파일 아랫면 홈의 슬롯 너트({nut})로 클램프하고(받침턱으로 직각 맞춤), 위쪽 끝 헤드를 플레이트 위에 둡니다.':
+    "The {axis} axis is clamped to the plate's front face with slot nuts ({nut}) in its profile's underside slots (squared on the ledge), its upper end head above the plate.",
+  '{axis}축은 옆면을 브래킷 받침턱에 얹고 프로파일 아랫면 홈의 슬롯 너트({nut})로 브래킷 벽에 클램프합니다. 가까운 끝 헤드는 벽 뒤에 둡니다.':
+    "The {axis} axis rests with its side face on the bracket's ledge and is clamped to the bracket wall with slot nuts ({nut}) in its profile's underside slots; its near end head stays behind the wall.",
+  '두 번째 {base}축 브래킷에서도 같은 슬롯 너트로 {axis}축 프로파일을 어디서나 클램프합니다. {base}축 간격은 {axis}축 끝 헤드가 두 번째 브래킷 벽 뒤로 나가는 범위에서 자유롭게 정할 수 있습니다.':
+    'The second {base} axis bracket clamps the {axis} profile anywhere with the same slot nuts, so the {base} axis spacing can be chosen freely as long as the {axis} end head reaches behind the second bracket wall.',
+  '주문 제작 어댑터 플레이트입니다.': 'Made-to-order adapter plate.',
+  '주문 제작 앵글 브래킷입니다(MR은 ML의 대칭).': 'Made-to-order angle bracket (MR is the mirror image of ML).',
   '두 번째 {base}축 키트에서도 {axis}축 프로파일을 프로파일 마운팅(EAHF)으로 클램프하므로, {base}축 간격은 {axis}축이 그 마운팅을 모두 덮는 범위에서 자유롭게 정할 수 있습니다.':
     'The second {base} axis kit also clamps the {axis} profile with profile mountings (EAHF), so the {base} axis spacing can be chosen freely as long as the {axis} axis covers all of them.',
   '앵글 키트(EHAM-AK)를 쓰면 Y축은 첫 번째 X축의 키트가 잡는 위치(조립 설명서)에 놓이고, Y 값은 쓰지 않습니다.':
@@ -484,8 +494,8 @@ export const en: Record<string, string> = {
   '{axis}축은 빔 앞면 패드의 {plate}에 구동부를 위로 매답니다(패드 중심: 빔 가운데에서 {at} mm, 장착 위치).': 'The {axis} axis hangs, drive end up, from the {plate} on the pad on the beam front (pad centre {at} mm from the beam centre, the mounting position).',
   '{axis}축은 키트처럼 핀과 볼트로 빔 앞면에 고정합니다(프로파일 아랫면의 핀 구멍과 나사 구멍, 볼트 머리는 빔 안쪽). {axis}축 중심: 빔 가운데에서 {at} mm(장착 위치).': 'The {axis} axis is pinned and screwed onto the beam front as a kit holds it (the pin and threaded bores in the profile underside, screw heads inside the beam). {axis} axis centre: {at} mm from the beam centre (mounting position).',
   '{base}축 간격은 입력값 그대로 씁니다(빔 길이로 맞춤).': 'The {base} axis spacing is used as entered (the beam length is made to it).',
-  '조합 키트는 ELGT-BS, ELGD 데이터시트의 조합표 기준입니다(EGC는 해당 키트 데이터 없음). 축은 시작 위치에 그리며, 위쪽 축은 조립 설명서대로 키트가 잡는 위치(핀과 볼트 구멍)에 붙이고, 그 데이터가 없는 키트는 입력한 장착 오프셋을 따릅니다. 키트가 없는 결합은 입력한 장착 위치에 축만 배치합니다. 키트에 축을 고정하는 프로파일 마운팅(EAHF)은 도면에 없습니다.':
-    'Gantry kits follow the combination tables of the ELGT-BS and ELGD data sheets (no kit data for EGC). The axes are drawn at their start position; a carried axis sits where the kit holds it as in the assembly instructions (pin and screw holes), else at the entered mounting offset. A joint without a kit places the axis alone at the entered mounting point. The profile mountings holding an axis on a kit (EAHF) are not drawn.',
+  '조합 키트는 ELGT-BS, ELGD 데이터시트의 조합표 기준입니다. EGC는 Festo 키트가 없어 주문 제작 브래킷(앵글 브래킷, 어댑터 플레이트)을 씁니다. 축은 시작 위치에 그리며, 위쪽 축은 조립 설명서대로 키트가 잡는 위치(핀과 볼트 구멍)에 붙이고, 그 데이터가 없는 키트는 입력한 장착 오프셋을 따릅니다. 키트가 없는 결합은 입력한 장착 위치에 축만 배치합니다. 키트에 축을 고정하는 프로파일 마운팅(EAHF)과 슬롯 너트는 도면에 없습니다.':
+    'Gantry kits follow the combination tables of the ELGT-BS and ELGD data sheets. EGC has no Festo kits and takes made-to-order brackets (angle brackets, adapter plates). The axes are drawn at their start position; a carried axis sits where the kit holds it as in the assembly instructions (pin and screw holes), else at the entered mounting offset. A joint without a kit places the axis alone at the entered mounting point. The profile mountings (EAHF) and slot nuts holding an axis on a kit are not drawn.',
   '키트 없이 배치한 결합: {pairs}': 'Joints placed without a kit: {pairs}',
   '도면이 없는 부품이 있어 조합할 수 없습니다: {parts}. 관리자에게 문의하세요.':
     'Some parts have no drawing, so they cannot be assembled: {parts}. Please contact the administrator.',

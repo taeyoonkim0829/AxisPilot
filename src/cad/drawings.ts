@@ -14,8 +14,10 @@ export interface AxisMeta {
   stroke: number
   /** drive shaft: at the axis end face, `axis` pointing out towards the motor */
   drive: Frame
-  /** slide mounting surface centre at the start position; `travel` = away from the motor */
-  slide: { origin: Vec3; normal: Vec3; travel: Vec3; front?: Vec3 }
+  /** slide mounting surface centre at the start position; `travel` = away from the motor; `pattern` = the centre of
+   *  the slide's hole pattern on its surface where it is not on the profile centreline (EGC-TB/BS-KF: towards
+   *  `front`), where a gantry kit sits */
+  slide: { origin: Vec3; normal: Vec3; travel: Vec3; front?: Vec3; pattern?: Vec3 }
   /** how to change the length for other strokes */
   stretch?: StretchSpec
   /** the profile's mounting face (underside), middle of the length: where a gantry kit holds the axis */

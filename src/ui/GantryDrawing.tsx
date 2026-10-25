@@ -174,6 +174,18 @@ export function GantryDrawing({
                           )}
                         </span>
                       )}
+                      {[...new Set(j.kits.filter((k) => k.custom && !j.beam).map((k) => k.drawing))].map(
+                        (d) =>
+                          bracketDrawingUrl(d) && (
+                            <span key={d}>
+                              {' '}
+                              {t(j.kit?.joint === 'plate' ? '주문 제작 어댑터 플레이트입니다.' : '주문 제작 앵글 브래킷입니다(MR은 ML의 대칭).')}{' '}
+                              <a href={bracketDrawingUrl(d)!} target="_blank" rel="noreferrer">
+                                {t('제작 도면 (PDF)')}
+                              </a>
+                            </span>
+                          ),
+                      )}
                       {jointAccessories(j, adapters).map((x) => (
                         <span key={x.partNumber}>
                           {' '}
@@ -191,7 +203,7 @@ export function GantryDrawing({
           </div>
           <p className="muted small-print">
             {t(
-              '조합 키트는 ELGT-BS, ELGD 데이터시트의 조합표 기준입니다(EGC는 해당 키트 데이터 없음). 축은 시작 위치에 그리며, 위쪽 축은 조립 설명서대로 키트가 잡는 위치(핀과 볼트 구멍)에 붙이고, 그 데이터가 없는 키트는 입력한 장착 오프셋을 따릅니다. 키트가 없는 결합은 입력한 장착 위치에 축만 배치합니다. 키트에 축을 고정하는 프로파일 마운팅(EAHF)은 도면에 없습니다.',
+              '조합 키트는 ELGT-BS, ELGD 데이터시트의 조합표 기준입니다. EGC는 Festo 키트가 없어 주문 제작 브래킷(앵글 브래킷, 어댑터 플레이트)을 씁니다. 축은 시작 위치에 그리며, 위쪽 축은 조립 설명서대로 키트가 잡는 위치(핀과 볼트 구멍)에 붙이고, 그 데이터가 없는 키트는 입력한 장착 오프셋을 따릅니다. 키트가 없는 결합은 입력한 장착 위치에 축만 배치합니다. 키트에 축을 고정하는 프로파일 마운팅(EAHF)과 슬롯 너트는 도면에 없습니다.',
             )}
             {unkitted.length > 0 && (
               <span className="warn-text"> {t('키트 없이 배치한 결합: {pairs}', { pairs: unkitted.join(', ') })}</span>
@@ -247,10 +259,16 @@ function placementNotes(j: GantryJoint): { text: string; args: Record<string, st
           },
       { text: '{base}축 간격은 입력값 그대로 씁니다(빔 길이로 맞춤).', args },
     ]
+  const custom = j.kit?.custom
+  const nut = j.kit?.accessories.find((x) => /^(NST|ABAN)/.test(x.model))?.model ?? ''
   const out = [
-    j.pinned
-      ? { text: '{axis}축은 키트의 핀과 볼트가 프로파일 아랫면의 핀 구멍과 나사 구멍에 들어가도록 모터 쪽 끝을 키트에 고정합니다(조립 설명서).', args }
-      : { text: '{axis}축은 키트의 원통 핀 위에 얹고 끝을 콘솔 끝에서 77.5 mm(간격 A)에 맞춥니다(조립 설명서).', args },
+    custom
+      ? j.kit!.joint === 'plate'
+        ? { text: '{axis}축은 플레이트 앞면에 프로파일 아랫면 홈의 슬롯 너트({nut})로 클램프하고(받침턱으로 직각 맞춤), 위쪽 끝 헤드를 플레이트 위에 둡니다.', args: { ...args, nut } }
+        : { text: '{axis}축은 옆면을 브래킷 받침턱에 얹고 프로파일 아랫면 홈의 슬롯 너트({nut})로 브래킷 벽에 클램프합니다. 가까운 끝 헤드는 벽 뒤에 둡니다.', args: { ...args, nut } }
+      : j.pinned
+        ? { text: '{axis}축은 키트의 핀과 볼트가 프로파일 아랫면의 핀 구멍과 나사 구멍에 들어가도록 모터 쪽 끝을 키트에 고정합니다(조립 설명서).', args }
+        : { text: '{axis}축은 키트의 원통 핀 위에 얹고 끝을 콘솔 끝에서 77.5 mm(간격 A)에 맞춥니다(조립 설명서).', args },
     j.span || j.kit?.joint === 'plate'
       ? { text: '장착 위치의 {axis} 이동 방향 값은 쓰지 않습니다.', args }
       : { text: '장착 위치의 {axis} 이동 방향 값은 놓이는 쪽(+/−)만 정합니다.', args },
@@ -259,6 +277,11 @@ function placementNotes(j: GantryJoint): { text: string; args: Record<string, st
     out.push({
       text: '두 번째 {base}축 키트에서는 {axis}축 프로파일을 {model} {n}개로 클램프합니다(키트 벽의 M5 구멍, 프로파일 홈 어디서나). {base}축 간격을 나사 구멍 간격(100 mm)에 맞출 필요가 없습니다.',
       args: { ...args, model: j.mountings.model, n: String(j.mountings.quantity) },
+    })
+  else if (j.span && custom)
+    out.push({
+      text: '두 번째 {base}축 브래킷에서도 같은 슬롯 너트로 {axis}축 프로파일을 어디서나 클램프합니다. {base}축 간격은 {axis}축 끝 헤드가 두 번째 브래킷 벽 뒤로 나가는 범위에서 자유롭게 정할 수 있습니다.',
+      args,
     })
   else if (j.span && !j.pinned)
     out.push({
