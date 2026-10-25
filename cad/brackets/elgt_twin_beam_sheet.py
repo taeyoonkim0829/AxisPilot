@@ -14,7 +14,7 @@ L_DRAW = 700.0
 RANGE = {90: (10.5, 609, 2200), 120: (44.5, 609, 2150), 160: (63.5, 615, 2200)}
 KITS = {90: "EHAM-AK-L9-90-L9-90-ML/-MR", 120: "EHAM-AK-L9-120-L9-120-ML/-MR", 160: "EHAM-AK-L9-160-L9-160-ML/-MR"}
 PLATE = {90: "EHAM-MA-L9-120-L9-90(-S)", 120: "EHAM-MA-L9-120-L9-90(-S)", 160: "EHAM-MA-L9-160-L9-120(-S)"}
-MASS_PER_M = {90: 9.70, 120: 9.70, 160: 14.07}  # kg/m, measured on the STEP (volume x 2.70 g/cm3)
+MASS_PER_M = {90: 9.70, 120: 9.70, 160: 14.05}  # kg/m, measured on the STEP (volume x 2.70 g/cm3)
 
 
 def sheet_for(size: int, beam_id: str) -> Sheet:
@@ -36,7 +36,9 @@ def sheet_for(size: int, beam_id: str) -> Sheet:
     ]
     sheet = Sheet(
         "A2", scale=0.4, title=f"Z BEAM ELGT-BS-{size}", part_number=beam_id,
-        material="EN AW-6082-T6", revision="A", author="AxisPilot", general_tolerance="ISO 2768-mK",
+        # material and author left out of the title block: it joins them with a dot the PDF font lacks, and the long
+        # part number fills the field (the material is in the notes)
+        revision="A", general_tolerance="ISO 2768-mK",
         notes=notes, revisions=[("A", "2026-10-24", "INITIAL RELEASE")],
     )
     front = sheet.view(part, "front", at=(200, 362 - 0.2 * s.H), label="FRONT (Z PAD SIDE)", hidden=False)

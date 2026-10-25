@@ -123,6 +123,22 @@ export function slideFrame(a: GantryAxis, mounting: Mounting): { t: V3; l: V3; n
   return { t, l: cross(n, t), n }
 }
 
+/**
+ * Z hangs on a cross beam spanning two floor-mounted Y axes (yz, Y in a twin arrangement): the beam runs along X,
+ * so the Z slide faces across it, −Y (as a wall-mounted X would), instead of −X.
+ */
+export const zAcrossTwinY = (g: GantryInputs): boolean =>
+  g.config === 'yz' && g.yMounting === 'floor' && (g.parallel.y.mode === 'twinMotor' || g.parallel.y.mode === 'twinShaft') && g.parallel.y.spacing > 0
+
+/** The slide frame of a gantry axis: `slideFrame` for its mounting, Z across twin floor Y axes facing −Y */
+export function axisFrame(g: GantryInputs, a: GantryAxis): { t: V3; l: V3; n: V3 } {
+  if (a === 'z' && zAcrossTwinY(g)) {
+    const n: V3 = [0, -1, 0]
+    return { t: unit.z, l: cross(n, unit.z), n }
+  }
+  return slideFrame(a, axisMounting(g, a))
+}
+
 /** World vector → slide frame (x travel, y lateral, z normal). */
 function toSlide(v: V3, f: ReturnType<typeof slideFrame>): Vec {
   return { x: dot(v, f.t), y: dot(v, f.l), z: dot(v, f.n) }
@@ -153,7 +169,7 @@ export interface Stage {
  * `driveSign` −1 (a gantry kit pinning the axis at its drive end on that side).
  */
 export function stageOf(a: GantryAxis, g: GantryInputs, evaluation: AxisEvaluation, req: Requirements, driveMass: number, driveSign: 1 | -1 = 1): Stage {
-  const f = slideFrame(a, axisMounting(g, a))
+  const f = axisFrame(g, a)
   const axis = evaluation.axis
   const stroke = req.stroke
   const length = stroke + (axis.baseLength ?? 0)
@@ -198,7 +214,7 @@ export function gantryRequirements(
   kit: { mass: number; offset: Vec; at: Vec } | null = null,
 ): Requirements {
   const mounting = axisMounting(g, a)
-  const f = slideFrame(a, mounting)
+  const f = axisFrame(g, a)
   const m = g.motion[a]
   const chain = gantryChain(g.config)
   const below = chain.slice(chain.indexOf(a) + 1)

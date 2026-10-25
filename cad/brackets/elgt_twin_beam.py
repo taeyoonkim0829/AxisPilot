@@ -1,4 +1,5 @@
-"""Cross beam for a Z axis carried across two ELGT-BS X axes (twin X, motor sync): XZ gantry.
+"""Cross beams across two ELGT-BS X axes (twin X, motor sync): Z beams (XZ gantry, `make_beam`) and Y beams (XY / XYZ
+gantry, `make_y_beam`, carrying the Y axis on the front face; section "Y beams" below).
 
 Each X slide carries a standard Festo angle kit EHAM-AK-L9-<S>-L9-<S> (…-ML on the first X axis, …-MR on the
 second, walls reaching inwards). The beam takes the place of the carried ELGT-BS-<S> profile on both kit walls: its
@@ -63,6 +64,9 @@ class Size:
     pad_v: float
     # wall face end ahead of the beam end (kit wall reach - end) [W]
     wall_s: float
+    # inner corner radius of the tube (None: t / 2); 160: 4 mm so the pad bores (EHAM-MA pattern +-82 on H 200) stay
+    # clear of the inner corner (bore edge 14.6 mm from the outside, corner ends at t + r = 14)
+    r_in: float | None = None
 
 
 SIZES: dict[int, Size] = {
@@ -85,7 +89,7 @@ SIZES: dict[int, Size] = {
         screws_s=(84.5, 184.5, 284.5), thread="M8", tap_drill=6.8,
         pin_d=8, pin_round=134.5, pin_slot=234.5, pin_rows=False,
         pad_slide="ELGT-160", pad_pin_d=8, pad_pin_v=82, pad_thread="M8", pad_tap_drill=6.8,
-        pad_u=(-70, -35, 35, 70), pad_v=82, wall_s=299.5,
+        pad_u=(-70, -35, 35, 70), pad_v=82, wall_s=299.5, r_in=4.0,
     ),
 }
 
@@ -113,25 +117,25 @@ def holes(s: Size, length: float, z_pos: float = 0.0) -> dict[str, list[tuple[fl
     return {"back_thread": back_thread, "pins": pins, "slots": slots, "pad_thread": pad_thread, "pad_pins": pad_pins}
 
 
-def make_beam(s: Size, length: float, z_pos: float = 0.0) -> bd.Part:
-    """The finished beam (machined from EN AW-6082-T6 rectangular tube)."""
-    # section in the YZ plane (beam y in [-B, 0], z in [0, H]), extruded along +x
+def _tube(s: Size, length: float) -> bd.Part:
+    """The tube section (EN AW-6082-T6 rectangular tube), beam y in [-B, 0], z in [0, H], along +x."""
     plane = bd.Plane.YZ  # local x = global y, local y = global z, normal +x
     outer = bd.RectangleRounded(s.B, s.H, R_OUT)
-    inner = bd.RectangleRounded(s.B - 2 * s.t, s.H - 2 * s.t, s.t / 2)
+    inner = bd.RectangleRounded(s.B - 2 * s.t, s.H - 2 * s.t, s.r_in if s.r_in is not None else s.t / 2)
     section = plane * bd.Pos(-s.B / 2, s.H / 2) * (outer - inner)
-    body = bd.extrude(section, amount=length)
+    return bd.extrude(section, amount=length)
 
-    h = holes(s, length, z_pos)
+
+def bore_y(x: float, z: float, d: float, y0: float, depth: float) -> bd.Part:
+    """Cylinder along y from y0: towards -y (depth > 0, into the beam from the back) or +y (depth < 0)."""
+    cyl = bd.Cylinder(d / 2, abs(depth), align=(bd.Align.CENTER, bd.Align.CENTER, bd.Align.MIN))
+    cyl = cyl.rotate(bd.Axis.X, 90 if depth > 0 else -90)  # +z -> -y (depth > 0) or +y
+    return bd.Pos(x, y0, z) * cyl
+
+
+def _end_cutters(s: Size, h: dict) -> list:
+    """Back wall at both ends: the kit pattern, through the wall (tapped / reamed), 1 mm over."""
     cutters = []
-
-    def bore_y(x: float, z: float, d: float, y0: float, depth: float) -> bd.Part:
-        # cylinder along y from y0 towards y0 - depth (into the beam from the back) or the reverse
-        cyl = bd.Cylinder(d / 2, abs(depth), align=(bd.Align.CENTER, bd.Align.CENTER, bd.Align.MIN))
-        cyl = cyl.rotate(bd.Axis.X, 90 if depth > 0 else -90)  # +z -> -y (depth > 0) or +y
-        return bd.Pos(x, y0, z) * cyl
-
-    # back wall: through the wall (tapped / reamed), 1 mm over
     for x, z in h["back_thread"]:
         cutters.append(bore_y(x, z, s.tap_drill, 1, s.t + 2))
     for x, z in h["pins"]:
@@ -140,11 +144,98 @@ def make_beam(s: Size, length: float, z_pos: float = 0.0) -> bd.Part:
         slot = bd.SlotOverall(SLOT_LEN + s.pin_d, s.pin_d)  # along local x
         slot3 = bd.extrude(bd.Plane.XZ * slot, amount=s.t + 2)  # Plane.XZ normal -y: extrude towards -y
         cutters.append(bd.Pos(x, 1, z) * slot3)
+    return cutters
+
+
+def make_beam(s: Size, length: float, z_pos: float = 0.0) -> bd.Part:
+    """The finished Z beam (XZ): kit patterns at the ends, the Z pad (ELGT slide pattern) on the front."""
+    body = _tube(s, length)
+    h = holes(s, length, z_pos)
+    cutters = _end_cutters(s, h)
     # front wall pad: from y = -B into the beam (+y)
     for x, z in h["pad_thread"]:
         cutters.append(bore_y(x, z, s.pad_tap_drill, -s.B - 1, -(s.t + 2)))
     for x, z in h["pad_pins"]:
         cutters.append(bore_y(x, z, s.pad_pin_d, -s.B - 1, -(s.t + 2)))
+    beam = body
+    for c in cutters:
+        beam = beam - c
+    return beam
+
+
+# --- Y beams (XY): the beam carries the Y axis (ELGT-BS-<Y>) on its front face, in place of the kits' Y profile ---
+#
+# [Y] ELGT-BS profile underside, axis STEP data/axes/Festo/Drawings/ELGT/…-BS-<Y>-<stroke>-10P.stp (strokes 150, 250,
+#     300, 500, 1000 measured; profile end at file z = 0, drive flange (drive frame) 31.5 / 31.5 / 34.5 beyond it):
+#     threaded bores M6 / M6 / M8 (core D4.92 / 4.92 / 6.65, 9 deep) in two rows +-36 / +-50 / +-67 at
+#     first + k * 100 from the drive flange (first 81.5 / 81.5 / 84.5), k = 0 … floor((stroke + 100) / 100);
+#     pin bores: Y90 D5 in both rows at 131.5; Y120 / Y160 D6 / D8 on the centreline at 131.5 / 134.5 (round) and
+#     231.5 / 234.5 (2 mm slot along the profile). These are the bores the EHAM-AK-L9 kit pins and screws use.
+
+
+@dataclass(frozen=True)
+class YSize:
+    """The carried Y axis's underside pattern [Y] and its fasteners through the beam's front wall."""
+
+    name: str
+    row: float
+    first: float
+    flange_end: float  # drive flange beyond the profile's drive end
+    base_length: float  # axis length - stroke (data/axes/Festo/ELGT.json baseLength)
+    thread: str
+    clear: float  # front wall: through hole for the screw (ISO 273 medium)
+    access: float  # back wall: access hole for screw head + washer + key
+    pin_d: float
+    pins: tuple[float, ...]  # from the drive flange
+    pin_rows: bool
+
+
+YSIZES: dict[int, YSize] = {
+    90: YSize("90", row=36, first=81.5, flange_end=31.5, base_length=230, thread="M6", clear=6.6, access=12,
+              pin_d=5, pins=(131.5,), pin_rows=True),
+    120: YSize("120", row=50, first=81.5, flange_end=31.5, base_length=216, thread="M6", clear=6.6, access=12,
+               pin_d=6, pins=(131.5, 231.5), pin_rows=False),
+    160: YSize("160", row=67, first=84.5, flange_end=34.5, base_length=261, thread="M8", clear=9.0, access=16,
+               pin_d=8, pins=(134.5, 234.5), pin_rows=False),
+}
+PITCH = 100.0
+
+
+def y_threads(y: YSize, stroke: float) -> list[float]:
+    """The Y profile's threaded bores used (from the drive flange): three at the drive end (pinned, as the first kit),
+    the last three at the far end (screws only, as the second kit)."""
+    k_max = int((stroke + 100) // PITCH)
+    ks = sorted({0, 1, 2} & set(range(k_max + 1)) | {k for k in range(k_max - 2, k_max + 1) if k >= 0})
+    return [y.first + k * PITCH for k in ks]
+
+
+def y_flange(s: Size, y: YSize, length: float, stroke: float, y_pos: float = 0.0) -> float:
+    """Beam x of the Y drive flange: the Y axis (flange to far end, stroke + base length) centred at L/2 + y_pos,
+    its drive towards end B (+x)."""
+    return length / 2 + y_pos + (stroke + y.base_length) / 2
+
+
+def y_holes(s: Size, y: YSize, length: float, stroke: float, y_pos: float = 0.0) -> dict[str, list[tuple[float, float]]]:
+    """Hole centres (x, z) of the Y fastening: screws (front through hole + back access hole) and pins (front)."""
+    c = zc(s)
+    xf = y_flange(s, y, length, stroke, y_pos)
+    screws = [(xf - a, z) for a in y_threads(y, stroke) for z in (c - y.row, c + y.row)]
+    pin_z = (c - y.row, c + y.row) if y.pin_rows else (c,)
+    pins = [(xf - a, z) for a in y.pins for z in pin_z]
+    return {"screws": screws, "pins": pins}
+
+
+def make_y_beam(s: Size, y: YSize, length: float, stroke: float, y_pos: float = 0.0) -> bd.Part:
+    """The finished Y beam (XY): kit patterns at the ends (as the Z beam), the Y axis pinned and screwed on the front
+    face through the front wall (heads inside, reached through the back wall)."""
+    body = _tube(s, length)
+    cutters = _end_cutters(s, holes(s, length))
+    h = y_holes(s, y, length, stroke, y_pos)
+    for x, z in h["screws"]:
+        cutters.append(bore_y(x, z, y.clear, -s.B - 1, -(s.t + 2)))  # front wall
+        cutters.append(bore_y(x, z, y.access, 1, s.t + 2))  # back wall
+    for x, z in h["pins"]:
+        cutters.append(bore_y(x, z, y.pin_d, -s.B - 1, -(s.t + 2)))
     beam = body
     for c in cutters:
         beam = beam - c

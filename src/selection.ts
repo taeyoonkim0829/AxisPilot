@@ -6,7 +6,7 @@ import { attachKit, findKits, type KitEvaluation, type KitMatch } from './calc/k
 import { evaluateDrive, gearboxOptionsFor, selectMotors, type DriveEvaluation } from './calc/motorSelection'
 import { baseParallel, gantryBase, gantryChain, gantryRequirements, stageOf, withBaseSpacing, type GantryAxis, type GantryInputs, type Stage } from './calc/gantry'
 import type { Requirements, Settings } from './calc/types'
-import { gantryJoint, kitList, type GantryJoint } from './calc/gantryKits'
+import { gantryJoint, jointMass, kitList, type GantryJoint } from './calc/gantryKits'
 import { adapters, axes, brakingResistors, cables, controllers, kits, motors, shafts } from './data'
 
 /** The user's picks; null = the recommendation */
@@ -138,7 +138,7 @@ export function computeGantry(g: GantryInputs, settings: Record<GantryAxis, Sett
           below!.stage = stageOf(below!.axis, g, below!.sel.selectedAxis, below!.req, below!.drive.mass, joint.driveSign)
           stages[stages.length - 1] = below!.stage
         }
-        req = gantryRequirements(g, a, below!.stage, stages, { mass: joint.kits.reduce((m, k) => m + k.mass, 0), offset: joint.offset, at: joint.kitAt })
+        req = gantryRequirements(g, a, below!.stage, stages, { mass: jointMass(joint), offset: joint.offset, at: joint.kitAt })
         if (req.movingProfile) req = { ...req, movingProfile: { driveMass: drive.mass } }
         sel = computeSelection(req, settings[a], picks[a])
         drive = driveMassOf(sel, g.motorMass[a])
@@ -149,7 +149,8 @@ export function computeGantry(g: GantryInputs, settings: Record<GantryAxis, Sett
     let { req, sel, drive, joint } = evaluate(g)
     // two base axes (X, or Y in yz) carrying the next on gantry kits: their spacing set to the one that fits the kits
     // (clear of each other, the second kit's screws on the carried axis's bores or its far end at the bracket);
-    // twice, as the base axis (and so its kit) may change with it
+    // twice, as the base axis (and so its kit) may change with it. A custom cross beam (`joint.beam`) has no `span`: the
+    // entered spacing stays
     let spacing: GantryAxisResult['spacing']
     for (let pass = 0; pass < 2; pass++) {
       const fit = joint?.span?.spacing
@@ -159,7 +160,16 @@ export function computeGantry(g: GantryInputs, settings: Record<GantryAxis, Sett
       spacing = { entered, used: fit }
       ;({ req, sel, drive, joint } = evaluate(withBaseSpacing(g, fit)))
     }
-    const kitLoad = joint?.kit ? [{ label: '조합 키트', model: kitList(joint.kits), mass: joint.kits.reduce((m, k) => m + k.mass, 0) }] : []
+    const kitLoad = joint?.kit
+      ? [
+          { label: '조합 키트', model: kitList(joint.kits), mass: joint.kits.reduce((m, k) => m + k.mass, 0) },
+          // a custom cross beam at its length, with the Z plate on it
+          ...(joint.beam
+            ? [{ label: '크로스 빔 (주문 제작)', model: `${joint.beam.bracket.model} L ${Math.round(joint.beam.length)} mm`, mass: jointMass({ kits: [], beam: { ...joint.beam, plate: null } }) }]
+            : []),
+          ...(joint.beam?.plate ? [{ label: '조합 키트', model: kitList([joint.beam.plate]), mass: joint.beam.plate.mass }] : []),
+        ]
+      : []
     const stage = sel.selectedAxis ? stageOf(a, g, sel.selectedAxis, req, drive.mass) : null
     out.push({ axis: a, req, sel, stage, drive, carried: [...carried, ...kitLoad], joint, spacing })
     if (stage && sel.selectedAxis) {

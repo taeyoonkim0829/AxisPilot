@@ -199,23 +199,23 @@ Drawings: `adapters/Festo/Drawings/<partNumber>_<model>.stp` with frame JSONs (s
 
 ## Custom brackets (`adapters/Custom/Brackets.json`)
 
-Made-to-order parts (machined aluminium) for gantry joints no Festo kit covers, designed in this repository: cadgen source in `cad/brackets/` (`<id>.py` model, `<id>_drawing.py` shop drawing, shared helpers; `check_elgt_twin_beam.py` assembles them with the Festo STEP models and reports interferences), report in `reports/brackets/`. Same item shape as the Festo kits, plus:
+Made-to-order parts (machined aluminium) for gantry joints no Festo kit covers, designed in this repository: cadgen source in `cad/brackets/` (`<id>.py` model, `<id>_drawing.py` shop drawing, shared helpers; `check_elgt_twin_beam.py` (Z beams) and `check_elgt_twin_ybeam.py` (Y beams) assemble them with the Festo STEP models and reports interferences), report in `reports/brackets/`. Same item shape as the Festo kits, plus:
 
 | Field | Meaning |
 |---|---|
 | `id` / `model` | `BR-<base>-<carried>-<n>`, e.g. `BR-ELGT-BS-120-ELGT-BS-90-1` |
 | `maker` / `family` | `Custom` |
 | `partNumber` | null (made to order; the app shows 주문 제작) |
-| `custom` | true: never picked in place of a Festo kit (`gantryJoint` takes Festo kits only) |
-| `joint` | `beam`: a cross beam bolted between the walls of two Festo angle kits on twin X axes, in place of the carried ELGT profile, carrying a Z axis on a Festo EHAM-MA plate on its front pad (XZ). The app has no XZ arrangement yet: `beamBrackets` lists them |
-| `base` | the X axis type (each X slide carries one of the `beam.kits`) |
-| `carried` | the Z axis, as the EHAM-MA plate on the pad holds it (copied from that plate's item: the pad has the slide's hole pattern) |
+| `custom` | true: never picked in place of a Festo kit (`gantryJoint` takes one only where no Festo kit joins the axes, see `joint`) |
+| `joint` | `beam`: a cross beam bolted between the walls of two Festo angle kits on the twin base axes (X, or Y in yz), in place of the carried ELGT profile, the base spacing kept (L = D − 2 · end). `beam.carries` `z`: a Z axis on a Festo EHAM-MA plate on its front pad (yz with two floor-mounted Y axes; `zAcrossTwinY`); `y`: the Y axis pinned and screwed on its front face like the kits hold it (twin X), taken when the Y profile cannot reach the second kit at the entered spacing or only a spacing more than one thread pitch off fits (`wantsBeam`) |
+| `base` | the base axis type (each base slide carries one of the `beam.kits`) |
+| `carried` | Z beams: the Z axis, as the EHAM-MA plate on the pad holds it (copied from that plate's item: the pad has the slide's hole pattern); Y beams: the Y axis, `pinned` with its `threads` (first bore from the drive flange, pitch) |
 | `mass` | kg at the reference length |
-| `beam` | `kits` (angle kits, first X axis -ML pinned, second -MR screws only), `end` (mm, the kits' carried end: beam end from the X slide centre, so X spacing D = L + 2 · end), `length` (mm, [min, max]: walls clear of each other / stiffness limit from the report), `referenceLength` (mm, of the STEP), `massPerMeter` (kg/m), `pad` (the slide pattern on the front) |
+| `beam` | `kits` (angle kits, first X axis -ML pinned, second -MR screws only), `end` (mm, the kits' carried end: beam end from the X slide centre, so X spacing D = L + 2 · end), `length` (mm, [min, max]: walls clear of each other / stiffness limit from the report), `referenceLength` (mm, of the STEP), `massPerMeter` (kg/m), `carries` (`y` / `z`), Z beams: `pad` (the slide pattern on the front) and `padHeight` (mm, pad centre above the base slide surface); Y beams: `pattern` (the Y profile underside pattern on the front) |
 | `drawing` | the dimensioned PDF (`adapters/Custom/Drawings/<id>_<model>.pdf`, committed unlike the makers' PDFs) |
 | `accessories` | the Festo kits and plates to order with it (`quantity` 0 = alternative) |
 
-Drawings: `adapters/Custom/Drawings/<id>_<model>.stp` (beam coordinates: x along the beam from end A, z up from its underside, back face at y = 0, front at −B) with a JSON: `length` (mm, of the model), `base` / `baseB` (end A / end B face on the kit's profile centreline, `axis` from the kit wall into the beam (−y), `up` away from the beam: where the kit's carried ELGT profile would have its drive flange), `carried` (centre of the Z pad's pin pattern on the front face, `axis` out of the pad (−y), `up` along the beam: the EHAM-MA plate's `base` frame goes on it).
+Drawings: `adapters/Custom/Drawings/<id>_<model>.stp` (beam coordinates: x along the beam from end A, z up from its underside, back face at y = 0, front at −B) with a JSON: `length` (mm, of the model), `base` / `baseB` (end A / end B face on the kit's profile centreline, `axis` from the kit wall into the beam (−y), `up` away from the beam: where the kit's carried ELGT profile would have its drive flange), `carried` (Z beams: centre of the Z pad's pin pattern on the front face, `axis` out of the pad (−y), `up` along the beam: the EHAM-MA plate's `base` frame goes on it; Y beams: the Y drive flange on the Y centreline on the front face), `window` (mm, [from, to] along x: the span of the carried axis's holes: the app's 3D drawing cuts it out before the length change (`cad/gantry.ts` `beamAtLength`), so it shows the beam without them rather than holes at a wrong place; the end zones of 300 mm with the kit patterns never stretch), `yStroke` (Y beams: the Y stroke the holes are drawn for). The models are cadgen (OpenCascade) exports, read without their pcurves (`stretch.ts` `withoutPcurves`).
 
 ## Drawings (`<kind>/<maker>/Drawings/…/<partNumber>_<model>.stp`)
 

@@ -24,6 +24,8 @@ export interface StretchSpec {
    * assembly (the second AXIS2_PLACEMENT_3D of their ITEM_DEFINED_TRANSFORMATION): moved along with it.
    */
   move?: number[]
+  /** false: no hole pattern is kept (a custom beam: its end patterns must not grow), one plain cut */
+  pattern?: false
 }
 
 /** The spec in the part's own coordinates */
@@ -97,7 +99,7 @@ export function stretchPart(source: StepFile, spec: StretchSpec, delta: number):
   const file: StepFile = { header: source.header, entities: new Map(source.entities) }
   if (Math.abs(delta) < 1e-6) return { file, cut: NaN, removedFaces: 0 }
   const e = file.entities
-  const result = stretchPattern(file, spec, delta) ?? stretchOne(file, spec.part, spec, delta)
+  const result = (spec.pattern === false ? null : stretchPattern(file, spec, delta)) ?? stretchOne(file, spec.part, spec, delta)
   for (const part of spec.also ?? []) stretchOne(file, part, spec, delta)
 
   // Parts at the moving end: shift their placement (a new point, the old one may be shared)
@@ -113,6 +115,22 @@ export function stretchPart(source: StepFile, spec: StretchSpec, delta: number):
     e.set(placement, replaceArg(body, 1, `#${point}`))
   }
   return { file, ...result }
+}
+
+/**
+ * Edges on their 3D curves only: an OpenCascade export (cadgen, the custom brackets) wraps every edge curve in a
+ * SURFACE_CURVE / SEAM_CURVE with parameter-space curves (pcurves), whose 2D points the length change would read as
+ * extents and move. The edges then take the 3D curve; the wrappers stay unreferenced. CADENAS files have none.
+ */
+export function withoutPcurves(source: StepFile): StepFile {
+  const e = new Map(source.entities)
+  for (const [id, body] of e) {
+    if (typeOf(body) !== 'EDGE_CURVE') continue
+    const curve = refs(body)[2]
+    const wrapper = e.get(curve) ?? ''
+    if (typeOf(wrapper) === 'SURFACE_CURVE' || typeOf(wrapper) === 'SEAM_CURVE') e.set(id, replaceArg(body, 3, `#${refs(wrapper)[0]}`))
+  }
+  return { header: source.header, entities: e }
 }
 
 /** Stretches one part of `file` in place at one cut, as near the middle of the range as possible */

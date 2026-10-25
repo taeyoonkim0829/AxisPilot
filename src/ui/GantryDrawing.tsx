@@ -2,11 +2,12 @@ import { gantryAxes, type GantryInputs } from '../calc/gantry'
 import type { AxisAdapter } from '../data/types'
 import type { GantryAxis } from '../calc/gantry'
 import type { ComboOptions } from '../cad/combo'
-import { adapterDrawingFor } from '../cad/drawings'
+import { adapterDrawingFor, bracketDrawingUrl, type BeamMeta, type Drawing } from '../cad/drawings'
 import { buildGantry, type GantryAxisDrawing, type GantryJointDrawing } from '../cad/gantry'
 import { useT } from '../i18n'
 import type { GantryAxisResult } from '../selection'
-import type { GantryJoint } from '../calc/gantryKits'
+import { beamHardware, type GantryJoint } from '../calc/gantryKits'
+import { adapters } from '../data'
 import { comboInputs, comboKey } from './comboInputs'
 import { ComboPreviewPanel } from './ComboPreviewPanel'
 import { StatusBadge } from './common'
@@ -43,6 +44,13 @@ export function GantryDrawing({
     offset: j.offset,
     flange: j.flange,
     driveSign: j.driveSign,
+    beam: j.beam && {
+      bracket: j.beam.bracket,
+      drawing: adapterDrawingFor(j.beam.bracket) as Drawing<BeamMeta> | null,
+      length: j.beam.length,
+      at: j.beam.at,
+      plate: j.beam.plate && { kit: j.beam.plate, drawing: adapterDrawingFor(j.beam.plate) },
+    },
   }))
   const complete = inputs.every((i) => i.selection && i.found)
   const ready = complete && inputs.every((i) => i.found!.missing.length === 0)
@@ -52,7 +60,10 @@ export function GantryDrawing({
           const o = assemblies[i.a]
           return `${i.a}:${comboKey(i.selection!, i.req!, i.twin)}|${o.kitSide}|${o.motorConnector}|${o.drive.otherEnd}${o.drive.otherSide}|${JSON.stringify([o.twinDrive, o.twinKitSide, o.twinMotorConnector])}`
         }),
-        ...jointDrawings.map((j) => `${j.base}${j.carried}:${j.kits.map((k) => k.kit.id).join('+')}@${JSON.stringify(j.offset)}${j.flange ?? ''}${j.driveSign ?? ''}`),
+        ...jointDrawings.map(
+          (j) =>
+            `${j.base}${j.carried}:${j.kits.map((k) => k.kit.id).join('+')}@${JSON.stringify(j.offset)}${j.flange ?? ''}${j.driveSign ?? ''}${j.beam ? `|${j.beam.bracket.id}:${j.beam.length}:${j.beam.at}:${j.beam.plate?.kit.id ?? ''}` : ''}`,
+        ),
         JSON.stringify(gantry.offsets),
         gantry.zMode,
         gantry.xMounting,
@@ -105,9 +116,9 @@ export function GantryDrawing({
                     <td>
                       <StatusBadge status={j.status} />
                     </td>
-                    <td className="model">{j.kit ? kitModels(j.kits).map((k) => <div key={k.model}>{k.model}</div>) : '—'}</td>
-                    <td className="num">{j.kit ? kitModels(j.kits).map((k) => <div key={k.model}>{k.partNumber ?? t('주문 제작')}</div>) : '—'}</td>
-                    <td className="num">{j.kit ? kitModels(j.kits).map((k) => <div key={k.model}>{k.n}</div>) : '—'}</td>
+                    <td className="model">{j.kit ? jointModels(j).map((k) => <div key={k.model}>{k.model}</div>) : '—'}</td>
+                    <td className="num">{j.kit ? jointModels(j).map((k) => <div key={k.model}>{k.partNumber ?? t('주문 제작')}</div>) : '—'}</td>
+                    <td className="num">{j.kit ? jointModels(j).map((k) => <div key={k.model}>{k.n}</div>) : '—'}</td>
                     <td className="muted">
                       {j.status !== 'ok' ? t(j.note, j.noteArgs) : ''}
                       {j.kit?.hand && ' '}
@@ -118,11 +129,32 @@ export function GantryDrawing({
                           {t(n.text, n.args)}
                         </span>
                       ))}
-                      {j.kit?.accessories.map((x) => (
+                      {j.beam && (
+                        <span>
+                          {' '}
+                          {t('{beam}: 주문 제작 크로스 빔, 길이 L {length} mm ({base}축 간격 {spacing} mm − 2 × {end} mm), {kits} 사이에 볼트 고정.', {
+                            beam: j.beam.bracket.model,
+                            length: fmt(j.beam.length, 1),
+                            base: j.base.toUpperCase(),
+                            spacing: fmt(j.beam.length + 2 * j.beam.bracket.beam!.end, 1),
+                            end: fmt(j.beam.bracket.beam!.end, 1),
+                            kits: j.kits.map((k) => k.model).join(' / '),
+                          })}
+                          {bracketDrawingUrl(j.beam.bracket.drawing) && (
+                            <>
+                              {' '}
+                              <a href={bracketDrawingUrl(j.beam.bracket.drawing)!} target="_blank" rel="noreferrer">
+                                {t('제작 도면 (PDF)')}
+                              </a>
+                            </>
+                          )}
+                        </span>
+                      )}
+                      {(j.beam ? beamHardware(j, adapters) : (j.kit?.accessories ?? [])).map((x) => (
                         <span key={x.partNumber}>
                           {' '}
                           {x.quantity
-                            ? t('함께 주문: {model} ({partNumber}) × {n}', { model: x.model, partNumber: x.partNumber, n: x.quantity * j.quantity })
+                            ? t('함께 주문: {model} ({partNumber}) × {n}', { model: x.model, partNumber: x.partNumber, n: x.quantity * (j.beam ? 1 : j.quantity) })
                             : t('함께 주문: {model} ({partNumber})', { model: x.model, partNumber: x.partNumber })}
                         </span>
                       ))}
@@ -151,6 +183,15 @@ export function GantryDrawing({
   )
 }
 
+/** The joint's parts by model: the kits (a mirrored pair under two X axes is two rows), a beam and its plate */
+function jointModels(j: GantryJoint) {
+  return [
+    ...kitModels(j.kits),
+    ...(j.beam ? [{ model: `${j.beam.bracket.model} (L ${fmt(j.beam.length, 0)} mm)`, partNumber: null, n: 1 }] : []),
+    ...(j.beam?.plate ? kitModels([j.beam.plate]) : []),
+  ]
+}
+
 /** The joint's kits by model (a mirrored pair under two X axes is two rows) */
 function kitModels(kits: AxisAdapter[]) {
   // custom brackets (made to order) have no part number
@@ -167,6 +208,16 @@ function kitModels(kits: AxisAdapter[]) {
 function placementNotes(j: GantryJoint): { text: string; args: Record<string, string> }[] {
   if (!j.aligned) return []
   const args: Record<string, string> = { axis: j.carried.toUpperCase(), base: j.base.toUpperCase() }
+  if (j.beam)
+    return [
+      j.beam.plate
+        ? { text: '{axis}축은 빔 앞면 패드의 {plate}에 구동부를 위로 매답니다(패드 중심: 빔 가운데에서 {at} mm, 장착 위치).', args: { ...args, plate: j.beam.plate.model, at: fmt(j.beam.at, 1) } }
+        : {
+            text: '{axis}축은 키트처럼 핀과 볼트로 빔 앞면에 고정합니다(프로파일 아랫면의 핀 구멍과 나사 구멍, 볼트 머리는 빔 안쪽). {axis}축 중심: 빔 가운데에서 {at} mm(장착 위치).',
+            args: { ...args, at: fmt(j.beam.at, 1) },
+          },
+      { text: '{base}축 간격은 입력값 그대로 씁니다(빔 길이로 맞춤).', args },
+    ]
   const out = [
     j.pinned
       ? { text: '{axis}축은 키트의 핀과 볼트가 프로파일 아랫면의 핀 구멍과 나사 구멍에 들어가도록 모터 쪽 끝을 키트에 고정합니다(조립 설명서).', args }

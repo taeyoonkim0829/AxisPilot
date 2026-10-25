@@ -1,15 +1,16 @@
 // Gantry kits: the Festo part joining a carried axis's profile to the slide of the axis below it (EHAM angle and
 // adapter kits, EAHF-E24 profile mountings), from the axis data sheets' combination tables (data/adapters).
 import type { Axis, AxisAdapter, AdapterAxis } from '../data/types'
-import { axisMounting, baseParallel, gantryBase, slideFrame, type GantryAxis, type GantryInputs, type Vec } from './gantry'
+import { axisFrame, baseParallel, gantryBase, zAcrossTwinY, type GantryAxis, type GantryInputs, type Vec } from './gantry'
 import type { Status } from './types'
 
 /** One joint of the gantry: `carried` sits on the slide(s) of `base` */
 export interface GantryJoint {
   base: GantryAxis
   carried: GantryAxis
-  /** the geometry the mountings need: angle (slides facing across each other), plate (facing the same way) */
-  kind: 'angle' | 'plate' | null
+  /** the geometry the mountings need: angle (slides facing across each other), plate (facing the same way), beam (a
+   *  custom cross beam between the angle kits of two base axes, `beam`) */
+  kind: 'angle' | 'plate' | 'beam' | null
   /** the kit on the first base slide (`kits[0]`) */
   kit: AxisAdapter | null
   /** one kit per base slide (two X axes carry the Y axis at both ends), in slide order (first axis at −l); angle
@@ -36,10 +37,25 @@ export interface GantryJoint {
   span?: { mismatch: number; spacing: number | null; clear: number }
   /** two base slides: the kits' walls reaching towards each other overlap at this spacing */
   interference: boolean
+  /** a custom cross beam (data/adapters/Custom) bolted between the two kits in place of the carried profile, the base
+   *  spacing kept: carrying the Y axis on its front face, or the Z axis on an EHAM-MA plate (`plate`) on its pad */
+  beam?: GantryBeam
   status: Status
   /** Korean source text with `{name}` placeholders */
   note: string
   noteArgs?: Record<string, string | number>
+}
+
+/** A custom cross beam in a joint */
+export interface GantryBeam {
+  bracket: AxisAdapter
+  /** mm, from the base spacing D: L = D − 2 · end */
+  length: number
+  /** z beams: the Festo adapter plate on the pad holding the Z axis */
+  plate: AxisAdapter | null
+  /** mm along the beam from its centre (towards the second base slide): the carried axis's mounting point (Y: its
+   *  centre, drive flange to far end; Z: the pad centre) */
+  at: number
 }
 
 const dot = (a: number[], b: number[]) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
@@ -64,11 +80,16 @@ function baseSlides(g: GantryInputs, base: GantryAxis): number[] {
  * towards the carried axis's mounting point (between two X axes: inwards); on the slide itself, left.
  */
 export function kitHand(g: GantryInputs, base: GantryAxis, carried: GantryAxis, at: number): 'left' | 'right' {
-  const b = slideFrame(base, axisMounting(g, base))
-  const c = slideFrame(carried, axisMounting(g, carried))
+  const b = axisFrame(g, base)
+  const c = axisFrame(g, carried)
   const o = carried === 'z' ? g.offsets.yz : g.offsets.xy
-  const towards = dot([o.x, o.y, o.z], c.t) - at * dot(b.l, c.t)
-  const left = dot(cross(b.n, c.n), c.t)
+  return handFor(b.n, c.n, c.t, dot([o.x, o.y, o.z], c.t) - at * dot(b.l, c.t))
+}
+
+/** The hand of an angle kit on a slide facing `n` whose wall reaches `towards` (sign) along `t`, holding a profile
+ *  whose slide faces `carried` */
+function handFor(n: number[], carried: number[], t: number[], towards: number): 'left' | 'right' {
+  const left = dot(cross(n, carried), t)
   if (Math.abs(towards) < 1e-6) return 'left'
   return towards * left > 0 ? 'left' : 'right'
 }
@@ -79,8 +100,8 @@ export function kitHand(g: GantryInputs, base: GantryAxis, carried: GantryAxis, 
  * across that normal (X on the floor, Y on its side); else null (Z on a floor-mounted Y needs a custom bracket).
  */
 export function jointKind(g: GantryInputs, base: GantryAxis, carried: GantryAxis): GantryJoint['kind'] {
-  const b = slideFrame(base, axisMounting(g, base))
-  const c = slideFrame(carried, axisMounting(g, carried))
+  const b = axisFrame(g, base)
+  const c = axisFrame(g, carried)
   if (dot(b.n, c.n) > 0.99) return 'plate'
   if (Math.abs(dot(b.n, c.n)) < 1e-6 && Math.abs(dot(b.n, c.t)) < 1e-6) return 'angle'
   return null
@@ -108,8 +129,8 @@ function placement(
   slides: number[],
   length: number | null,
 ): Pick<GantryJoint, 'offset' | 'kitAt' | 'aligned' | 'pinned' | 'flange' | 'driveSign' | 'span' | 'interference'> & { short?: boolean } {
-  const b = slideFrame(base, axisMounting(g, base))
-  const c = slideFrame(carried, axisMounting(g, carried))
+  const b = axisFrame(g, base)
+  const c = axisFrame(g, carried)
   const o = carried === 'z' ? g.offsets.yz : g.offsets.xy
   const v = [o.x, o.y, o.z]
   const along = dot(v, c.t)
@@ -184,9 +205,21 @@ export function gantryJoint(
   carriedLength: number | null = null,
 ): GantryJoint {
   const slides = baseSlides(g, base)
+  // Z across two floor-mounted base axes: no Festo kit, the custom Z beam when the data has one
+  if (carried === 'z' && slides.length === 2 && zAcrossTwinY(g) && g.zMode === 'slide') {
+    const bracket = beamBracketFor(adapters, baseAxis, carriedAxis, 'z')
+    if (bracket) return beamJoint(g, base, carried, carriedAxis, carriedStroke, adapters, slides, carriedLength, bracket)
+  }
   const joint = pickJoint(g, base, carried, baseAxis, carriedAxis, carriedStroke, adapters, slides)
   const { short, ...place } = placement(g, base, carried, carriedAxis, joint.kits, slides, carriedLength)
   const span = place.span
+  // two base axes carrying the next on pinned angle kits, too far apart for it: the custom Y beam (`wantsBeam`)
+  if (joint.status === 'ok' && joint.kind === 'angle' && span && place.pinned && joint.kits.length === 2) {
+    const bracket = beamBracketFor(adapters, baseAxis, carriedAxis, 'y')
+    const pitch = fits(joint.kit!.carried, carriedAxis)?.threads?.pitch
+    if (bracket && pitch && wantsBeam(span, Math.abs(slides[1] - slides[0]), pitch))
+      return beamJoint(g, base, carried, carriedAxis, carriedStroke, adapters, slides, carriedLength, bracket)
+  }
   const args = {
     axis: carried.toUpperCase(),
     base: base.toUpperCase(),
@@ -285,12 +318,175 @@ function pickJoint(
 }
 
 /**
- * Custom cross beams (data/adapters/Custom, `joint: 'beam'`) carrying a Z axis across two X axes of the given type
- * (XZ: the beam bolted between two Festo angle kits in place of the carried ELGT profile, the Z axis on a Festo
- * EHAM-MA plate). The app has no XZ arrangement yet, so the gantry joint never picks one; this lists them.
+ * Custom cross beams (data/adapters/Custom, `joint: 'beam'`) carrying a Z axis across two base axes of the given type
+ * (the beam bolted between two Festo angle kits in place of the carried ELGT profile, the Z axis on a Festo EHAM-MA
+ * plate on its pad).
  */
-export function beamBrackets(xAxis: Axis, zAxis: Axis | null, adapters: AxisAdapter[]): AxisAdapter[] {
-  return adapters.filter((k) => k.custom && k.joint === 'beam' && !!fits(k.base, xAxis) && (!zAxis || !!fits(k.carried, zAxis)))
+export function beamBrackets(baseAxis: Axis, zAxis: Axis | null, adapters: AxisAdapter[]): AxisAdapter[] {
+  return adapters.filter(
+    (k) => k.custom && k.joint === 'beam' && k.beam?.carries === 'z' && !!fits(k.base, baseAxis) && (!zAxis || !!fits(k.carried, zAxis)),
+  )
+}
+
+/** The custom beam for a base axis type (whichever axis it is, X or Y) carrying `carriedAxis` as `carries` */
+export function beamBracketFor(adapters: AxisAdapter[], baseAxis: Axis, carriedAxis: Axis, carries: 'y' | 'z'): AxisAdapter | null {
+  return (
+    adapters.find((k) => k.custom && k.joint === 'beam' && k.beam?.carries === carries && !!fits(k.base, baseAxis) && !!fits(k.carried, carriedAxis)) ??
+    null
+  )
+}
+
+/**
+ * The rule for the Y beam: two base axes carrying the next axis on pinned Festo angle kits keep them (the spacing
+ * adjusted to the fitting one) when the carried axis reaches the second kit at, or within one thread pitch of, the
+ * entered spacing; otherwise (the fitting spacing farther off, or none: the carried axis too short) a custom beam
+ * takes its place at the entered spacing, unless the kits' walls collide there (then no beam fits either).
+ */
+export function wantsBeam(span: NonNullable<GantryJoint['span']>, spacing: number, pitch: number): boolean {
+  if (spacing < span.clear) return false
+  return span.spacing == null || Math.abs(span.spacing - spacing) > pitch + 1e-6
+}
+
+/** mm: how far the Y beam's fixing holes stay clear of the kit walls' ends (access hole radius and a margin) */
+const WALL_CLEAR = 10
+/** mm: half the EHAM-MA plate's width along the beam (Z beams: the plate clear of the kit walls) */
+const PLATE_HALF = 80
+
+/**
+ * A joint on a custom cross beam between the two base slides' angle kits (each reaching inwards), at the entered
+ * base spacing D: beam length L = D − 2 · end. Y: pinned on the front face, its centre at the entered mounting point
+ * along the beam, drive end towards the second slide; Z: on the EHAM-MA plate on the pad at the entered point,
+ * hanging from it by its top drive end as on a Y slide. Warns when L is outside the beam's range, the Y fixing holes
+ * reach behind a kit wall, or the plate comes too close to a kit.
+ */
+function beamJoint(
+  g: GantryInputs,
+  base: GantryAxis,
+  carried: GantryAxis,
+  carriedAxis: Axis,
+  carriedStroke: number,
+  adapters: AxisAdapter[],
+  slides: number[],
+  length: number | null,
+  bracket: AxisAdapter,
+): GantryJoint {
+  const beam = bracket.beam!
+  const b = axisFrame(g, base)
+  const c = axisFrame(g, carried)
+  const o = carried === 'z' ? g.offsets.yz : g.offsets.xy
+  const v = [o.x, o.y, o.z]
+  const vec = (w: number[]): Vec => ({ x: w[0] + 0, y: w[1] + 0, z: w[2] + 0 })
+  const spacing = Math.abs(slides[1] - slides[0])
+  const L = spacing - 2 * beam.end
+  // the beam runs along the base lateral, from the first slide to the second; its front faces where the carried slide does
+  const along = b.l
+  const pair = beam.kits.map((m) => adapters.find((k) => k.model === m)).filter((k): k is AxisAdapter => !!k)
+  const kits = slides.map((_, i) => {
+    const hand = handFor(b.n, c.n, along, i === 0 ? 1 : -1)
+    return pair.find((k) => k.hand === hand) ?? pair[0]
+  })
+  const at = dot(v, along)
+  const fit = bracket.carried.find((x) => fits([x], carriedAxis))
+  // the carried axis: its mounting point across as entered, along its travel where the beam holds it
+  const across = v.map((x, i) => x - dot(v, c.t) * c.t[i])
+  let plate: AxisAdapter | null = null
+  let centre: number | null = null
+  let flange: number | null = null
+  const issues: { note: string; args: Record<string, string | number> }[] = []
+  const name = { axis: carried.toUpperCase(), base: base.toUpperCase(), beam: bracket.model }
+  const wallReach = Math.max(...kits.map((k) => k.wall?.[1] ?? 0))
+  if (beam.carries === 'y') {
+    // the Y centre at the entered point along the beam (its travel), drive towards the second slide
+    centre = at
+    if (length != null) {
+      flange = at + length / 2
+      // the Y fixing holes (drive end: 3 screws per row and the pins; far end: the last 3) clear of the kit walls
+      const first = fit?.threads?.first ?? 0
+      const pitch = fit?.threads?.pitch ?? 100
+      const stroke = length - (carriedAxis.baseLength ?? 0)
+      const last = first + Math.floor((stroke + pitch) / pitch) * pitch
+      const lo = flange - last
+      const hi = flange - first
+      const free = spacing / 2 - wallReach - WALL_CLEAR
+      if (lo < -free || hi > free)
+        issues.push({
+          note: '{beam}: {axis}축 고정 구멍({from} … {to} mm)이 키트 벽 뒤에 걸립니다. 빔 위 {axis}축 위치(장착 위치)를 옮기거나 {base}축 간격을 늘리세요(벽 사이 −{free} … {free} mm).',
+          args: { ...name, from: Math.round(lo), to: Math.round(hi), free: Math.round(free) },
+        })
+    }
+  } else {
+    // the plate on the pad: the one for the Z stroke (type C / B), then the Z axis hanging by its drive end
+    const plates = bracket.accessories.flatMap((x) => adapters.filter((k) => k.joint === 'plate' && k.model === x.model))
+    const inRange = (k: AxisAdapter) => !k.carriedStroke || (carriedStroke >= k.carriedStroke[0] && carriedStroke <= k.carriedStroke[1])
+    plate = plates.find(inRange) ?? plates[0] ?? null
+    if (plate && !inRange(plate))
+      issues.push({
+        note: '{kit}: {axis}축 스트로크 {stroke} mm가 키트 범위 {min} … {max} mm를 벗어납니다.',
+        args: { kit: plate.model, axis: name.axis, stroke: carriedStroke, min: plate.carriedStroke![0], max: plate.carriedStroke![1] },
+      })
+    const pfit = plate ? fits(plate.carried, carriedAxis) : undefined
+    if (length != null && pfit?.end != null && beam.padHeight != null) {
+      // the plate's carried end from its base (the pad centre), the body below it (as on a Y slide)
+      flange = beam.padHeight - pfit.end
+      centre = flange - length / 2
+    }
+    const free = spacing / 2 - wallReach - PLATE_HALF
+    if (Math.abs(at) > free)
+      issues.push({
+        note: '{beam}: 패드({axis}축 장착 위치)가 키트에 너무 가깝습니다. 빔 가운데에서 {max} mm 이내로 옮기세요.',
+        args: { ...name, max: Math.max(0, Math.round(free)) },
+      })
+  }
+  if (L < beam.length[0] || L > beam.length[1])
+    issues.unshift({
+      note: '{beam}: 빔 길이 L {length} mm가 범위 {min} … {max} mm를 벗어납니다(최소: 키트 벽 간섭, 최대: 처짐 0.05 mm · 고유진동수 50 Hz). {base}축 간격을 조정하세요.',
+      args: { ...name, length: Math.round(L), min: beam.length[0], max: beam.length[1] },
+    })
+  const offset = vec(across.map((x, i) => x + (centre ?? dot(v, c.t)) * c.t[i]))
+  // kits and beam about the beam's centre (the arrangement centre), across as entered
+  const kitAt = vec(across.map((x, i) => x - (carried === 'z' ? at * along[i] : 0)))
+  const joint = { kits, beam: { bracket, length: L, plate, at } }
+  const issue = issues[0]
+  return {
+    base,
+    carried,
+    kind: 'beam',
+    kit: kits[0],
+    ...joint,
+    quantity: 2,
+    offset,
+    kitAt,
+    aligned: centre != null,
+    pinned: true,
+    flange,
+    driveSign: 1,
+    interference: false,
+    status: issue ? 'warn' : 'ok',
+    note: issue?.note ?? '{kit}',
+    noteArgs: issue?.args ?? { kit: jointList(joint) },
+  }
+}
+
+/** A beam's hardware to order with it: its accessories other than the kits and plates (which are listed as parts) */
+export function beamHardware(j: Pick<GantryJoint, 'beam'>, adapters: AxisAdapter[]): AxisAdapter['accessories'] {
+  return (j.beam?.bracket.accessories ?? []).filter((x) => (x.quantity ?? 0) > 0 && !adapters.some((k) => k.model === x.model))
+}
+
+/** kg of a joint's parts carried by the base axis: the kits, a beam at its length and its plate */
+export function jointMass(j: Pick<GantryJoint, 'kits' | 'beam'>): number {
+  const kits = j.kits.reduce((m, k) => m + k.mass, 0)
+  if (!j.beam) return kits
+  return kits + (j.beam.bracket.beam!.massPerMeter * j.beam.length) / 1000 + (j.beam.plate?.mass ?? 0)
+}
+
+/** A joint's parts as one line: the kits (`kitList`), then a beam with its length and its plate */
+export function jointList(j: Pick<GantryJoint, 'kits' | 'beam'>, partNumbers = false): string {
+  const parts = [kitList(j.kits, partNumbers)]
+  if (j.beam) {
+    parts.push(`${j.beam.bracket.model}${partNumbers ? ` (${'주문 제작'})` : ''} L ${Math.round(j.beam.length)} mm × 1`)
+    if (j.beam.plate) parts.push(kitList([j.beam.plate], partNumbers))
+  }
+  return parts.join(' · ')
 }
 
 /** The kits of a joint as one line: `EHAM-AK-…-ML × 2`, or both hands `…-ML × 1 · …-MR × 1` */

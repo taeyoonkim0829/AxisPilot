@@ -4,7 +4,8 @@ import type { KitMatch } from '../calc/kitSelection'
 import { accelTimeFor } from '../calc/motionProfile'
 import { gearboxChecks, type DriveEvaluation } from '../calc/motorSelection'
 import type { GantryInputs } from '../calc/gantry'
-import type { GantryJoint } from '../calc/gantryKits'
+import { beamHardware, type GantryJoint } from '../calc/gantryKits'
+import { adapters } from '../data'
 import { verticalForward, type Requirements, type Settings, type Status } from '../calc/types'
 import type { KitEvaluation } from '../calc/kitSelection'
 import {
@@ -594,27 +595,33 @@ export function GantryOverview({ gantry, axes }: { gantry: GantryInputs; axes: G
                       </td>
                     </tr>
                   )
-                // one row per kit model (a mirrored pair under two X axes), then what is ordered with them
-                const kits = [...new Set(j.kits.map((k) => k.model))].map((model) => {
-                  const same = j.kits.filter((k) => k.model === model)
-                  return { model, partNumber: same[0].partNumber, n: same.length }
-                })
+                // one row per kit model (a mirrored pair under two X axes), a custom beam with its length and its
+                // plate, then what is ordered with them
+                const kits = [
+                  ...[...new Set(j.kits.map((k) => k.model))].map((model) => {
+                    const same = j.kits.filter((k) => k.model === model)
+                    return { model, partNumber: same[0].partNumber, n: same.length }
+                  }),
+                  ...(j.beam ? [{ model: `${j.beam.bracket.model} (L ${fmt(j.beam.length, 0)} mm)`, partNumber: null, n: 1 }] : []),
+                  ...(j.beam?.plate ? [{ model: j.beam.plate.model, partNumber: j.beam.plate.partNumber, n: 1 }] : []),
+                ]
+                const extra = j.beam ? beamHardware(j, adapters).map((x) => ({ ...x, n: x.quantity })) : j.kit.accessories.map((x) => ({ ...x, n: x.quantity ? x.quantity * j.quantity : null }))
                 return [
                   ...kits.map((k, i) => (
                     <tr key={`${where(j)}${k.model}`}>
                       <td>{i === 0 ? where(j) : ''}</td>
                       <td className="model">{k.model}</td>
-                      <td>{k.partNumber}</td>
+                      <td>{k.partNumber ?? t('주문 제작')}</td>
                       <td>{k.n}</td>
                       <td>{i === 0 ? <StatusBadge status={j.status} /> : ''}</td>
                     </tr>
                   )),
-                  ...j.kit.accessories.map((x) => (
+                  ...extra.map((x) => (
                     <tr key={`${where(j)}${x.partNumber}`}>
                       <td />
                       <td className="model">{x.model}</td>
                       <td>{x.partNumber}</td>
-                      <td>{x.quantity ? x.quantity * j.quantity : '—'}</td>
+                      <td>{x.n ?? '—'}</td>
                       <td />
                     </tr>
                   )),

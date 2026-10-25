@@ -393,8 +393,9 @@ export interface AdapterAxis {
  * profile on the base axis's slide. `angle`: the carried slide faces across the base slide's normal (X floor, Y on
  * the wall side); `plate`: both slides face the same way (crossed axes, Z on a wall-mounted Y).
  * Custom brackets (data/adapters/Custom, `custom: true`, made to order) have no part number; `beam`: a cross beam
- * bolted between the walls of two Festo angle kits on twin X axes (in place of the carried ELGT profile), carrying a
- * Z axis on a Festo EHAM-MA plate (XZ). The app has no XZ arrangement yet, so no joint picks a beam.
+ * bolted between the walls of two Festo angle kits on the twin base axes (in place of the carried ELGT profile),
+ * carrying a Z axis on a Festo EHAM-MA plate on its pad (`beam.carries` z) or the Y axis pinned on its front face
+ * (y); `gantryJoint` takes one where no Festo kit spans the twin base axes.
  */
 export interface AxisAdapter {
   id: string
@@ -424,8 +425,20 @@ export interface AxisAdapter {
   custom?: boolean
   /** custom bracket: its dimensioned drawing (PDF, data/… path) */
   drawing?: string
-  /** `beam` brackets: the Festo angle kits it is bolted between (first X axis, second), `end` (mm, the kits'
-   *  carried end: beam end from the X slide centre, so the X spacing D = L + 2 · end), length range and reference
-   *  length (mm), mass per metre (kg/m; `mass` is at the reference length), the Z pad's hole pattern */
-  beam?: { kits: [string, string]; end: number; length: [number, number]; referenceLength: number; massPerMeter: number; pad: string }
+  /** `beam` brackets: the Festo angle kit pair it is bolted between (-ML, -MR; each base slide takes the hand reaching
+   *  inwards), `end` (mm, the kits' carried end: beam end from the base slide centre, so the base spacing
+   *  D = L + 2 · end), length range and reference length (mm), mass per metre (kg/m; `mass` is at the reference
+   *  length), what it carries (`z`: a Z axis on the EHAM-MA plate in `accessories` on its pad, `pad` the pad's
+   *  hole pattern and `padHeight` (mm) its centre above the base slide surface; `y`: the Y axis pinned on its front face, `pattern` the profile pattern it reproduces) */
+  beam?: {
+    kits: [string, string]
+    end: number
+    length: [number, number]
+    referenceLength: number
+    massPerMeter: number
+    carries: 'y' | 'z'
+    pad?: string
+    padHeight?: number
+    pattern?: string
+  }
 }

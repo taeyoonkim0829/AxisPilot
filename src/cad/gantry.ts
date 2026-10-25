@@ -1,11 +1,12 @@
-import { gantryChain, slideFrame, axisMounting, type GantryAxis, type GantryInputs } from '../calc/gantry'
+import { axisFrame, gantryChain, type GantryAxis, type GantryInputs } from '../calc/gantry'
 import type { Requirements } from '../calc/types'
 import type { AxisAdapter } from '../data/types'
 import { assemble, sourceNotice, type AssemblyPart } from './assemble'
 import { comboParts, type Combo, type ComboDrawings, type ComboOptions, type ComboSelection, type PartRole, type TwinAxis } from './combo'
-import type { AdapterMeta, Drawing } from './drawings'
+import type { AdapterMeta, BeamMeta, Drawing } from './drawings'
 import { add, apply, compose, cross, dot, identity, mate, rotate, scale, sub, type Frame, type Transform } from './geometry'
-import { parseStep, writeStep, type Vec3 } from './step'
+import { parseStep, writeStep, type StepFile, type Vec3 } from './step'
+import { stretchPart, withoutPcurves } from './stretch'
 
 // Gantry drawing: each axis's combination (axis, kit, gearbox, motor; two X axes when X is a twin arrangement) turned
 // into the gantry's world frame (X, Y horizontal, Z up, as calc/gantry.ts), the base axis at the origin, every
@@ -33,6 +34,16 @@ export interface GantryJointDrawing {
    *  travel from the base centre, and the end its drive is at (+1: +t) */
   flange?: number | null
   driveSign?: 1 | -1
+  /** a custom cross beam between the kits (`GantryJoint.beam`): its drawing (at the reference length, stretched to
+   *  `length`), the carried axis's mounting point along it (mm from its centre towards the second slide) and, for
+   *  a Z beam, the adapter plate on its pad */
+  beam?: {
+    bracket: AxisAdapter
+    drawing: Drawing<BeamMeta> | null
+    length: number
+    at: number
+    plate: { kit: AxisAdapter; drawing: Drawing<AdapterMeta> | null } | null
+  }
 }
 
 export interface GantryCombo extends Combo {
@@ -44,7 +55,7 @@ const near = (a: Vec3, b: Vec3) => dot(a, b) > 0.999
 
 /** World frame of an axis: slide normal and travel (the drive sits at the +t end, as calc/gantry.ts assumes) */
 function worldOf(g: GantryInputs, a: GantryAxis) {
-  const f = slideFrame(a, axisMounting(g, a))
+  const f = axisFrame(g, a)
   return { n: f.n as Vec3, t: f.t as Vec3 }
 }
 
@@ -59,6 +70,27 @@ function placeKit(meta: AdapterMeta, at: Vec3, n: Vec3, travel: Vec3, carriedNor
     if (near(rotate(k, meta.carried.axis), carriedNormal) && (!upward || dot(rotate(k, meta.carried.up), upward) > 0)) return k
   }
   return null
+}
+
+/** mm from the beam ends: the length change stays clear of the kit hole patterns (last bore 284.5 + its radius) */
+const BEAM_END_ZONE = 300
+
+/**
+ * A custom beam's STEP at length `length`: the carried axis's holes (`meta.window`, at the reference position)
+ * cut out first, so they are not drawn at a wrong place, then the middle lengthened or shortened; the kit hole
+ * patterns at both ends stay (no hole-pattern pitch is kept: `pattern: false`).
+ */
+export function beamAtLength(text: string, bracket: AxisAdapter, meta: BeamMeta, length: number): StepFile {
+  let file = withoutPcurves(parseStep(text))
+  const part = bracket.model
+  const [w0, w1] = meta.window
+  // (the range a hair longer: the window w0 + (w1 − w0) must fit it in floating point)
+  const window = w1 - w0
+  file = stretchPart(file, { part, axis: 0, dir: 1, range: [w0, w1 + 1e-3], pattern: false }, -window).file
+  const short = meta.length - window
+  if (Math.abs(length - short) > 1e-6)
+    file = stretchPart(file, { part, axis: 0, dir: 1, range: [BEAM_END_ZONE, short - BEAM_END_ZONE], pattern: false }, length - short).file
+  return file
 }
 
 /** The way a kit's carried face reaches from its foot along the carried travel (file coordinates) */
@@ -87,7 +119,15 @@ export async function buildGantry(
   )
   const kitTexts = new Map(
     await Promise.all(
-      [...new Map(joints.flatMap((j) => j.kits.flatMap((k) => (k.drawing ? [[k.drawing.url, k.drawing] as const] : [])))).values()].map(
+      [
+        ...new Map(
+          joints.flatMap((j) =>
+            [...j.kits, ...(j.beam ? [{ drawing: j.beam.drawing }, { drawing: j.beam.plate?.drawing ?? null }] : [])].flatMap((k) =>
+              k.drawing ? [[k.drawing.url, k.drawing as Drawing] as const] : [],
+            ),
+          ),
+        ).values(),
+      ].map(
         async (d) => [d.url, await load(d)] as const,
       ),
     ),
@@ -149,23 +189,28 @@ export async function buildGantry(
     // the drive at +t as the calc takes it, at −t when the kit pins it there; a pinned plate's body away from it
     const sign = joint?.driveSign ?? 1
     const upward = drawn?.[0].kit.joint === 'plate' && joint?.flange != null ? scale(w.t, -sign) : undefined
-    const first = meta ? placeKit(meta, slides[0], wb.n, w.t, w.n, upward) : null
-    if (!meta || !first || !drawn) {
+    // a custom beam: the kits hold it as they would a profile running from the first slide to the second, its front
+    // (the carried slide's side) facing where the carried slide faces
+    const beam = joint?.beam?.drawing?.meta && slides.length === 2 ? joint.beam : null
+    const run = beam ? scale(sub(slides[1], slides[0]), 1 / Math.hypot(...sub(slides[1], slides[0]))) : w.t
+    const aim = beam ? centre : target
+    const first = meta ? placeKit(meta, slides[0], wb.n, run, w.n, upward) : null
+    if (!meta || !first || !drawn || (joint?.beam && !beam)) {
       placed.set(a, toWorld(profile, target, w.n, scale(w.t, -1)))
       unkitted.push(pair)
       continue
     }
-    // each slide's kit with its wall reaching towards the carried axis's mounting point (two X axes: inwards, a
-    // mirrored pair); on the slide itself the calc's choice
+    // each slide's kit with its wall reaching towards the carried axis's mounting point (two X axes, a beam: inwards,
+    // a mirrored pair); on the slide itself the calc's choice
     const files = new Map<string, ReturnType<typeof parseStep>>()
     slides.slice(0, drawn.length).forEach((p, k) => {
-      const want = dot(sub(target, p), w.t)
+      const want = dot(sub(aim, p), run)
       const fits = (d: { meta: AdapterMeta }) => {
-        const t = placeKit(d.meta, p, wb.n, w.t, w.n)
-        return t && dot(rotate(t, reach(d.meta)), w.t) * want > 0 ? t : null
+        const t = placeKit(d.meta, p, wb.n, run, w.n)
+        return t && dot(rotate(t, reach(d.meta)), run) * want > 0 ? t : null
       }
       const pick = (Math.abs(want) > 1e-6 && drawn.find((d) => fits(d))) || drawn[k]
-      const kt = (Math.abs(want) > 1e-6 && fits(pick)) || placeKit(pick.meta, p, wb.n, w.t, w.n, upward)
+      const kt = (Math.abs(want) > 1e-6 && fits(pick)) || placeKit(pick.meta, p, wb.n, run, w.n, upward)
       if (!kt) return
       const url = pick.url
       if (!files.has(url)) files.set(url, parseStep(kitTexts.get(url)!))
@@ -173,7 +218,29 @@ export async function buildGantry(
     })
     // the carried profile on the kit face (across: on its centreline), its middle at the mounting point along its
     // travel; pinned: its drive flange where the kit's pins hold it
-    const face = apply(first, meta.carried.origin)
+    let face = apply(first, meta.carried.origin)
+    if (beam) {
+      // the beam's end A face on the first kit's wall at its carried end, the beam towards the second slide
+      const bm = beam.drawing!.meta!
+      const end = beam.bracket.beam!.end
+      const endA = add(face, scale(run, dot(slides[0], run) + end - dot(face, run)))
+      const bt = mate(identity, { origin: endA, axis: w.n, up: scale(run, -1) }, bm.base)
+      kits.push({ role: 'adapter', name: `${beam.bracket.model} L ${Math.round(beam.length)}`, file: beamAtLength(kitTexts.get(beam.drawing!.url)!, beam.bracket, bm, beam.length), transform: bt })
+      // the carrying face: the beam front (Y profile underside), or the plate on the pad (Z)
+      const front = (x: number): Vec3 => apply(bt, [x, bm.carried.origin[1], bm.carried.origin[2]])
+      face = front(0)
+      const pm = beam.plate?.drawing?.meta
+      if (beam.bracket.beam!.carries === 'z') {
+        const pt = pm ? placeKit(pm, front(beam.length / 2 + beam.at), w.n, w.t, w.n, scale(w.t, -sign)) : null
+        if (!pm || !pt) {
+          placed.set(a, toWorld(profile, target, w.n, scale(w.t, -1)))
+          unkitted.push(pair)
+          continue
+        }
+        kits.push({ role: 'adapter', name: beam.plate!.kit.model, file: parseStep(kitTexts.get(beam.plate!.drawing!.url)!), transform: pt })
+        face = apply(pt, pm.carried.origin)
+      }
+    }
     const along = add(face, scale(w.t, dot(sub(target, face), w.t)))
     let t = toWorld(profile, along, w.n, scale(w.t, -sign))
     if (joint?.flange != null) {

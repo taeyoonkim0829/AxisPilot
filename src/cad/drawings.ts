@@ -28,6 +28,16 @@ export interface AdapterMeta {
   /** `axis` from the kit towards the carried axis (its slide side), `up` along the carried travel */
   carried: Frame
 }
+/** A custom cross beam (data/adapters/Custom, `joint: 'beam'`) at its reference `length` (mm, along file x from
+ *  end A): `base` / `baseB` its end faces on the kits' profile centreline (as the carried profile's drive flange
+ *  would sit), `carried` on its front face (the Z pad centre, or the Y drive flange on the Y centreline), `window` the
+ *  span along x of the carried axis's holes (cut out before the length change), `yStroke` the Y stroke they are for */
+export interface BeamMeta extends AdapterMeta {
+  length: number
+  baseB: Frame
+  window: [number, number]
+  yStroke?: number
+}
 export interface KitMeta {
   axisFace: Frame
   motorFace: Frame
@@ -71,6 +81,11 @@ const stepUrls = import.meta.glob<string>('../../data/*/*/Drawings/**/*.{stp,ste
   eager: true,
 })
 const metaFiles = import.meta.glob<unknown>('../../data/*/*/Drawings/**/*.json', { import: 'default', eager: true })
+// the custom brackets' shop drawings (committed, unlike the makers' PDFs)
+const bracketPdfs = import.meta.glob<string>('../../data/adapters/Custom/Drawings/*.pdf', { query: '?url', import: 'default', eager: true })
+
+/** URL of a custom bracket's drawing PDF (`AxisAdapter.drawing`, a data/… path); null when it is not there */
+export const bracketDrawingUrl = (path: string | undefined): string | null => (path ? (bracketPdfs[`../../${path}`] ?? null) : null)
 
 /**
  * Part number and model names from the file name: `<partNumber>_<model>` (CADENAS), else the model up to the first

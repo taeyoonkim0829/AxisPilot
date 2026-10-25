@@ -55,7 +55,9 @@
         ],
         "referenceLength": 1000,
         "massPerMeter": 9.7,
-        "pad": "ELGT-120 slide"
+        "carries": "z",
+        "pad": "ELGT-120 slide",
+        "padHeight": 102
       },
       "accessories": [
         {
@@ -146,7 +148,9 @@
         ],
         "referenceLength": 1000,
         "massPerMeter": 9.7,
-        "pad": "ELGT-120 slide"
+        "carries": "z",
+        "pad": "ELGT-120 slide",
+        "padHeight": 102
       },
       "accessories": [
         {
@@ -222,7 +226,7 @@
         500
       ],
       "wall": null,
-      "mass": 14.07,
+      "mass": 14.05,
       "custom": true,
       "drawing": "data/adapters/Custom/Drawings/BR-ELGT-BS-160-ELGT-BS-120-1_BR-ELGT-BS-160-ELGT-BS-120-1.pdf",
       "beam": {
@@ -236,8 +240,10 @@
           2200
         ],
         "referenceLength": 1000,
-        "massPerMeter": 14.07,
-        "pad": "ELGT-160 slide"
+        "massPerMeter": 14.05,
+        "carries": "z",
+        "pad": "ELGT-160 slide",
+        "padHeight": 122
       },
       "accessories": [
         {
@@ -272,6 +278,432 @@
         }
       ],
       "dataSource": "AxisPilot custom design 2026-10-24 (cad/brackets/elgt_twin_beam.py, reports/brackets/2026-10-24-2240-BR-ELGT-BS-twin-X-Z.md); interfaces measured on the Festo STEP models of EHAM-AK-L9, EHAM-MA-L9 and ELGT-BS"
+    },
+    {
+      "id": "BR-ELGT-BS-90-ELGT-BS-90-2",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-ELGT-BS-90-ELGT-BS-90-2",
+      "partNumber": null,
+      "joint": "beam",
+      "base": [
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 90,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 90,
+          "drive": "spindle",
+          "pinned": true,
+          "threads": {
+            "first": 81.5,
+            "pitch": 100
+          }
+        }
+      ],
+      "hand": null,
+      "layout": null,
+      "carriedStroke": null,
+      "wall": null,
+      "mass": 14.52,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-ELGT-BS-90-ELGT-BS-90-2_BR-ELGT-BS-90-ELGT-BS-90-2.pdf",
+      "beam": {
+        "kits": [
+          "EHAM-AK-L9-90-L9-90-ML",
+          "EHAM-AK-L9-90-L9-90-MR"
+        ],
+        "end": 10.5,
+        "length": [
+          609,
+          2200
+        ],
+        "referenceLength": 1500,
+        "massPerMeter": 9.68,
+        "carries": "y",
+        "pattern": "ELGT-BS-90 profile underside"
+      },
+      "accessories": [
+        {
+          "model": "EHAM-AK-L9-90-L9-90-ML",
+          "partNumber": "8128210",
+          "quantity": 1,
+          "note": "one of the pair on each X axis slide, walls reaching inwards (which X axis takes -ML depends on the side the Y axis faces); the first X axis kit pins end A"
+        },
+        {
+          "model": "EHAM-AK-L9-90-L9-90-MR",
+          "partNumber": "8128215",
+          "quantity": 1,
+          "note": "the other X axis slide: screws only into its beam end (its two carried-side pins left out)"
+        },
+        {
+          "model": "ISO 4762 M6x16-8.8",
+          "partNumber": "ISO 4762-M6x16-8.8",
+          "quantity": 24,
+          "note": "12 kit walls into the beam ends (6 per end, instead of the kits' screws; tighten 8 Nm) + 12 Y profile onto the front wall (heads inside, through the back-wall access holes, with washers; 6 at the Y drive end, up to 6 at its far end)"
+        },
+        {
+          "model": "ISO 7092-6 200HV",
+          "partNumber": "ISO 7092-6-200HV",
+          "quantity": 12,
+          "note": "under the Y screw heads (inside the front wall)"
+        },
+        {
+          "model": "ISO 8734 5x12",
+          "partNumber": "ISO 8734-5x12",
+          "quantity": 2,
+          "note": "pressed into the front wall (H7), into the Y profile's pin bores at its drive end (both rows)"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-24 (cad/brackets/elgt_twin_beam.py, reports/brackets/2026-10-24-2340-BR-ELGT-BS-twin-X-Y.md); interfaces measured on the Festo STEP models of EHAM-AK-L9 and ELGT-BS"
+    },
+    {
+      "id": "BR-ELGT-BS-120-ELGT-BS-90-2",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-ELGT-BS-120-ELGT-BS-90-2",
+      "partNumber": null,
+      "joint": "beam",
+      "base": [
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 120,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 90,
+          "drive": "spindle",
+          "pinned": true,
+          "threads": {
+            "first": 81.5,
+            "pitch": 100
+          }
+        }
+      ],
+      "hand": null,
+      "layout": null,
+      "carriedStroke": null,
+      "wall": null,
+      "mass": 14.52,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-ELGT-BS-120-ELGT-BS-90-2_BR-ELGT-BS-120-ELGT-BS-90-2.pdf",
+      "beam": {
+        "kits": [
+          "EHAM-AK-L9-120-L9-120-ML",
+          "EHAM-AK-L9-120-L9-120-MR"
+        ],
+        "end": 44.5,
+        "length": [
+          609,
+          2200
+        ],
+        "referenceLength": 1500,
+        "massPerMeter": 9.68,
+        "carries": "y",
+        "pattern": "ELGT-BS-90 profile underside"
+      },
+      "accessories": [
+        {
+          "model": "EHAM-AK-L9-120-L9-120-ML",
+          "partNumber": "8128208",
+          "quantity": 1,
+          "note": "one of the pair on each X axis slide, walls reaching inwards (which X axis takes -ML depends on the side the Y axis faces); the first X axis kit pins end A"
+        },
+        {
+          "model": "EHAM-AK-L9-120-L9-120-MR",
+          "partNumber": "8128213",
+          "quantity": 1,
+          "note": "the other X axis slide: screws only into its beam end (its two carried-side pins left out)"
+        },
+        {
+          "model": "ISO 4762 M6x16-8.8",
+          "partNumber": "ISO 4762-M6x16-8.8",
+          "quantity": 24,
+          "note": "12 kit walls into the beam ends (6 per end, instead of the kits' screws; tighten 8 Nm) + 12 Y profile onto the front wall (heads inside, through the back-wall access holes, with washers; 6 at the Y drive end, up to 6 at its far end)"
+        },
+        {
+          "model": "ISO 7092-6 200HV",
+          "partNumber": "ISO 7092-6-200HV",
+          "quantity": 12,
+          "note": "under the Y screw heads (inside the front wall)"
+        },
+        {
+          "model": "ISO 8734 5x12",
+          "partNumber": "ISO 8734-5x12",
+          "quantity": 2,
+          "note": "pressed into the front wall (H7), into the Y profile's pin bores at its drive end (both rows)"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-24 (cad/brackets/elgt_twin_beam.py, reports/brackets/2026-10-24-2340-BR-ELGT-BS-twin-X-Y.md); interfaces measured on the Festo STEP models of EHAM-AK-L9 and ELGT-BS"
+    },
+    {
+      "id": "BR-ELGT-BS-120-ELGT-BS-120-2",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-ELGT-BS-120-ELGT-BS-120-2",
+      "partNumber": null,
+      "joint": "beam",
+      "base": [
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 120,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 120,
+          "drive": "spindle",
+          "pinned": true,
+          "threads": {
+            "first": 81.5,
+            "pitch": 100
+          }
+        }
+      ],
+      "hand": null,
+      "layout": null,
+      "carriedStroke": null,
+      "wall": null,
+      "mass": 14.52,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-ELGT-BS-120-ELGT-BS-120-2_BR-ELGT-BS-120-ELGT-BS-120-2.pdf",
+      "beam": {
+        "kits": [
+          "EHAM-AK-L9-120-L9-120-ML",
+          "EHAM-AK-L9-120-L9-120-MR"
+        ],
+        "end": 44.5,
+        "length": [
+          609,
+          2000
+        ],
+        "referenceLength": 1500,
+        "massPerMeter": 9.68,
+        "carries": "y",
+        "pattern": "ELGT-BS-120 profile underside"
+      },
+      "accessories": [
+        {
+          "model": "EHAM-AK-L9-120-L9-120-ML",
+          "partNumber": "8128208",
+          "quantity": 1,
+          "note": "one of the pair on each X axis slide, walls reaching inwards (which X axis takes -ML depends on the side the Y axis faces); the first X axis kit pins end A"
+        },
+        {
+          "model": "EHAM-AK-L9-120-L9-120-MR",
+          "partNumber": "8128213",
+          "quantity": 1,
+          "note": "the other X axis slide: screws only into its beam end (its two carried-side pins left out)"
+        },
+        {
+          "model": "ISO 4762 M6x16-8.8",
+          "partNumber": "ISO 4762-M6x16-8.8",
+          "quantity": 24,
+          "note": "12 kit walls into the beam ends (6 per end, instead of the kits' screws; tighten 8 Nm) + 12 Y profile onto the front wall (heads inside, through the back-wall access holes, with washers; 6 at the Y drive end, up to 6 at its far end)"
+        },
+        {
+          "model": "ISO 7092-6 200HV",
+          "partNumber": "ISO 7092-6-200HV",
+          "quantity": 12,
+          "note": "under the Y screw heads (inside the front wall)"
+        },
+        {
+          "model": "ISO 8734 6x16",
+          "partNumber": "ISO 8734-6x16",
+          "quantity": 2,
+          "note": "pressed into the front wall (H7), into the Y profile's pin bores at its drive end (round bore + slot)"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-24 (cad/brackets/elgt_twin_beam.py, reports/brackets/2026-10-24-2340-BR-ELGT-BS-twin-X-Y.md); interfaces measured on the Festo STEP models of EHAM-AK-L9 and ELGT-BS"
+    },
+    {
+      "id": "BR-ELGT-BS-160-ELGT-BS-120-2",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-ELGT-BS-160-ELGT-BS-120-2",
+      "partNumber": null,
+      "joint": "beam",
+      "base": [
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 160,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 120,
+          "drive": "spindle",
+          "pinned": true,
+          "threads": {
+            "first": 81.5,
+            "pitch": 100
+          }
+        }
+      ],
+      "hand": null,
+      "layout": null,
+      "carriedStroke": null,
+      "wall": null,
+      "mass": 21.05,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-ELGT-BS-160-ELGT-BS-120-2_BR-ELGT-BS-160-ELGT-BS-120-2.pdf",
+      "beam": {
+        "kits": [
+          "EHAM-AK-L9-160-L9-160-ML",
+          "EHAM-AK-L9-160-L9-160-MR"
+        ],
+        "end": 63.5,
+        "length": [
+          615,
+          2100
+        ],
+        "referenceLength": 1500,
+        "massPerMeter": 14.03,
+        "carries": "y",
+        "pattern": "ELGT-BS-120 profile underside"
+      },
+      "accessories": [
+        {
+          "model": "EHAM-AK-L9-160-L9-160-ML",
+          "partNumber": "8128206",
+          "quantity": 1,
+          "note": "one of the pair on each X axis slide, walls reaching inwards (which X axis takes -ML depends on the side the Y axis faces); the first X axis kit pins end A"
+        },
+        {
+          "model": "EHAM-AK-L9-160-L9-160-MR",
+          "partNumber": "8128211",
+          "quantity": 1,
+          "note": "the other X axis slide: screws only into its beam end (its two carried-side pins left out)"
+        },
+        {
+          "model": "ISO 4762 M8x20-8.8",
+          "partNumber": "ISO 4762-M8x20-8.8",
+          "quantity": 12,
+          "note": "kit walls into the beam ends (6 per end) instead of the kits' screws; tighten 18 Nm"
+        },
+        {
+          "model": "ISO 4762 M6x16-8.8",
+          "partNumber": "ISO 4762-M6x16-8.8",
+          "quantity": 12,
+          "note": "Y profile onto the front wall: heads inside, through the back-wall access holes, with washers; 6 at the Y drive end, up to 6 at its far end"
+        },
+        {
+          "model": "ISO 7092-6 200HV",
+          "partNumber": "ISO 7092-6-200HV",
+          "quantity": 12,
+          "note": "under the Y screw heads (inside the front wall)"
+        },
+        {
+          "model": "ISO 8734 6x18",
+          "partNumber": "ISO 8734-6x18",
+          "quantity": 2,
+          "note": "pressed into the front wall (H7), into the Y profile's pin bores at its drive end (round bore + slot)"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-24 (cad/brackets/elgt_twin_beam.py, reports/brackets/2026-10-24-2340-BR-ELGT-BS-twin-X-Y.md); interfaces measured on the Festo STEP models of EHAM-AK-L9 and ELGT-BS"
+    },
+    {
+      "id": "BR-ELGT-BS-160-ELGT-BS-160-2",
+      "maker": "Custom",
+      "family": "Custom",
+      "model": "BR-ELGT-BS-160-ELGT-BS-160-2",
+      "partNumber": null,
+      "joint": "beam",
+      "base": [
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 160,
+          "drive": "spindle"
+        }
+      ],
+      "carried": [
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 160,
+          "drive": "spindle",
+          "pinned": true,
+          "threads": {
+            "first": 84.5,
+            "pitch": 100
+          }
+        }
+      ],
+      "hand": null,
+      "layout": null,
+      "carriedStroke": null,
+      "wall": null,
+      "mass": 21.02,
+      "custom": true,
+      "drawing": "data/adapters/Custom/Drawings/BR-ELGT-BS-160-ELGT-BS-160-2_BR-ELGT-BS-160-ELGT-BS-160-2.pdf",
+      "beam": {
+        "kits": [
+          "EHAM-AK-L9-160-L9-160-ML",
+          "EHAM-AK-L9-160-L9-160-MR"
+        ],
+        "end": 63.5,
+        "length": [
+          615,
+          1950
+        ],
+        "referenceLength": 1500,
+        "massPerMeter": 14.01,
+        "carries": "y",
+        "pattern": "ELGT-BS-160 profile underside"
+      },
+      "accessories": [
+        {
+          "model": "EHAM-AK-L9-160-L9-160-ML",
+          "partNumber": "8128206",
+          "quantity": 1,
+          "note": "one of the pair on each X axis slide, walls reaching inwards (which X axis takes -ML depends on the side the Y axis faces); the first X axis kit pins end A"
+        },
+        {
+          "model": "EHAM-AK-L9-160-L9-160-MR",
+          "partNumber": "8128211",
+          "quantity": 1,
+          "note": "the other X axis slide: screws only into its beam end (its two carried-side pins left out)"
+        },
+        {
+          "model": "ISO 4762 M8x20-8.8",
+          "partNumber": "ISO 4762-M8x20-8.8",
+          "quantity": 24,
+          "note": "12 kit walls into the beam ends (6 per end, instead of the kits' screws; tighten 18 Nm) + 12 Y profile onto the front wall (heads inside, through the back-wall access holes, with washers; 6 at the Y drive end, up to 6 at its far end)"
+        },
+        {
+          "model": "ISO 7092-8 200HV",
+          "partNumber": "ISO 7092-8-200HV",
+          "quantity": 12,
+          "note": "under the Y screw heads (inside the front wall)"
+        },
+        {
+          "model": "ISO 8734 8x18",
+          "partNumber": "ISO 8734-8x18",
+          "quantity": 2,
+          "note": "pressed into the front wall (H7), into the Y profile's pin bores at its drive end (round bore + slot)"
+        }
+      ],
+      "dataSource": "AxisPilot custom design 2026-10-24 (cad/brackets/elgt_twin_beam.py, reports/brackets/2026-10-24-2340-BR-ELGT-BS-twin-X-Y.md); interfaces measured on the Festo STEP models of EHAM-AK-L9 and ELGT-BS"
     }
   ]
 }

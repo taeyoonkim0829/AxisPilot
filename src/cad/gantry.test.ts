@@ -4,12 +4,13 @@ import { gantryJoint } from '../calc/gantryKits'
 import { adapters, axes, kits, motors } from '../data'
 import type { Axis, AxisAdapter } from '../data/types'
 import { buildCombo, comboDrawings, defaultComboOptions, type ComboSelection } from './combo'
-import { parseDrawingPath, type AdapterMeta, type Drawing } from './drawings'
-import { buildGantry, type GantryAxisDrawing } from './gantry'
+import { parseDrawingPath, type AdapterMeta, type BeamMeta, type Drawing } from './drawings'
+import { beamAtLength, buildGantry, type GantryAxisDrawing } from './gantry'
+import { writeStep } from './step'
 
-// loaded on demand: the drawing folders hold gigabytes of STEP text
-const texts = import.meta.glob<string>('../../data/*/Festo/Drawings/**/*.stp', { query: '?raw', import: 'default' })
-const metas = import.meta.glob<unknown>('../../data/*/Festo/Drawings/**/*.json', { import: 'default', eager: true })
+// loaded on demand: the drawing folders hold gigabytes of STEP text; Custom: the custom brackets
+const texts = import.meta.glob<string>('../../data/*/{Festo,Custom}/Drawings/**/*.stp', { query: '?raw', import: 'default' })
+const metas = import.meta.glob<unknown>('../../data/*/{Festo,Custom}/Drawings/**/*.json', { import: 'default', eager: true })
 const all: Drawing[] = Object.keys(texts).map((key) => {
   const path = key.slice('../../'.length)
   return { ...parseDrawingPath(path)!, url: path, meta: metas[key.replace(/\.stp$/, '.json')] ?? null }
@@ -59,7 +60,8 @@ function axisDrawing(a: GantryAxis, axis: Axis, stroke: number, g: GantryInputs)
   throw new Error(`no drawings for ${axis.model}`)
 }
 
-const kitDrawing = (k: AxisAdapter) => (all.find((d) => d.kind === 'adapters' && d.partNumber === k.partNumber) as Drawing<AdapterMeta>) ?? null
+const kitDrawing = (k: AxisAdapter) =>
+  (all.find((d) => d.kind === 'adapters' && (k.partNumber ? d.partNumber === k.partNumber : d.names.includes(k.model))) as Drawing<AdapterMeta>) ?? null
 const jointDrawing = (j: ReturnType<typeof gantryJoint>) => ({
   base: j.base,
   carried: j.carried,
@@ -67,6 +69,13 @@ const jointDrawing = (j: ReturnType<typeof gantryJoint>) => ({
   offset: j.offset,
   flange: j.flange,
   driveSign: j.driveSign,
+  beam: j.beam && {
+    bracket: j.beam.bracket,
+    drawing: kitDrawing(j.beam.bracket) as Drawing<BeamMeta> | null,
+    length: j.beam.length,
+    at: j.beam.at,
+    plate: j.beam.plate && { kit: j.beam.plate, drawing: kitDrawing(j.beam.plate) },
+  },
 })
 /** world Y of the pins matching `re` (box centres, mm rounded to 0.5) */
 async function pinsAt(step: string, re: RegExp) {
@@ -230,5 +239,66 @@ describe('gantry drawing', () => {
     expect(found.map((b) => b.name.replace(/^\d+ /, '').replace(/---.*$/, '')).sort()).toEqual(['EHAM-AK-L9-160-L9-120-ML', 'EHAM-AK-L9-160-L9-120-MR'])
     // each wall (470 mm, foot at one end over its X axis at ∓503) lies mostly between the X axes
     for (const b of found) expect(Math.abs((b.lo[1] + b.hi[1]) / 2)).toBeLessThan(450)
+  }, 120000)
+})
+
+describe('custom cross beams in the gantry drawing', () => {
+  const elgt = (size: number) => axes.find((x) => x.family === 'ELGT' && x.drive === 'spindle' && x.size === size)!
+  const box = (b: { lo: number[]; hi: number[] }, k: number) => b.hi[k] - b.lo[k]
+
+  it('cuts the carried axis holes out and changes the beam length in the middle, the kit patterns kept', async () => {
+    for (const model of ['BR-ELGT-BS-120-ELGT-BS-120-2', 'BR-ELGT-BS-160-ELGT-BS-120-1']) {
+      const bracket = adapters.find((k) => k.model === model)!
+      const d = kitDrawing(bracket) as Drawing<BeamMeta>
+      const text = await load(d)
+      for (const length of [bracket.beam!.length[0], 1234, bracket.beam!.length[1]]) {
+        const [b] = await boxes(writeStep(beamAtLength(text, bracket, d.meta!, length)), /BR-/)
+        expect(box(b, 0)).toBeCloseTo(length, 0)
+        expect(box(b, 1)).toBeCloseTo(80, 0)
+      }
+    }
+  }, 120000)
+
+  it('bolts a Y beam between the kits of two X axes and pins the Y axis on its front (xy)', async () => {
+    const g: GantryInputs = { ...defaultGantry, config: 'xy', yMounting: 'wall', parallel: { ...defaultGantry.parallel, x: { ...defaultGantry.parallel.x, mode: 'twinMotor', spacing: 1500 } } }
+    const [x, y] = [elgt(120), elgt(120)]
+    const yd = axisDrawing('y', y, 300, g)
+    const j = gantryJoint(g, 'x', 'y', x, y, 300, adapters, 300 + y.baseLength!)
+    expect(j.beam?.bracket.model).toBe('BR-ELGT-BS-120-ELGT-BS-120-2')
+    const combo = await buildGantry(g, [{ ...axisDrawing('x', x, 800, g), twin: { spacing: 1500, drive: true } }, yd], [jointDrawing(j)], load)
+    expect(combo.unkitted).toEqual([])
+    const found = await boxes(combo.step, /BR-|EHAM|ELGT-BS-120-300/)
+    const beam = found.find((b) => /BR-/.test(b.name))!
+    // L = 1500 − 2 × 44.5 along Y, centred; 22 mm above the X slides; its back on the kit walls (−19), front at −99
+    expect(box(beam, 1)).toBeCloseTo(1411, 0)
+    expect(beam.lo[1] + beam.hi[1]).toBeCloseTo(0, 0)
+    expect(beam.lo[2]).toBeCloseTo(22, 0)
+    expect(beam.lo[0]).toBeCloseTo(-99, 0)
+    for (const k of found.filter((b) => /EHAM-AK/.test(b.name))) expect(k.hi[0]).toBeGreaterThan(beam.hi[0])
+    // the Y profile's underside on the beam front, its drive flange at +258 (Y centred)
+    const profile = found.find((b) => /ELGT-BS-120-300--/.test(b.name))!
+    expect(profile.hi[0]).toBeCloseTo(-99, 0)
+    expect(profile.lo[1]).toBeCloseTo(-258, 0)
+  }, 120000)
+
+  it('hangs Z on a beam across two floor-mounted Y axes (yz, ELGT-BS-90, Z on EHAM-MA)', async () => {
+    const g: GantryInputs = { ...defaultGantry, config: 'yz', yMounting: 'floor', parallel: { ...defaultGantry.parallel, y: { ...defaultGantry.parallel.y, mode: 'twinMotor', spacing: 1000 } } }
+    const [y, z] = [elgt(90), elgt(90)]
+    const zd = axisDrawing('z', z, 200, g)
+    const j = gantryJoint(g, 'y', 'z', y, z, 200, adapters, 200 + z.baseLength!)
+    const combo = await buildGantry(g, [{ ...axisDrawing('y', y, 500, g), twin: { spacing: 1000, drive: true } }, zd], [jointDrawing(j)], load)
+    expect(combo.unkitted).toEqual([])
+    const found = await boxes(combo.step, /BR-|EHAM|ELGT-BS-90-200/)
+    const beam = found.find((b) => /BR-/.test(b.name))!
+    const plate = found.find((b) => /EHAM-MA/.test(b.name))!
+    // the beam across X between the Y axes (979 mm), its front facing −Y; the plate on it in the middle
+    expect(box(beam, 0)).toBeCloseTo(979, 0)
+    expect(beam.lo[1]).toBeCloseTo(-79, 0)
+    expect(plate.hi[1]).toBeCloseTo(beam.lo[1], 0)
+    expect(plate.lo[0] + plate.hi[0]).toBeCloseTo(0, 0)
+    // the Z profile on the plate, its top drive end 102 + 181.5 mm above the Y slides
+    const profile = found.find((b) => /ELGT-BS-90-200--/.test(b.name))!
+    expect(profile.hi[1]).toBeCloseTo(plate.lo[1], 0)
+    expect(profile.hi[2]).toBeGreaterThan(102 + 181.5 - 1)
   }, 120000)
 })

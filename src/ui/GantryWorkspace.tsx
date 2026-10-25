@@ -2,7 +2,7 @@ import { useDeferredValue, useMemo, useState } from 'react'
 import { defaultComboOptions, type ComboOptions } from '../cad/combo'
 import { gantryAxes, gantryChain, type GantryAxis, type GantryInputs, type GantrySettings } from '../calc/gantry'
 import { useT, type Lang } from '../i18n'
-import { kitList } from '../calc/gantryKits'
+import { jointList } from '../calc/gantryKits'
 import { computeGantry, noPicks, type GantryAxisResult, type Picks } from '../selection'
 import { AxisSteps } from './AxisSteps'
 import { useSlideThumb } from './useSlideThumb'
@@ -290,7 +290,7 @@ function gantryReportRows(r: GantryAxisResult, g: GantryInputs): [string, string
     ...(r.spacing ? ([[r.axis === 'x' ? 'X축 간격 (조합 키트에 맞춰 조정)' : 'Y축 간격 (조합 키트에 맞춰 조정)', `${fmt(r.spacing.used, 1)} mm ← ${fmt(r.spacing.entered, 1)} mm`]] as [string, string][]) : []),
     // the kit carrying the axis above on this axis's slide
     ...(r.joint
-      ? ([['조합 키트', r.joint.kit ? kitList(r.joint.kits, true) : '—']] as [string, string][])
+      ? ([['조합 키트', r.joint.kit ? jointList(r.joint, true) : '—']] as [string, string][])
       : []),
   ]
 }
