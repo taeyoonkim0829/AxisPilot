@@ -187,12 +187,10 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
                   [layout.guides ? '축–가이드 간격' : '축 간격', q(req.parallel!.spacing, 'mm')],
                   ...(layout.guides
                     ? ([
-                        [
-                          'LM 가이드 수',
-                          layout.guides === 2
-                            ? t(layout.isAxis[0] ? '2개 · 축 가장자리' : '2개 · 축 가운데')
-                            : t('1개'),
-                        ],
+                        ['LM 가이드 수', String(layout.guides)],
+                        ...(layout.guides >= 2
+                          ? ([['축 위치', t(layout.isAxis[0] ? '가장자리' : '가운데')]] as Row[])
+                          : []),
                         ['가이드 1개 이동 질량', q(req.parallel!.guideMass, 'kg')],
                       ] as Row[])
                     : ([['축 1개 부하 분담', `${Math.round(layout.share * 100)}%`]] as Row[])),

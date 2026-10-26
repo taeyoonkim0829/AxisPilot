@@ -4,7 +4,7 @@ import type { AdditionalSlide, Axis, BeltMaterial, ConnectingShaft } from '../da
 import { curveAt } from './curve'
 import { dwellPhase, moveProfile, samplePhases, type MoveProfile, type Phase } from './motionProfile'
 import { connectingShaftFor, noShaftCheck, shaftChecks, type ShaftFit } from './shaftSelection'
-import { check, verticalForward, worstStatus, type Check, type ParallelMode, type Requirements, type Settings, type Status } from './types'
+import { check, guidePositions, verticalForward, worstStatus, type Check, type ParallelMode, type Requirements, type Settings, type Status } from './types'
 
 export const G = 9.81
 /** N/mm², aluminium profile (Excel deflection sheet) */
@@ -289,8 +289,8 @@ const SINGLE: ParallelLayout = {
 
 /**
  * The arrangement from the requirements, centred on y = 0 (the payload's y is measured from the centre). Two axes
- * or the axis and one LM guide sit at ∓spacing/2 (the first axis at −); three members (axis + two LM guides) at
- * −spacing, 0 and +spacing, the axis in the middle or at the edge (−spacing). With two axes the drive forces split by the lever rule about the payload's y position: half each
+ * or the axis and one LM guide sit at ∓spacing/2 (the first axis at −); an axis with more LM guides in a row
+ * `spacing` apart, the axis in the middle or at the edge (−y) (`guidePositions`). With two axes the drive forces split by the lever rule about the payload's y position: half each
  * when centred, more on the axis on the payload side.
  */
 export function parallelLayout(req: Requirements): ParallelLayout {
@@ -298,14 +298,14 @@ export function parallelLayout(req: Requirements): ParallelLayout {
   const s = (p?.spacing ?? 0) / 1000
   if (!p || p.mode === 'single' || !(s > 0)) return SINGLE
   if (p.mode === 'guides') {
-    const two = p.guideCount === 2
+    const { guides, positions, axis } = guidePositions(p)
     return {
       ...SINGLE,
       mode: 'guides',
-      positions: two ? [-s, 0, s] : [-s / 2, s / 2],
-      isAxis: two ? (p.guideAxisEdge ? [true, false, false] : [false, true, false]) : [true, false],
-      guides: two ? 2 : 1,
-      guideMass: (two ? 2 : 1) * Math.max(0, p.guideMass),
+      positions: positions.map((k) => k * s),
+      isAxis: positions.map((_, i) => i === axis),
+      guides,
+      guideMass: guides * Math.max(0, p.guideMass),
     }
   }
   const y = req.cog.y / 1000

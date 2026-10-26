@@ -108,6 +108,49 @@ export function NumberField({ label, unit, value, onChange, min = 0, step, hint 
   )
 }
 
+/** Whole-number count: typed in, or stepped with the small − / + buttons at the right, kept within min…max. */
+export function CountField({ label, value, onChange, min, max }: { label: string; value: number; onChange: (value: number) => void; min: number; max: number }) {
+  const t = useT()
+  const [text, setText] = useState(String(value))
+  const [prev, setPrev] = useState(value)
+  if (value !== prev) {
+    setPrev(value)
+    if (Number(text) !== value) setText(String(value))
+  }
+  const n = Number(text)
+  const invalid = text.trim() === '' || !Number.isInteger(n) || n < min || n > max
+  const step = (d: number) => onChange(Math.min(max, Math.max(min, value + d)))
+  return (
+    <div className={`field${invalid ? ' field-invalid' : ''}`}>
+      <label className="field-label" htmlFor={`count-${label}`}>
+        {label}
+      </label>
+      <span className="field-input count-input">
+        <input
+          id={`count-${label}`}
+          type="number"
+          inputMode="numeric"
+          value={text}
+          min={min}
+          max={max}
+          step={1}
+          onChange={(e) => {
+            setText(e.target.value)
+            const v = Number(e.target.value)
+            if (e.target.value.trim() !== '' && Number.isInteger(v) && v >= min && v <= max) onChange(v)
+          }}
+        />
+        <button type="button" className="count-btn" aria-label={t('줄이기')} disabled={value <= min} onClick={() => step(-1)}>
+          −
+        </button>
+        <button type="button" className="count-btn" aria-label={t('늘리기')} disabled={value >= max} onClick={() => step(1)}>
+          +
+        </button>
+      </span>
+    </div>
+  )
+}
+
 interface ToggleGroupProps<T extends string> {
   options: readonly T[]
   selected: readonly T[]

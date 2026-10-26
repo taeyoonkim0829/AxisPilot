@@ -97,6 +97,13 @@ describe('parallel arrangement', () => {
     expect(edge.positions).toEqual([-0.2, 0, 0.2])
     expect(edge.isAxis).toEqual([true, false, false])
     expect(edge.guides).toBe(2)
+    // three guides: four members 200 mm apart, the axis left of centre or at the edge
+    const three = (guideAxisEdge: boolean) =>
+      parallelLayout({ ...baseReq, parallel: { ...defaultParallel, mode: 'guides', spacing: 200, guideCount: 3, guideAxisEdge } })
+    expect(three(false).positions.map((p) => +p.toFixed(3))).toEqual([-0.3, -0.1, 0.1, 0.3])
+    expect(three(false).isAxis).toEqual([false, true, false, false])
+    expect(three(true).isAxis).toEqual([true, false, false, false])
+    expect(three(true).guides).toBe(3)
   })
 
   it('turns the rolling moment into normal forces across the members', () => {

@@ -3,7 +3,7 @@
 // Festo kit exists (EGC), a custom angle bracket or plate (data/adapters/Custom, made to order).
 import type { Axis, AxisAdapter, AdapterAxis } from '../data/types'
 import { axisFrame, baseParallel, gantryBase, zAcrossTwinY, type GantryAxis, type GantryInputs, type Vec } from './gantry'
-import type { Status } from './types'
+import { guidePositions, type Status } from './types'
 
 /** One joint of the gantry: `carried` sits on the slide(s) of `base` */
 export interface GantryJoint {
@@ -73,7 +73,10 @@ const cross = (a: number[], b: number[]) => [a[1] * b[2] - a[2] * b[1], a[2] * b
 function baseSlides(g: GantryInputs, base: GantryAxis): number[] {
   const p = baseParallel(g)
   if (base !== gantryBase(g.config) || p.mode === 'single' || !(p.spacing > 0)) return [0]
-  if (p.mode === 'guides') return [p.guideCount === 2 ? (p.guideAxisEdge ? -p.spacing : 0) : -p.spacing / 2]
+  if (p.mode === 'guides') {
+    const { positions, axis } = guidePositions(p)
+    return [positions[axis] * p.spacing]
+  }
   return [-p.spacing / 2, p.spacing / 2]
 }
 

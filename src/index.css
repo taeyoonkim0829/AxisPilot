@@ -888,10 +888,40 @@ h3 {
   border-top: 1px solid var(--sign);
 }
 
-/* Labels too long for one line (LM 가이드 수 in English) wrap instead of being cut */
-.segmented.wrap button {
-  white-space: normal;
-  line-height: 1.25;
+/* Count input (LM 가이드 수) with small − / + buttons at its right */
+.count-btn {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  margin-right: 5px;
+  border: 0;
+  border-radius: 7px;
+  background: rgb(255 255 255 / 0.08);
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.count-btn:hover:not(:disabled) {
+  background: rgb(255 255 255 / 0.16);
+}
+
+.count-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* the steppers replace the browser's spin buttons */
+.count-input input {
+  appearance: textfield;
+}
+
+.count-input input::-webkit-inner-spin-button,
+.count-input input::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
 }
 
 .segmented.small button {

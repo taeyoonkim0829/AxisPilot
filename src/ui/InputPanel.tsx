@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { accelerationForTime, accelTimeFor, minAccelTime } from '../calc/motionProfile'
 import {
+  MAX_GUIDES,
+  guidePositions,
   defaultParallel,
   defaultPress,
   defaultSettings,
@@ -13,7 +15,7 @@ import {
 } from '../calc/types'
 import { useT } from '../i18n'
 import cogImage from '../../images/center_of_gravity.png'
-import { NumberField, RadioGroup, ToggleButton } from './common'
+import { CountField, NumberField, RadioGroup, ToggleButton } from './common'
 import { ModeSwitch, type AppMode } from './ModeSwitch'
 import { fmt, kgf, mountingLabel, parallelModeLabel, pressDirectionLabel } from './format'
 
@@ -24,10 +26,8 @@ const parallelModeHint: Record<ParallelMode, string> = {
   guides: '축과 평행한 LM 가이드가 부하를 나눠 지지. 구동은 축 1개',
 }
 
-type GuideArrangement = 'one' | 'middle' | 'edge'
-const guideArrangementLabel: Record<GuideArrangement, string> = { one: '1개', middle: '2개 · 축 가운데', edge: '2개 · 축 가장자리' }
-const guideArrangement = (p: ParallelConfig): GuideArrangement =>
-  p.guideCount === 1 ? 'one' : p.guideAxisEdge ? 'edge' : 'middle'
+type AxisPlace = 'middle' | 'edge'
+const axisPlaceLabel: Record<AxisPlace, string> = { middle: '가운데', edge: '가장자리' }
 
 type AccelMode = 'acceleration' | 'time'
 const accelModeLabel: Record<AccelMode, string> = { acceleration: '가속도', time: '가속 시간' }
@@ -267,14 +267,22 @@ export function ParallelSection({
       />
       <p className="field-hint application-hint">{t(parallelModeHint[parallel.mode])}</p>
       {parallel.mode === 'guides' && (
+        <CountField
+          label={t('LM 가이드 수')}
+          value={guidePositions(parallel).guides}
+          min={1}
+          max={MAX_GUIDES}
+          onChange={(n) => setParallel('guideCount', n)}
+        />
+      )}
+      {parallel.mode === 'guides' && guidePositions(parallel).guides >= 2 && (
         <div className="field">
-          <span className="field-label">{t('LM 가이드 수')}</span>
+          <span className="field-label">{t('축 위치')}</span>
           <RadioGroup
-            className="small wrap"
-            options={['one', 'middle', 'edge'] as const}
-            value={guideArrangement(parallel)}
-            onChange={(v) => onParallel({ ...parallel, guideCount: v === 'one' ? 1 : 2, guideAxisEdge: v === 'edge' })}
-            label={(v) => t(guideArrangementLabel[v])}
+            options={['middle', 'edge'] as const}
+            value={parallel.guideAxisEdge ? 'edge' : 'middle'}
+            onChange={(v) => setParallel('guideAxisEdge', v === 'edge')}
+            label={(v) => t(axisPlaceLabel[v])}
           />
         </div>
       )}

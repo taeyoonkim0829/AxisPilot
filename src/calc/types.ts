@@ -51,14 +51,28 @@ export interface ParallelConfig {
   mode: ParallelMode
   /** mm between neighbouring centrelines (axis–axis, axis–guide); the payload y is measured from the centre of the arrangement, the second axis or guide on the +y side */
   spacing: number
-  /** guides: LM guides added; 1 = at +y, 2 = at −y and +y (axis in the middle) or, with `guideAxisEdge`, both on the +y side */
-  guideCount: 1 | 2
-  /** guides, two guides: the axis at the edge (−y) instead of in the middle */
+  /** guides: LM guides added (1–`MAX_GUIDES`), axis and guides `spacing` apart in a row (`guidePositions`) */
+  guideCount: number
+  /** guides, two or more: the axis at the edge (−y) instead of in the middle */
   guideAxisEdge?: boolean
   /** kg, moving mass per LM guide (carriages and bracket) */
   guideMass: number
   /** twinShaft: kg·cm², connecting shaft and its couplings, at the axis drive shaft */
   shaftInertia: number
+}
+
+/** Most LM guides beside one axis */
+export const MAX_GUIDES = 6
+
+/**
+ * Axis and LM guides in a row, `spacing` apart and centred on 0: member positions in units of the spacing and the
+ * axis's index. The axis sits at the −y edge, or in the middle (left of centre when the count of members is even;
+ * with one guide both are the same).
+ */
+export function guidePositions(p: Pick<ParallelConfig, 'guideCount' | 'guideAxisEdge'>) {
+  const guides = Math.min(MAX_GUIDES, Math.max(1, Math.round(p.guideCount)))
+  const positions = Array.from({ length: guides + 1 }, (_, i) => i - guides / 2)
+  return { guides, positions, axis: p.guideAxisEdge ? 0 : Math.floor(guides / 2) }
 }
 
 export const defaultParallel: ParallelConfig = {
