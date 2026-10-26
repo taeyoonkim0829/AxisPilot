@@ -2,7 +2,7 @@ import { gantryAxes, type GantryInputs } from '../calc/gantry'
 import type { AxisAdapter } from '../data/types'
 import type { GantryAxis } from '../calc/gantry'
 import type { ComboOptions } from '../cad/combo'
-import { adapterDrawingFor, bracketDrawingUrl, type BeamMeta, type Drawing } from '../cad/drawings'
+import { adapterDrawingFor, bracketDrawingUrl, mountingDrawingFor, type BeamMeta, type Drawing } from '../cad/drawings'
 import { beamTooShort, buildGantry, type GantryAxisDrawing, type GantryJointDrawing } from '../cad/gantry'
 import { useT } from '../i18n'
 import type { GantryAxisResult } from '../selection'
@@ -40,7 +40,7 @@ export function GantryDrawing({
   const jointDrawings: GantryJointDrawing[] = joints.map((j) => ({
     base: j.base,
     carried: j.carried,
-    kits: j.kits.map((kit) => ({ kit, drawing: adapterDrawingFor(kit) })),
+    kits: j.kits.map((kit) => ({ kit, drawing: adapterDrawingFor(kit), mountings: mountingDrawingFor(kit) })),
     offset: j.offset,
     flange: j.flange,
     driveSign: j.driveSign,

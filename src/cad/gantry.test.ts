@@ -4,7 +4,7 @@ import { gantryJoint } from '../calc/gantryKits'
 import { adapters, axes, kits, motors } from '../data'
 import type { Axis, AxisAdapter } from '../data/types'
 import { buildCombo, comboDrawings, defaultComboOptions, type ComboSelection } from './combo'
-import { parseDrawingPath, type AdapterMeta, type BeamMeta, type Drawing } from './drawings'
+import { mountingDrawingFor, parseDrawingPath, type AdapterMeta, type BeamMeta, type Drawing } from './drawings'
 import { beamAtLength, beamTooShort, buildGantry, type GantryAxisDrawing } from './gantry'
 import { writeStep } from './step'
 
@@ -65,7 +65,7 @@ const kitDrawing = (k: AxisAdapter) =>
 const jointDrawing = (j: ReturnType<typeof gantryJoint>) => ({
   base: j.base,
   carried: j.carried,
-  kits: j.kits.map((kit) => ({ kit, drawing: kitDrawing(kit) })),
+  kits: j.kits.map((kit) => ({ kit, drawing: kitDrawing(kit), mountings: mountingDrawingFor(kit, all) })),
   offset: j.offset,
   flange: j.flange,
   driveSign: j.driveSign,
@@ -262,6 +262,34 @@ describe('gantry drawing', () => {
     expect(found.map((b) => b.name.replace(/^\d+ /, '').replace(/---.*$/, '')).sort()).toEqual(['EHAM-AK-L9-160-L9-120-ML', 'EHAM-AK-L9-160-L9-120-MR'])
     // each wall (470 mm, foot at one end over its X axis at ∓503) lies mostly between the X axes
     for (const b of found) expect(Math.abs((b.lo[1] + b.hi[1]) / 2)).toBeLessThan(450)
+  }, 120000)
+  it('clamps the ELGD Y profile on each EHAM-AK-E24 with the EAHF-E24-60-P-B4 jaws on the wall threads', async () => {
+    const g: GantryInputs = { ...defaultGantry, config: 'xy', yMounting: 'wall', parallel: { ...defaultGantry.parallel, x: { ...defaultGantry.parallel.x, mode: 'twinMotor', spacing: 600 } } }
+    const elgd = (size: number, longSlide = false) =>
+      axes.find((x) => x.family === 'ELGD' && !x.variant && x.drive === 'spindle' && x.size === size && x.longSlide === longSlide)!
+    const [x, y] = [elgd(80, true), elgd(60)]
+    const yd = axisDrawing('y', y, 800, g)
+    const xy = gantryJoint(g, 'x', 'y', x, y, 800, adapters, 800)
+    const combo = await buildGantry(g, [{ ...axisDrawing('x', x, 800, g), twin: { spacing: 600, drive: true } }, yd], [jointDrawing(xy)], load)
+    const found = await boxes(combo.step, /EAHF|EHAM|ELGD-BS-KF-60/)
+    const profile = found.find((b) => /ELGD-BS-KF-60-800/.test(b.name))!
+    const jaws = found.filter((b) => /EAHF-E24-60-P-B4/.test(b.name))
+    // 4 jaws per kit (E24-60: two along the travel each side of the profile), on the wall beside the profile
+    // underside, each lip over a profile edge
+    expect(jaws).toHaveLength(8)
+    const centre = (profile.lo[2] + profile.hi[2]) / 2
+    for (const kit of found.filter((b) => /EHAM-AK/.test(b.name))) {
+      const on = jaws.filter((b) => b.lo[1] >= kit.lo[1] - 0.1 && b.hi[1] <= kit.hi[1] + 0.1)
+      expect(on).toHaveLength(4)
+      expect(on.filter((b) => b.hi[2] < centre)).toHaveLength(2)
+    }
+    for (const b of jaws) {
+      expect(Math.abs(b.hi[0] - profile.hi[0])).toBeLessThan(1)
+      expect(b.hi[0] - b.lo[0]).toBeCloseTo(16.5, 0)
+      const over = b.hi[2] < centre ? b.hi[2] - profile.lo[2] : profile.hi[2] - b.lo[2]
+      expect(over).toBeGreaterThan(2)
+      expect(over).toBeLessThan(8)
+    }
   }, 120000)
 })
 

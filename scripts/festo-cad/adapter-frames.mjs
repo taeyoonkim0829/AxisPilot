@@ -209,6 +209,52 @@ function profileHalfWidth(axisFile) {
   return (hi - lo) / 2
 }
 
+/** The B4 jaw's hole pattern (M6 clearance) on its underside, in the file's first instance (the jaw at +x). */
+function jawSeat(body) {
+  const holes = bores([body[0]], 1, 0).round
+  if (holes.length !== 4) throw new Error(`B4: ${holes.length} holes in the jaw`)
+  const c = [0, 1].map((i) => holes.reduce((s, h) => s + h.c[i], 0) / holes.length)
+  if (c[0] <= 0) throw new Error('B4: the first jaw is not at +x')
+  return { origin: [fixed(c[0]), 0, fixed(c[1])], axis: [0, 1, 0], up: [0, 0, 1] }
+}
+
+/**
+ * EHAM-AK-E24: where the EAHF-E24-60-P-B4 jaws sit on the wall, one seat per jaw (assembly instructions 8238670:
+ * the jaws' screws in the wall's M6 threads beside the profile, four along the travel per jaw). Each seat is the
+ * jaw's `mounting` frame: on the wall face at the centre of its four threads, `axis` = the carried axis, `up` turned
+ * so the jaw's lip (−x of the jaw file = −(axis × up)) points to the profile.
+ */
+function profileMountings(body, carried) {
+  const k = carried.axis.findIndex((x) => Math.abs(x) > 0.5)
+  const at = carried.origin[k]
+  const { round, plane } = bores(body, k, at)
+  const threads = round.filter((h) => h.d > 4.6 && h.d < 5.2)
+  // the two thread columns either side of the profile centreline (the wall has further threads nearer the foot)
+  const all = [...new Set(threads.map((h) => fixed(h.c[0])))]
+  const centre = carried.origin[plane[0]]
+  const pairs = all.flatMap((a) => all.filter((b) => b > a && a < centre && b > centre).map((b) => [a, b]))
+  const columns = pairs.sort((p, q) => Math.abs((p[0] + p[1]) / 2 - centre) - Math.abs((q[0] + q[1]) / 2 - centre))[0]
+  if (!columns || Math.abs((columns[0] + columns[1]) / 2 - centre) > 1.5) throw new Error(`E24 kit: no thread columns either side of the profile (${all})`)
+  const middle = (columns[0] + columns[1]) / 2
+  const seats = []
+  for (const col of columns) {
+    const along = threads.filter((h) => fixed(h.c[0]) === col).map((h) => h.c[1]).sort((a, b) => a - b)
+    for (let i = 0; i < along.length; i += 4) {
+      const group = along.slice(i, i + 4)
+      if (group.length !== 4 || group[3] - group[0] > 61) throw new Error(`E24 kit: threads ${along} do not group by four`)
+      const origin = [0, 0, 0]
+      origin[k] = at
+      origin[plane[0]] = col
+      origin[plane[1]] = (group[0] + group[3]) / 2
+      const inward = [0, 0, 0]
+      inward[plane[0]] = middle - col
+      const up = [carried.up, scale(carried.up, -1)].find((u) => dot(scale(cross(carried.axis, u), -1), inward) > 0)
+      seats.push({ origin: origin.map(fixed), axis: carried.axis, up: up.map((x) => x + 0) })
+    }
+  }
+  return seats
+}
+
 let written = 0
 for (const f of readdirSync(dir).filter((f) => /\.stp$/i.test(f))) {
   const model = /^\d+_(.+)\.stp$/i.exec(f)[1]
@@ -222,6 +268,8 @@ for (const f of readdirSync(dir).filter((f) => /\.stp$/i.test(f))) {
   const base = { origin: [fixed(mid(ref, 0)), 0, fixed(mid(ref, 2))], axis: [0, 1, 0], up: [1, 0, 0] }
   const above = ms.filter((m) => hardware(m.name) && m.lo[1] >= -1)
   let carried
+  let mounting = null
+  let mountings = []
   let info = ''
   if (/^EHAM-AK/.test(model)) {
     const faces = body.flatMap((m) => m.faces).filter((x) => Math.abs(x.n[0]) > 0.999 * x.area && x.n[0] > 0 && x.area > 1)
@@ -249,6 +297,8 @@ for (const f of readdirSync(dir).filter((f) => /\.stp$/i.test(f))) {
       const pin = above.find((m) => isPin(m.name))
       y = pin.hi[1] + profileHalfWidth(axisFile)
       info = `rests on pin, end ${fixed(77.5 - behind)}`
+      mountings = profileMountings(body, { ...carried, origin: [carried.origin[0], y, 0] })
+      info += ` mountings ${mountings.map((m) => fixed(dot(sub(m.origin, base.origin), [0, 0, reach]))).join('/')}`
     }
     carried.origin[1] = fixed(y)
     info += ` wall ${fixed(-behind)}…${fixed(ahead)}`
@@ -267,8 +317,12 @@ for (const f of readdirSync(dir).filter((f) => /\.stp$/i.test(f))) {
     // EAHF: the jaws clamp the carried profile lying on the base slide
     base.origin = [0, 0, 0]
     carried = { origin: [0, 0, 0], axis: [0, 1, 0], up: [0, 0, 1] }
+    // a pair of jaws (B4, for the 60 profile): one jaw on its own, the file's first instance, seated on its hole
+    // pattern (the console's M6 threads), its lip towards −x
+    if (/-B4$/.test(model)) mounting = jawSeat(body)
   }
-  const json = `{\n  "base": ${JSON.stringify(base).replace(/,"/g, ', "').replace(/":/g, '": ').replace(/^\{/, '{ ').replace(/\}$/, ' }')},\n  "carried": ${JSON.stringify(carried).replace(/,"/g, ', "').replace(/":/g, '": ').replace(/^\{/, '{ ').replace(/\}$/, ' }')}\n}\n`
+  const frame = (f) => JSON.stringify(f).replace(/,"/g, ', "').replace(/":/g, '": ').replace(/^\{/, '{ ').replace(/\}$/, ' }')
+  const json = `{\n  "base": ${frame(base)},\n  "carried": ${frame(carried)}${mounting ? `,\n  "mounting": ${frame(mounting)}` : ''}${mountings.length ? `,\n  "mountings": [\n${mountings.map((m) => `    ${frame(m)}`).join(',\n')}\n  ]` : ''}\n}\n`
   console.log(model.padEnd(30), JSON.stringify(base.origin), JSON.stringify(carried.origin), info)
   if (!dryRun) {
     writeFileSync(join(dir, f.replace(/\.stp$/i, '.json')), json.replace(/,(\d|-)/g, ', $1'))

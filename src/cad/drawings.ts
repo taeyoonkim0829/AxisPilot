@@ -29,6 +29,12 @@ export interface AdapterMeta {
   base: Frame
   /** `axis` from the kit towards the carried axis (its slide side), `up` along the carried travel */
   carried: Frame
+  /** a profile mounting (EAHF-E24-60-P-B4, a pair of jaws in the file): one jaw (the file's first instance), seated
+   *  by the centre of its hole pattern on its underside, `axis` away from the kit, its lip towards −(axis × up) */
+  mounting?: Frame
+  /** an angle kit's seats for its profile mountings (EHAM-AK-E24: one per B4 jaw on the wall's threads, as the jaw's
+   *  `mounting` frame) */
+  mountings?: Frame[]
 }
 /** A custom cross beam (data/adapters/Custom, `joint: 'beam'`) at its reference `length` (mm, along file x from
  *  end A): `base` / `baseB` its end faces on the kits' profile centreline (as the carried profile's drive flange
@@ -205,3 +211,13 @@ export const adapterDrawingFor = (adapter: AxisAdapter, all = drawings) =>
       d.meta &&
       (adapter.partNumber != null ? d.partNumber === adapter.partNumber : d.partNumber == null && d.names.includes(adapter.model)),
   ) as Drawing<AdapterMeta> | undefined) ?? null
+
+/** The drawing of the profile mounting a gantry kit is ordered with (`accessories`, by part number; a `mounting`
+ *  frame in its JSON): EAHF-E24-60-P-B4 on an EHAM-AK-E24 */
+export function mountingDrawingFor(adapter: AxisAdapter, all = drawings): { model: string; drawing: Drawing<AdapterMeta> } | null {
+  for (const a of adapter.accessories) {
+    const d = all.find((d) => d.kind === 'adapters' && d.partNumber === a.partNumber && (d.meta as AdapterMeta | null)?.mounting)
+    if (d) return { model: a.model, drawing: d as Drawing<AdapterMeta> }
+  }
+  return null
+}

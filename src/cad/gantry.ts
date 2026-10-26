@@ -5,7 +5,7 @@ import { assemble, sourceNotice, type AssemblyPart } from './assemble'
 import { comboParts, type Combo, type ComboDrawings, type ComboOptions, type ComboSelection, type PartRole, type TwinAxis } from './combo'
 import type { AdapterMeta, BeamMeta, Drawing } from './drawings'
 import { add, apply, compose, cross, dot, identity, mate, rotate, scale, sub, type Frame, type Transform } from './geometry'
-import { parseStep, writeStep, type StepFile, type Vec3 } from './step'
+import { parseStep, refs, typeOf, writeStep, type StepFile, type Vec3 } from './step'
 import { stretchPart, withoutPcurves } from './stretch'
 
 // Gantry drawing: each axis's combination (axis, kit, gearbox, motor; two X axes when X is a twin arrangement) turned
@@ -25,8 +25,9 @@ export interface GantryAxisDrawing {
 export interface GantryJointDrawing {
   base: GantryAxis
   carried: GantryAxis
-  /** one per base slide, in slide order (`GantryJoint.kits`); the mirror-image angle kits are placed by their hand */
-  kits: { kit: AxisAdapter; drawing: Drawing<AdapterMeta> | null }[]
+  /** one per base slide, in slide order (`GantryJoint.kits`); the mirror-image angle kits are placed by their hand.
+   *  `mountings`: the profile mounting drawn on the kit's seats (`mountingDrawingFor`) */
+  kits: { kit: AxisAdapter; drawing: Drawing<AdapterMeta> | null; mountings?: { model: string; drawing: Drawing<AdapterMeta> } | null }[]
   /** world mm from the base axis's (arrangement) centre: the carried axis's mounting point as the calc takes it
    *  (`GantryJoint.offset`: along an angle kit, as the assembly instructions place it); absent = the entered one */
   offset?: { x: number; y: number; z: number }
@@ -96,6 +97,27 @@ export function beamAtLength(text: string, bracket: AxisAdapter, meta: BeamMeta,
   return file
 }
 
+/**
+ * A copy of an assembly file with only its first component instance (NAUO): one jaw of the EAHF-E24-60-P-B4 pair,
+ * which is drawn for the 60 profile, so each jaw can take its own seat on the kit.
+ */
+export function firstInstance(file: StepFile): StepFile {
+  const e = new Map(file.entities)
+  const of = (type: string) => [...e].filter(([, b]) => typeOf(b) === type)
+  const nauos = of('NEXT_ASSEMBLY_USAGE_OCCURRENCE').map(([id]) => id).sort((a, b) => a - b)
+  const pdss = of('PRODUCT_DEFINITION_SHAPE')
+  const cdsrs = of('CONTEXT_DEPENDENT_SHAPE_REPRESENTATION')
+  for (const nauo of nauos.slice(1)) {
+    // the instance: assembly usage → its shape → context dependent shape → relationship → transformation
+    const pds = pdss.find(([, b]) => refs(b)[0] === nauo)?.[0]
+    const cdsr = pds == null ? undefined : cdsrs.find(([, b]) => refs(b)[1] === pds)?.[0]
+    const rel = cdsr == null ? undefined : refs(e.get(cdsr)!)[0]
+    const idt = rel == null ? undefined : /REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION\s*\(\s*#(\d+)/.exec(e.get(rel) ?? '')?.[1]
+    for (const id of [cdsr, rel, idt == null ? undefined : Number(idt), pds, nauo]) if (id != null) e.delete(id)
+  }
+  return { header: file.header, entities: e }
+}
+
 /** The way a kit's carried face reaches from its foot along the carried travel (file coordinates) */
 const reach = (meta: AdapterMeta): Vec3 => scale(meta.carried.up, dot(sub(meta.carried.origin, meta.base.origin), meta.carried.up))
 
@@ -125,7 +147,11 @@ export async function buildGantry(
       [
         ...new Map(
           joints.flatMap((j) =>
-            [...j.kits, ...(j.beam ? [{ drawing: j.beam.drawing }, { drawing: j.beam.plate?.drawing ?? null }] : [])].flatMap((k) =>
+            [
+              ...j.kits,
+              ...j.kits.flatMap((k) => (k.mountings ? [{ drawing: k.mountings.drawing }] : [])),
+              ...(j.beam ? [{ drawing: j.beam.drawing }, { drawing: j.beam.plate?.drawing ?? null }] : []),
+            ].flatMap((k) =>
               k.drawing ? [[k.drawing.url, k.drawing as Drawing] as const] : [],
             ),
           ),
@@ -182,7 +208,7 @@ export async function buildGantry(
     const target = add(centre, [offset.x, offset.y, offset.z])
     const drawn =
       joint?.kits.length && joint.kits.every((k) => k.drawing?.meta)
-        ? joint.kits.map((k) => ({ kit: k.kit, url: k.drawing!.url, meta: k.drawing!.meta! }))
+        ? joint.kits.map((k) => ({ kit: k.kit, url: k.drawing!.url, meta: k.drawing!.meta!, mountings: k.mountings ?? null }))
         : null
     const meta = drawn?.[0].meta ?? null
     const pair = `${below.toUpperCase()}–${a.toUpperCase()}`
@@ -227,6 +253,16 @@ export async function buildGantry(
       const url = pick.url
       if (!files.has(url)) files.set(url, parseStep(kitTexts.get(url)!))
       kits.push({ role: 'adapter', name: `${pick.kit.model}${k ? ` (${k + 1})` : ''}`, file: files.get(url)!, transform: kt })
+      // its profile mountings, one jaw on each seat of the kit's wall
+      const m = pick.mountings
+      if (m && pick.meta.mountings) {
+        const jaw = m.drawing.meta!.mounting!
+        const key = `${m.drawing.url}#jaw`
+        if (!files.has(key)) files.set(key, firstInstance(parseStep(kitTexts.get(m.drawing.url)!)))
+        pick.meta.mountings.forEach((seat, s) =>
+          kits.push({ role: 'adapter', name: `${m.model}${k ? ` (${k + 1})` : ''} ${s + 1}`, file: files.get(key)!, transform: mate(kt, seat, jaw) }),
+        )
+      }
     })
     // the carried profile on the kit face (across: on its centreline), its middle at the mounting point along its
     // travel; pinned: its drive flange where the kit's pins hold it
