@@ -209,8 +209,8 @@ export function motorSupply(m: Motor): Supply | null {
 }
 
 /**
- * One drive option per motor. Direct drive unless `settings.useGearbox`; then the lowest passing gearbox
- * ratio (the lowest ratio when none passes), and motors without a compatible gearbox drop out.
+ * One drive option per motor. Direct drive unless `settings.useGearbox`; then the gearbox with the best
+ * verdict (kit included), lowest ratio among equals, and motors without a compatible gearbox drop out.
  * `attachKit` (kitSelection) adds the mounting kit and its verdict to each option before choosing and sorting.
  */
 export function selectMotors(
@@ -230,7 +230,11 @@ export function selectMotors(
     .flatMap((motor) => {
       if (!settings.useGearbox) return [attachKit(evaluateDrive(axisEval, motor, null, settings))]
       const geared = gearboxOptionsFor(motor).map((g) => attachKit(evaluateDrive(axisEval, motor, g, settings)))
-      const best = geared.find((e) => e.status !== 'fail') ?? geared[0]
+      // Best verdict (kit included), lowest ratio among equals: geared is ratio-sorted
+      const best = geared.reduce<DriveEvaluation | undefined>(
+        (b, e) => (!b || statusOrder[e.status] < statusOrder[b.status] ? e : b),
+        undefined,
+      )
       return best ? [best] : []
     })
     .sort(

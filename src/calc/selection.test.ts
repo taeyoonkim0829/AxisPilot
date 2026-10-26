@@ -450,17 +450,34 @@ describe('selection on real data', () => {
       for (const g of gearboxOptionsFor(m)) if (g.driveCode) expect(g.driveCode, `${m.model} ${g.id}`).toBe(m.interfaceCode)
   })
 
-  it('checks direct drive only, or each motor with its lowest passing gearbox', () => {
+  it('checks direct drive only, or each motor with its best gearbox, lowest ratio among equals', () => {
     const [first] = selectAxes(axes, baseReq, defaultSettings)
     const direct = selectMotors(first, motors, defaultSettings)
     expect(direct.every((d) => d.gearbox === null)).toBe(true)
 
+    const rank = { ok: 0, warn: 1, fail: 2 }
     const geared = selectMotors(first, motors, { ...defaultSettings, useGearbox: true })
     expect(geared.length).toBeGreaterThan(0)
     expect(geared.every((d) => d.gearbox !== null)).toBe(true)
-    for (const d of geared.filter((g) => g.status !== 'fail')) {
-      const lower = gearboxOptionsFor(d.motor).filter((g) => g.ratio < d.gearbox!.ratio)
-      expect(lower.every((g) => evaluateDrive(first, d.motor, g, defaultSettings).status === 'fail')).toBe(true)
+    for (const d of geared) {
+      for (const g of gearboxOptionsFor(d.motor)) {
+        const s = rank[evaluateDrive(first, d.motor, g, defaultSettings).status]
+        if (g.ratio < d.gearbox!.ratio) expect(s).toBeGreaterThan(rank[d.status])
+        else expect(s).toBeGreaterThanOrEqual(rank[d.status])
+      }
     }
+  })
+
+  it('prefers a higher ratio that fits over a lower one that only warns (e.g. no kit)', () => {
+    const [first] = selectAxes(axes, baseReq, defaultSettings)
+    const settings = { ...defaultSettings, useGearbox: true }
+    const motor = motors.find((m) => gearboxOptionsFor(m).length >= 2)!
+    const lowest = gearboxOptionsFor(motor)[0]
+    // The lowest ratio has no kit (warn), every other ratio fits
+    const [picked] = selectMotors(first, [motor], { ...settings, makers: [motor.maker], requireBrake: false }, (d) =>
+      ({ ...d, status: d.gearbox?.id === lowest.id ? 'warn' : 'ok' }),
+    )
+    expect(picked.status).toBe('ok')
+    expect(picked.gearbox!.id).not.toBe(lowest.id)
   })
 })
