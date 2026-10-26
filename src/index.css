@@ -704,7 +704,7 @@ h3 {
   margin-bottom: 12px;
 }
 
-/* Unit shared by a row of narrow fields (소재 무게 중심 X/Y/Z) */
+/* Unit shared by a row of narrow fields (부하 무게 중심 X/Y/Z) */
 .heading-unit {
   color: var(--muted);
   font-size: 12px;
@@ -1804,7 +1804,7 @@ th.num {
 
 /* ---------- gantry ---------- */
 
-/* Second heading inside an input section (무게 중심 under 소재, mounting positions) */
+/* Second heading inside an input section (무게 중심 under 부하, mounting positions) */
 .inputs .subhead {
   margin: 14px 0 8px;
   font-size: 14px;

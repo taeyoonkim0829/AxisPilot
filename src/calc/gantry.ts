@@ -227,7 +227,7 @@ export function gantryRequirements(
     cog = toSlide(add(scale(add(carried.cog, offset), carried.mass / payload), scale(kit ? toV3(kit.at) : offset, kitMass / payload)), f)
   } else {
     payload = g.payload
-    // the 소재 무게 중심 input counts X and Z the other way (+X = world −X, away from the Z slide face; +Z = down)
+    // the 부하 무게 중심 input counts X and Z the other way (+X = world −X, away from the Z slide face; +Z = down)
     cog = toSlide([-g.cog.x, g.cog.y, -g.cog.z], f)
   }
   // Accelerations across the travel: axes below move all of it; axes above react with their moving part only.

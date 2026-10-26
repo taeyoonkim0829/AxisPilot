@@ -110,7 +110,7 @@ function carriedLength(r: GantryAxisResult): number | null {
 export function computeGantry(g: GantryInputs, settings: Record<GantryAxis, Settings>, picks: Record<GantryAxis, Picks>): GantryAxisResult[] {
   const out: GantryAxisResult[] = []
   const stages: Stage[] = []
-  let carried: GantryAxisResult['carried'] = [{ label: '소재', mass: g.payload }]
+  let carried: GantryAxisResult['carried'] = [{ label: '부하', mass: g.payload }]
   for (const a of gantryChain(g.config)) {
     const below = out.at(-1)
     if (below && !below.stage) {

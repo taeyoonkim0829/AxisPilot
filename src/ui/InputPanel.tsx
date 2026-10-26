@@ -158,7 +158,7 @@ export function InputPanel({ req, settings, onReq, onSettings, mode, onMode }: P
         <section>
           {/* Three fields in a row are too narrow for a unit inside each: the unit sits in the heading */}
           <h2>
-            {t('소재 무게 중심')} <span className="heading-unit">(mm)</span>
+            {t('부하 무게 중심')} <span className="heading-unit">(mm)</span>
           </h2>
           <div className="grid-3">
             <NumberField label="X" value={req.cog.x} min={-1e6} onChange={(v) => setCog('x', v)} />

@@ -295,7 +295,7 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
             ['최대 구동 토크', q(a.maxDrivingTorque, 'Nm')],
             ['회전당 이송량', q(axis.feed, 'mm/rev')],
             ['반복 정밀도', a.repeatability == null ? '—' : `±${fmt(a.repeatability, 3)} mm`],
-            ['이동 질량 (소재 + 슬라이드)', q(axis.movingMass, 'kg')],
+            ['이동 질량 (부하 + 슬라이드)', q(axis.movingMass, 'kg')],
             ['축 질량', q(axis.axisMass, 'kg')],
             ['구동축 환산 관성', q(axis.inertia, 'kg·cm²', 4)],
             ['구동 효율', fmt(axis.efficiency)],

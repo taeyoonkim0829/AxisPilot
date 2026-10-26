@@ -10,7 +10,7 @@ import { accelTimeFor } from '../calc/motionProfile'
 const configHint: Record<GantryConfig, string> = {
   xyz: 'X축(바닥) 위에 Y축, Y축 슬라이드에 수직 Z축',
   yz: 'Y축 슬라이드에 수직 Z축 (라인 겐트리)',
-  xy: 'X축(바닥) 위에 Y축 (평면 겐트리), 소재는 Y축 슬라이드에',
+  xy: 'X축(바닥) 위에 Y축 (평면 겐트리), 부하는 Y축 슬라이드에',
 }
 const zModeLabel: Record<ZMode, string> = { slide: '슬라이드 이동', profile: '프로파일 이동' }
 const zModeHint: Record<ZMode, string> = {
@@ -78,12 +78,12 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
         </section>
 
         <section>
-          <h2>{t('소재')}</h2>
+          <h2>{t('부하')}</h2>
           <div className="grid-2">
             <NumberField label={t('하중')} unit="kg" value={gantry.payload} onChange={(v) => set('payload', v)} />
           </div>
           <h2 className="subhead">
-            {t('소재 무게 중심')} <span className="heading-unit">(mm)</span>
+            {t('부하 무게 중심')} <span className="heading-unit">(mm)</span>
           </h2>
           <VecFields value={gantry.cog} onChange={(v) => set('cog', v)} />
           <p className="field-hint">{t('{ref}, 장비 좌표 X / Y / Z (+Z = 아래쪽)', { ref: toolRef })}</p>

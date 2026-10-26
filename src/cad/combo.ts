@@ -325,7 +325,7 @@ export function assemblyWarnings(options: ComboOptions, parallel: boolean): stri
   if (connectorSide(options, parallel) === opposite[options.kitSide])
     warnings.push('모터 커넥터가 축 쪽을 향합니다. 간섭을 확인하세요.')
   if (options.kitSide === 'up')
-    warnings.push('모터가 슬라이드 쪽에 있어 슬라이드·소재와 간섭할 수 있으므로 사용 가능한 스트로크가 줄어들 수 있습니다.')
+    warnings.push('모터가 슬라이드 쪽에 있어 슬라이드·부하와 간섭할 수 있으므로 사용 가능한 스트로크가 줄어들 수 있습니다.')
   return warnings
 }
 
