@@ -5,9 +5,12 @@ import { fmt, pct, statusLabel } from './format'
 import type { SortState } from './useSort'
 import { useSlideThumb } from './useSlideThumb'
 
-export function StatusBadge({ status }: { status: Status }) {
+export function StatusBadge({ status, dot }: { status: Status; dot?: boolean }) {
   const t = useT()
-  return <span className={`badge badge-${status}`}>{t(statusLabel[status])}</span>
+  const word = t(statusLabel[status])
+  // dot: the coloured dot alone, the word for hover and screen readers
+  if (dot) return <span className={`badge badge-${status}`} role="img" title={word} aria-label={word} />
+  return <span className={`badge badge-${status}`}>{word}</span>
 }
 
 /** Utilisation cell: percentage plus a thin bar. */

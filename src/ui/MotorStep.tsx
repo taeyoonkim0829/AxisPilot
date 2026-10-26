@@ -286,14 +286,14 @@ function KitCell({ drive }: { drive: DriveEvaluation }) {
   if (!drive.kit) {
     return (
       <span className="kit-cell">
-        <StatusBadge status="warn" />
+        <StatusBadge status="warn" dot />
         <span className="muted">{t('해당 키트 없음')}</span>
       </span>
     )
   }
   return (
     <span className="kit-cell" title={drive.kit.kit.product}>
-      <StatusBadge status={drive.kit.status} />
+      <StatusBadge status={drive.kit.status} dot />
       <span className="muted">{drive.kit.kit.product}</span>
     </span>
   )
