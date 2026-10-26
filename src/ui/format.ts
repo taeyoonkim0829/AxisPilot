@@ -40,7 +40,7 @@ export const parallelModeLabel = {
 
 export const driveLabel ={ belt: '벨트', spindle: '볼스크류' } as const
 
-export const pressDirectionLabel = { down: '위→아래 (눌러 내림)', up: '아래→위 (밀어 올림)' } as const
+export const pressDirectionLabel = { down: '위→아래', up: '아래→위' } as const
 
 /** Name of one move: forward/return, or up/down on a vertical axis (`verticalForward`: direction of the forward move). */
 export const moveLabel = (back: boolean, vertical: VerticalDirection | null) => {
