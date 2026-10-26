@@ -270,6 +270,7 @@ export function ParallelSection({
         <div className="field">
           <span className="field-label">{t('LM 가이드 수')}</span>
           <RadioGroup
+            className="small wrap"
             options={['one', 'middle', 'edge'] as const}
             value={guideArrangement(parallel)}
             onChange={(v) => onParallel({ ...parallel, guideCount: v === 'one' ? 1 : 2, guideAxisEdge: v === 'edge' })}

@@ -888,6 +888,12 @@ h3 {
   border-top: 1px solid var(--sign);
 }
 
+/* Labels too long for one line (LM 가이드 수 in English) wrap instead of being cut */
+.segmented.wrap button {
+  white-space: normal;
+  line-height: 1.25;
+}
+
 .segmented.small button {
   padding: 4px 11px;
   font-size: 13px;
