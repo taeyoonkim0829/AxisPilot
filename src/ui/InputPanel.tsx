@@ -279,7 +279,7 @@ export function ParallelSection({
         <div className="field">
           <span className="field-label">{t('축 위치')}</span>
           <RadioGroup
-            options={['middle', 'edge'] as const}
+            options={['edge', 'middle'] as const}
             value={parallel.guideAxisEdge ? 'edge' : 'middle'}
             onChange={(v) => setParallel('guideAxisEdge', v === 'edge')}
             label={(v) => t(axisPlaceLabel[v])}

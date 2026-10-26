@@ -53,7 +53,7 @@ export interface ParallelConfig {
   spacing: number
   /** guides: LM guides added (1–`MAX_GUIDES`), axis and guides `spacing` apart in a row (`guidePositions`) */
   guideCount: number
-  /** guides, two or more: the axis at the edge (−y) instead of in the middle */
+  /** guides, two or more: the axis at the edge (−y, the default) instead of in the middle */
   guideAxisEdge?: boolean
   /** kg, moving mass per LM guide (carriages and bracket) */
   guideMass: number
@@ -79,6 +79,7 @@ export const defaultParallel: ParallelConfig = {
   mode: 'single',
   spacing: 300,
   guideCount: 1,
+  guideAxisEdge: true,
   guideMass: 0,
   shaftInertia: 0,
 }
