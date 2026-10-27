@@ -60,7 +60,7 @@ export interface AxisEvaluation {
   backProfile: MoveProfile
   /** Press move and hold at the end of the forward move; null without pressing */
   press: { profile: MoveProfile; distance: number; force: number; holdTime: number } | null
-  /** The cycle: forward (approach, press, hold), one dwell, then the return */
+  /** The cycle: forward, one dwell, then the return; pressing: forward (approach, press, hold), return, dwell */
   cyclePhases: Phase[]
   /** One move with the dwell at its end, for the forward / return views */
   forwardPhases: Phase[]
@@ -485,9 +485,12 @@ export function evaluateAxis(axis: Axis, req: Requirements, settings: Settings, 
   const forwardMoves = [...(approach?.phases ?? []), ...pressPhases]
   const forwardPhases = [...forwardMoves, ...dwell]
   const backPhases = [...back.phases, ...dwell]
-  // One dwell per cycle, between the forward and the return move
-  const phases: Phase[] = [...forwardMoves, ...dwell, ...back.phases]
-  const moves = [...forwardMoves.map(() => 0), ...dwell.map(() => -1), ...back.phases.map(() => 1)]
+  // One dwell per cycle, between the forward and the return move; pressing returns right after the hold and dwells
+  // after the return
+  const phases: Phase[] = press ? [...forwardMoves, ...back.phases, ...dwell] : [...forwardMoves, ...dwell, ...back.phases]
+  const moves = press
+    ? [...forwardMoves.map(() => 0), ...back.phases.map(() => 1), ...dwell.map(() => -1)]
+    : [...forwardMoves.map(() => 0), ...dwell.map(() => -1), ...back.phases.map(() => 1)]
   const cycleTime = phases.reduce((t, p) => t + p.duration, 0)
   const peakVelocity = Math.max(fwd.peakVelocity, press?.profile.peakVelocity ?? 0)
 
