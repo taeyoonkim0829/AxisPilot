@@ -165,20 +165,20 @@ describe('axis order options', () => {
 
   it('takes a distance for each of both EGC slides', () => {
     const e = evaluateAxis(egc, req, { ...defaultSettings, additionalSlide: 'both', slideGap: 0, slideGapRight: 60 })!
-    // KL at the 20 mm minimum, KR 60 mm away: 1000 + (120 + 20) + (120 + 60)
-    expect(e.order.stroke).toBe(1320)
-    expect(e.options!.gaps).toEqual([20, 60])
+    // EGC has no minimum distance: KL 0, KR 60 mm away: 1000 + 120 + (120 + 60)
+    expect(e.order.stroke).toBe(1300)
+    expect(e.options!.gaps).toEqual([0, 60])
     const even = evaluateAxis(egc, req, { ...defaultSettings, additionalSlide: 'both', slideGap: 60, slideGapRight: 60 })!
     expect(even.order.stroke).toBe(1360)
-    expect(e.options!.pitches[1] - e.options!.pitches[0]).toBeCloseTo(0.04)
+    expect(e.options!.pitches[1] - e.options!.pitches[0]).toBeCloseTo(0.06)
   })
 
   it('orders both EGC slides; the chloroprene belt has no code, PU2 has no torque data', () => {
     const settings = { ...defaultSettings, additionalSlide: 'both' as const, beltMaterial: { ELGD: 'PU2', EGC: 'PU2' } }
     const e = evaluateAxis(egc, req, settings)!
-    // 2 × (120 mm slide + 20 mm gap)
-    expect(e.order.model).toBe('EGC-80-1280-TB-KF-0H-GK-KL-KR-PU2')
-    expect(e.inertia - evaluateAxis(egc, req, defaultSettings)!.inertia).toBeCloseTo(2 * 1.2673 + egc.inertiaJHPerMeter * 0.28)
+    // 2 × 120 mm slide (no distance entered; EGC has no minimum)
+    expect(e.order.model).toBe('EGC-80-1240-TB-KF-0H-GK-KL-KR-PU2')
+    expect(e.inertia - evaluateAxis(egc, req, defaultSettings)!.inertia).toBeCloseTo(2 * 1.2673 + egc.inertiaJHPerMeter * 0.24)
     expect(e.checks.find((c) => c.label === '구동 토크')!.noteArgs).toEqual({ belt: 'PU2' })
     expect(evaluateAxis(egc, req, defaultSettings)!.order.model).toBe('EGC-80-1000-TB-KF-0H-GK')
     // both slides exist on EGC only: ELGD-TB leaves the list, axes without the option stay

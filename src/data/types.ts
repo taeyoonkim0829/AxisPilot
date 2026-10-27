@@ -87,7 +87,8 @@ export interface AdditionalSlide {
   right: string
   /** both sides at once (EGC KL + KR) */
   both: boolean
-  /** mm, length of the additional slide and the gap to the main slide; the working stroke loses both per slide */
+  /** mm, length of the additional slide and the minimum gap to the main slide (0 = none given); the working stroke
+   *  loses length and gap per slide */
   length: number
   gap: number
   /** kg */
