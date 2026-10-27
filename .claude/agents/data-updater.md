@@ -91,8 +91,8 @@ the same report, so the main conversation can show it.
 ## 6. Commit, push, notify
 
 - Commit and push without asking (the user's standing rule): stage only the files you meant to change and the
-  report (never DWG/DXF/IGES/ZIP), a short English message saying what was added, ending with
-  `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`, then `git push`.
+  report (never DWG/DXF/IGES/ZIP), a short English message saying what was added, ending with the
+  `Co-Authored-By:` line for the model you run on, then `git push`.
 - Notify the user on the PC and the phone, one line, under 200 characters, Korean, leading with what needs action,
   e.g. `데이터 업데이트 완료: EMMT 12종 추가, 도면 5개+오프셋 · 부족 데이터 3건, 누락 제품 2건 → 리포트 확인`:
   1. PC (Windows toast):

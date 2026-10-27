@@ -29,7 +29,7 @@ Read first, every time: `CLAUDE.md` (the `gantry.ts` and `gantryKits.ts` paragra
 
 ## 1. Pin down the joint
 
-Get from the request (or the app state the user describes, or a shared `?r=` link decoded with `src/ui/share.ts`):
+Get from the request (or the app state the user describes, or a shared `?r=` link decoded with `src/share.ts`):
 gantry type (xyz / yz / xy), each axis's ordered model and stroke, mountings (floor / wall / vertical, `slideFrame`),
 the X arrangement (single, two axes with motor or shaft sync, spacing), mounting offsets, payload and motion, and
 which joint needs the bracket. Check first that data/adapters really has no kit for it (`gantryJoint` /
@@ -100,11 +100,10 @@ from these numbers, keep mass low (it is carried by the axes below; report it).
   `accessories` (screws, dowels, centring sleeves, slot nuts with part numbers and quantities), plus
   `"maker": "Custom"`, `"custom": true`, `"partNumber": null`, `"drawing"` (the PDF path) and `"dataSource"` (this
   design and its report). Standard kits stay first: the app picks a custom bracket only when no Festo kit fits.
-- The first custom bracket needs app support. If `AxisAdapter` / `gantryJoint` do not know `custom` yet, add it with
-  the smallest change that fits the existing code: widen `maker` / `family`, prefer Festo kits in `pickJoint`, show
-  `custom` brackets as 주문 제작 (Korean UI text with its English in `src/i18n/en.ts`) in the gantry drawing list and
-  the report's 조합축 rows, link the drawing PDF. Update `data/README.md` (new section "Custom brackets") and
-  `CLAUDE.md` (gantryKits paragraph, "CAD models sit in …"). Add tests next to the existing gantry kit tests.
+- The app already handles custom brackets (`custom: true`, Festo kits preferred in `pickJoint`, listed as 주문 제작
+  with the drawing PDF). A joint shape the code does not place yet needs the smallest change that fits the existing
+  code (Korean UI text with its English in `src/i18n/en.ts`), with tests next to the existing gantry kit tests.
+  Update `data/README.md` ("Custom brackets") and `CLAUDE.md` (gantryKits paragraph, "CAD models sit in …").
 
 ## 6. Verify
 
@@ -124,8 +123,8 @@ Write the report in Korean to `reports/brackets/<YYYY-MM-DD-HHMM>-<id>.md`:
 - **확인 필요**: assumptions, anything the user or the shop must confirm.
 
 Commit and push without asking (the user's standing rule): only the files you meant to change, the cadgen source,
-STEP, PDF, frame JSON, data JSON and the report; short English message ending with
-`Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`, then `git push`.
+STEP, PDF, frame JSON, data JSON and the report; short English message ending with the `Co-Authored-By:` line for
+the model you run on, then `git push`.
 
 Notify in one Korean line under 200 characters, leading with what needs action, e.g.
 `브라켓 설계 완료: BR-ELGD-TB-60-ELGT-BS-90-1 (2.1 kg, SF 3.4, 처짐 0.02 mm) · 확인 필요 2건 → 리포트`:
