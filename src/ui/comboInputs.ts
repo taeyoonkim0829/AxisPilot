@@ -26,10 +26,10 @@ export function comboInputs(
           stroke: axis.order.stroke ?? req.stroke,
           ...(axis.options?.slides.length
             ? {
-                extraSlides: {
-                  sides: axis.options.slides.map((code) => (code === axis.axis.additionalSlide?.left ? ('left' as const) : ('right' as const))),
-                  pitch: axis.options.pitch * 1000,
-                },
+                extraSlides: axis.options.slides.map((code, i) => ({
+                  side: code === axis.axis.additionalSlide?.left ? ('left' as const) : ('right' as const),
+                  pitch: axis.options!.pitches[i] * 1000,
+                })),
               }
             : {}),
           motor: drive.motor,
@@ -63,7 +63,7 @@ export const comboKey = (selection: ComboSelection, req: Requirements, twin: Twi
   [
     selection.axis.id,
     selection.stroke,
-    selection.extraSlides ? `${selection.extraSlides.sides.join('+')}@${selection.extraSlides.pitch}` : '',
+    selection.extraSlides?.map((s) => `${s.side}@${s.pitch}`).join('+') ?? '',
     selection.motor.id,
     selection.gearbox?.id,
     selection.kit.id,

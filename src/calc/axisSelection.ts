@@ -97,10 +97,11 @@ export interface AxisOptions {
   slides: string[]
   /** mm the working stroke loses to them (slide length + gap each): the ordered stroke is that much longer */
   extension: number
-  /** mm, distance between neighbouring slides: the entered one (`Settings.slideGap`), at least the axis minimum */
-  gap: number
-  /** m, centre distance between neighbouring slides */
-  pitch: number
+  /** mm, per additional slide (as `slides`): its distance from the slide, the entered one (`Settings.slideGap`, KR of
+   *  both: `slideGapRight`), at least the axis minimum */
+  gaps: number[]
+  /** m, per additional slide: centre distance from the slide */
+  pitches: number[]
   /** the chosen belt material; null when the axis has no choice */
   belt: BeltMaterial | null
 }
@@ -118,12 +119,12 @@ export function axisOptions(axis: Axis, settings: Settings): AxisOptions | null 
   const slides =
     !extra || side === 'none' ? [] : side === 'both' ? (extra.both ? [extra.left, extra.right] : []) : [side === 'left' ? extra.left : extra.right]
   const chosen = settings.beltMaterial[axis.family]
-  const gap = extra ? Math.max(settings.slideGap, extra.gap) : 0
+  const gaps = extra ? slides.map((_, i) => Math.max(i === 1 ? settings.slideGapRight : settings.slideGap, extra.gap)) : []
   return {
     slides,
-    extension: extra ? slides.length * (extra.length + gap) : 0,
-    gap,
-    pitch: extra ? ((axis.slideLength ?? extra.length) + extra.length) / 2000 + gap / 1000 : 0,
+    extension: extra ? gaps.reduce((sum, gap) => sum + extra.length + gap, 0) : 0,
+    gaps,
+    pitches: extra ? gaps.map((gap) => ((axis.slideLength ?? extra.length) + extra.length) / 2000 + gap / 1000) : [],
     belt: materials?.length ? (materials.find((m) => m.code === chosen) ?? materials[0]) : null,
   }
 }
@@ -637,7 +638,10 @@ export function evaluateAxis(axis: Axis, req: Requirements, settings: Settings, 
   const loadReq = req.movingProfile ? { ...req, cog: movingProfileCog(req, axis, profile, driveMass) } : req
   const members = memberLoads(loadReq, systemMass, fwd.peakAcceleration, layout)
   // Additional slides: the payload plate spans all slides of the axis, centred on the payload's x reference.
-  const slidePositions = Array.from({ length: slideCount + 1 }, (_, i) => (i - slideCount / 2) * (options?.pitch ?? 0))
+  // (ZL / KL on one side of the slide, ZR / KR on the other)
+  const offsets = [0, ...(options?.slides ?? []).map((code, i) => (code === extra?.left ? -1 : 1) * options!.pitches[i])]
+  const mean = offsets.reduce((a, b) => a + b, 0) / offsets.length
+  const slidePositions = slideCount ? offsets.map((x) => x - mean) : [0]
   const axisLoads = members.filter((_, i) => layout.isAxis[i]).map((l) => slideGroupLoads(l, slidePositions))
   const loads = axisLoads.reduce((a, b) => (guideComparisonValue(b, axis).fv > guideComparisonValue(a, axis).fv ? b : a))
   let fv = 0
@@ -700,10 +704,15 @@ export function evaluateAxis(axis: Axis, req: Requirements, settings: Settings, 
             value: slideCount,
             unit: '',
             note:
-              settings.slideGap < extra.gap
+              options!.slides.some((_, i) => (i === 1 ? settings.slideGapRight : settings.slideGap) < extra.gap)
                 ? '{codes}, 1개 {mass} kg, 슬라이드 사이 거리 {gap} mm (최소 거리), 중심 간격 {pitch} mm'
                 : '{codes}, 1개 {mass} kg, 슬라이드 사이 거리 {gap} mm, 중심 간격 {pitch} mm',
-            noteArgs: { codes: options!.slides.join(' + '), mass: extra.mass, gap: options!.gap, pitch: Math.round(options!.pitch * 1000) },
+            noteArgs: {
+              codes: options!.slides.join(' + '),
+              mass: extra.mass,
+              gap: options!.gaps.join(' / '),
+              pitch: options!.pitches.map((p) => Math.round(p * 1000)).join(' / '),
+            },
           },
         ]
       : []),

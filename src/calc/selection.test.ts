@@ -156,11 +156,21 @@ describe('axis order options', () => {
   it('takes the entered distance between the slides, at least the minimum', () => {
     const at = (slideGap: number) => evaluateAxis(elgd, req, { ...defaultSettings, additionalSlide: 'left', slideGap })!
     expect(at(120).order.model).toBe('ELGD-TB-KF-80-1262-0H-ZL-PU2')
-    expect(at(120).options!.pitch).toBeCloseTo(0.262)
+    expect(at(120).options!.pitches).toEqual([expect.closeTo(0.262)])
     expect(at(120).guideFv).toBeLessThan(at(0).guideFv)
     // below the ELGD minimum of 50 mm the minimum applies
     expect(at(30).order.stroke).toBe(1192)
-    expect(at(30).options!.gap).toBe(50)
+    expect(at(30).options!.gaps).toEqual([50])
+  })
+
+  it('takes a distance for each of both EGC slides', () => {
+    const e = evaluateAxis(egc, req, { ...defaultSettings, additionalSlide: 'both', slideGap: 0, slideGapRight: 60 })!
+    // KL at the 20 mm minimum, KR 60 mm away: 1000 + (120 + 20) + (120 + 60)
+    expect(e.order.stroke).toBe(1320)
+    expect(e.options!.gaps).toEqual([20, 60])
+    const even = evaluateAxis(egc, req, { ...defaultSettings, additionalSlide: 'both', slideGap: 60, slideGapRight: 60 })!
+    expect(even.order.stroke).toBe(1360)
+    expect(e.options!.pitches[1] - e.options!.pitches[0]).toBeCloseTo(0.04)
   })
 
   it('orders both EGC slides; the chloroprene belt has no code, PU2 has no torque data', () => {

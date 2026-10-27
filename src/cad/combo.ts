@@ -28,7 +28,8 @@ export interface ComboSelection {
   stroke: number
   /** additional slides (`AxisOptions`): left (ZL/KL) towards the drive head, right away from it; `pitch` mm between
    *  neighbouring slide centres. The ordered stroke includes them. */
-  extraSlides?: { sides: ('left' | 'right')[]; pitch: number }
+  /** additional slides: side and centre distance from the slide (mm) */
+  extraSlides?: { side: 'left' | 'right'; pitch: number }[]
   motor: Motor
   gearbox: Gearbox | null
   kit: Kit
@@ -488,16 +489,16 @@ export async function comboParts(
   // sits at; the slide frame then sits at the centre of the group (the calc centres the payload on it).
   let mainOffset: Vec3 = [0, 0, 0]
   const extra = sel.extraSlides
-  if (extra?.sides.length) {
+  if (extra?.length) {
     const t = base.slide.travel
     const toDrive = Math.sign(dot(sub(base.drive.origin, middle), t)) || 1
     const near = Math.sign(dot(sub(base.slide.origin, middle), t)) || -toDrive
-    const dirs = extra.sides.map((s) => (s === 'left' ? toDrive : -toDrive))
-    const main = dirs.includes(near) ? -near * extra.pitch : 0
+    const shifts = extra.map((s) => (s.side === 'left' ? toDrive : -toDrive) * s.pitch)
+    const main = -(shifts.find((d) => Math.sign(d) === near) ?? 0)
     const file: StepFile = { header: stretched.header, entities: new Map(stretched.entities) }
-    if ((main === 0 || moveSlide(file, scale(t, main))) && copySlide(file, dirs.map((d) => scale(t, d * extra.pitch)))) {
+    if ((main === 0 || moveSlide(file, scale(t, main))) && copySlide(file, shifts.map((d) => scale(t, d)))) {
       stretched = file
-      const centres = [main, ...dirs.map((d) => main + d * extra.pitch)]
+      const centres = [main, ...shifts.map((d) => main + d)]
       const centre = centres.reduce((a, b) => a + b, 0) / centres.length
       mainOffset = scale(t, main - centre)
       base = { ...base, slide: { ...base.slide, origin: add(base.slide.origin, scale(t, centre)) } }
@@ -552,7 +553,7 @@ export async function comboParts(
     let slideOrigin = slide.origin
     if (turned.otherEnd !== position.otherEnd) {
       // the slides keep their spacing: the group travels the stroke less its span
-      const span = (extra?.sides.length ?? 0) * (extra?.pitch ?? 0)
+      const span = (extra ?? []).reduce((sum, s) => sum + s.pitch, 0)
       const shift = scale(slide.travel, sel.stroke - span)
       if (moveSlide(file, shift)) slideOrigin = add(slide.origin, shift)
     }

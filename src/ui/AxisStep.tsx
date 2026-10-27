@@ -57,12 +57,24 @@ function AxisOptionFilters({ settings, onSettings }: Pick<Props, 'settings' | 'o
       {settings.additionalSlide !== 'none' && sides.includes(settings.additionalSlide) && (
         <div className="filter-group slide-gap">
           <NumberField
-            label={t('슬라이드 사이 거리')}
+            label={settings.additionalSlide === 'both' ? t('슬라이드 사이 거리 ({code})', { code: 'KL' }) : t('슬라이드 사이 거리')}
             unit="mm"
             value={settings.slideGap}
             step={1}
-            hint={t('최소 ELGD 50 · EGC 20 mm')}
+            hint={settings.additionalSlide === 'both' ? undefined : t('최소 ELGD 50 · EGC 20 mm')}
             onChange={(slideGap) => onSettings({ ...settings, slideGap })}
+          />
+        </div>
+      )}
+      {settings.additionalSlide === 'both' && sides.includes('both') && (
+        <div className="filter-group slide-gap">
+          <NumberField
+            label={t('슬라이드 사이 거리 ({code})', { code: 'KR' })}
+            unit="mm"
+            value={settings.slideGapRight}
+            step={1}
+            hint={t('최소 EGC 20 mm')}
+            onChange={(slideGapRight) => onSettings({ ...settings, slideGapRight })}
           />
         </div>
       )}

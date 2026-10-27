@@ -347,13 +347,13 @@ describe('combination', () => {
   }, 60000)
 
   it('draws additional slides as copies of the slide, the slide frame at the centre of the group', async () => {
-    const build = async (axisId: string, path: string, kit: string, code: string, stroke: number, sides: ('left' | 'right')[]) => {
+    const build = async (axisId: string, path: string, kit: string, code: string, stroke: number, sides: ('left' | 'right')[], pitches = sides.map(() => 150)) => {
       const axis = axes.find((a) => a.id === axisId)!
       const sel: ComboSelection = {
         axis,
         axisModel: axisId,
         stroke,
-        ...(sides.length ? { extraSlides: { sides, pitch: 150 } } : {}),
+        ...(sides.length ? { extraSlides: sides.map((side, i) => ({ side, pitch: pitches[i] })) } : {}),
         motor: motors.find((m) => m.model === 'EMMT-AS-60-S-HS')!,
         gearbox: null,
         kit: kits.find((k) => k.product === kit && k.axisCode === code)!,
@@ -375,6 +375,12 @@ describe('combination', () => {
     expect(both.slides[1] - both.slides[0]).toBeCloseTo(150, 0)
     expect(both.slides[2] - both.slides[1]).toBeCloseTo(150, 0)
     expect(both.slides[1]).toBeCloseTo(0, 0)
+    // a distance for each: 150 to one side, 200 to the other, the group centred on the slide frame
+    const uneven = await build('EGC-70-...-TB-KF-GK', egc, 'EAMM-A-L38-60P-G2', 'L38', 350, ['left', 'right'], [150, 200])
+    const gaps = [uneven.slides[1] - uneven.slides[0], uneven.slides[2] - uneven.slides[1]].sort((a, b) => a - b)
+    expect(gaps[0]).toBeCloseTo(150, 0)
+    expect(gaps[1]).toBeCloseTo(200, 0)
+    expect(uneven.slides.reduce((a, b) => a + b, 0)).toBeCloseTo(0, 0)
     // ELGD, lengthened: one slide on either side, the pair centred on the slide frame
     const elgd = 'data/axes/Festo/Drawings/ELGD/8192344_ELGD-TB-KF-60-200-0H-PU2.stp'
     for (const side of ['left', 'right'] as const) {
