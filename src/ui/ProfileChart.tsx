@@ -107,7 +107,7 @@ export function ProfileChart({ axis, drive, settings, vertical, open, onToggle, 
   )
 }
 
-/** Phases of the view: the dwell always comes last (the cycle has one, after the return). */
+/** Phases of the view: one move ends with the dwell; the cycle has one, between the forward and the return move. */
 function viewPhases(axis: AxisEvaluation, view: ProfileView): Phase[] {
   return view === 'cycle' ? axis.cyclePhases : view === 'back' ? axis.backPhases : axis.forwardPhases
 }

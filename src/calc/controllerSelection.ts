@@ -88,14 +88,17 @@ export function selectController(
   )
   const rmsCurrent = motor.openLoop ? (motor.nominalCurrent ?? 0) : kt ? drive.rmsTorque / kt : 0
   const peakCurrent = Math.max(0, ...currents)
-  // Longest stretch above the drive's nominal current (peak current is allowed for peakDuration)
+  // Longest stretch above the drive's nominal current (peak current is allowed for peakDuration). The cycle repeats,
+  // so a stretch at its end runs on into the next cycle's start: two cycles are scanned.
   const overTime = (c: Controller) => {
+    const cycle = axisEval.samples.reduce((t, s) => t + s.dt, 0)
     let longest = 0
     let run = 0
-    axisEval.samples.forEach((s, i) => {
-      run = currents[i] > c.nominalCurrent ? run + s.dt : 0
-      longest = Math.max(longest, run)
-    })
+    for (const pass of [0, 1])
+      axisEval.samples.forEach((s, i) => {
+        run = currents[i] > c.nominalCurrent ? run + s.dt : 0
+        if (pass === 1 || run > 0) longest = Math.max(longest, Math.min(run, cycle))
+      })
     return longest
   }
   const fits = (c: Controller) =>
