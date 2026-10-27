@@ -147,8 +147,15 @@ export function DrawingStep({ axis, drive, kit, req: input, sides, onSides, faci
                       to: selection.stroke,
                     })
                   : null,
-                // the CAD models are the standard version: one slide
-                axis!.options?.slides.length ? t('추가 슬라이드 {codes}는 도면에 없음', { codes: axis!.options.slides.join(' + ') }) : null,
+                // additional slides are copies of the model's slide: a long / extended one is drawn at its own length
+                axis!.options?.slides.length
+                  ? axis!.axis.slideLength != null && axis!.axis.additionalSlide && axis!.axis.slideLength !== axis!.axis.additionalSlide.length
+                    ? t('추가 슬라이드 {codes}: 기존 슬라이드 모델로 그림 (실제 길이 {length} mm)', {
+                        codes: axis!.options.slides.join(' + '),
+                        length: axis!.axis.additionalSlide.length,
+                      })
+                    : t('추가 슬라이드 {codes} 포함, 슬라이드 사이 거리 {gap} mm', { codes: axis!.options.slides.join(' + '), gap: axis!.options.gap })
+                  : null,
               ]
                 .filter(Boolean)
                 .join(' · ') || null,

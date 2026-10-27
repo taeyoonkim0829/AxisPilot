@@ -20,7 +20,22 @@ export function comboInputs(
   const req = { ...input, cog: axisCog(input) }
   const selection: ComboSelection | null =
     axis && drive && kit
-      ? { axis: axis.axis, axisModel: axis.order.model, stroke: axis.order.stroke ?? req.stroke, motor: drive.motor, gearbox: drive.gearbox, kit }
+      ? {
+          axis: axis.axis,
+          axisModel: axis.order.model,
+          stroke: axis.order.stroke ?? req.stroke,
+          ...(axis.options?.slides.length
+            ? {
+                extraSlides: {
+                  sides: axis.options.slides.map((code) => (code === axis.axis.additionalSlide?.left ? ('left' as const) : ('right' as const))),
+                  pitch: axis.options.pitch * 1000,
+                },
+              }
+            : {}),
+          motor: drive.motor,
+          gearbox: drive.gearbox,
+          kit,
+        }
       : null
   const found = selection ? comboDrawings(selection) : null
   const shaftDrawing = axis?.shaft ? shaftDrawingFor(axis.shaft.shaft) : null
@@ -48,6 +63,7 @@ export const comboKey = (selection: ComboSelection, req: Requirements, twin: Twi
   [
     selection.axis.id,
     selection.stroke,
+    selection.extraSlides ? `${selection.extraSlides.sides.join('+')}@${selection.extraSlides.pitch}` : '',
     selection.motor.id,
     selection.gearbox?.id,
     selection.kit.id,

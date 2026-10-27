@@ -346,6 +346,45 @@ describe('combination', () => {
     expect(turned.meshes).toBe(same.meshes)
   }, 60000)
 
+  it('draws additional slides as copies of the slide, the slide frame at the centre of the group', async () => {
+    const build = async (axisId: string, path: string, kit: string, code: string, stroke: number, sides: ('left' | 'right')[]) => {
+      const axis = axes.find((a) => a.id === axisId)!
+      const sel: ComboSelection = {
+        axis,
+        axisModel: axisId,
+        stroke,
+        ...(sides.length ? { extraSlides: { sides, pitch: 150 } } : {}),
+        motor: motors.find((m) => m.model === 'EMMT-AS-60-S-HS')!,
+        gearbox: null,
+        kit: kits.find((k) => k.product === kit && k.axisCode === code)!,
+      }
+      const kitPath = allPaths.map((p) => p.slice(6)).find((p) => p.includes(`_${kit}.stp`))!
+      const own = [path, kitPath, files[2]].map((p) => ({ ...parseDrawingPath(p)!, url: p, meta: metas[`../../${p.replace(/\.stp$/, '.json')}`] ?? null }))
+      const found = comboDrawings(sel, own)
+      expect(found.missing).toEqual([])
+      const box = await meshBox((await buildCombo(sel, found, { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)).step)
+      // floor: the slides travel along x
+      return { box, slides: box.parts.filter((p) => /TB1-{4,}|high_?s\)/.test(p.name)).map((p) => (p.lo[0] + p.hi[0]) / 2).sort((a, b) => a - b) }
+    }
+    const egc = 'data/axes/Festo/Drawings/EGC/3012492_EGC-70-300-TB-KF-0H-GK.stp'
+    const plain = await build('EGC-70-...-TB-KF-GK', egc, 'EAMM-A-L38-60P-G2', 'L38', 300, [])
+    expect(plain.slides).toHaveLength(1)
+    const both = await build('EGC-70-...-TB-KF-GK', egc, 'EAMM-A-L38-60P-G2', 'L38', 300, ['left', 'right'])
+    expect(both.box.meshes).toBe(plain.box.meshes + 2)
+    expect(both.slides).toHaveLength(3)
+    expect(both.slides[1] - both.slides[0]).toBeCloseTo(150, 0)
+    expect(both.slides[2] - both.slides[1]).toBeCloseTo(150, 0)
+    expect(both.slides[1]).toBeCloseTo(0, 0)
+    // ELGD, lengthened: one slide on either side, the pair centred on the slide frame
+    const elgd = 'data/axes/Festo/Drawings/ELGD/8192344_ELGD-TB-KF-60-200-0H-PU2.stp'
+    for (const side of ['left', 'right'] as const) {
+      const one = await build('ELGD-TB-KF-60', elgd, 'EAMM-A-N48-60P', 'N48', 368, [side])
+      expect(one.slides).toHaveLength(2)
+      expect(one.slides[1] - one.slides[0]).toBeCloseTo(150, 0)
+      expect(one.slides[0] + one.slides[1]).toBeCloseTo(0, 0)
+    }
+  }, 60000)
+
   it('puts the motor of a belt axis on either shaft end and either end of the axis', async () => {
     const axis = axes.find((a) => a.id === 'EGC-70-...-TB-KF-GK')!
     const sel: ComboSelection = {

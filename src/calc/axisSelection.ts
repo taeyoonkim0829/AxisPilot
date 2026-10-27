@@ -97,6 +97,8 @@ export interface AxisOptions {
   slides: string[]
   /** mm the working stroke loses to them (slide length + gap each): the ordered stroke is that much longer */
   extension: number
+  /** mm, distance between neighbouring slides: the entered one (`Settings.slideGap`), at least the axis minimum */
+  gap: number
   /** m, centre distance between neighbouring slides */
   pitch: number
   /** the chosen belt material; null when the axis has no choice */
@@ -116,10 +118,12 @@ export function axisOptions(axis: Axis, settings: Settings): AxisOptions | null 
   const slides =
     !extra || side === 'none' ? [] : side === 'both' ? (extra.both ? [extra.left, extra.right] : []) : [side === 'left' ? extra.left : extra.right]
   const chosen = settings.beltMaterial[axis.family]
+  const gap = extra ? Math.max(settings.slideGap, extra.gap) : 0
   return {
     slides,
-    extension: extra ? slides.length * (extra.length + extra.gap) : 0,
-    pitch: extra ? ((axis.slideLength ?? extra.length) + extra.length) / 2000 + extra.gap / 1000 : 0,
+    extension: extra ? slides.length * (extra.length + gap) : 0,
+    gap,
+    pitch: extra ? ((axis.slideLength ?? extra.length) + extra.length) / 2000 + gap / 1000 : 0,
     belt: materials?.length ? (materials.find((m) => m.code === chosen) ?? materials[0]) : null,
   }
 }
@@ -162,12 +166,10 @@ export interface AxisOrder {
 }
 
 /**
- * Standard strokes have their own order numbers: the required stroke is rounded up to the next one, unless a
- * fixed stroke of the modular product system is shorter (ELGT-BS-120/160 have standard strokes from 300, fixed
- * ones from 100). Other strokes are configured in the modular product system and ordered by module number: a
- * whole mm within its variable range, else the next of its fixed strokes (ELGT-BS has only fixed ones). ESBF
- * is ordered at the entered stroke (whole mm): a standard part number only when it is a standard stroke. Axes
- * without order data keep their data model name.
+ * Axes of the modular product system are ordered at the required stroke: a whole mm within its variable range,
+ * else the next of its fixed strokes (ELGT-BS has only fixed ones, 50 mm apart). That stroke takes its standard
+ * part number when it is a standard stroke, else the module number. Axes without a module number (ELGT-TB-…-CS)
+ * round up to the next standard stroke. Axes without order data keep their data model name.
  */
 export function axisOrder(axis: Axis, stroke: number, options: AxisOptions | null = null): AxisOrder {
   const template = axis.typeCode ?? axis.model
@@ -176,13 +178,12 @@ export function axisOrder(axis: Axis, stroke: number, options: AxisOptions | nul
   }
   // Options are configured in the modular product system; additional slides lengthen the ordered stroke.
   const parts = customised(axis, options) ? {} : (axis.strokePartNumbers ?? {})
-  const fixed = axis.moduleNumber ? axis.moduleStrokes?.fixed.toSorted((a, b) => a - b).find((s) => s >= stroke) : undefined
-  const exact = axis.family === 'ESBF' && axis.moduleNumber != null
-  const standard = Object.keys(parts)
+  const strokes = Object.keys(parts)
     .map(Number)
     .sort((a, b) => a - b)
-    .find((s) => (exact ? s === Math.ceil(stroke) : s >= stroke && !(fixed != null && fixed < s)))
-  const ordered = standard ?? moduleStroke(axis.moduleStrokes, stroke + (options?.extension ?? 0))
+  const configured = axis.moduleNumber ? moduleStroke(axis.moduleStrokes, stroke + (options?.extension ?? 0)) : null
+  const standard = configured != null ? strokes.find((s) => s === configured) : strokes.find((s) => s >= stroke)
+  const ordered = standard ?? configured ?? Math.ceil(stroke)
   return {
     model: optionCode(axis, template, options).replace('…', String(ordered)),
     partNumber: standard != null ? parts[String(standard)] : (axis.moduleNumber ?? null),
@@ -698,8 +699,11 @@ export function evaluateAxis(axis: Axis, req: Requirements, settings: Settings, 
             label: '추가 슬라이드',
             value: slideCount,
             unit: '',
-            note: '{codes}, 1개 {mass} kg, 슬라이드 간격 {pitch} mm',
-            noteArgs: { codes: options!.slides.join(' + '), mass: extra.mass, pitch: Math.round(options!.pitch * 1000) },
+            note:
+              settings.slideGap < extra.gap
+                ? '{codes}, 1개 {mass} kg, 슬라이드 사이 거리 {gap} mm (최소 거리), 중심 간격 {pitch} mm'
+                : '{codes}, 1개 {mass} kg, 슬라이드 사이 거리 {gap} mm, 중심 간격 {pitch} mm',
+            noteArgs: { codes: options!.slides.join(' + '), mass: extra.mass, gap: options!.gap, pitch: Math.round(options!.pitch * 1000) },
           },
         ]
       : []),

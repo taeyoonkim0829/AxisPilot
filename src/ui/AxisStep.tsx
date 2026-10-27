@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { AxisEvaluation } from '../calc/axisSelection'
 import type { AdditionalSlideSide, Settings } from '../calc/types'
 import type { AxisFamily, DriveKind } from '../data/types'
-import { CheckTable, CollapseTitle, RadioGroup, Ratio, SortTh, StatusBadge, ToggleButton, ToggleGroup } from './common'
+import { CheckTable, CollapseTitle, NumberField, RadioGroup, Ratio, SortTh, StatusBadge, ToggleButton, ToggleGroup } from './common'
 import { statusRank, useSort } from './useSort'
 import { useT } from '../i18n'
 import { axisDetailChecks, driveLabel, fmt } from './format'
@@ -54,6 +54,18 @@ function AxisOptionFilters({ settings, onSettings }: Pick<Props, 'settings' | 'o
           onChange={(v) => onSettings({ ...settings, additionalSlide: v })}
         />
       </div>
+      {settings.additionalSlide !== 'none' && sides.includes(settings.additionalSlide) && (
+        <div className="filter-group slide-gap">
+          <NumberField
+            label={t('슬라이드 사이 거리')}
+            unit="mm"
+            value={settings.slideGap}
+            step={1}
+            hint={t('최소 ELGD 50 · EGC 20 mm')}
+            onChange={(slideGap) => onSettings({ ...settings, slideGap })}
+          />
+        </div>
+      )}
       {shown.map((family) => (
         <div className="filter-group" key={family}>
           <span className="field-label">{t('{family} 벨트', { family })}</span>

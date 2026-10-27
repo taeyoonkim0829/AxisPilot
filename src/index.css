@@ -1086,6 +1086,23 @@ details summary:hover {
   gap: 8px;
 }
 
+/* A number field inline in a filter row (추가 슬라이드 · 슬라이드 사이 거리): label, a short input, the hint after it */
+.filter-group .field {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 0;
+}
+
+.filter-group .field-input {
+  width: 96px;
+  height: 32px;
+}
+
+.filter-group .field-hint {
+  white-space: nowrap;
+}
+
 .table-wrap {
   overflow: auto;
   max-height: 480px;

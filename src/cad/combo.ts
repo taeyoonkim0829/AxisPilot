@@ -26,6 +26,9 @@ export interface ComboSelection {
   axisModel: string
   /** mm, ordered stroke */
   stroke: number
+  /** additional slides (`AxisOptions`): left (ZL/KL) towards the drive head, right away from it; `pitch` mm between
+   *  neighbouring slide centres. The ordered stroke includes them. */
+  extraSlides?: { sides: ('left' | 'right')[]; pitch: number }
   motor: Motor
   gearbox: Gearbox | null
   kit: Kit
@@ -119,8 +122,41 @@ export const mirroredDrive = (meta: AxisMeta | null, position: DrivePosition): D
 export const twinPositionWords = (meta: AxisMeta, mounting: Mounting, position: DrivePosition, facing = false) =>
   drivePositionWords(meta, mounting, meta.slide.front ? { ...position, otherSide: !position.otherSide } : position, facing ? -1 : 0)
 
-/** The slide when it is a part of its own (EGC-TB-KF: …-GK-GPTB1--------(0)) */
-const SLIDE_PART = /TB1-{4,}/
+/** The slide when it is a part of its own (EGC-TB-KF: …-GK-GPTB1--------(0); ELGD-TB: …---(high_s), WD …---(highs)) */
+const SLIDE_PART = /TB1-{4,}|---\(high_?s\)/
+
+/**
+ * Adds instances of the slide part `shifts` (file mm) from where it sits: copies of its assembly occurrence (usage,
+ * shape, transformation) with the placement moved. False when the slide is no part of its own.
+ */
+function copySlide(file: StepFile, shifts: Vec3[]): boolean {
+  const e = file.entities
+  const pd = definitionByName(file, SLIDE_PART)
+  const find = (type: string, test: (r: number[]) => boolean) => [...e].find(([, b]) => typeOf(b) === type && test(refs(b)))
+  const nauo = pd == null ? undefined : find('NEXT_ASSEMBLY_USAGE_OCCURRENCE', (r) => r[1] === pd)
+  const pds = nauo && find('PRODUCT_DEFINITION_SHAPE', (r) => r.at(-1) === nauo[0])
+  const cdsr = pds && find('CONTEXT_DEPENDENT_SHAPE_REPRESENTATION', (r) => r[1] === pds[0])
+  const rel = cdsr ? e.get(refs(cdsr[1])[0]) : undefined
+  const idt = rel ? refs(rel)[2] : undefined
+  const placement = idt != null ? refs(e.get(idt) ?? '')[1] : undefined
+  const location = placement != null ? refs(e.get(placement) ?? '')[0] : undefined
+  const at = location != null ? pointOf(e.get(location) ?? '') : null
+  if (!nauo || !pds || !cdsr || !rel || idt == null || placement == null || location == null || !at) return false
+  let next = nextIdOf(e)
+  shifts.forEach((shift, i) => {
+    const [p, pl, t, r, n, s, c] = [next, next + 1, next + 2, next + 3, next + 4, next + 5, next + 6]
+    next += 7
+    e.set(p, pointBody(add(at, shift)))
+    e.set(pl, mapRefs(e.get(placement)!, (id) => (id === location ? p : id)))
+    e.set(t, mapRefs(e.get(idt)!, (id) => (id === placement ? pl : id)))
+    e.set(r, mapRefs(rel, (id) => (id === idt ? t : id)))
+    // its own id string (the first argument)
+    e.set(n, nauo[1].replace(/^(\s*NEXT_ASSEMBLY_USAGE_OCCURRENCE\s*\(\s*')[^']*/, `$1SLIDE${i + 2}`))
+    e.set(s, mapRefs(pds[1], (id) => (id === nauo[0] ? n : id)))
+    e.set(c, mapRefs(cdsr[1], (id) => (id === refs(cdsr[1])[0] ? r : id === pds[0] ? s : id)))
+  })
+  return true
+}
 
 /** Moves the slide part by `shift` (file mm; new points, the old ones may be shared). False when it is no part of its own. */
 function moveSlide(file: StepFile, shift: Vec3): boolean {
@@ -443,12 +479,31 @@ export async function comboParts(
       slide: { ...base.slide, origin: stretchedOrigin(base.slide.origin, axisMeta.stretch, stretch) },
     }
   }
-  const { slide } = base
   // the profile's mounting face, its middle moved by half the length change (older JSONs: below the slide)
-  const own = axisMeta.profile ?? { origin: [slide.origin[0], 0, slide.origin[2]] as Vec3, normal: scale(slide.normal, -1) }
+  const own = axisMeta.profile ?? { origin: [base.slide.origin[0], 0, base.slide.origin[2]] as Vec3, normal: scale(base.slide.normal, -1) }
   const k = axisMeta.stretch?.axis
   const middle: Vec3 =
     k != null && axisMeta.profile ? (own.origin.map((v, i) => (i === k ? v + (axisMeta.stretch!.dir * stretch) / 2 : v)) as Vec3) : own.origin
+  // Additional slides beside the slide at the start position, the slide moved inwards when one goes to the end it
+  // sits at; the slide frame then sits at the centre of the group (the calc centres the payload on it).
+  let mainOffset: Vec3 = [0, 0, 0]
+  const extra = sel.extraSlides
+  if (extra?.sides.length) {
+    const t = base.slide.travel
+    const toDrive = Math.sign(dot(sub(base.drive.origin, middle), t)) || 1
+    const near = Math.sign(dot(sub(base.slide.origin, middle), t)) || -toDrive
+    const dirs = extra.sides.map((s) => (s === 'left' ? toDrive : -toDrive))
+    const main = dirs.includes(near) ? -near * extra.pitch : 0
+    const file: StepFile = { header: stretched.header, entities: new Map(stretched.entities) }
+    if ((main === 0 || moveSlide(file, scale(t, main))) && copySlide(file, dirs.map((d) => scale(t, d * extra.pitch)))) {
+      stretched = file
+      const centres = [main, ...dirs.map((d) => main + d * extra.pitch)]
+      const centre = centres.reduce((a, b) => a + b, 0) / centres.length
+      mainOffset = scale(t, main - centre)
+      base = { ...base, slide: { ...base.slide, origin: add(base.slide.origin, scale(t, centre)) } }
+    }
+  }
+  const { slide } = base
   // with a connecting shaft the motor takes the shaft end away from the second axis
   const chosen = turnable(sel.axis) ? options.drive : DRIVE_POSITIONS[0]
   const position = twin && !twin.drive && turnable(sel.axis) ? shaftDrivePosition(axisMeta, req.mounting, chosen) : chosen
@@ -496,7 +551,9 @@ export async function comboParts(
     const turned = { ...at, otherEnd: !at.otherEnd }
     let slideOrigin = slide.origin
     if (turned.otherEnd !== position.otherEnd) {
-      const shift = scale(slide.travel, sel.stroke)
+      // the slides keep their spacing: the group travels the stroke less its span
+      const span = (extra?.sides.length ?? 0) * (extra?.pitch ?? 0)
+      const shift = scale(slide.travel, sel.stroke - span)
       if (moveSlide(file, shift)) slideOrigin = add(slide.origin, shift)
     }
     return { file, head, axisToWorld: axisToWorldOf(axisMeta, req.mounting, turned, slideOrigin) }
@@ -611,7 +668,9 @@ export async function comboParts(
   }
   // the slide hole pattern beside the slide centre (EGC-TB/BS-KF), turned with the first axis; a twin drawn mirrored
   // (turned end for end about its slide normal) has it on the other side, a plain copy on the same
-  const toPattern = axisMeta.slide.pattern ? rotate(axisToWorld, sub(axisMeta.slide.pattern, axisMeta.slide.origin)) : ([0, 0, 0] as Vec3)
+  const toPattern = axisMeta.slide.pattern
+    ? rotate(axisToWorld, add(sub(axisMeta.slide.pattern, axisMeta.slide.origin), mainOffset))
+    : ([0, 0, 0] as Vec3)
   const patternOffsets: Vec3[] = [toPattern]
   if (twin) patternOffsets.push(turnable(sel.axis) && axisMeta.slide.front != null ? scale(toPattern, -1) : toPattern)
   // COG in the first slide's frame (x travel, y lateral, z normal); a facing pair turns it with the slide, y then

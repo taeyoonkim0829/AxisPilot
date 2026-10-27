@@ -153,6 +153,16 @@ describe('axis order options', () => {
     expect(e.guideFv).toBeLessThan(plain.guideFv)
   })
 
+  it('takes the entered distance between the slides, at least the minimum', () => {
+    const at = (slideGap: number) => evaluateAxis(elgd, req, { ...defaultSettings, additionalSlide: 'left', slideGap })!
+    expect(at(120).order.model).toBe('ELGD-TB-KF-80-1262-0H-ZL-PU2')
+    expect(at(120).options!.pitch).toBeCloseTo(0.262)
+    expect(at(120).guideFv).toBeLessThan(at(0).guideFv)
+    // below the ELGD minimum of 50 mm the minimum applies
+    expect(at(30).order.stroke).toBe(1192)
+    expect(at(30).options!.gap).toBe(50)
+  })
+
   it('orders both EGC slides; the chloroprene belt has no code, PU2 has no torque data', () => {
     const settings = { ...defaultSettings, additionalSlide: 'both' as const, beltMaterial: { ELGD: 'PU2', EGC: 'PU2' } }
     const e = evaluateAxis(egc, req, settings)!
@@ -380,7 +390,7 @@ describe('selection on real data', () => {
     expect(ev.axisMass).toBeCloseTo(3.165 + 0.087 * 25.1)
   })
 
-  it('orders ELGT, ELGD and EGC by type code: standard stroke, else the modular product system', () => {
+  it('orders ELGT, ELGD and EGC at the stroke the modular product system takes: standard part number when it is a standard stroke', () => {
     const order = (id: string, stroke: number) => axisOrder(axes.find((a) => a.id === id)!, stroke)
     expect(order('ELGT-BS-120-…10P', 280)).toEqual({ model: 'ELGT-BS-120-300-10P', partNumber: '8124451', stroke: 300, modular: false })
     // standard strokes start at 300, the modular system's fixed ones at 100
@@ -388,12 +398,14 @@ describe('selection on real data', () => {
     expect(order('ELGT-BS-160-…20P', 230).model).toBe('ELGT-BS-160-250-20P')
     // ELGT modular strokes come in fixed steps
     expect(order('ELGT-BS-120-…10P', 1050)).toEqual({ model: 'ELGT-BS-120-1100-10P', partNumber: '8121225', stroke: 1100, modular: true })
-    expect(order('ELGD-BS-KF-60-…10P', 120).model).toBe('ELGD-BS-KF-60-200-0H-10P')
-    expect(order('ELGD-BS-KF-60-…10P', 120).partNumber).toBe('8192261')
+    // ELGD and EGC take any whole mm in their variable range
+    expect(order('ELGD-BS-KF-60-…10P', 120)).toEqual({ model: 'ELGD-BS-KF-60-120-0H-10P', partNumber: '8176874', stroke: 120, modular: true })
+    expect(order('ELGD-BS-KF-60-…10P', 200).partNumber).toBe('8192261')
     // Long slide: no standard strokes, any whole mm
     expect(order('ELGD-BS-KF-80-…10P-L', 512.3)).toEqual({ model: 'ELGD-BS-KF-80-513-0H-10P-L', partNumber: '8176875', stroke: 513, modular: true })
     expect(order('ELGD-TB-KF-WD-100-…-L', 2100).model).toBe('ELGD-TB-KF-WD-100-2100-0H-L-PU2')
-    expect(order('EGC-80-...-TB-KF-GK', 300).model).toBe('EGC-80-400-TB-KF-0H-GK')
+    expect(order('EGC-80-...-TB-KF-GK', 300).model).toBe('EGC-80-300-TB-KF-0H-GK')
+    expect(order('ELGD-TB-KF-WD-100-…-L', 450).model).toBe('ELGD-TB-KF-WD-100-450-0H-L-PU2')
     // Above the variable range only the fixed strokes are left: EGC-70-BS takes 50…980 or 1000
     expect(order('EGC-70-...-BS-10P-KF-GK', 990)).toEqual({ model: 'EGC-70-1000-BS-10P-KF-0H-ML-GK', partNumber: '556807', stroke: 1000, modular: true })
     expect(order('EGC-HD-160-…-BS-20P-GK', 30).model).toBe('EGC-HD-160-50-BS-20P-0H-GK')
@@ -415,7 +427,7 @@ describe('selection on real data', () => {
     const std = speed('ELGD-BS-KF-60-…5P', 600).limit!
     expect(speed('ELGD-BS-KF-60-…5P-L', 600).limit).toBeLessThan(std)
     expect(speed('ELGD-BS-KF-60-…5P-L', 558).limit).toBeCloseTo(std, 3)
-    // ESBF orders 250 mm as 300 mm: the curve is read there
+    // ESBF orders 250 mm as 250 mm: the curve is read there
     expect(speed('ESBF-BS-32-…-5P', 250).limit).toBe(0.55)
   })
 
