@@ -61,7 +61,7 @@ function AxisOptionFilters({ settings, onSettings }: Pick<Props, 'settings' | 'o
             unit="mm"
             value={settings.slideGap}
             step={1}
-            hint={shown.includes('ELGD') && settings.additionalSlide !== 'both' ? t('최소 ELGD 50 mm') : undefined}
+            hint={shown.includes('ELGD') && settings.additionalSlide !== 'both' ? t('최소 거리 50mm') : undefined}
             onChange={(slideGap) => onSettings({ ...settings, slideGap })}
           />
         </div>
