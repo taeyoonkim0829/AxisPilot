@@ -366,17 +366,18 @@ describe('selection on real data', () => {
     expect(long.alert).toBe(false)
   })
 
-  it('orders ESBF in the next standard stroke, or modular above 400 mm', () => {
+  it('orders ESBF at the entered stroke: standard part number when it is a standard stroke, else modular', () => {
     const esbf63 = axes.find((a) => a.id === 'ESBF-BS-63-…-10P')!
-    expect(axisOrder(esbf63, 250)).toEqual({ model: 'ESBF-BS-63-300-10P', partNumber: '574098', stroke: 300, modular: false })
+    expect(axisOrder(esbf63, 250)).toEqual({ model: 'ESBF-BS-63-250-10P', partNumber: '574090', stroke: 250, modular: true })
+    expect(axisOrder(esbf63, 300)).toEqual({ model: 'ESBF-BS-63-300-10P', partNumber: '574098', stroke: 300, modular: false })
     expect(axisOrder(esbf63, 100).partNumber).toBe('574096')
     expect(axisOrder(esbf63, 512.3)).toEqual({ model: 'ESBF-BS-63-513-10P', partNumber: '574090', stroke: 513, modular: true })
     // Without order data the axis keeps its data model name
     const bare: Axis = { ...axes.find((a) => a.id === 'ELGT-TB-120')!, typeCode: null, strokePartNumbers: null, moduleNumber: null }
     expect(axisOrder(bare, 250)).toEqual({ model: bare.model, partNumber: null, stroke: null, modular: false })
-    // Mass follows the ordered stroke: 250 mm is built as 300 mm.
-    const ev = evaluateAxis(esbf63, { ...baseReq, stroke: 250 }, defaultSettings)!
-    expect(ev.axisMass).toBeCloseTo(3.165 + 0.087 * 30)
+    // Mass follows the ordered stroke: 250.4 mm is built as 251 mm.
+    const ev = evaluateAxis(esbf63, { ...baseReq, stroke: 250.4 }, defaultSettings)!
+    expect(ev.axisMass).toBeCloseTo(3.165 + 0.087 * 25.1)
   })
 
   it('orders ELGT, ELGD and EGC by type code: standard stroke, else the modular product system', () => {
