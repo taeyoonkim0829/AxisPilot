@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Language
 
-Talk to the user in Korean, always: every reply, question, progress note, summary and report (also the reports agents write, e.g. `reports/brackets/`). Code, comments, identifiers, commit messages and this file stay in English; UI text follows `src/i18n/` (Korean source strings with English in `en.ts`).
+Talk to the user in Korean, always: every reply, question, progress note, summary and report, in plan mode too (plan files, AskUserQuestion questions and options) (also the reports agents write, e.g. `reports/brackets/`). Code, comments, identifiers, commit messages and this file stay in English; UI text follows `src/i18n/` (Korean source strings with English in `en.ts`).
 
 ## Project status
 
