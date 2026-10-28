@@ -34,23 +34,33 @@ function extent(values: number[]): [number, number] {
 function ticks(lo: number, hi: number, count = 3): number[] {
   const raw = (hi - lo) / count
   const mag = 10 ** Math.floor(Math.log10(raw))
-  const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((s) => s >= raw) ?? raw
-  const out: number[] = []
-  for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) out.push(Math.abs(v) < 1e-12 ? 0 : v)
-  return out
+  const steps = [0.5, 1, 2, 2.5, 5, 10].map((m) => m * mag)
+  const i = steps.findIndex((s) => s >= raw)
+  const at = (step: number) => {
+    const out: number[] = []
+    for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) out.push(Math.abs(v) < 1e-12 ? 0 : v)
+    return out
+  }
+  const out = at(steps[i])
+  // a round step can outgrow both sides of a range around 0 (±0.36 → 0.5): one notch finer then
+  return out.length < 2 ? at(steps[i - 1]) : out
 }
 
 function Panel({ trace, series, x, hover }: { trace: Point[]; series: Series; x: (t: number) => number; hover: Point | null }) {
   const [lo, hi] = extent(trace.map(series.pick))
   const y = (v: number) => PAD.top + ((hi - v) / (hi - lo)) * (H - PAD.top - PAD.bottom)
   const d = trace.map((p, i) => `${i ? 'L' : 'M'}${x(p.t).toFixed(1)},${y(series.pick(p)).toFixed(1)}`).join('')
+  const marks = ticks(lo, hi)
+  // as many decimals as the ticks need, so small torques (0.004 Nm) don't all round to 0
+  let digits = 0
+  while (digits < 6 && marks.some((v) => Math.abs(Number(v.toFixed(digits)) - v) > 1e-9)) digits++
   return (
     <g>
-      {ticks(lo, hi).map((v) => (
+      {marks.map((v) => (
         <g key={v}>
           <line className={v === 0 ? 'chart-zero' : 'chart-grid'} x1={PAD.left} x2={W - PAD.right} y1={y(v)} y2={y(v)} />
           <text className="chart-tick" x={PAD.left - 6} y={y(v)} dy="0.32em" textAnchor="end">
-            {fmt(v, 2)}
+            {fmt(v, digits)}
           </text>
         </g>
       ))}
@@ -163,7 +173,7 @@ export function ProfilePlot({
     })
   }, [axis, drive, settings, phases, view])
 
-  const series: Series[] = [
+  const tracks: Series[] = [
     { key: 'x', label: t('위치'), unit: 'mm', digits: 1, pick: (p) => p.x * 1000 },
     { key: 'v', label: t('속도'), unit: 'm/s', digits: 3, pick: (p) => p.v },
     { key: 'a', label: t('가속도'), unit: 'm/s²', digits: 2, pick: (p) => p.a },
@@ -182,6 +192,8 @@ export function ProfilePlot({
       pick: (p) => p.torque,
     },
   ]
+  // without a jerk limit the jerk track is a flat zero line
+  const series = tracks.filter((s) => s.key !== 'j' || trace.some((p) => p.j !== 0))
 
   const x = (t: number) => PAD.left + (t / moveTime) * (W - PAD.left - PAD.right)
   const plotH = series.length * H

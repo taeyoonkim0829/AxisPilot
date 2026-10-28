@@ -71,8 +71,8 @@ components:
     rounded: "8px"
     size: "28px"
   segmented-active:
-    backgroundColor: "linear-gradient(120deg, #e0f2fe 0%, #7dd3fc 30%, #38bdf8 60%, #a78bfa 120%)"
-    textColor: "{colors.accent-ink}"
+    backgroundColor: "rgb(255 255 255 / 0.14)"
+    textColor: "{colors.text}"
   row-selected:
     backgroundColor: "{colors.signal-soft}"
   panel:
@@ -92,7 +92,7 @@ components:
 
 **Creative North Star: "The Route Sign"**
 
-The selection chain axis → motor → gearbox → kit is a route, and the app shows it as a DIN direction sign: a rail across the top with four numbered route boxes, chevrons between them, each carrying the chosen part number and its verdict. Everything below the rail is a quiet, dense working surface on **crystal glass**: a navy-black ground with three coloured lights (cyan top left, yellow right, violet below), fixed, and clear glass panels moving over it that catch the light on their rims (a light rim brightest at the top left, a faint diagonal sheen, a deep shadow), with tables of exact numbers. Buttons are **prism glass**: thin and clear with a light rim, the filled ones in a prism gradient (white, cyan, violet).
+The selection chain axis → motor → gearbox → kit is a route, and the app shows it as a DIN direction sign: a rail across the top with four numbered route boxes, chevrons between them, each carrying the chosen part number and its verdict. Everything below the rail is a quiet, dense working surface on **crystal glass**: a navy-black ground with three coloured lights (cyan top left, teal right, violet below), fixed, and clear glass panels moving over it that catch the light on their rims (a light rim brightest at the top left, a faint diagonal sheen, a deep shadow), with tables of exact numbers. Buttons are **prism glass**: thin and clear with a light rim, the one filled action (PDF로 내보내기) in a prism gradient (white, cyan, violet).
 
 It is an operating tool, so the world contributes only type, palette, density and the one signature move (the rail). Controls stay standard web controls.
 
@@ -107,14 +107,14 @@ It is an operating tool, so the world contributes only type, palette, density an
 Restrained workspace on a dark ground lit in three colours. The app is dark only; the PDF report keeps the light tokens (below).
 
 ### Primary
-- **Accent** (#38bdf8): input focus, links, the motion profile trace. The filled PDF로 내보내기 action and active segmented buttons take the **prism** fill (`--prism`: #e0f2fe → #7dd3fc → #38bdf8 → #a78bfa at 120°, dark ink #04111c, a white top highlight, a cyan glow). The logo's teal is not a UI colour: green tones are reserved for verdicts.
+- **Accent** (#38bdf8): input focus, links, the motion profile trace. Only the filled PDF로 내보내기 action takes the **prism** fill (`--prism`: #e0f2fe → #7dd3fc → #38bdf8 → #a78bfa at 120°, dark ink #04111c, a white top highlight, a cyan glow). The logo's teal is not a UI colour: green tones are reserved for verdicts.
 - **Sign Blue** (#0a5a8a): solid marks that need white text (notice dialog head, its OK button). Deep variant (#08486f) for hover.
 
 ### Secondary
 - **Signal Yellow** (#f2b705): the active route box on the rail, step number boxes, the selected row outline, selection highlight, focus ring. Soft variant (yellow at 12%) fills the selected row.
 
 ### Neutral
-- **Ground** (#060a12): page background, with three coloured lights as fixed background layers (`--glow-1/2/3`: cyan 30%, yellow 16%, violet 24%) for the glass to reflect; no grid, lines or drawings behind the work, so nothing competes with the numbers.
+- **Ground** (#060a12): page background, with three coloured lights as fixed background layers (`--glow-1/2/3`: cyan 30%, teal 14%, violet 24%; no yellow, which means the route only) for the glass to reflect; no grid, lines or drawings behind the work, so nothing competes with the numbers.
 - **Surface** (white at 5.5%) glass panels, **Surface 2** (white at 5%) hover and fills inside panels, **Surface Solid** (rgb(14 21 32 / 0.94)) sticky table heads and the notice dialog, which content scrolls under.
 - **Line** (white at 11%) / **Line Strong** (white at 20%): dividers, input borders, the input switches' outlines.
 - **Text** (#e6edf5), **Muted** (#a3b1c2): secondary labels and units.
@@ -175,15 +175,15 @@ Rounded glass: panels and the rail 20px (`--panel-radius`), inputs and buttons 1
 - **Selected row**: soft yellow fill + 2px yellow inset ring.
 - **Inputs**: 38px, data face 17px, unit at right, no spin buttons; invalid gets a red border and red soft ring.
 - **Gantry 조합축 도면**: its own panel below the open axis's steps (after that axis's step 5 조합 도면), whichever axis tab is open (joint table: 결합 · 판정 · 조합 키트 · 품번 · 수량 · 비고, then the same action buttons and viewer).
-- **Segmented toggles**: separate rounded pieces in a dark clear track (black 30%, 1px white-12% ring, 3px padding and gaps); the active piece takes the prism fill with dark ink. Every one-of choice (`RadioGroup`, `.segmented.sliding`: screen switch, mounting, accel input, application, 축 구성, axis drive, motor maker, power supply, gearbox, profile view, 3D view, …) carries the prism fill on a thumb behind the pieces (`.segmented-thumb`, `useSlideThumb`) that slides to the picked one; the gantry axis tabs in the rail slide their frame the same way (`.rail-axis-thumb`) (240 ms, cubic-bezier(0.32, 0.72, 0, 1); off under reduced motion). A labelled option row under the step filters (`.axis-options`, `.filter-group`: muted 12px label + segmented control) for single choices such as the axis order options; a number field there (`.filter-group .field`, 슬라이드 사이 거리) sits on the same line: label, a 96 × 32px input, the hint after it.
+- **Segmented toggles**: separate rounded pieces in a dark clear track (black 30%, 1px white-12% ring, 3px padding and gaps); the active piece is clear glass (white 14%, 1px white-22% ring, top highlight) in the text colour; the prism stays the PDF action's. Every one-of choice (`RadioGroup`, `.segmented.sliding`: screen switch, mounting, accel input, application, 축 구성, axis drive, motor maker, power supply, gearbox, profile view, 3D view, …) carries that glass on a thumb behind the pieces (`.segmented-thumb`, `useSlideThumb`) that slides to the picked one; the gantry axis tabs in the rail slide their frame the same way (`.rail-axis-thumb`) (240 ms, cubic-bezier(0.32, 0.72, 0, 1); off under reduced motion). A labelled option row under the step filters (`.axis-options`, `.filter-group`: muted 12px label + segmented control) for single choices such as the axis order options; a number field there (`.filter-group .field`, 슬라이드 사이 거리) sits on the same line: label, a 96 × 32px input, the hint after it.
 - **Error panel**: replaces the results column when the calculation fails; fail-soft fill, fail border and title, the error text on a white block, an outlined fail-colour 다시 시도 button. The inputs stay usable.
 - **Step filter rows** (`.step-filters .segmented`): wrap onto more lines when they do not fit (Festo motor series on a phone), never run off the screen.
 - **Segmented grid** (`.segmented-grid`, 축 구성 in the inputs): four choices two per row in a grid instead of one overflowing row; pieces 3px apart like the other segments.
 - **Heading unit** (`.heading-unit`, 부하 무게 중심 (mm)): a muted 12px regular unit after the heading when a row of fields is too narrow for a unit inside each.
-- **Screen switch**: 단축 선정 / 조합축 선정 as a full-width segmented control at the top of the input column, above the first input box (사용 조건 / 조합축 구성): a segment track, the active screen in the prism fill, labels 600.
+- **Screen switch**: 단축 선정 / 조합축 선정 as a full-width segmented control at the top of the input column, above the first input box (사용 조건 / 조합축 구성): a segment track, the active screen in the segment glass, labels 600.
 - **Gantry axis inputs** (`.gantry-motion`, 축별 운전 조건): per axis a 24px axis-letter box alone (the axis name only as its aria-label), axes split by a 1px line.
 - **Gantry axis tabs** (`.rail-axes`, the rail's top row on the gantry screen, 52px, the rail 152px high there): one tab per axis in X, Y, Z order, a 30px axis-letter box (clear glass; the open axis's a yellow gem), a 11px line with the verdict, 몇 번째 선정 (the selection runs Z → Y → X) and the carried load, then the axis part number in the data face (16px). The open axis's frame (white 7%, top highlight, 2px yellow underline) slides between the tabs (`.rail-axis-thumb`); the lower row keeps the open axis's four route signs. At the top of the results the 하중 조건 panel (`.gantry-load-list`): label / value in the data face / muted explanation, in an auto-fit grid.
-- **Chart spans**: dwell shaded `--surface-2`, press (press move + hold) shaded `--accent-soft`, each labelled above the plot.
+- **Chart spans**: dwell shaded `--surface-2`, press (press move + hold) shaded `--accent-soft`, each labelled above the plot. The jerk track is left out when the jerk is zero throughout (no jerk limit); every track keeps at least one tick besides 0, labelled with the decimals the ticks need.
 
 ## Do's and Don'ts
 
