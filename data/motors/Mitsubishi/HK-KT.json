@@ -32,7 +32,7 @@
       "capacitorEnergy": 9,
       "regenPower": 0,
       "amplifier": "MR-J5-10G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "40R",
       "controller": "MR-J5-200V"
     },
     {
@@ -67,7 +67,7 @@
       "capacitorEnergy": 9,
       "regenPower": 0,
       "amplifier": "MR-J5-10G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "40R",
       "controller": "MR-J5-200V"
     },
     {
@@ -102,7 +102,7 @@
       "capacitorEnergy": 9,
       "regenPower": 10,
       "amplifier": "MR-J5-20G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "40R",
       "controller": "MR-J5-200V"
     },
     {
@@ -172,7 +172,7 @@
       "capacitorEnergy": 9,
       "regenPower": 10,
       "amplifier": "MR-J5-20G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "60PA",
       "controller": "MR-J5-200V"
     },
     {
@@ -207,7 +207,7 @@
       "capacitorEnergy": 11,
       "regenPower": 10,
       "amplifier": "MR-J5-40G/B/A, MR-J5-60G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "60PA",
       "controller": "MR-J5-200V"
     },
     {
@@ -242,7 +242,7 @@
       "capacitorEnergy": 18,
       "regenPower": 30,
       "amplifier": "MR-J5-70G/B/A, MR-J5-100G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "60PA",
       "controller": "MR-J5-200V"
     },
     {
@@ -347,7 +347,7 @@
       "capacitorEnergy": 18,
       "regenPower": 30,
       "amplifier": "MR-J5-70G/B/A, MR-J5-100G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "80PA",
       "controller": "MR-J5-200V"
     },
     {
@@ -382,7 +382,7 @@
       "capacitorEnergy": 18,
       "regenPower": 30,
       "amplifier": "MR-J5-100G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "80PA",
       "controller": "MR-J5-200V"
     },
     {
@@ -627,7 +627,7 @@
       "capacitorEnergy": 9,
       "regenPower": 10,
       "amplifier": "MR-J5-20G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "60PA",
       "controller": "MR-J5-200V"
     },
     {
@@ -662,7 +662,7 @@
       "capacitorEnergy": 11,
       "regenPower": 10,
       "amplifier": "MR-J5-40G/B/A, MR-J5-60G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "60PA",
       "controller": "MR-J5-200V"
     },
     {
@@ -697,7 +697,7 @@
       "capacitorEnergy": 11,
       "regenPower": 10,
       "amplifier": "MR-J5-40G/B/A, MR-J5-60G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "80PA",
       "controller": "MR-J5-200V"
     },
     {
@@ -732,7 +732,7 @@
       "capacitorEnergy": 11,
       "regenPower": 10,
       "amplifier": "MR-J5-60G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "80PA",
       "controller": "MR-J5-200V"
     },
     {
@@ -872,7 +872,7 @@
       "capacitorEnergy": 9,
       "regenPower": 15,
       "amplifier": "MR-J5-60G4/B4/A4",
-      "interfaceCode": null,
+      "interfaceCode": "40R",
       "controller": "MR-J5-400V"
     },
     {
@@ -907,7 +907,7 @@
       "capacitorEnergy": 9,
       "regenPower": 15,
       "amplifier": "MR-J5-60G4/B4/A4",
-      "interfaceCode": null,
+      "interfaceCode": "40R",
       "controller": "MR-J5-400V"
     },
     {
@@ -942,7 +942,7 @@
       "capacitorEnergy": 9,
       "regenPower": 15,
       "amplifier": "MR-J5-60G4/B4/A4",
-      "interfaceCode": null,
+      "interfaceCode": "40R",
       "controller": "MR-J5-400V"
     },
     {
@@ -977,7 +977,7 @@
       "capacitorEnergy": 9,
       "regenPower": 15,
       "amplifier": "MR-J5-60G4/B4/A4",
-      "interfaceCode": null,
+      "interfaceCode": "60PA",
       "controller": "MR-J5-400V"
     },
     {
@@ -1012,7 +1012,7 @@
       "capacitorEnergy": 12,
       "regenPower": 15,
       "amplifier": "MR-J5-100G4/B4/A4",
-      "interfaceCode": null,
+      "interfaceCode": "60PA",
       "controller": "MR-J5-400V"
     },
     {
@@ -1047,7 +1047,7 @@
       "capacitorEnergy": 12,
       "regenPower": 15,
       "amplifier": "MR-J5-100G4/B4/A4",
-      "interfaceCode": null,
+      "interfaceCode": "80PA",
       "controller": "MR-J5-400V"
     },
     {
@@ -1082,7 +1082,7 @@
       "capacitorEnergy": 12,
       "regenPower": 15,
       "amplifier": "MR-J5-100G4/B4/A4",
-      "interfaceCode": null,
+      "interfaceCode": "80PA",
       "controller": "MR-J5-400V"
     },
     {
@@ -1292,7 +1292,7 @@
       "capacitorEnergy": 9,
       "regenPower": 0,
       "amplifier": "MR-J5-10G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "40R",
       "controller": "MR-J5-200V"
     },
     {
@@ -1327,7 +1327,7 @@
       "capacitorEnergy": 9,
       "regenPower": 0,
       "amplifier": "MR-J5-10G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "40R",
       "controller": "MR-J5-200V"
     },
     {
@@ -1362,7 +1362,7 @@
       "capacitorEnergy": 9,
       "regenPower": 10,
       "amplifier": "MR-J5-20G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "40R",
       "controller": "MR-J5-200V"
     },
     {
@@ -1432,7 +1432,7 @@
       "capacitorEnergy": 9,
       "regenPower": 10,
       "amplifier": "MR-J5-20G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "60PA",
       "controller": "MR-J5-200V"
     },
     {
@@ -1467,7 +1467,7 @@
       "capacitorEnergy": 11,
       "regenPower": 10,
       "amplifier": "MR-J5-40G/B/A, MR-J5-60G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "60PA",
       "controller": "MR-J5-200V"
     },
     {
@@ -1502,7 +1502,7 @@
       "capacitorEnergy": 18,
       "regenPower": 30,
       "amplifier": "MR-J5-70G/B/A, MR-J5-100G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "60PA",
       "controller": "MR-J5-200V"
     },
     {
@@ -1607,7 +1607,7 @@
       "capacitorEnergy": 18,
       "regenPower": 30,
       "amplifier": "MR-J5-70G/B/A, MR-J5-100G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "80PA",
       "controller": "MR-J5-200V"
     },
     {
@@ -1642,7 +1642,7 @@
       "capacitorEnergy": 18,
       "regenPower": 30,
       "amplifier": "MR-J5-100G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "80PA",
       "controller": "MR-J5-200V"
     },
     {
@@ -1887,7 +1887,7 @@
       "capacitorEnergy": 9,
       "regenPower": 10,
       "amplifier": "MR-J5-20G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "60PA",
       "controller": "MR-J5-200V"
     },
     {
@@ -1922,7 +1922,7 @@
       "capacitorEnergy": 11,
       "regenPower": 10,
       "amplifier": "MR-J5-40G/B/A, MR-J5-60G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "60PA",
       "controller": "MR-J5-200V"
     },
     {
@@ -1957,7 +1957,7 @@
       "capacitorEnergy": 11,
       "regenPower": 10,
       "amplifier": "MR-J5-40G/B/A, MR-J5-60G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "80PA",
       "controller": "MR-J5-200V"
     },
     {
@@ -1992,7 +1992,7 @@
       "capacitorEnergy": 11,
       "regenPower": 10,
       "amplifier": "MR-J5-60G/B/A",
-      "interfaceCode": null,
+      "interfaceCode": "80PA",
       "controller": "MR-J5-200V"
     },
     {
@@ -2132,7 +2132,7 @@
       "capacitorEnergy": 9,
       "regenPower": 15,
       "amplifier": "MR-J5-60G4/B4/A4",
-      "interfaceCode": null,
+      "interfaceCode": "40R",
       "controller": "MR-J5-400V"
     },
     {
@@ -2167,7 +2167,7 @@
       "capacitorEnergy": 9,
       "regenPower": 15,
       "amplifier": "MR-J5-60G4/B4/A4",
-      "interfaceCode": null,
+      "interfaceCode": "40R",
       "controller": "MR-J5-400V"
     },
     {
@@ -2202,7 +2202,7 @@
       "capacitorEnergy": 9,
       "regenPower": 15,
       "amplifier": "MR-J5-60G4/B4/A4",
-      "interfaceCode": null,
+      "interfaceCode": "40R",
       "controller": "MR-J5-400V"
     },
     {
@@ -2237,7 +2237,7 @@
       "capacitorEnergy": 9,
       "regenPower": 15,
       "amplifier": "MR-J5-60G4/B4/A4",
-      "interfaceCode": null,
+      "interfaceCode": "60PA",
       "controller": "MR-J5-400V"
     },
     {
@@ -2272,7 +2272,7 @@
       "capacitorEnergy": 12,
       "regenPower": 15,
       "amplifier": "MR-J5-100G4/B4/A4",
-      "interfaceCode": null,
+      "interfaceCode": "60PA",
       "controller": "MR-J5-400V"
     },
     {
@@ -2307,7 +2307,7 @@
       "capacitorEnergy": 12,
       "regenPower": 15,
       "amplifier": "MR-J5-100G4/B4/A4",
-      "interfaceCode": null,
+      "interfaceCode": "80PA",
       "controller": "MR-J5-400V"
     },
     {
@@ -2342,7 +2342,7 @@
       "capacitorEnergy": 12,
       "regenPower": 15,
       "amplifier": "MR-J5-100G4/B4/A4",
-      "interfaceCode": null,
+      "interfaceCode": "80PA",
       "controller": "MR-J5-400V"
     },
     {
