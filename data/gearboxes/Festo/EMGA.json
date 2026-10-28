@@ -1306,7 +1306,7 @@
       "mass": 1.7,
       "operatingTemperature": "-25 ... 90",
       "driveCode": "60P",
-      "interfaceCode": "60G"
+      "interfaceCode": "60H"
     },
     {
       "id": "EMGA-60-A-G5-60P",
@@ -1332,7 +1332,7 @@
       "mass": 1.7,
       "operatingTemperature": "-25 ... 90",
       "driveCode": "60P",
-      "interfaceCode": "60G"
+      "interfaceCode": "60H"
     },
     {
       "id": "EMGA-60-A-G8-60P",
@@ -1358,7 +1358,7 @@
       "mass": 1.7,
       "operatingTemperature": "-25 ... 90",
       "driveCode": "60P",
-      "interfaceCode": "60G"
+      "interfaceCode": "60H"
     },
     {
       "id": "EMGA-60-A-G12-60P",
@@ -1384,7 +1384,7 @@
       "mass": 1.9,
       "operatingTemperature": "-25 ... 90",
       "driveCode": "60P",
-      "interfaceCode": "60G"
+      "interfaceCode": "60H"
     },
     {
       "id": "EMGA-60-A-G20-60P",
@@ -1410,7 +1410,7 @@
       "mass": 1.9,
       "operatingTemperature": "-25 ... 90",
       "driveCode": "60P",
-      "interfaceCode": "60G"
+      "interfaceCode": "60H"
     },
     {
       "id": "EMGA-80-A-G3-80P",
