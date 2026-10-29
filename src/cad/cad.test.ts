@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it } from 'vitest'
-import { axes, kits, motors, shafts } from '../data'
+import { axes, gearboxes, kits, motors, shafts } from '../data'
 import {
   buildCombo,
   comboDrawings,
@@ -10,7 +10,7 @@ import {
   type ComboOptions,
   type ComboSelection,
 } from './combo'
-import { motorDrawingFor, parseDrawingPath, shaftDrawingFor, siemensVariant, type Drawing, type ShaftMeta } from './drawings'
+import { gearboxDrawingFor, motorDrawingFor, parseDrawingPath, shaftDrawingFor, siemensVariant, type Drawing, type ShaftMeta } from './drawings'
 import { apply, invert, mate, type Frame } from './geometry'
 import { closure, parseStep, pointOf, refs, typeOf, writeStep, type StepFile } from './step'
 import { stretchPart, type StretchSpec } from './stretch'
@@ -22,12 +22,14 @@ const files = [
   'data/motors/Festo/Drawings/EMMT-AS/8160632_EMMT-AS-60-S-HS-RMY.stp',
   'data/motors/Mitsubishi/Drawings/HG-KR/hg-kr43_.stp',
   'data/kits/Festo/Drawings/EAMM-U/4824069_EAMM-U-87-T46-60P-114.stp',
+  'data/gearboxes/Apex/Drawings/AB/ab0601-p0401200402.stp',
 ]
 // loaded on demand: the drawing folders hold gigabytes of STEP text
 const texts = import.meta.glob<string>(
   [
     '../../data/*/Festo/Drawings/**/*.stp',
     '../../data/motors/Mitsubishi/Drawings/HG-KR/hg-kr43_.stp',
+    '../../data/gearboxes/Apex/Drawings/AB/ab0601-p0401200402.stp',
   ],
   { query: '?raw', import: 'default' },
 )
@@ -204,6 +206,17 @@ describe('drawing files', () => {
     expect(kt634?.drawing.model).toBe('HK-KT63WB')
     expect(kt634?.sameOutline).toBe(true)
   })
+
+  it('matches Apex gearboxes by size and stage, not ratio', () => {
+    const all = allPaths.map((path) => ({ ...parseDrawingPath(path)!, url: path, meta: null }))
+    const model = (id: string) => gearboxDrawingFor(gearboxes.find((g) => g.id === id)!, all)?.model ?? null
+    expect(model('AB042-3')).toBe('AB0421-P0401100102')
+    expect(model('AB042-15')).toBe('AB0422-P0401100102')
+    expect(model('AE050-20')).toBe('AE0502-P0403101002')
+    expect(model('AER090-9')).toBe('AER0901-P0403300202')
+    // the Design Tool offers no 2-stage AB060 for these motors
+    expect(model('AB060-15')).toBeNull()
+  })
 })
 
 describe('combination', () => {
@@ -306,6 +319,16 @@ describe('combination', () => {
     const box = await meshBox(combo.step)
     // HG-KR43 is 98.3 mm behind its flange
     expect(box.hi[0] - box.lo[0]).toBeCloseTo(730 + 47 + 98.3, 0)
+  })
+
+  it('puts an Apex gearbox with its motor adapter between kit and motor', async () => {
+    const sel = { ...selection(500, 'HG-KR43'), gearbox: gearboxes.find((g) => g.id === 'AB060-5')! }
+    const found = comboDrawings(sel, testDrawings)
+    expect(found.gearbox?.path).toBe(files[5])
+    const combo = await buildCombo(sel, found, { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
+    const box = await meshBox(combo.step)
+    // output flange on the kit, motor flange on the adapter 76.5 mm behind it
+    expect(box.hi[0] - box.lo[0]).toBeCloseTo(730 + 47 + 76.5 + 98.3, 0)
   })
 
   it('folds the motor back under the axis with the parallel kit', async () => {

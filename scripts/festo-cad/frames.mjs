@@ -1,5 +1,5 @@
-// Writes the frame JSON (data/README.md, "Drawings") for Festo axis, kit and gearbox STEP files that have none, from
-// their geometry:
+// Writes the frame JSON (data/README.md, "Drawings") for Festo axis, kit and gearbox STEP files and Apex gearbox files
+// (`apexFrames`) that have none, from their geometry:
 //   node scripts/festo-cad/frames.mjs [--dry-run] [--force] [file.stp …]
 // Festo's CADENAS models share one layout: length along z, base at y = 0, slide on top (+y), centred on x = 0.
 // Per family: the motor end (+z for ELGT, ELGD and EGC/EGC-HD spindle axes, −z for ESBF; belt axes: the head and
@@ -387,6 +387,47 @@ function gearboxFrames(file, model) {
   return { json, info: `output z ${fixed(output.pos)}, input ${JSON.stringify(input.origin)} → ${JSON.stringify(input.axis)}` }
 }
 
+/**
+ * Apex (Design Tool downloads, gearbox + motor adapter): the output shaft lies on a coordinate axis through the origin,
+ * its tip the smallest face at a box end; the output flange is the outermost face towards the tip of half the widest
+ * face's width or more with no wider face up to 20 mm behind it (the centring spigot: AB115 Ø110 on □115,
+ * AE120 17.5 mm long), the input the outermost such
+ * face at the other end or, right-angle gearboxes (…R), on the side the body reaches out to farthest.
+ */
+function apexFrames(file, model) {
+  const faces = meshes(readFileSync(file, 'latin1')).flatMap((m) => m.faces)
+  const lo = [0, 1, 2].map((k) => Math.min(...faces.map((f) => f.lo[k])))
+  const hi = [0, 1, 2].map((k) => Math.max(...faces.map((f) => f.hi[k])))
+  const width = (f) => Math.max(...[0, 1, 2].filter((j) => j !== f.k).map((j) => f.hi[j] - f.lo[j]))
+  const end = (k, sign) => faces.filter((f) => f.k === k && f.sign === sign && Math.abs(f.pos - (sign > 0 ? hi[k] : lo[k])) < 0.1)
+  const tips = [0, 1, 2].flatMap((k) => [1, -1].flatMap((sign) => end(k, sign).filter((f) => contains(f, [0, 0], k))))
+  const tip = tips.reduce((a, b) => (width(b) < width(a) ? b : a))
+  const flangeFace = (k, sign, centred) => {
+    const side = faces.filter((f) => f.k === k && f.sign === sign && (!centred || contains(f, [0, 0], k)))
+    const list = side.filter((f) => width(f) >= 0.5 * Math.max(...side.map(width)))
+    const ok = list.filter((f) => !list.some((g) => (f.pos - g.pos) * sign > 0 && (f.pos - g.pos) * sign <= 20 && width(g) > 1.05 * width(f)))
+    return ok.reduce((a, b) => (b.pos * sign > a.pos * sign ? b : a))
+  }
+  const k = tip.k
+  const motorward = [0, 1, 2].map((j) => (j === k ? -tip.sign : 0))
+  const output = flangeFace(k, tip.sign, true)
+  let input, up
+  if (/^A[BE]R/.test(model)) {
+    const [kk, sign] = [0, 1, 2].filter((j) => j !== k).flatMap((j) => [[j, 1], [j, -1]])
+      .reduce((a, b) => ((b[1] > 0 ? hi[b[0]] : -lo[b[0]]) > (a[1] > 0 ? hi[a[0]] : -lo[a[0]]) ? b : a))
+    const f = flangeFace(kk, sign, false)
+    const origin = [0, 1, 2].map((j) => fixed(j === kk ? f.pos : centre(f.lo, f.hi, j)))
+    input = { origin, axis: [0, 1, 2].map((j) => (j === kk ? sign : 0)), up: motorward.map((v) => -v + 0) }
+    up = input.axis // as on EMGA-…-A-: the output's up points to the side the input sits on
+  } else {
+    const f = flangeFace(k, -tip.sign, true)
+    up = k === 1 ? [0, 0, 1] : [0, 1, 0]
+    input = { origin: [0, 1, 2].map((j) => (j === k ? fixed(f.pos) : 0)), axis: motorward, up }
+  }
+  const json = { output: { origin: [0, 1, 2].map((j) => (j === k ? fixed(output.pos) : 0)), axis: motorward, up }, input }
+  return { json, info: `output ${'xyz'[k]} ${fixed(output.pos)}, input ${JSON.stringify(input.origin)} → ${JSON.stringify(input.axis)}` }
+}
+
 /** The instance whose child geometry, transformed, has the box closest to the mesh's. */
 function matchInstance(inst, mesh, text) {
   const e = (matchInstance.cache ??= new Map()).get(text) ?? parseEntities(text)
@@ -465,7 +506,7 @@ const format = (json) =>
 
 const files = only.length
   ? only
-  : [axesDir, join(root, 'data/kits/Festo/Drawings'), join(root, 'data/gearboxes/Festo/Drawings')].flatMap(walk)
+  : [axesDir, join(root, 'data/kits/Festo/Drawings'), join(root, 'data/gearboxes/Festo/Drawings'), join(root, 'data/gearboxes/Apex/Drawings')].flatMap(walk)
 let written = 0
 // --profile: add the `profile` frame to existing axis JSONs, keeping everything else
 const profileOnly = args.includes('--profile')
@@ -486,8 +527,10 @@ for (const file of files) {
     continue
   }
   if (existsSync(out) && !force && !dryRun) continue
-  const model = /^\d+_(.+)\.stp$/i.exec(file.split(/[\\/]/).pop())[1]
-  const make = /^EAMM-/.test(model) ? kitFrames : /^EMGA-/.test(model) ? gearboxFrames : frames
+  const name = file.split(/[\\/]/).pop()
+  // Apex files have no part number: `ab0421-p0401100102.stp`
+  const model = /^\d+_(.+)\.stp$/i.exec(name)?.[1] ?? name.replace(/\.stp$/i, '').toUpperCase()
+  const make = /^EAMM-/.test(model) ? kitFrames : /^EMGA-/.test(model) ? gearboxFrames : /^A[BE]/.test(model) ? apexFrames : frames
   try {
     const { json, info } = make(file, model)
     console.log(`${model}: ${info}`)

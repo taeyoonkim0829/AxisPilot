@@ -200,12 +200,23 @@ export const kitDrawingFor =(kit: Kit, all = drawings) =>
 export const shaftDrawingFor = (shaft: ConnectingShaft, all = drawings) =>
   (all.find((d) => d.kind === 'shafts' && d.meta && d.partNumber === shaft.partNumber) as Drawing<ShaftMeta> | undefined) ?? null
 
-export const gearboxDrawingFor = (gearbox: Gearbox, all = drawings) =>
-  (all.find(
-    (d) =>
-      d.kind === 'gearboxes' &&
-      (d.names.includes(gearbox.model) || (gearbox.partNumber != null && d.partNumber === gearbox.partNumber)),
-  ) as Drawing<GearboxMeta> | undefined) ?? null
+/**
+ * By model or part number; Apex files are named by size, stage and motor adapter (`AB0421-P0401100102` = AB042,
+ * 1 stage), not by ratio, so `AB042-3` takes the file starting `AB0421-`. Each downloaded adapter fits every motor
+ * the gearbox lists (Apex Design Tool).
+ */
+export function gearboxDrawingFor(gearbox: Gearbox, all = drawings): Drawing<GearboxMeta> | null {
+  const apex = gearbox.maker === 'Apex' ? `${gearbox.model.replace(/-\d+$/, '')}${gearbox.stage ?? (gearbox.ratio > 10 ? 2 : 1)}-` : null
+  return (
+    (all.find(
+      (d) =>
+        d.kind === 'gearboxes' &&
+        (d.names.includes(gearbox.model) ||
+          (gearbox.partNumber != null && d.partNumber === gearbox.partNumber) ||
+          (apex != null && d.maker === 'Apex' && d.model.startsWith(apex))),
+    ) as Drawing<GearboxMeta> | undefined) ?? null
+  )
+}
 
 /** A gantry kit's drawing by part number; a custom bracket (no part number) by its model (`<id>_<model>.stp`) */
 export const adapterDrawingFor = (adapter: AxisAdapter, all = drawings) =>
