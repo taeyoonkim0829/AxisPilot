@@ -192,9 +192,9 @@ export interface Controller {
   externalResistance: [number, number | null]
   /** W, max. continuous power of an external braking resistor */
   externalMaxPower: number | null
-  /** V, intermediate circuit level the resistor ratings are given for (380 or 780); null without CACR ratings */
+  /** V, intermediate circuit level the resistor ratings are given for (380 or 780); null: the resistors' `ratedPower` (Mitsubishi) */
   resistorVoltage: number | null
-  /** matching CACR braking resistors (model names) */
+  /** matching braking resistors (model names: CACR, Mitsubishi MR-RB), smallest first */
   brakingResistors: string[]
 }
 
@@ -213,6 +213,8 @@ export interface BrakingResistor {
   nominalPower380: number | null
   pulseEnergy780: number | null
   nominalPower780: number | null
+  /** cooling fan (Mitsubishi MR-RB): always needed, depending on the environment, or for the higher rating only */
+  coolingFan?: 'required' | 'environment' | 'optional' | null
 }
 
 /** One cable option: a role for a group of motors on a drive range, for a span of cable lengths */

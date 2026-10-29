@@ -23,7 +23,9 @@
       ],
       "externalMaxPower": 30,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "MR-RB032"
+      ]
     },
     {
       "id": "MR-J5-20A",
@@ -53,7 +55,10 @@
       ],
       "externalMaxPower": 100,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "MR-RB032",
+        "MR-RB12"
+      ]
     },
     {
       "id": "MR-J5-40A",
@@ -83,7 +88,10 @@
       ],
       "externalMaxPower": 100,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "MR-RB032",
+        "MR-RB12"
+      ]
     },
     {
       "id": "MR-J5-60A",
@@ -113,7 +121,10 @@
       ],
       "externalMaxPower": 100,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "MR-RB032",
+        "MR-RB12"
+      ]
     },
     {
       "id": "MR-J5-70A",
@@ -143,7 +154,10 @@
       ],
       "externalMaxPower": 300,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "MR-RB14",
+        "MR-RB34"
+      ]
     },
     {
       "id": "MR-J5-100A",
@@ -173,7 +187,10 @@
       ],
       "externalMaxPower": 300,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "MR-RB14",
+        "MR-RB34"
+      ]
     },
     {
       "id": "MR-J5-200A",
@@ -203,7 +220,10 @@
       ],
       "externalMaxPower": 500,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "MR-RB30",
+        "MR-RB50"
+      ]
     },
     {
       "id": "MR-J5-350A",
@@ -233,7 +253,10 @@
       ],
       "externalMaxPower": 500,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "MR-RB3N",
+        "MR-RB5N"
+      ]
     },
     {
       "id": "MR-J5-500A",
@@ -263,7 +286,10 @@
       ],
       "externalMaxPower": 500,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "MR-RB31",
+        "MR-RB51"
+      ]
     },
     {
       "id": "MR-J5-700A",
@@ -293,7 +319,10 @@
       ],
       "externalMaxPower": 500,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "MR-RB3Z",
+        "MR-RB5Z"
+      ]
     },
     {
       "id": "MR-J5-12KA",
@@ -323,7 +352,9 @@
       ],
       "externalMaxPower": 500,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "MR-RB5R"
+      ]
     },
     {
       "id": "MR-J5-60A4",
@@ -353,7 +384,10 @@
       ],
       "externalMaxPower": 300,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "MR-RB1H-4",
+        "MR-RB3M-4"
+      ]
     },
     {
       "id": "MR-J5-100A4",
@@ -383,7 +417,10 @@
       ],
       "externalMaxPower": 300,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "MR-RB1H-4",
+        "MR-RB3M-4"
+      ]
     },
     {
       "id": "MR-J5-200A4",
@@ -413,7 +450,10 @@
       ],
       "externalMaxPower": 500,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "MR-RB3G-4",
+        "MR-RB5G-4"
+      ]
     },
     {
       "id": "MR-J5-350A4",
@@ -443,7 +483,10 @@
       ],
       "externalMaxPower": 500,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "MR-RB3Y-4",
+        "MR-RB5Y-4"
+      ]
     },
     {
       "id": "MR-J5-500A4",
@@ -473,7 +516,10 @@
       ],
       "externalMaxPower": 500,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "MR-RB34-4",
+        "MR-RB54-4"
+      ]
     },
     {
       "id": "MR-J5-700A4",
@@ -503,7 +549,10 @@
       ],
       "externalMaxPower": 500,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "MR-RB3U-4",
+        "MR-RB5U-4"
+      ]
     },
     {
       "id": "MR-J5-12KA4",
@@ -533,7 +582,9 @@
       ],
       "externalMaxPower": 500,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "MR-RB5K-4"
+      ]
     }
   ]
 }

@@ -248,12 +248,17 @@ export function selectController(
       const options = controller.brakingResistors
         .map((m) => data.resistors.find((r) => r.model === m))
         .filter((r): r is BrakingResistor => !!r)
+      // Mitsubishi rates its options by permissible regenerative power only: no pulse energy to check
       const rating = (r: BrakingResistor) =>
-        (controller.resistorVoltage ?? 0) >= 700
-          ? { power: r.nominalPower780, energy: r.pulseEnergy780 }
-          : { power: r.nominalPower380, energy: r.pulseEnergy380 }
+        controller.resistorVoltage == null
+          ? { power: r.ratedPower, energy: null }
+          : controller.resistorVoltage >= 700
+            ? { power: r.nominalPower780, energy: r.pulseEnergy780 }
+            : { power: r.nominalPower380, energy: r.pulseEnergy380 }
+      const fits = (r: BrakingResistor) =>
+        (rating(r).power ?? 0) >= averagePower && (controller.resistorVoltage == null || (rating(r).energy ?? 0) >= eventEnergy)
       const item =
-        options.find((r) => (rating(r).power ?? 0) >= averagePower && (rating(r).energy ?? 0) >= eventEnergy) ??
+        options.find(fits) ??
         options.at(-1) ??
         null
       resistor.required = true
@@ -261,8 +266,12 @@ export function selectController(
       if (item) {
         checks.push(
           check('외부 제동저항 정격 전력', averagePower, Math.min(rating(item).power ?? 0, controller.externalMaxPower ?? Infinity), 'W'),
-          check('외부 제동저항 펄스 에너지', eventEnergy, rating(item).energy, 'Ws'),
+          ...(controller.resistorVoltage != null ? [check('외부 제동저항 펄스 에너지', eventEnergy, rating(item).energy, 'Ws')] : []),
         )
+        if (item.coolingFan === 'required')
+          notes.push({ text: '{model}은 냉각팬(92 mm, 1 m³/min 이상)으로 강제 냉각해야 합니다', args: { model: item.model } })
+        if (item.coolingFan === 'environment')
+          notes.push({ text: '{model}은 사용 환경에 따라 냉각팬(92 mm, 1 m³/min 이상) 강제 냉각이 필요할 수 있습니다', args: { model: item.model } })
       } else {
         checks.push({ ...check('외부 제동저항', averagePower, null, 'W'), status: 'warn', note: '맞는 제동저항 데이터가 없습니다' })
       }

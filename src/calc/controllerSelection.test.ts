@@ -133,6 +133,15 @@ describe('Mitsubishi drive packages (data)', () => {
     expect(hg.checks.find((c) => c.label === '드라이브 최대 전류')!.limit).toBeNull()
     expect(hg.checks.find((c) => c.label === '제동 에너지 (내장)')).toBeUndefined()
   })
+
+  it('adds an MR-RB regenerative option rated by permissible power only', () => {
+    const { selection } = run('EGC-185-...-BS-40P-KF-GK', 'HK-ST502W (200V)', { payload: 200, velocity: 1, acceleration: 5, mounting: 'vertical' })
+    expect(selection.resistor.required).toBe(true)
+    expect(selection.resistor.item!.family).toBe('MR-RB')
+    expect(selection.controller!.brakingResistors).toContain(selection.resistor.item!.model)
+    expect(selection.checks.find((c) => c.label === '외부 제동저항 정격 전력')!.limit).toBe(selection.resistor.item!.ratedPower)
+    expect(selection.checks.find((c) => c.label === '외부 제동저항 펄스 에너지')).toBeUndefined()
+  })
 })
 
 describe('motorSupply', () => {
