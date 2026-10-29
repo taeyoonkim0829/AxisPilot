@@ -144,6 +144,8 @@ export interface MotorDrawingMatch {
   drawing: Drawing<MotorMeta>
   /** the file is another option of the same motor (encoder, shaft …), same size */
   otherOptions: boolean
+  /** the file is another motor's with the same outline dimensions (`Motor.sameOutline`) */
+  sameOutline?: boolean
 }
 
 /**
@@ -161,6 +163,8 @@ export function motorDrawingFor(motor: Motor, all = drawings): MotorDrawingMatch
       (motor.partNumber != null && d.partNumber === motor.partNumber),
   )
   if (exact) return { drawing: exact, otherOptions: false }
+  const outline = motor.sameOutline ? list.find((d) => d.names.includes(motor.sameOutline!)) : null
+  if (outline) return { drawing: outline, otherOptions: false, sameOutline: true }
   if (motor.maker === 'Siemens') {
     const variant = list.find((d) => d.names.some((n) => siemensVariant(motor.model, n)))
     return variant ? { drawing: variant, otherOptions: true } : null

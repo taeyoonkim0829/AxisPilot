@@ -176,6 +176,7 @@ export const en: Record<string, string> = {
   '아래→위': 'Bottom-up',
   'ESBF 외부 가이드 사용': 'ESBF with external guide',
   '표준 스트로크': 'Standard stroke',
+  '외형 치수가 같은 모터의 도면': 'Drawing of a motor with the same outline dimensions',
   '맞는 표준 스트로크가 없어 모듈러 제품으로 주문합니다': 'No standard stroke is long enough: ordered as a modular product',
   'ESBF 외부 가이드': 'ESBF external guide',
   '사용 (로드 횡하중 검토 생략)': 'Used (rod lateral force not checked)',

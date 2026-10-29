@@ -175,7 +175,11 @@ export function DrawingStep({ axis, drive, kit, req: input, sides, onSides, faci
             role: 'motor',
             model: selection.motor.model,
             drawing: found.motor,
-            note: found.motorOtherOptions ? t('같은 모터의 다른 옵션 도면') : null,
+            note: found.motorOtherOptions
+              ? t('같은 모터의 다른 옵션 도면')
+              : found.motorSameOutline
+                ? t('외형 치수가 같은 모터의 도면')
+                : null,
           },
           ...(axis!.shaft
             ? [

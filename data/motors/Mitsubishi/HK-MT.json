@@ -593,7 +593,8 @@
       "regenPower": 0,
       "amplifier": "MR-J5-10G/B/A",
       "interfaceCode": "40R",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-MT053W"
     },
     {
       "id": "HK-MT13VW (200V)",
@@ -628,7 +629,8 @@
       "regenPower": 0,
       "amplifier": "MR-J5-10G/B/A",
       "interfaceCode": "40R",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-MT13W"
     },
     {
       "id": "HK-MT1M3VW (200V)",
@@ -663,7 +665,8 @@
       "regenPower": 10,
       "amplifier": "MR-J5-20G/B/A",
       "interfaceCode": "40R",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-MT1M3W"
     },
     {
       "id": "HK-MT23VW (200V)",
@@ -698,7 +701,8 @@
       "regenPower": 10,
       "amplifier": "MR-J5-20G/B/A",
       "interfaceCode": "60PA",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-MT23W"
     },
     {
       "id": "HK-MT43VW (200V)",
@@ -733,7 +737,8 @@
       "regenPower": 10,
       "amplifier": "MR-J5-60G/B/A",
       "interfaceCode": "60PA",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-MT43W"
     },
     {
       "id": "HK-MT63VW (200V)",
@@ -768,7 +773,8 @@
       "regenPower": 30,
       "amplifier": "MR-J5-70G/B/A",
       "interfaceCode": "60PA",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-MT63W"
     },
     {
       "id": "HK-MT7M3VW (200V)",
@@ -803,7 +809,8 @@
       "regenPower": 30,
       "amplifier": "MR-J5-70G/B/A",
       "interfaceCode": "80PA",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-MT7M3W"
     },
     {
       "id": "HK-MT103VW (200V)",
@@ -838,7 +845,8 @@
       "regenPower": 100,
       "amplifier": "MR-J5-200G/B/A",
       "interfaceCode": "80PA",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-MT103W"
     },
     {
       "id": "HK-MT053VWB (200V)",
@@ -873,7 +881,8 @@
       "regenPower": 0,
       "amplifier": "MR-J5-10G/B/A",
       "interfaceCode": "40R",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-MT053WB"
     },
     {
       "id": "HK-MT13VWB (200V)",
@@ -908,7 +917,8 @@
       "regenPower": 0,
       "amplifier": "MR-J5-10G/B/A",
       "interfaceCode": "40R",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-MT13WB"
     },
     {
       "id": "HK-MT1M3VWB (200V)",
@@ -943,7 +953,8 @@
       "regenPower": 10,
       "amplifier": "MR-J5-20G/B/A",
       "interfaceCode": "40R",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-MT1M3WB"
     },
     {
       "id": "HK-MT23VWB (200V)",
@@ -978,7 +989,8 @@
       "regenPower": 10,
       "amplifier": "MR-J5-20G/B/A",
       "interfaceCode": "60PA",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-MT23WB"
     },
     {
       "id": "HK-MT43VWB (200V)",
@@ -1013,7 +1025,8 @@
       "regenPower": 10,
       "amplifier": "MR-J5-60G/B/A",
       "interfaceCode": "60PA",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-MT43WB"
     },
     {
       "id": "HK-MT63VWB (200V)",
@@ -1048,7 +1061,8 @@
       "regenPower": 30,
       "amplifier": "MR-J5-70G/B/A",
       "interfaceCode": "60PA",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-MT63WB"
     },
     {
       "id": "HK-MT7M3VWB (200V)",
@@ -1083,7 +1097,8 @@
       "regenPower": 30,
       "amplifier": "MR-J5-70G/B/A",
       "interfaceCode": "80PA",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-MT7M3WB"
     },
     {
       "id": "HK-MT103VWB (200V)",
@@ -1118,7 +1133,8 @@
       "regenPower": 100,
       "amplifier": "MR-J5-200G/B/A",
       "interfaceCode": "80PA",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-MT103WB"
     }
   ]
 }

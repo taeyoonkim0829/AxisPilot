@@ -40,6 +40,8 @@ export interface ComboDrawings {
   axis: Drawing<AxisMeta> | null
   motor: Drawing<MotorMeta> | null
   motorOtherOptions: boolean
+  /** the motor file is another model's with the same outline dimensions */
+  motorSameOutline: boolean
   gearbox: Drawing<GearboxMeta> | null
   kit: Drawing<KitMeta> | null
   missing: PartRole[]
@@ -55,7 +57,7 @@ export function comboDrawings(sel: ComboSelection, all?: Drawing[]): ComboDrawin
   if (!kit?.meta) missing.push('kit')
   if (sel.gearbox && !gearbox?.meta) missing.push('gearbox')
   if (!motor) missing.push('motor')
-  return { axis, motor: motor?.drawing ?? null, motorOtherOptions: motor?.otherOptions ?? false, gearbox, kit, missing }
+  return { axis, motor: motor?.drawing ?? null, motorOtherOptions: motor?.otherOptions ?? false, motorSameOutline: motor?.sameOutline ?? false, gearbox, kit, missing }
 }
 
 // Festo convention (flange at z = 0, shaft +z, connector +y); Mitsubishi's flange motors have their connectors at −y

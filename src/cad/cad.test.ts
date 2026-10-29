@@ -198,7 +198,11 @@ describe('drawing files', () => {
     expect(motorDrawingFor(motors.find((m) => m.model === 'HK-KT13WB (200V)')!, all)?.drawing.model).toBe('HK-KT13WB')
     // every HK-MT (but the 10000 r/min …VW) and HK-RT; HK-KT/ST without their 400 V class (…4W) and a few sizes (no file yet)
     expect(motors.filter((m) => /^HK-(MTw+[^V]W|RT)/.test(m.model)).every((m) => found.includes(m))).toBe(true)
-    expect(found.length).toBe(96)
+    expect(found.length).toBe(178)
+    // without a file of its own: the model in the same row of the J5 catalog's outline table
+    const kt634 = motorDrawingFor(motors.find((m) => m.model === 'HK-KT634WB (400V)')!, all)
+    expect(kt634?.drawing.model).toBe('HK-KT63WB')
+    expect(kt634?.sameOutline).toBe(true)
   })
 })
 

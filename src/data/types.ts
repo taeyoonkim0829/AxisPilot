@@ -129,6 +129,8 @@ export interface Motor {
   amplifier: string | null
   /** mechanical interface code for mounting kits; brake and non-brake models share it; null when unknown */
   interfaceCode: string | null
+  /** model whose drawing applies: same outline dimensions per the maker's catalog (Mitsubishi HK), for motors without a file */
+  sameOutline?: string | null
   /** A */
   nominalCurrent?: number | null
   peakCurrent?: number | null

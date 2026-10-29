@@ -418,7 +418,8 @@
       "regenPower": 10,
       "amplifier": "MR-J5-60G/B/A",
       "interfaceCode": null,
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-KT7M3UW"
     },
     {
       "id": "HK-KT7M3UW (200V)",
@@ -628,7 +629,8 @@
       "regenPower": 10,
       "amplifier": "MR-J5-20G/B/A",
       "interfaceCode": "60PA",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-KT43W"
     },
     {
       "id": "HK-KT634W (200V)",
@@ -663,7 +665,8 @@
       "regenPower": 10,
       "amplifier": "MR-J5-40G/B/A, MR-J5-60G/B/A",
       "interfaceCode": "60PA",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-KT63W"
     },
     {
       "id": "HK-KT7M34W (200V)",
@@ -698,7 +701,8 @@
       "regenPower": 10,
       "amplifier": "MR-J5-40G/B/A, MR-J5-60G/B/A",
       "interfaceCode": "80PA",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-KT7M3W"
     },
     {
       "id": "HK-KT1034W (200V)",
@@ -733,7 +737,8 @@
       "regenPower": 10,
       "amplifier": "MR-J5-60G/B/A",
       "interfaceCode": "80PA",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-KT103W"
     },
     {
       "id": "HK-KT1534W (200V)",
@@ -768,7 +773,8 @@
       "regenPower": 30,
       "amplifier": "MR-J5-70G/B/A, MR-J5-100G/B/A",
       "interfaceCode": null,
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-KT153W"
     },
     {
       "id": "HK-KT2034W (200V)",
@@ -803,7 +809,8 @@
       "regenPower": 30,
       "amplifier": "MR-J5-100G/B/A",
       "interfaceCode": null,
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-KT203W"
     },
     {
       "id": "HK-KT2024W (200V)",
@@ -838,7 +845,8 @@
       "regenPower": 30,
       "amplifier": "MR-J5-100G/B/A, MR-J5-200G/B/A, MR-J5-350G/B/A",
       "interfaceCode": null,
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-KT202W"
     },
     {
       "id": "HK-KT053W (400V)",
@@ -978,7 +986,8 @@
       "regenPower": 15,
       "amplifier": "MR-J5-60G4/B4/A4",
       "interfaceCode": "60PA",
-      "controller": "MR-J5-400V"
+      "controller": "MR-J5-400V",
+      "sameOutline": "HK-KT43W"
     },
     {
       "id": "HK-KT634W (400V)",
@@ -1013,7 +1022,8 @@
       "regenPower": 15,
       "amplifier": "MR-J5-100G4/B4/A4",
       "interfaceCode": "60PA",
-      "controller": "MR-J5-400V"
+      "controller": "MR-J5-400V",
+      "sameOutline": "HK-KT63W"
     },
     {
       "id": "HK-KT7M34W (400V)",
@@ -1048,7 +1058,8 @@
       "regenPower": 15,
       "amplifier": "MR-J5-100G4/B4/A4",
       "interfaceCode": "80PA",
-      "controller": "MR-J5-400V"
+      "controller": "MR-J5-400V",
+      "sameOutline": "HK-KT7M3W"
     },
     {
       "id": "HK-KT1034W (400V)",
@@ -1083,7 +1094,8 @@
       "regenPower": 15,
       "amplifier": "MR-J5-100G4/B4/A4",
       "interfaceCode": "80PA",
-      "controller": "MR-J5-400V"
+      "controller": "MR-J5-400V",
+      "sameOutline": "HK-KT103W"
     },
     {
       "id": "HK-KT634UW (400V)",
@@ -1118,7 +1130,8 @@
       "regenPower": 15,
       "amplifier": "MR-J5-60G4/B4/A4",
       "interfaceCode": null,
-      "controller": "MR-J5-400V"
+      "controller": "MR-J5-400V",
+      "sameOutline": "HK-KT7M3UW"
     },
     {
       "id": "HK-KT1034UW (400V)",
@@ -1153,7 +1166,8 @@
       "regenPower": 15,
       "amplifier": "MR-J5-100G4/B4/A4",
       "interfaceCode": null,
-      "controller": "MR-J5-400V"
+      "controller": "MR-J5-400V",
+      "sameOutline": "HK-KT103UW"
     },
     {
       "id": "HK-KT1534W (400V)",
@@ -1188,7 +1202,8 @@
       "regenPower": 100,
       "amplifier": "MR-J5-200G4/B4/A4",
       "interfaceCode": null,
-      "controller": "MR-J5-400V"
+      "controller": "MR-J5-400V",
+      "sameOutline": "HK-KT153W"
     },
     {
       "id": "HK-KT2034W (400V)",
@@ -1223,7 +1238,8 @@
       "regenPower": 100,
       "amplifier": "MR-J5-200G4/B4/A4",
       "interfaceCode": null,
-      "controller": "MR-J5-400V"
+      "controller": "MR-J5-400V",
+      "sameOutline": "HK-KT203W"
     },
     {
       "id": "HK-KT2024W (400V)",
@@ -1258,7 +1274,8 @@
       "regenPower": 100,
       "amplifier": "MR-J5-200G4/B4/A4",
       "interfaceCode": null,
-      "controller": "MR-J5-400V"
+      "controller": "MR-J5-400V",
+      "sameOutline": "HK-KT202W"
     },
     {
       "id": "HK-KT053WB (200V)",
@@ -1678,7 +1695,8 @@
       "regenPower": 10,
       "amplifier": "MR-J5-60G/B/A",
       "interfaceCode": null,
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-KT7M3UWB"
     },
     {
       "id": "HK-KT7M3UWB (200V)",
@@ -1888,7 +1906,8 @@
       "regenPower": 10,
       "amplifier": "MR-J5-20G/B/A",
       "interfaceCode": "60PA",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-KT43WB"
     },
     {
       "id": "HK-KT634WB (200V)",
@@ -1923,7 +1942,8 @@
       "regenPower": 10,
       "amplifier": "MR-J5-40G/B/A, MR-J5-60G/B/A",
       "interfaceCode": "60PA",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-KT63WB"
     },
     {
       "id": "HK-KT7M34WB (200V)",
@@ -1958,7 +1978,8 @@
       "regenPower": 10,
       "amplifier": "MR-J5-40G/B/A, MR-J5-60G/B/A",
       "interfaceCode": "80PA",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-KT7M3WB"
     },
     {
       "id": "HK-KT1034WB (200V)",
@@ -1993,7 +2014,8 @@
       "regenPower": 10,
       "amplifier": "MR-J5-60G/B/A",
       "interfaceCode": "80PA",
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-KT103WB"
     },
     {
       "id": "HK-KT1534WB (200V)",
@@ -2028,7 +2050,8 @@
       "regenPower": 30,
       "amplifier": "MR-J5-70G/B/A, MR-J5-100G/B/A",
       "interfaceCode": null,
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-KT153WB"
     },
     {
       "id": "HK-KT2034WB (200V)",
@@ -2063,7 +2086,8 @@
       "regenPower": 30,
       "amplifier": "MR-J5-100G/B/A",
       "interfaceCode": null,
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-KT203WB"
     },
     {
       "id": "HK-KT2024WB (200V)",
@@ -2098,7 +2122,8 @@
       "regenPower": 30,
       "amplifier": "MR-J5-100G/B/A, MR-J5-200G/B/A, MR-J5-350G/B/A",
       "interfaceCode": null,
-      "controller": "MR-J5-200V"
+      "controller": "MR-J5-200V",
+      "sameOutline": "HK-KT202WB"
     },
     {
       "id": "HK-KT053WB (400V)",
@@ -2238,7 +2263,8 @@
       "regenPower": 15,
       "amplifier": "MR-J5-60G4/B4/A4",
       "interfaceCode": "60PA",
-      "controller": "MR-J5-400V"
+      "controller": "MR-J5-400V",
+      "sameOutline": "HK-KT43WB"
     },
     {
       "id": "HK-KT634WB (400V)",
@@ -2273,7 +2299,8 @@
       "regenPower": 15,
       "amplifier": "MR-J5-100G4/B4/A4",
       "interfaceCode": "60PA",
-      "controller": "MR-J5-400V"
+      "controller": "MR-J5-400V",
+      "sameOutline": "HK-KT63WB"
     },
     {
       "id": "HK-KT7M34WB (400V)",
@@ -2308,7 +2335,8 @@
       "regenPower": 15,
       "amplifier": "MR-J5-100G4/B4/A4",
       "interfaceCode": "80PA",
-      "controller": "MR-J5-400V"
+      "controller": "MR-J5-400V",
+      "sameOutline": "HK-KT7M3WB"
     },
     {
       "id": "HK-KT1034WB (400V)",
@@ -2343,7 +2371,8 @@
       "regenPower": 15,
       "amplifier": "MR-J5-100G4/B4/A4",
       "interfaceCode": "80PA",
-      "controller": "MR-J5-400V"
+      "controller": "MR-J5-400V",
+      "sameOutline": "HK-KT103WB"
     },
     {
       "id": "HK-KT634UWB (400V)",
@@ -2378,7 +2407,8 @@
       "regenPower": 15,
       "amplifier": "MR-J5-60G4/B4/A4",
       "interfaceCode": null,
-      "controller": "MR-J5-400V"
+      "controller": "MR-J5-400V",
+      "sameOutline": "HK-KT7M3UWB"
     },
     {
       "id": "HK-KT1034UWB (400V)",
@@ -2413,7 +2443,8 @@
       "regenPower": 15,
       "amplifier": "MR-J5-100G4/B4/A4",
       "interfaceCode": null,
-      "controller": "MR-J5-400V"
+      "controller": "MR-J5-400V",
+      "sameOutline": "HK-KT103UWB"
     },
     {
       "id": "HK-KT1534WB (400V)",
@@ -2448,7 +2479,8 @@
       "regenPower": 100,
       "amplifier": "MR-J5-200G4/B4/A4",
       "interfaceCode": null,
-      "controller": "MR-J5-400V"
+      "controller": "MR-J5-400V",
+      "sameOutline": "HK-KT153WB"
     },
     {
       "id": "HK-KT2034WB (400V)",
@@ -2483,7 +2515,8 @@
       "regenPower": 100,
       "amplifier": "MR-J5-200G4/B4/A4",
       "interfaceCode": null,
-      "controller": "MR-J5-400V"
+      "controller": "MR-J5-400V",
+      "sameOutline": "HK-KT203WB"
     },
     {
       "id": "HK-KT2024WB (400V)",
@@ -2518,7 +2551,8 @@
       "regenPower": 100,
       "amplifier": "MR-J5-200G4/B4/A4",
       "interfaceCode": null,
-      "controller": "MR-J5-400V"
+      "controller": "MR-J5-400V",
+      "sameOutline": "HK-KT202WB"
     }
   ]
 }
