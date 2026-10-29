@@ -196,9 +196,9 @@ describe('drawing files', () => {
     const all = allPaths.map((path) => ({ ...parseDrawingPath(path)!, url: path, meta: null }))
     const found = motors.filter((m) => /^HK-/.test(m.model) && motorDrawingFor(m, all))
     expect(motorDrawingFor(motors.find((m) => m.model === 'HK-KT13WB (200V)')!, all)?.drawing.model).toBe('HK-KT13WB')
-    // every HK-MT (but the 10000 r/min …VW) and HK-RT; the rest of HK-KT/ST by `sameOutline` but HK-ST703/903 (no file)
+    // every HK-MT (but the 10000 r/min …VW) and HK-RT; the rest of HK-KT/ST by `sameOutline`
     expect(motors.filter((m) => /^HK-(MTw+[^V]W|RT)/.test(m.model)).every((m) => found.includes(m))).toBe(true)
-    expect(found.length).toBe(194)
+    expect(found.length).toBe(206)
     // without a file of its own: the model in the same row of the J5 catalog's outline table
     const kt634 = motorDrawingFor(motors.find((m) => m.model === 'HK-KT634WB (400V)')!, all)
     expect(kt634?.drawing.model).toBe('HK-KT63WB')
