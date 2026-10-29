@@ -352,7 +352,7 @@
         3.2,
         3.2
       ],
-      "externalMaxPower": 500,
+      "externalMaxPower": 800,
       "resistorVoltage": null,
       "brakingResistors": [
         "MR-RB5R"
@@ -582,7 +582,7 @@
         10,
         10
       ],
-      "externalMaxPower": 500,
+      "externalMaxPower": 800,
       "resistorVoltage": null,
       "brakingResistors": [
         "MR-RB5K-4"

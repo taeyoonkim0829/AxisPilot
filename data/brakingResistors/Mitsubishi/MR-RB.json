@@ -13,7 +13,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": null
+      "coolingFan": null,
+      "fanPower": null
     },
     {
       "id": "MR-RB12",
@@ -28,7 +29,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": null
+      "coolingFan": null,
+      "fanPower": null
     },
     {
       "id": "MR-RB14",
@@ -43,7 +45,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": null
+      "coolingFan": null,
+      "fanPower": null
     },
     {
       "id": "MR-RB32",
@@ -58,7 +61,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": null
+      "coolingFan": null,
+      "fanPower": null
     },
     {
       "id": "MR-RB30",
@@ -73,7 +77,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": "environment"
+      "coolingFan": "environment",
+      "fanPower": null
     },
     {
       "id": "MR-RB3N",
@@ -88,7 +93,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": "environment"
+      "coolingFan": "environment",
+      "fanPower": null
     },
     {
       "id": "MR-RB31",
@@ -103,7 +109,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": "environment"
+      "coolingFan": "environment",
+      "fanPower": null
     },
     {
       "id": "MR-RB3Z",
@@ -118,7 +125,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": "environment"
+      "coolingFan": "environment",
+      "fanPower": null
     },
     {
       "id": "MR-RB34",
@@ -133,7 +141,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": "environment"
+      "coolingFan": "environment",
+      "fanPower": null
     },
     {
       "id": "MR-RB50",
@@ -148,7 +157,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": "required"
+      "coolingFan": "required",
+      "fanPower": null
     },
     {
       "id": "MR-RB5N",
@@ -163,7 +173,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": "required"
+      "coolingFan": "required",
+      "fanPower": null
     },
     {
       "id": "MR-RB51",
@@ -178,7 +189,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": "required"
+      "coolingFan": "required",
+      "fanPower": null
     },
     {
       "id": "MR-RB5Z",
@@ -193,7 +205,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": "required"
+      "coolingFan": "required",
+      "fanPower": null
     },
     {
       "id": "MR-RB5R",
@@ -208,7 +221,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": "optional"
+      "coolingFan": null,
+      "fanPower": 800
     },
     {
       "id": "MR-RB1H-4",
@@ -223,7 +237,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": null
+      "coolingFan": null,
+      "fanPower": null
     },
     {
       "id": "MR-RB3M-4",
@@ -238,7 +253,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": "required"
+      "coolingFan": "required",
+      "fanPower": null
     },
     {
       "id": "MR-RB3G-4",
@@ -253,7 +269,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": "required"
+      "coolingFan": "required",
+      "fanPower": null
     },
     {
       "id": "MR-RB3Y-4",
@@ -268,7 +285,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": "required"
+      "coolingFan": "required",
+      "fanPower": null
     },
     {
       "id": "MR-RB34-4",
@@ -283,7 +301,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": "required"
+      "coolingFan": "required",
+      "fanPower": null
     },
     {
       "id": "MR-RB3U-4",
@@ -298,7 +317,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": "required"
+      "coolingFan": "required",
+      "fanPower": null
     },
     {
       "id": "MR-RB5G-4",
@@ -313,7 +333,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": "required"
+      "coolingFan": "required",
+      "fanPower": null
     },
     {
       "id": "MR-RB5Y-4",
@@ -328,7 +349,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": "required"
+      "coolingFan": "required",
+      "fanPower": null
     },
     {
       "id": "MR-RB54-4",
@@ -343,7 +365,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": "required"
+      "coolingFan": "required",
+      "fanPower": null
     },
     {
       "id": "MR-RB5U-4",
@@ -358,7 +381,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": "required"
+      "coolingFan": "required",
+      "fanPower": null
     },
     {
       "id": "MR-RB5K-4",
@@ -373,7 +397,8 @@
       "nominalPower380": null,
       "pulseEnergy780": null,
       "nominalPower780": null,
-      "coolingFan": "optional"
+      "coolingFan": null,
+      "fanPower": 800
     }
   ]
 }

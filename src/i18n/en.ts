@@ -377,6 +377,8 @@ export const en: Record<string, string> = {
   '외부 제동저항': 'External braking resistor',
   '맞는 제동저항 데이터가 없습니다': 'No matching braking resistor data',
   '전원': 'Power supply',
+  '{model}은 냉각팬 2개(92 mm, 1 m³/min 이상)를 달고 [Pr. PA02]를 바꾸면 {power} W까지 쓸 수 있습니다':
+    '{model} takes up to {power} W with two cooling fans (92 mm, at least 1 m³/min) and [Pr. PA02] changed',
   '{model}은 냉각팬(92 mm, 1 m³/min 이상)으로 강제 냉각해야 합니다': '{model} must be cooled by a fan (92 mm, at least 1 m³/min)',
   '{model}은 사용 환경에 따라 냉각팬(92 mm, 1 m³/min 이상) 강제 냉각이 필요할 수 있습니다':
     '{model} may need fan cooling (92 mm, at least 1 m³/min) depending on the environment',

@@ -213,8 +213,10 @@ export interface BrakingResistor {
   nominalPower380: number | null
   pulseEnergy780: number | null
   nominalPower780: number | null
-  /** cooling fan (Mitsubishi MR-RB): always needed, depending on the environment, or for the higher rating only */
-  coolingFan?: 'required' | 'environment' | 'optional' | null
+  /** cooling fan (Mitsubishi MR-RB): always needed, or depending on the environment */
+  coolingFan?: 'required' | 'environment' | null
+  /** W, permissible regenerative power with two cooling fans and [Pr. PA02] changed (Mitsubishi MR-RB5R, 5K-4) */
+  fanPower?: number | null
 }
 
 /** One cable option: a role for a group of motors on a drive range, for a span of cable lengths */

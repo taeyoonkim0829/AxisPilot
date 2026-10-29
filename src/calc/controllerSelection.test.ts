@@ -142,6 +142,17 @@ describe('Mitsubishi drive packages (data)', () => {
     expect(selection.checks.find((c) => c.label === '외부 제동저항 정격 전력')!.limit).toBe(selection.resistor.item!.ratedPower)
     expect(selection.checks.find((c) => c.label === '외부 제동저항 펄스 에너지')).toBeUndefined()
   })
+
+  it('takes the cooling-fan rating (MR-RB5R, 5K-4) when the plain one is too small', () => {
+    const { ev, drive, settings, selection } = run('EGC-185-...-BS-40P-KF-GK', 'HK-ST502W (200V)', { payload: 200, velocity: 1, acceleration: 5, mounting: 'vertical' })
+    const p = selection.resistor.averagePower
+    const fan = { ...brakingResistors.find((r) => r.model === 'MR-RB5R')!, model: 'FAN', ratedPower: 0.8 * p, fanPower: 1.2 * p }
+    const amp = { ...selection.controller!, brakingResistors: ['FAN'], externalMaxPower: 2 * p }
+    const sel = selectController(ev, drive, settings, { ...data, controllers: [amp], resistors: [fan] })!
+    expect(sel.resistor.item!.model).toBe('FAN')
+    expect(sel.checks.find((c) => c.label === '외부 제동저항 정격 전력')).toMatchObject({ limit: 1.2 * p, status: 'ok' })
+    expect(sel.notes.some((n) => n.text.includes('[Pr. PA02]'))).toBe(true)
+  })
 })
 
 describe('motorSupply', () => {
