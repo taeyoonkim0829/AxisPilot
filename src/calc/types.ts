@@ -158,6 +158,8 @@ export interface Settings {
   beltMaterial: Partial<Record<AxisFamily, string | null>>
   /** m, motor cable length for the cable selection (Festo drives) */
   cableLength: number
+  /** Order the axis at the next standard stroke (standard part number) instead of the modular product system's */
+  standardStroke: boolean
 }
 
 export const defaultSettings: Settings = {
@@ -185,6 +187,7 @@ export const defaultSettings: Settings = {
   slideGap: 0,
   slideGapRight: 0,
   beltMaterial: { ELGD: 'PU2', EGC: null },
+  standardStroke: false,
 }
 
 /** Motor power supply: 200–240 V AC, 380–480 V AC, DC (24/48 V) */

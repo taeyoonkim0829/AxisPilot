@@ -170,9 +170,10 @@ export interface AxisOrder {
  * Axes of the modular product system are ordered at the required stroke: a whole mm within its variable range,
  * else the next of its fixed strokes (ELGT-BS has only fixed ones, 50 mm apart). That stroke takes its standard
  * part number when it is a standard stroke, else the module number. Axes without a module number (ELGT-TB-…-CS)
- * round up to the next standard stroke. Axes without order data keep their data model name.
+ * round up to the next standard stroke, and so does every axis with `standardOnly` (the modular stroke only when no
+ * standard stroke is long enough). Axes without order data keep their data model name.
  */
-export function axisOrder(axis: Axis, stroke: number, options: AxisOptions | null = null): AxisOrder {
+export function axisOrder(axis: Axis, stroke: number, options: AxisOptions | null = null, standardOnly = false): AxisOrder {
   const template = axis.typeCode ?? axis.model
   if (!template.includes('…') || !(axis.strokePartNumbers || axis.moduleNumber)) {
     return { model: axis.model, partNumber: null, stroke: null, modular: false }
@@ -183,7 +184,8 @@ export function axisOrder(axis: Axis, stroke: number, options: AxisOptions | nul
     .map(Number)
     .sort((a, b) => a - b)
   const configured = axis.moduleNumber ? moduleStroke(axis.moduleStrokes, stroke + (options?.extension ?? 0)) : null
-  const standard = configured != null ? strokes.find((s) => s === configured) : strokes.find((s) => s >= stroke)
+  const next = strokes.find((s) => s >= stroke)
+  const standard = configured == null || (standardOnly && next != null) ? next : strokes.find((s) => s === configured)
   const ordered = standard ?? configured ?? Math.ceil(stroke)
   return {
     model: optionCode(axis, template, options).replace('…', String(ordered)),
@@ -499,7 +501,7 @@ export function evaluateAxis(axis: Axis, req: Requirements, settings: Settings, 
   const mu = settings.friction[axis.drive]
   // Mass and inertia follow the built stroke (the ordered one for ESBF), the motion the required one.
   const options = axisOptions(axis, settings)
-  const order = axisOrder(axis, req.stroke, options)
+  const order = axisOrder(axis, req.stroke, options, settings.standardStroke)
   const builtStroke = order.stroke ?? req.stroke
   // Additional slides move with the main one; the belt material changes the no-load torque.
   const extra: AdditionalSlide | null = options?.slides.length ? axis.additionalSlide! : null
@@ -619,6 +621,18 @@ export function evaluateAxis(axis: Axis, req: Requirements, settings: Settings, 
       ...check('압축력 (좌굴)', compression, curveAt(axis.pressureForceCurve, req.stroke), 'N'),
       note: '로드 길이 {stroke} mm 기준, 전진 = 로드가 나가는 방향',
       noteArgs: { stroke: req.stroke },
+    })
+  }
+
+  if (settings.standardStroke && order.modular) {
+    checks.push({
+      label: '표준 스트로크',
+      value: req.stroke,
+      limit: null,
+      unit: 'mm',
+      ratio: null,
+      status: 'warn',
+      note: '맞는 표준 스트로크가 없어 모듈러 제품으로 주문합니다',
     })
   }
 

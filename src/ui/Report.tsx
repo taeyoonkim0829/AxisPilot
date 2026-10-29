@@ -221,6 +221,7 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
             ['전원', settings.supplies.map((s) => supplyLabel[s]).join(' / ')],
             ['브레이크', settings.requireBrake ? t('필요') : t('선택')],
             ['감속기', settings.useGearbox ? t('감속기 사용') : t('감속기 미사용')],
+            ['표준 스트로크', settings.standardStroke ? t('사용') : t('미사용')],
             ...(axis.axis.family === 'ESBF'
               ? ([['ESBF 외부 가이드', settings.externalGuide ? t('사용 (로드 횡하중 검토 생략)') : t('미사용')]] as Row[])
               : []),

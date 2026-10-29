@@ -416,6 +416,10 @@ describe('selection on real data', () => {
     expect(order('ELGD-TB-KF-WD-100-…-L', 2100).model).toBe('ELGD-TB-KF-WD-100-2100-0H-L-PU2')
     expect(order('EGC-80-...-TB-KF-GK', 300).model).toBe('EGC-80-300-TB-KF-0H-GK')
     expect(order('ELGD-TB-KF-WD-100-…-L', 450).model).toBe('ELGD-TB-KF-WD-100-450-0H-L-PU2')
+    // Standard stroke only: the next standard stroke above, modular when none is long enough
+    const std = (id: string, stroke: number) => axisOrder(axes.find((a) => a.id === id)!, stroke, null, true)
+    expect(std('ELGD-BS-KF-60-…10P', 120)).toMatchObject({ partNumber: '8192261', stroke: 200, modular: false })
+    expect(std('ELGD-BS-KF-80-…10P-L', 512.3).modular).toBe(true)
     // Above the variable range only the fixed strokes are left: EGC-70-BS takes 50…980 or 1000
     expect(order('EGC-70-...-BS-10P-KF-GK', 990)).toEqual({ model: 'EGC-70-1000-BS-10P-KF-0H-ML-GK', partNumber: '556807', stroke: 1000, modular: true })
     expect(order('EGC-HD-160-…-BS-20P-GK', 30).model).toBe('EGC-HD-160-50-BS-20P-0H-GK')
