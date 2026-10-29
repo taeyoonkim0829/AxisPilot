@@ -20,7 +20,9 @@
       "externalResistance": [150, null],
       "externalMaxPower": 20,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [],
+      "externalPeakPower": 1090,
+      "externalMaxEnergy": 800
     },
     {
       "id": "6SL3210-5FB10-2UA2",
@@ -47,7 +49,9 @@
       "externalResistance": [150, null],
       "externalMaxPower": 20,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [],
+      "externalPeakPower": 1090,
+      "externalMaxEnergy": 800
     },
     {
       "id": "6SL3210-5FB10-4UA1",
@@ -74,7 +78,9 @@
       "externalResistance": [100, null],
       "externalMaxPower": 21,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [],
+      "externalPeakPower": 1640,
+      "externalMaxEnergy": 1230
     },
     {
       "id": "6SL3210-5FB10-8UA0",
@@ -101,7 +107,9 @@
       "externalResistance": [50, null],
       "externalMaxPower": 62,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [],
+      "externalPeakPower": 3280,
+      "externalMaxEnergy": 2460
     },
     {
       "id": "6SL3210-5FB11-0UA1",
@@ -128,7 +136,9 @@
       "externalResistance": [50, null],
       "externalMaxPower": 62,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [],
+      "externalPeakPower": 3280,
+      "externalMaxEnergy": 2460
     },
     {
       "id": "6SL3210-5FB11-5UA0",
@@ -155,7 +165,9 @@
       "externalResistance": [25, null],
       "externalMaxPower": 123,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [],
+      "externalPeakPower": 6560,
+      "externalMaxEnergy": 4920
     },
     {
       "id": "6SL3210-5FB12-0UA0",
@@ -182,7 +194,9 @@
       "externalResistance": [25, null],
       "externalMaxPower": 123,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [],
+      "externalPeakPower": 6560,
+      "externalMaxEnergy": 4920
     },
     {
       "id": "6SL3210-5FE10-4UA0",
@@ -209,7 +223,9 @@
       "externalResistance": [533, null],
       "externalMaxPower": 30,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [],
+      "externalPeakPower": 1200,
+      "externalMaxEnergy": 2400
     },
     {
       "id": "6SL3210-5FE10-8UA0",
@@ -236,7 +252,9 @@
       "externalResistance": [160, null],
       "externalMaxPower": 100,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [],
+      "externalPeakPower": 4000,
+      "externalMaxEnergy": 8000
     },
     {
       "id": "6SL3210-5FE11-0UA0",
@@ -263,7 +281,9 @@
       "externalResistance": [160, null],
       "externalMaxPower": 100,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [],
+      "externalPeakPower": 4000,
+      "externalMaxEnergy": 8000
     },
     {
       "id": "6SL3210-5FE11-5UA0",
@@ -290,7 +310,9 @@
       "externalResistance": [70, null],
       "externalMaxPower": 229,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [],
+      "externalPeakPower": 9100,
+      "externalMaxEnergy": 18300
     },
     {
       "id": "6SL3210-5FE12-0UA0",
@@ -317,7 +339,9 @@
       "externalResistance": [70, null],
       "externalMaxPower": 229,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [],
+      "externalPeakPower": 9100,
+      "externalMaxEnergy": 18300
     },
     {
       "id": "6SL3210-5FE13-5UA0",
@@ -344,7 +368,9 @@
       "externalResistance": [27, null],
       "externalMaxPower": 1185,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [],
+      "externalPeakPower": 23700,
+      "externalMaxEnergy": 189600
     },
     {
       "id": "6SL3210-5FE15-0UA0",
@@ -371,7 +397,9 @@
       "externalResistance": [27, null],
       "externalMaxPower": 1185,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [],
+      "externalPeakPower": 23700,
+      "externalMaxEnergy": 189600
     },
     {
       "id": "6SL3210-5FE17-0UA0",
@@ -398,7 +426,9 @@
       "externalResistance": [27, null],
       "externalMaxPower": 1185,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [],
+      "externalPeakPower": 23700,
+      "externalMaxEnergy": 189600
     }
   ]
 }

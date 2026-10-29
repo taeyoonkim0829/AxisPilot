@@ -110,6 +110,24 @@ describe('Siemens drive packages (data)', () => {
     // no motor cable limit in the V90 manual: no cable length check
     expect(fl6.checks.find((c) => c.label === '모터 케이블 길이')).toBeUndefined()
   })
+
+  it('adds the Koch resistor listed for the S210 converter and supply, else checks the V90 limits', () => {
+    const heavy = { payload: 200, velocity: 1, acceleration: 5, mounting: 'vertical' as const }
+    const at = (motor: string) => run('EGC-185-...-BS-40P-KF-GK', motor, heavy).selection
+    for (const [motor, voltage] of [['1FK2208-4AC1', 400], ['1FK2208-4AC1 (230V)', 230]] as const) {
+      const s = at(motor)
+      expect(s.resistor.required).toBe(true)
+      expect(s.resistor.item!.maker).toBe('Michael Koch')
+      expect(s.resistor.item!.voltage).toBe(voltage)
+      expect(s.controller!.brakingResistors).toContain(s.resistor.item!.id)
+      expect(s.checks.map((c) => c.label)).toEqual(expect.arrayContaining(['외부 제동저항 피크 전력', '외부 제동저항 펄스 에너지']))
+    }
+    const v90 = at('1FL6090-1AC61-2LH1')
+    expect(v90.resistor.required).toBe(true)
+    expect(v90.resistor.item).toBeNull()
+    expect(v90.checks.find((c) => c.label === '외부 제동저항 정격 전력')!.limit).toBe(v90.controller!.externalMaxPower)
+    expect(v90.notes.some((n) => n.text.startsWith('저항 {min} Ω'))).toBe(true)
+  })
 })
 
 describe('Mitsubishi drive packages (data)', () => {
@@ -146,7 +164,7 @@ describe('Mitsubishi drive packages (data)', () => {
   it('takes the cooling-fan rating (MR-RB5R, 5K-4) when the plain one is too small', () => {
     const { ev, drive, settings, selection } = run('EGC-185-...-BS-40P-KF-GK', 'HK-ST502W (200V)', { payload: 200, velocity: 1, acceleration: 5, mounting: 'vertical' })
     const p = selection.resistor.averagePower
-    const fan = { ...brakingResistors.find((r) => r.model === 'MR-RB5R')!, model: 'FAN', ratedPower: 0.8 * p, fanPower: 1.2 * p }
+    const fan = { ...brakingResistors.find((r) => r.model === 'MR-RB5R')!, id: 'FAN', model: 'FAN', ratedPower: 0.8 * p, fanPower: 1.2 * p }
     const amp = { ...selection.controller!, brakingResistors: ['FAN'], externalMaxPower: 2 * p }
     const sel = selectController(ev, drive, settings, { ...data, controllers: [amp], resistors: [fan] })!
     expect(sel.resistor.item!.model).toBe('FAN')

@@ -245,32 +245,48 @@ export function selectController(
       checks.push(...own)
     }
     if (needed) {
+      // listed by id; a resistor rated for one supply (Siemens S210 3AC: 240 V / 400 V) only for motors on it
       const options = controller.brakingResistors
-        .map((m) => data.resistors.find((r) => r.model === m))
-        .filter((r): r is BrakingResistor => !!r)
-      // Mitsubishi rates its options by permissible regenerative power only (higher with cooling fans): no pulse energy to check
+        .map((id) => data.resistors.find((r) => r.id === id))
+        .filter((r): r is BrakingResistor => !!r && (r.voltage == null || r.voltage === motor.voltage))
+      // CACR: ratings at the DC link level; others rated per drive (`ratedPower`, Koch also peak power and energy;
+      // Mitsubishi permissible regenerative power only, higher with cooling fans)
       const rating = (r: BrakingResistor, fan = false) =>
         controller.resistorVoltage == null
-          ? { power: fan ? (r.fanPower ?? r.ratedPower) : r.ratedPower, energy: null }
+          ? { power: fan ? (r.fanPower ?? r.ratedPower) : r.ratedPower, energy: r.pulseEnergy ?? null, peak: r.peakPower ?? null }
           : controller.resistorVoltage >= 700
-            ? { power: r.nominalPower780, energy: r.pulseEnergy780 }
-            : { power: r.nominalPower380, energy: r.pulseEnergy380 }
-      const fits = (r: BrakingResistor, fan = false) =>
-        (rating(r, fan).power ?? 0) >= averagePower && (controller.resistorVoltage == null || (rating(r).energy ?? 0) >= eventEnergy)
+            ? { power: r.nominalPower780, energy: r.pulseEnergy780 ?? 0, peak: null }
+            : { power: r.nominalPower380, energy: r.pulseEnergy380 ?? 0, peak: null }
+      // the drive's own limits for an external resistor apply as well
+      const limits = (r: BrakingResistor | null, fan = false) => {
+        const own = r ? rating(r, fan) : { power: null, energy: null, peak: null }
+        const min = (a: number | null, b: number | null | undefined) => (a == null ? (b ?? null) : b == null ? a : Math.min(a, b))
+        return {
+          power: min(own.power, controller.externalMaxPower),
+          energy: min(own.energy, controller.externalMaxEnergy),
+          peak: min(own.peak, controller.externalPeakPower),
+        }
+      }
+      const fits = (r: BrakingResistor, fan = false) => {
+        const l = limits(r, fan)
+        return (l.power ?? 0) >= averagePower && (l.energy == null || l.energy >= eventEnergy) && (l.peak == null || l.peak >= peakRegen)
+      }
       // a resistor without fans first, else one whose fan rating covers it
-      const item =
-        options.find((r) => fits(r)) ??
-        options.find((r) => fits(r, true)) ??
-        options.at(-1) ??
-        null
+      const item = options.find((r) => fits(r)) ?? options.find((r) => fits(r, true)) ?? options.at(-1) ?? null
       const fanned = item?.fanPower != null && averagePower > (item.ratedPower ?? 0)
       resistor.required = true
       resistor.item = item
-      if (item) {
+      const l = limits(item, fanned)
+      if (item || l.power != null) {
         checks.push(
-          check('외부 제동저항 정격 전력', averagePower, Math.min(rating(item, fanned).power ?? 0, controller.externalMaxPower ?? Infinity), 'W'),
-          ...(controller.resistorVoltage != null ? [check('외부 제동저항 펄스 에너지', eventEnergy, rating(item).energy, 'Ws')] : []),
+          check('외부 제동저항 정격 전력', averagePower, l.power, 'W'),
+          ...(l.peak != null ? [check('외부 제동저항 피크 전력', peakRegen, l.peak, 'W')] : []),
+          ...(l.energy != null ? [check('외부 제동저항 펄스 에너지', eventEnergy, l.energy, 'Ws')] : []),
         )
+      } else {
+        checks.push({ ...check('외부 제동저항', averagePower, null, 'W'), status: 'warn', note: '맞는 제동저항 데이터가 없습니다' })
+      }
+      if (item) {
         if (item.coolingFan === 'required')
           notes.push({ text: '{model}은 냉각팬(92 mm, 1 m³/min 이상)으로 강제 냉각해야 합니다', args: { model: item.model } })
         if (fanned)
@@ -280,8 +296,16 @@ export function selectController(
           })
         if (item.coolingFan === 'environment')
           notes.push({ text: '{model}은 사용 환경에 따라 냉각팬(92 mm, 1 m³/min 이상) 강제 냉각이 필요할 수 있습니다', args: { model: item.model } })
-      } else {
-        checks.push({ ...check('외부 제동저항', averagePower, null, 'W'), status: 'warn', note: '맞는 제동저항 데이터가 없습니다' })
+        if (item.ulPower != null && averagePower > item.ulPower)
+          notes.push({ text: '{model}의 UL 기준 연속 전력은 {power} W입니다 (위 값은 CE 기준)', args: { model: item.model, power: item.ulPower } })
+        if (item.directOnly)
+          notes.push({ text: '{model}은 {maker}에서 직접 구매합니다 (Siemens 품번 없음)', args: { model: item.model, maker: item.maker } })
+      } else if (l.power != null) {
+        // no product in the data (V90): the drive's limits name what to choose
+        notes.push({
+          text: '저항 {min} Ω 이상인 외부 제동저항을 고르세요 (드라이브 한계: 연속 {power} W)',
+          args: { min: controller.externalResistance[0], power: l.power },
+        })
       }
       if (!internal)
         notes.push(

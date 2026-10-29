@@ -25,7 +25,11 @@
       "externalResistance": [300, null],
       "externalMaxPower": 50,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "BWG250047TS-190 (6SL5310-1BB10-1CF0, 230V)"
+      ],
+      "externalPeakPower": 350,
+      "externalMaxEnergy": 700
     },
     {
       "id": "6SL5310-1BB10-2CF0",
@@ -52,7 +56,11 @@
       "externalResistance": [150, null],
       "externalMaxPower": 100,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "BWG250047TS-190 (6SL5310-1BB10-2CF0, 230V)"
+      ],
+      "externalPeakPower": 600,
+      "externalMaxEnergy": 1300
     },
     {
       "id": "6SL5310-1BB10-4CF0",
@@ -79,7 +87,11 @@
       "externalResistance": [100, null],
       "externalMaxPower": 200,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "BWG250047TS-190 (6SL5310-1BB10-4CF0, 230V)"
+      ],
+      "externalPeakPower": 1300,
+      "externalMaxEnergy": 2300
     },
     {
       "id": "6SL5310-1BB10-8CF0",
@@ -106,7 +118,11 @@
       "externalResistance": [50, null],
       "externalMaxPower": 380,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "BWG500027TS-190 (6SL5310-1BB10-8CF0, 230V)"
+      ],
+      "externalPeakPower": 2400,
+      "externalMaxEnergy": 3800
     },
     {
       "id": "6SL5310-1BE10-4DF0",
@@ -133,7 +149,12 @@
       "externalResistance": [200, null],
       "externalMaxPower": 200,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "BWG500027TS-190 (6SL5310-1BE10-4DF0, 230V)",
+        "BWG500100TS-190 (6SL5310-1BE10-4DF0, 400V)"
+      ],
+      "externalPeakPower": 1200,
+      "externalMaxEnergy": 8000
     },
     {
       "id": "6SL5310-1BE10-8DF0",
@@ -160,7 +181,12 @@
       "externalResistance": [200, null],
       "externalMaxPower": 380,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "BWG600014TS-190 (6SL5310-1BE10-8DF0, 230V)",
+        "BWG600047TS-190 (6SL5310-1BE10-8DF0, 400V)"
+      ],
+      "externalPeakPower": 2400,
+      "externalMaxEnergy": 8000
     },
     {
       "id": "6SL5310-1BE11-0DF0",
@@ -187,7 +213,12 @@
       "externalResistance": [200, null],
       "externalMaxPower": 500,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "BWG600014TS-190 (6SL5310-1BE11-0DF0, 230V)",
+        "BWG600047TS-190 (6SL5310-1BE11-0DF0, 400V)"
+      ],
+      "externalPeakPower": 3400,
+      "externalMaxEnergy": 8000
     },
     {
       "id": "6SL5310-1BE11-5DF0",
@@ -214,7 +245,12 @@
       "externalResistance": [100, null],
       "externalMaxPower": 880,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "BWD500027K03LIP65IS (6SL5310-1BE11-5DF0, 230V)",
+        "BWD500100K03LIP65IS (6SL5310-1BE11-5DF0, 400V)"
+      ],
+      "externalPeakPower": 5700,
+      "externalMaxEnergy": 80000
     },
     {
       "id": "6SL5310-1BE12-0DF0",
@@ -241,7 +277,12 @@
       "externalResistance": [100, null],
       "externalMaxPower": 1000,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "BWD500027K03LIP65IS (6SL5310-1BE12-0DF0, 230V)",
+        "BWD500100K03LIP65IS (6SL5310-1BE12-0DF0, 400V)"
+      ],
+      "externalPeakPower": 7600,
+      "externalMaxEnergy": 80000
     },
     {
       "id": "6SL5310-1BE13-5DF0",
@@ -268,7 +309,12 @@
       "externalResistance": [30, null],
       "externalMaxPower": 1750,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "BWD600014K03LIP65IS (6SL5310-1BE13-5DF0, 230V)",
+        "BWD600047K03LIP65IS (6SL5310-1BE13-5DF0, 400V)"
+      ],
+      "externalPeakPower": 15000,
+      "externalMaxEnergy": 100000
     },
     {
       "id": "6SL5310-1BE15-0DF0",
@@ -295,7 +341,12 @@
       "externalResistance": [30, null],
       "externalMaxPower": 2500,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "BWD600014K03LIP65IS (6SL5310-1BE15-0DF0, 230V)",
+        "BWD600047K03LIP65IS (6SL5310-1BE15-0DF0, 400V)"
+      ],
+      "externalPeakPower": 19000,
+      "externalMaxEnergy": 100000
     },
     {
       "id": "6SL5310-1BE17-0DF0",
@@ -322,7 +373,12 @@
       "externalResistance": [30, null],
       "externalMaxPower": 3250,
       "resistorVoltage": null,
-      "brakingResistors": []
+      "brakingResistors": [
+        "BWD600014K03LIP65IS (6SL5310-1BE17-0DF0, 230V)",
+        "BWD600047K03LIP65IS (6SL5310-1BE17-0DF0, 400V)"
+      ],
+      "externalPeakPower": 25000,
+      "externalMaxEnergy": 100000
     }
   ]
 }

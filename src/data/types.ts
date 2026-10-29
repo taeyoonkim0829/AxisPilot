@@ -192,9 +192,12 @@ export interface Controller {
   externalResistance: [number, number | null]
   /** W, max. continuous power of an external braking resistor */
   externalMaxPower: number | null
+  /** W / Ws, max. peak power and braking energy of an external braking resistor (Siemens); absent = not documented */
+  externalPeakPower?: number | null
+  externalMaxEnergy?: number | null
   /** V, intermediate circuit level the resistor ratings are given for (380 or 780); null: the resistors' `ratedPower` (Mitsubishi) */
   resistorVoltage: number | null
-  /** matching braking resistors (model names: CACR, Mitsubishi MR-RB), smallest first */
+  /** matching braking resistors (`BrakingResistor.id`: CACR, Mitsubishi MR-RB, Koch for S210), smallest first */
   brakingResistors: string[]
 }
 
@@ -204,7 +207,8 @@ export interface BrakingResistor {
   family: string
   maker: string
   partNumber: string
-  resistance: number
+  /** Ω; null where the maker's table does not give it (Koch) */
+  resistance: number | null
   /** W at 35% duty cycle */
   power35: number | null
   ratedPower: number | null
@@ -217,6 +221,17 @@ export interface BrakingResistor {
   coolingFan?: 'required' | 'environment' | null
   /** W, permissible regenerative power with two cooling fans and [Pr. PA02] changed (Mitsubishi MR-RB5R, 5K-4) */
   fanPower?: number | null
+  // Ratings per drive (Koch resistors for Siemens S210: one item per converter and supply)
+  /** V, supply class of the motors it is listed for (230 / 400); null = any */
+  voltage?: number | null
+  /** W, continuous power under UL where lower than `ratedPower` (CE) */
+  ulPower?: number | null
+  /** W, max. peak power */
+  peakPower?: number | null
+  /** Ws, max. braking energy */
+  pulseEnergy?: number | null
+  /** sold by its maker only, no part number of the drive maker */
+  directOnly?: boolean
 }
 
 /** One cable option: a role for a group of motors on a drive range, for a span of cable lengths */

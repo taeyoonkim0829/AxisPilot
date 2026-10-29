@@ -17,10 +17,7 @@
       "peakPower": null,
       "maxCableLength": 50,
       "internalResistor": null,
-      "externalResistance": [
-        40,
-        40
-      ],
+      "externalResistance": [40, 40],
       "externalMaxPower": 30,
       "resistorVoltage": null,
       "brakingResistors": [
@@ -49,10 +46,7 @@
         "pulseEnergy": null,
         "nominalPower": 10
       },
-      "externalResistance": [
-        40,
-        40
-      ],
+      "externalResistance": [40, 40],
       "externalMaxPower": 100,
       "resistorVoltage": null,
       "brakingResistors": [
@@ -82,10 +76,7 @@
         "pulseEnergy": null,
         "nominalPower": 10
       },
-      "externalResistance": [
-        40,
-        40
-      ],
+      "externalResistance": [40, 40],
       "externalMaxPower": 100,
       "resistorVoltage": null,
       "brakingResistors": [
@@ -115,10 +106,7 @@
         "pulseEnergy": null,
         "nominalPower": 10
       },
-      "externalResistance": [
-        40,
-        40
-      ],
+      "externalResistance": [40, 40],
       "externalMaxPower": 100,
       "resistorVoltage": null,
       "brakingResistors": [
@@ -148,10 +136,7 @@
         "pulseEnergy": null,
         "nominalPower": 20
       },
-      "externalResistance": [
-        40,
-        40
-      ],
+      "externalResistance": [40, 40],
       "externalMaxPower": 300,
       "resistorVoltage": null,
       "brakingResistors": [
@@ -182,10 +167,7 @@
         "pulseEnergy": null,
         "nominalPower": 20
       },
-      "externalResistance": [
-        40,
-        40
-      ],
+      "externalResistance": [40, 40],
       "externalMaxPower": 300,
       "resistorVoltage": null,
       "brakingResistors": [
@@ -216,10 +198,7 @@
         "pulseEnergy": null,
         "nominalPower": 100
       },
-      "externalResistance": [
-        13,
-        13
-      ],
+      "externalResistance": [13, 13],
       "externalMaxPower": 500,
       "resistorVoltage": null,
       "brakingResistors": [
@@ -249,10 +228,7 @@
         "pulseEnergy": null,
         "nominalPower": 100
       },
-      "externalResistance": [
-        9,
-        9
-      ],
+      "externalResistance": [9, 9],
       "externalMaxPower": 500,
       "resistorVoltage": null,
       "brakingResistors": [
@@ -282,10 +258,7 @@
         "pulseEnergy": null,
         "nominalPower": 130
       },
-      "externalResistance": [
-        6.7,
-        6.7
-      ],
+      "externalResistance": [6.7, 6.7],
       "externalMaxPower": 500,
       "resistorVoltage": null,
       "brakingResistors": [
@@ -315,10 +288,7 @@
         "pulseEnergy": null,
         "nominalPower": 170
       },
-      "externalResistance": [
-        6.7,
-        6.7
-      ],
+      "externalResistance": [6.7, 6.7],
       "externalMaxPower": 500,
       "resistorVoltage": null,
       "brakingResistors": [
@@ -348,10 +318,7 @@
         "pulseEnergy": null,
         "nominalPower": 500
       },
-      "externalResistance": [
-        3.2,
-        3.2
-      ],
+      "externalResistance": [3.2, 3.2],
       "externalMaxPower": 800,
       "resistorVoltage": null,
       "brakingResistors": [
@@ -380,10 +347,7 @@
         "pulseEnergy": null,
         "nominalPower": 15
       },
-      "externalResistance": [
-        82,
-        120
-      ],
+      "externalResistance": [82, 120],
       "externalMaxPower": 300,
       "resistorVoltage": null,
       "brakingResistors": [
@@ -413,10 +377,7 @@
         "pulseEnergy": null,
         "nominalPower": 15
       },
-      "externalResistance": [
-        82,
-        120
-      ],
+      "externalResistance": [82, 120],
       "externalMaxPower": 300,
       "resistorVoltage": null,
       "brakingResistors": [
@@ -446,10 +407,7 @@
         "pulseEnergy": null,
         "nominalPower": 100
       },
-      "externalResistance": [
-        47,
-        47
-      ],
+      "externalResistance": [47, 47],
       "externalMaxPower": 500,
       "resistorVoltage": null,
       "brakingResistors": [
@@ -479,10 +437,7 @@
         "pulseEnergy": null,
         "nominalPower": 100
       },
-      "externalResistance": [
-        47,
-        47
-      ],
+      "externalResistance": [47, 47],
       "externalMaxPower": 500,
       "resistorVoltage": null,
       "brakingResistors": [
@@ -512,10 +467,7 @@
         "pulseEnergy": null,
         "nominalPower": 130
       },
-      "externalResistance": [
-        26,
-        26
-      ],
+      "externalResistance": [26, 26],
       "externalMaxPower": 500,
       "resistorVoltage": null,
       "brakingResistors": [
@@ -545,10 +497,7 @@
         "pulseEnergy": null,
         "nominalPower": 170
       },
-      "externalResistance": [
-        22,
-        22
-      ],
+      "externalResistance": [22, 22],
       "externalMaxPower": 500,
       "resistorVoltage": null,
       "brakingResistors": [
@@ -578,10 +527,7 @@
         "pulseEnergy": null,
         "nominalPower": 500
       },
-      "externalResistance": [
-        10,
-        10
-      ],
+      "externalResistance": [10, 10],
       "externalMaxPower": 800,
       "resistorVoltage": null,
       "brakingResistors": [

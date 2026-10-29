@@ -379,6 +379,11 @@ export const en: Record<string, string> = {
   '전원': 'Power supply',
   '{model}은 냉각팬 2개(92 mm, 1 m³/min 이상)를 달고 [Pr. PA02]를 바꾸면 {power} W까지 쓸 수 있습니다':
     '{model} takes up to {power} W with two cooling fans (92 mm, at least 1 m³/min) and [Pr. PA02] changed',
+  '{model}의 UL 기준 연속 전력은 {power} W입니다 (위 값은 CE 기준)': 'Continuous power of {model} under UL: {power} W (the value above is CE)',
+  '{model}은 {maker}에서 직접 구매합니다 (Siemens 품번 없음)': '{model} is bought from {maker} directly (no Siemens article number)',
+  '저항 {min} Ω 이상인 외부 제동저항을 고르세요 (드라이브 한계: 연속 {power} W)':
+    'Choose an external braking resistor of at least {min} Ω (drive limit: {power} W continuous)',
+  '외부 제동저항 피크 전력': 'External braking resistor peak power',
   '{model}은 냉각팬(92 mm, 1 m³/min 이상)으로 강제 냉각해야 합니다': '{model} must be cooled by a fan (92 mm, at least 1 m³/min)',
   '{model}은 사용 환경에 따라 냉각팬(92 mm, 1 m³/min 이상) 강제 냉각이 필요할 수 있습니다':
     '{model} may need fan cooling (92 mm, at least 1 m³/min) depending on the environment',
