@@ -157,6 +157,7 @@ export const en: Record<string, string> = {
   '슬라이드 중심 간격': 'Slide centre spacing',
   '슬라이드 중심 간격 ({code})': 'Slide centre spacing ({code})',
   '0 = 최소 간격': '0 = closest spacing',
+  '최소 {min} mm (선택 축)': 'min. {min} mm (selected axis)',
   '추가 슬라이드 {codes}: 기존 슬라이드 모델로 그림 (실제 길이 {length} mm)': 'Additional slide {codes}: drawn as the main slide model (actual length {length} mm)',
   '추가 슬라이드 {codes} 포함, 슬라이드 중심 간격 {pitch} mm': 'Additional slide {codes} included, slide centre spacing {pitch} mm',
   '어플리케이션 선택': 'Application',

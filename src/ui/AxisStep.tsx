@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { AxisEvaluation } from '../calc/axisSelection'
+import { minSlidePitch, type AxisEvaluation } from '../calc/axisSelection'
 import type { AdditionalSlideSide, Settings } from '../calc/types'
 import type { AxisFamily, DriveKind } from '../data/types'
 import { CheckTable, CollapseTitle, NumberField, RadioGroup, Ratio, SortTh, StatusBadge, ToggleButton, ToggleGroup } from './common'
@@ -38,8 +38,11 @@ const beltLabel: Record<string, string> = { PU2: 'PU2', PU1: 'PU1 FDA', CR: '클
  * Order options of the toothed belt axes that offer them (ELGD-TB: ZL/ZR, PU1/PU2; EGC-TB-KF: KL/KR, chloroprene/PU2),
  * shown while such axes are in the list; other axes keep their standard version.
  */
-function AxisOptionFilters({ settings, onSettings }: Pick<Props, 'settings' | 'onSettings'>) {
+function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'settings' | 'onSettings'> & { selected: AxisEvaluation | null }) {
   const t = useT()
+  // the spacing cannot go below the slides' own lengths: show the selected axis's minimum
+  const min = selected ? minSlidePitch(selected.axis) : null
+  const hint = min != null ? t('최소 {min} mm (선택 축)', { min: fmt(min) }) : t('0 = 최소 간격')
   const shown = (['ELGD', 'EGC'] as const).filter((f) => settings.families.includes(f))
   if (!settings.drives.includes('belt') || shown.length === 0) return null
   const sides: AdditionalSlideSide[] = shown.includes('EGC') ? ['none', 'left', 'right', 'both'] : ['none', 'left', 'right']
@@ -61,7 +64,7 @@ function AxisOptionFilters({ settings, onSettings }: Pick<Props, 'settings' | 'o
             unit="mm"
             value={settings.slidePitch}
             step={1}
-            hint={t('0 = 최소 간격')}
+            hint={hint}
             onChange={(slidePitch) => onSettings({ ...settings, slidePitch })}
           />
         </div>
@@ -171,7 +174,7 @@ export function AxisStep({ results, selectedId, onSelect, settings, onSettings }
           onChange={(v) => onSettings({ ...settings, standardStroke: v })}
         />
       </div>
-      <AxisOptionFilters settings={settings} onSettings={onSettings} />
+      <AxisOptionFilters settings={settings} onSettings={onSettings} selected={selected ?? null} />
 
       {rows.length === 0 ? (
         <p className="empty">{t('조건을 만족하는 축이 없습니다. 부적합 포함을 켜서 초과 항목을 확인하세요.')}</p>

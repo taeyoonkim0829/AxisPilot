@@ -111,6 +111,13 @@ export function offersSlides(axis: Axis, settings: Settings): boolean {
   return settings.additionalSlide !== 'both' || !axis.additionalSlide || axis.additionalSlide.both
 }
 
+/** mm, half of both slide lengths: the centre spacing of the main and an additional slide with no gap between them */
+const halfSlides = (axis: Axis) => ((axis.slideLength ?? axis.additionalSlide!.length) + axis.additionalSlide!.length) / 2
+
+/** mm, the closest centre spacing of the main and an additional slide (the axis minimum distance between them); null
+ *  without the option */
+export const minSlidePitch = (axis: Axis): number | null => (axis.additionalSlide ? halfSlides(axis) + axis.additionalSlide.gap : null)
+
 export function axisOptions(axis: Axis, settings: Settings): AxisOptions | null {
   const extra = axis.additionalSlide
   const materials = axis.beltMaterials
@@ -120,7 +127,7 @@ export function axisOptions(axis: Axis, settings: Settings): AxisOptions | null 
     !extra || side === 'none' ? [] : side === 'both' ? (extra.both ? [extra.left, extra.right] : []) : [side === 'left' ? extra.left : extra.right]
   const chosen = settings.beltMaterial[axis.family]
   // centre spacing = half of both slide lengths + the distance between them
-  const half = extra ? ((axis.slideLength ?? extra.length) + extra.length) / 2 : 0
+  const half = extra ? halfSlides(axis) : 0
   const gaps = extra ? slides.map((_, i) => Math.max((i === 1 ? settings.slidePitchRight : settings.slidePitch) - half, extra.gap)) : []
   return {
     slides,
