@@ -781,6 +781,10 @@ h3 {
   box-shadow: 0 0 0 3px var(--fail-soft);
 }
 
+.field-low .field-input {
+  background: var(--fail-soft);
+}
+
 .field input {
   flex: 1;
   width: 100%;
@@ -2227,6 +2231,10 @@ body {
     inset 0 2px 5px rgb(0 0 0 / 0.5),
     inset 0 0 0 1px var(--fail),
     0 0 0 3px var(--fail-soft);
+}
+
+.app .field-low .field-input {
+  background: rgb(248 113 113 / 0.22);
 }
 
 /* rows scroll under the table head: it stays nearly opaque */

@@ -74,10 +74,12 @@ interface NumberFieldProps {
   min?: number
   step?: number
   hint?: string
+  /** accepted, but below what will be used (light red fill) */
+  low?: boolean
 }
 
 /** Number input that keeps the raw text while typing and reports only valid numbers. */
-export function NumberField({ label, unit, value, onChange, min = 0, step, hint }: NumberFieldProps) {
+export function NumberField({ label, unit, value, onChange, min = 0, step, hint, low }: NumberFieldProps) {
   const [text, setText] = useState(String(value))
   const [prev, setPrev] = useState(value)
   if (value !== prev) {
@@ -86,7 +88,7 @@ export function NumberField({ label, unit, value, onChange, min = 0, step, hint 
   }
   const invalid = text.trim() === '' || !Number.isFinite(Number(text)) || Number(text) < min
   return (
-    <label className={`field${invalid ? ' field-invalid' : ''}`}>
+    <label className={`field${invalid ? ' field-invalid' : low ? ' field-low' : ''}`}>
       <span className="field-label">{label}</span>
       <span className="field-input">
         <input

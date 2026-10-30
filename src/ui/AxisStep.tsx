@@ -40,9 +40,12 @@ const beltLabel: Record<string, string> = { PU2: 'PU2', PU1: 'PU1 FDA', CR: '클
  */
 function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'settings' | 'onSettings'> & { selected: AxisEvaluation | null }) {
   const t = useT()
-  // the spacing cannot go below the slides' own lengths: show the selected axis's minimum
+  // the spacing cannot go below the slides' own lengths: 0 (the default) shows the selected axis's minimum, a value
+  // below it is marked (the calculation takes the minimum)
   const min = selected ? minSlidePitch(selected.axis) : null
   const hint = min != null ? t('최소 {min} mm (선택 축)', { min: fmt(min) }) : t('0 = 최소 간격')
+  const display = (pitch: number) => (pitch === 0 && min != null ? min : pitch)
+  const low = (pitch: number) => min != null && pitch > 0 && pitch < min
   const shown = (['ELGD', 'EGC'] as const).filter((f) => settings.families.includes(f))
   if (!settings.drives.includes('belt') || shown.length === 0) return null
   const sides: AdditionalSlideSide[] = shown.includes('EGC') ? ['none', 'left', 'right', 'both'] : ['none', 'left', 'right']
@@ -62,9 +65,10 @@ function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'sett
           <NumberField
             label={settings.additionalSlide === 'both' ? t('슬라이드 중심 간격 ({code})', { code: 'KL' }) : t('슬라이드 중심 간격')}
             unit="mm"
-            value={settings.slidePitch}
+            value={display(settings.slidePitch)}
             step={1}
             hint={hint}
+            low={low(settings.slidePitch)}
             onChange={(slidePitch) => onSettings({ ...settings, slidePitch })}
           />
         </div>
@@ -74,8 +78,9 @@ function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'sett
           <NumberField
             label={t('슬라이드 중심 간격 ({code})', { code: 'KR' })}
             unit="mm"
-            value={settings.slidePitchRight}
+            value={display(settings.slidePitchRight)}
             step={1}
+            low={low(settings.slidePitchRight)}
             onChange={(slidePitchRight) => onSettings({ ...settings, slidePitchRight })}
           />
         </div>
