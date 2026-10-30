@@ -29,6 +29,9 @@ export interface Requirements {
   /** Gantry Z axis with a moving profile: the slide is clamped, the profile moves with its drive and the payload.
    *  The COG is then measured from the centre of the profile's free end (the end away from the drive). */
   movingProfile?: { /** kg, motor, gearbox and kit on the profile */ driveMass: number }
+  /** Gantry: the load sits on the main slide (the kit carrying the next axis is bolted to it); additional slides do
+   *  not share it */
+  mainSlide?: boolean
 }
 
 /**

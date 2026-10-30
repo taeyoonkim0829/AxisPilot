@@ -208,6 +208,13 @@ describe('axis order options', () => {
     expect(at(460, 200).order.stroke).toBe(700)
     // additional slides only above 200 mm stroke
     expect(at(20).order.stroke).toBe(250)
+
+    // under a gantry kit (main slide only) the additional slide shares none of the load
+    const settings = { ...defaultSettings, additionalSlide: 'right' as const }
+    const plate = evaluateAxis(elgt, req, settings)!
+    const kit = evaluateAxis(elgt, { ...req, mainSlide: true }, settings)!
+    expect(kit.guideFv).toBeGreaterThan(plate.guideFv)
+    expect(kit.order.model).toBe(plate.order.model)
   })
 })
 

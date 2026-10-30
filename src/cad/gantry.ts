@@ -166,13 +166,15 @@ export async function buildGantry(
   const placed = new Map<GantryAxis, Transform>()
   const kits: (AssemblyPart & { role: PartRole })[] = []
   const unkitted: string[] = []
-  /** slide surface centres (start position) of a placed axis, both members of a twin arrangement */
+  /** slide surface centres (start position) of a placed axis, both members of a twin arrangement; with additional
+   *  slides the main slide's, which carries the kit (the calc's mounting point) */
   const slidesOf = (a: GantryAxis): Vec3[] => {
     const c = built.get(a)!
     const t = placed.get(a)!
     const twin = byAxis.get(a)!.twin
     const lateral = cross(c.slide.axis, c.slide.up)
-    return [apply(t, c.slide.origin), ...(twin ? [apply(t, add(c.slide.origin, scale(lateral, twin.spacing)))] : [])]
+    const centres = [c.slide.origin, ...(twin ? [add(c.slide.origin, scale(lateral, twin.spacing))] : [])]
+    return centres.map((p, k) => add(apply(t, p), rotate(t, c.mainOffsets[k] ?? c.mainOffsets[0])))
   }
   /** where the kits sit on those slides: the slide hole pattern centres (EGC-TB/BS-KF: beside the slide centre) */
   const kitSeatsOf = (a: GantryAxis): Vec3[] => {
@@ -188,12 +190,10 @@ export async function buildGantry(
     const w = worldOf(g, bottom)
     let t = toWorld(c.slide, [0, 0, 0], w.n, scale(w.t, -1))
     placed.set(bottom, t)
-    // a twin arrangement centred on the origin
+    // the (main) slide, or a twin arrangement's centre, at the origin
     const slides = slidesOf(bottom)
-    if (slides.length > 1) {
-      t = { ...t, t: sub(t.t, scale(sub(slides[1], slides[0]), 0.5)) }
-      placed.set(bottom, t)
-    }
+    t = { ...t, t: sub(t.t, scale(slides.reduce((sum, p) => add(sum, p), [0, 0, 0] as Vec3), 1 / slides.length)) }
+    placed.set(bottom, t)
   }
   for (let i = chain.length - 2; i >= 0; i--) {
     const a = chain[i]

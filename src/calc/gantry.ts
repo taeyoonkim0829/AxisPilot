@@ -250,5 +250,7 @@ export function gantryRequirements(
     parallel: a === gantryBase(g.config) ? baseParallel(g) : undefined,
     cross: crossAccel,
     movingProfile: a === 'z' && g.zMode === 'profile' ? { driveMass: g.motorMass.z } : undefined,
+    // the next axis's kit is bolted to the main slide
+    ...(carried ? { mainSlide: true } : {}),
   }
 }

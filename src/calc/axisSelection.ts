@@ -675,10 +675,10 @@ export function evaluateAxis(axis: Axis, req: Requirements, settings: Settings, 
   const loadReq = req.movingProfile ? { ...req, cog: movingProfileCog(req, axis, profile, driveMass) } : req
   const members = memberLoads(loadReq, systemMass, fwd.peakAcceleration, layout)
   // Additional slides: the payload plate spans all slides of the axis, centred on the payload's x reference.
-  // (ZL / KL on one side of the slide, ZR / KR on the other)
+  // (ZL / KL on one side of the slide, ZR / KR on the other). A gantry kit sits on the main slide alone.
   const offsets = [0, ...(options?.slides ?? []).map((code, i) => (code === extra?.left ? -1 : 1) * options!.pitches[i])]
   const mean = offsets.reduce((a, b) => a + b, 0) / offsets.length
-  const slidePositions = slideCount ? offsets.map((x) => x - mean) : [0]
+  const slidePositions = slideCount && !req.mainSlide ? offsets.map((x) => x - mean) : [0]
   const axisLoads = members.filter((_, i) => layout.isAxis[i]).map((l) => slideGroupLoads(l, slidePositions))
   const loads = axisLoads.reduce((a, b) => (guideComparisonValue(b, axis).fv > guideComparisonValue(a, axis).fv ? b : a))
   let fv = 0
