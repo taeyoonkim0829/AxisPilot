@@ -106,9 +106,15 @@ export interface AxisOptions {
   belt: BeltMaterial | null
 }
 
-/** Whether an axis can be ordered with the chosen additional slide (axes without the option keep their default) */
+/**
+ * Whether an axis can be ordered with the chosen additional slide: with one chosen, belt axes without it (ELGT-TB,
+ * EGC-HD-TB …) or, for both, without both leave the list. Spindle axes are not affected, nor anything while the
+ * choice is hidden (no ELGD / EGC listed).
+ */
 export function offersSlides(axis: Axis, settings: Settings): boolean {
-  return settings.additionalSlide !== 'both' || !axis.additionalSlide || axis.additionalSlide.both
+  const side = settings.additionalSlide
+  if (side === 'none' || axis.drive !== 'belt' || !settings.families.some((f) => f === 'ELGD' || f === 'EGC')) return true
+  return axis.additionalSlide != null && (side !== 'both' || axis.additionalSlide.both)
 }
 
 /** mm, half of both slide lengths: the centre spacing of the main and an additional slide with no gap between them */

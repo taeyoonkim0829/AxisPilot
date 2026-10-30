@@ -183,11 +183,13 @@ describe('axis order options', () => {
     expect(e.inertia - evaluateAxis(egc, req, defaultSettings)!.inertia).toBeCloseTo(2 * 1.2673 + egc.inertiaJHPerMeter * 0.24)
     expect(e.checks.find((c) => c.label === '구동 토크')!.noteArgs).toEqual({ belt: 'PU2' })
     expect(evaluateAxis(egc, req, defaultSettings)!.order.model).toBe('EGC-80-1000-TB-KF-0H-GK')
-    // both slides exist on EGC only: ELGD-TB leaves the list, axes without the option stay
+    // both slides exist on EGC only: ELGD-TB leaves the list, so do belt axes without the option; spindle axes stay
     const listed = selectAxes(axes, req, settings).map((x) => x.axis.id)
     expect(listed).toContain(egc.id)
     expect(listed).not.toContain(elgd.id)
+    expect(listed).not.toContain('EGC-HD-125-…-TB-GK')
     expect(listed).toContain('ELGT-BS-120-…10P')
+    expect(selectAxes(axes, req, { ...settings, additionalSlide: 'left' }).map((x) => x.axis.id)).toContain(elgd.id)
   })
 })
 
