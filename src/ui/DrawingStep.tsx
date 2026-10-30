@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { AxisEvaluation } from '../calc/axisSelection'
 import type { DriveEvaluation } from '../calc/motorSelection'
 import type { Requirements } from '../calc/types'
@@ -35,12 +36,14 @@ interface Props {
   onSides: (sides: ComboOptions) => void
   /** motor sync: offer the facing arrangement (single axis screen) */
   facingChoice?: boolean
+  /** gantry: the tabs choosing which axis's drawing, or the whole gantry's, step 5 shows */
+  tabs?: ReactNode
 }
 
 const roleLabel: Record<PartRole, string> = { axis: '축', kit: '연결키트', gearbox: '감속기', motor: '모터', shaft: '연결축', adapter: '조합 키트' }
 
 /** Step 5: the manufacturers' CAD models of the selection, assembled — 3D preview, STEP and DXF export. */
-export function DrawingStep({ axis, drive, kit, req: input, sides, onSides, facingChoice = true }: Props) {
+export function DrawingStep({ axis, drive, kit, req: input, sides, onSides, facingChoice = true, tabs }: Props) {
   const t = useT()
   const { selection, found, twin, req } = comboInputs(axis, drive, kit, input)
   const parallel = kit?.type === 'parallel'
@@ -212,6 +215,7 @@ export function DrawingStep({ axis, drive, kit, req: input, sides, onSides, faci
         <h2>
           <span className="step-no">5</span> {t('조합 도면')}
         </h2>
+        {tabs}
         {selection && <span className="muted">{t('설치 방향: {mounting}', { mounting: t(mountingLabel[req.mounting]) })}</span>}
       </header>
       {!selection ? (

@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { gantryAxes, type GantryInputs } from '../calc/gantry'
 import type { AxisAdapter } from '../data/types'
 import type { GantryAxis } from '../calc/gantry'
@@ -24,10 +25,13 @@ export function GantryDrawing({
   gantry,
   results,
   assemblies,
+  tabs,
 }: {
   gantry: GantryInputs
   results: GantryAxisResult[]
   assemblies: Record<GantryAxis, ComboOptions>
+  /** step 5's tabs (each axis's drawing, the whole gantry's) */
+  tabs?: ReactNode
 }) {
   const t = useT()
   const order = gantryAxes(gantry.config)
@@ -112,9 +116,12 @@ export function GantryDrawing({
   ]
 
   return (
-    <section className="panel step" id="gantry-drawing">
+    <section className="panel step" id="step-drawing">
       <header className="step-head">
-        <h2>{t('조합축 도면')}</h2>
+        <h2>
+          <span className="step-no">5</span> {t('조합 도면')}
+        </h2>
+        {tabs}
         <span className="muted">{t('{config} 조합 · 각 축의 5단계 조합 도면과 조합 키트로 조립합니다.', { config: gantry.config.toUpperCase() })}</span>
       </header>
       {!complete ? (

@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { ComboOptions } from '../cad/combo'
 import { verticalForward, type Requirements, type Settings } from '../calc/types'
 import { useT } from '../i18n'
@@ -26,10 +27,12 @@ interface Props {
   onAssembly: (assembly: ComboOptions) => void
   /** gantry screen: the twin X axes stay side by side (no facing arrangement choice) */
   gantry?: boolean
+  /** gantry screen: step 5 with its axis / gantry tabs, in place of this axis's drawing step */
+  drawing?: ReactNode
 }
 
 /** Motion profile and steps 1–5 of one axis: axis, motor, gearbox, kit, combination drawing. */
-export function AxisSteps({ sel, req, calcSettings, settings, onSettings, picks, onPicks, profileView, onProfileView, assembly, onAssembly, gantry = false }: Props) {
+export function AxisSteps({ sel, req, calcSettings, settings, onSettings, picks, onPicks, profileView, onProfileView, assembly, onAssembly, gantry = false, drawing }: Props) {
   const t = useT()
   const { selectedAxis, selectedDrive } = sel
   return (
@@ -78,15 +81,17 @@ export function AxisSteps({ sel, req, calcSettings, settings, onSettings, picks,
         selectedId={sel.selectedKitEval?.kit.id ?? null}
         onSelect={(id) => onPicks({ ...picks, kitId: id })}
       />
-      <DrawingStep
-        axis={selectedAxis}
-        drive={selectedDrive}
-        kit={sel.selectedKitEval?.kit ?? null}
-        req={req}
-        sides={assembly}
-        onSides={onAssembly}
-        facingChoice={!gantry}
-      />
+      {drawing ?? (
+        <DrawingStep
+          axis={selectedAxis}
+          drive={selectedDrive}
+          kit={sel.selectedKitEval?.kit ?? null}
+          req={req}
+          sides={assembly}
+          onSides={onAssembly}
+          facingChoice={!gantry}
+        />
+      )}
     </>
   )
 }

@@ -8,6 +8,8 @@ import { AxisSteps } from './AxisSteps'
 import { useSlideThumb } from './useSlideThumb'
 import { fmt, mountingLabel, statusLabel } from './format'
 import { Footer } from './Footer'
+import { DrawingStep } from './DrawingStep'
+import { RadioGroup } from './common'
 import { GantryDrawing } from './GantryDrawing'
 import { GantryInputPanel } from './GantryInputPanel'
 import type { ProfileView } from './ProfileChart'
@@ -45,6 +47,8 @@ export function GantryWorkspace({
 }: GantryState & { shared?: GantryShare | null }) {
   const t = useT()
   const [tab, setTab] = useState<GantryAxis>(shared?.tab ?? 'z')
+  // step 5's tab: an axis's drawing or the whole gantry's; null = the open axis's
+  const [drawingTab, setDrawingTab] = useState<GantryAxis | 'gantry' | null>(null)
   const [picks, setPicks] = useState<Record<GantryAxis, Picks>>(shared?.picks ?? perAxis(noPicks))
   const [views, setViews] = useState<Record<GantryAxis, ProfileView>>(shared?.views ?? perAxis<ProfileView>('cycle'))
   const [assemblies, setAssemblies] = useState<Record<GantryAxis, ComboOptions>>(shared?.assemblies ?? perAxis(defaultComboOptions))
@@ -63,11 +67,53 @@ export function GantryWorkspace({
     const i = results.findIndex((r) => r.axis === a)
     return i < 0 ? [] : [{ name: t('{axis}축', { axis: axisName(a) }), order: i + 1, result: results[i] }]
   })
-  const unselected = reportAxes.flatMap(({ name, result: { sel: s } }) =>
-    [!s?.selectedAxis && t('직교 축'), !s?.selectedDrive && t('모터'), !s?.selectedKitEval && t('연결키트')]
+  // every axis, also one not computed yet (its carrier not selected)
+  const unselected = order.flatMap((a) => {
+    const s = results.find((r) => r.axis === a)?.sel
+    const name = t('{axis}축', { axis: axisName(a) })
+    return [!s?.selectedAxis && t('직교 축'), !s?.selectedDrive && t('모터'), !s?.selectedKitEval && t('연결키트')]
       .filter((m): m is string => !!m)
-      .map((m) => `${name} ${m}`),
+      .map((m) => `${name} ${m}`)
+  })
+  // Step 5: each axis's drawing, or the whole gantry once every axis has its axis, motor and kit
+  const shownDrawing = drawingTab === 'gantry' && unselected.length > 0 ? null : drawingTab
+  const drawingAxis = shownDrawing === 'gantry' ? null : (shownDrawing ?? active)
+  const tabs = (
+    <RadioGroup
+      options={[...order, 'gantry'] as (GantryAxis | 'gantry')[]}
+      value={drawingAxis ?? 'gantry'}
+      label={(v) => (v === 'gantry' ? t('조합축 도면') : t('{axis}축 도면', { axis: axisName(v) }))}
+      disabled={(v) => (v === 'gantry' && unselected.length > 0 ? t('모든 축의 축, 모터, 연결키트를 선택하면 조합축 도면을 만듭니다.') : null)}
+      onChange={setDrawingTab}
+      ariaLabel={t('조합 도면')}
+    />
   )
+  const shownResult = drawingAxis ? results.find((r) => r.axis === drawingAxis) : null
+  const drawingStep =
+    drawingAxis == null ? (
+      <GantryDrawing gantry={deferredGantry} results={results} assemblies={assemblies} tabs={tabs} />
+    ) : shownResult?.req ? (
+      <DrawingStep
+        axis={shownResult.sel?.selectedAxis ?? null}
+        drive={shownResult.sel?.selectedDrive ?? null}
+        kit={shownResult.sel?.selectedKitEval?.kit ?? null}
+        req={shownResult.req}
+        sides={assemblies[drawingAxis]}
+        onSides={(o) => setAssemblies({ ...assemblies, [drawingAxis]: o })}
+        facingChoice={false}
+        tabs={tabs}
+      />
+    ) : (
+      <section className="panel step" id="step-drawing">
+        <header className="step-head">
+          <h2>
+            <span className="step-no">5</span> {t('조합 도면')}
+          </h2>
+          {tabs}
+        </header>
+        <p className="empty">{t('축, 모터, 연결키트를 선택하면 제조사 도면으로 조합 모델을 만듭니다.')}</p>
+      </section>
+    )
   const base = reportAxes[0]?.result.sel?.selectedAxis
   const { exporting, start: startExport, reportRef } = useReportExport(
     lang,
@@ -86,7 +132,17 @@ export function GantryWorkspace({
           exporting={exporting}
           lang={lang}
           onLang={setLang}
-          axes={<RailAxes results={results} order={order} active={active} onTab={setTab} />}
+          axes={
+            <RailAxes
+              results={results}
+              order={order}
+              active={active}
+              onTab={(a) => {
+                setTab(a)
+                setDrawingTab(null)
+              }}
+            />
+          }
           missing={unselected}
         />
         <main className="layout">
@@ -115,6 +171,7 @@ export function GantryWorkspace({
                 assembly={assemblies[active]}
                 onAssembly={(o) => setAssemblies({ ...assemblies, [active]: o })}
                 gantry
+                drawing={drawingStep}
               />
             ) : (
               <section className="panel step" id="step-axis">
@@ -125,8 +182,6 @@ export function GantryWorkspace({
                 </p>
               </section>
             )}
-            {/* below the open axis's steps (its step 5 drawing): the whole gantry assembled */}
-            <GantryDrawing gantry={deferredGantry} results={results} assemblies={assemblies} />
             <Footer />
           </div>
         </main>

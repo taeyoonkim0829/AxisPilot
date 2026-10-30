@@ -444,6 +444,7 @@ export const en: Record<string, string> = {
   '모터 위치 (첫 번째 축, 정면도 기준)': 'Motor position (first axis, front view)',
   '조합 키트': 'Gantry kit',
   '조합축 도면': 'Gantry drawing',
+  '{axis}축 도면': '{axis} axis drawing',
   '키트 없음': 'No kit',
   '조합 키트 미정': 'Gantry kits not yet known',
   '브래킷 벽은 {axis}축이 놓인 쪽으로 뻗습니다(ML/MR, 조립 설명서).': 'The bracket wall reaches towards the side the {axis} axis lies on (ML/MR, assembly instructions).',

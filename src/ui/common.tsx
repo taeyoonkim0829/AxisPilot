@@ -228,6 +228,7 @@ export function RadioGroup<T extends string | number>({
   label = (v) => v,
   className = 'small',
   ariaLabel,
+  disabled,
 }: {
   options: readonly T[]
   value: T
@@ -235,6 +236,8 @@ export function RadioGroup<T extends string | number>({
   label?: (value: T) => ReactNode
   className?: string
   ariaLabel?: string
+  /** options that cannot be picked yet, with the reason as their tooltip */
+  disabled?: (value: T) => string | null
 }) {
   const { ref, thumb } = useSlideThumb<HTMLDivElement>(options.indexOf(value), options.length)
   return (
@@ -246,6 +249,8 @@ export function RadioGroup<T extends string | number>({
           role="radio"
           aria-checked={o === value}
           className={o === value ? 'active' : ''}
+          disabled={!!disabled?.(o)}
+          title={disabled?.(o) ?? undefined}
           onClick={() => o !== value && onChange(o)}
         >
           {label(o)}
