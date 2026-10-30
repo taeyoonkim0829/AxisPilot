@@ -125,8 +125,9 @@ export const mirroredDrive = (meta: AxisMeta | null, position: DrivePosition): D
 export const twinPositionWords = (meta: AxisMeta, mounting: Mounting, position: DrivePosition, facing = false) =>
   drivePositionWords(meta, mounting, meta.slide.front ? { ...position, otherSide: !position.otherSide } : position, facing ? -1 : 0)
 
-/** The slide when it is a part of its own (EGC-TB-KF: …-GK-GPTB1--------(0); ELGD-TB: …---(high_s), WD …---(highs)) */
-const SLIDE_PART = /TB1-{4,}|---\(high_?s\)/
+/** The slide when it is a part of its own (EGC-TB-KF: …-GK-GPTB1--------(0); ELGD-TB: …---(high_s), WD …---(highs);
+ *  ELGT-BS: …---(high_0_s)) */
+const SLIDE_PART = /TB1-{4,}|---\(high_?(0_)?s\)/
 
 /**
  * Adds instances of the slide part `shifts` (file mm) from where it sits: copies of its assembly occurrence (usage,

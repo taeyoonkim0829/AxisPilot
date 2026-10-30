@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { minSlidePitch, type AxisEvaluation } from '../calc/axisSelection'
+import { minSlidePitch, slideAxes, type AxisEvaluation } from '../calc/axisSelection'
+import { axes } from '../data'
 import type { AdditionalSlideSide, Settings } from '../calc/types'
 import type { AxisFamily, DriveKind } from '../data/types'
 import { CheckTable, CollapseTitle, NumberField, RadioGroup, Ratio, SortTh, StatusBadge, ToggleButton, ToggleGroup } from './common'
@@ -35,8 +36,8 @@ const beltOptions = { ELGD: ['PU2', 'PU1'], EGC: ['CR', 'PU2'] } as const
 const beltLabel: Record<string, string> = { PU2: 'PU2', PU1: 'PU1 FDA', CR: '클로로프렌' }
 
 /**
- * Order options of the toothed belt axes that offer them (ELGD-TB: ZL/ZR, PU1/PU2; EGC-TB-KF: KL/KR, chloroprene/PU2),
- * shown while such axes are in the list; other axes keep their standard version.
+ * Order options of the axes that offer them (additional slide: ELGT-BS, ELGD-TB ZL/ZR, EGC-TB-KF KL/KR; belt: ELGD-TB
+ * PU1/PU2, EGC-TB-KF chloroprene/PU2), shown while such axes are in the list.
  */
 function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'settings' | 'onSettings'> & { selected: AxisEvaluation | null }) {
   const t = useT()
@@ -46,21 +47,24 @@ function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'sett
   const hint = min != null ? t('최소 {min} mm (선택 축)', { min: fmt(min) }) : t('0 = 최소 간격')
   const display = (pitch: number) => (pitch === 0 && min != null ? min : pitch)
   const low = (pitch: number) => min != null && pitch > 0 && pitch < min
-  const shown = (['ELGD', 'EGC'] as const).filter((f) => settings.families.includes(f))
-  if (!settings.drives.includes('belt') || shown.length === 0) return null
-  const sides: AdditionalSlideSide[] = shown.includes('EGC') ? ['none', 'left', 'right', 'both'] : ['none', 'left', 'right']
+  const choices = slideAxes(axes, settings)
+  const shown = settings.drives.includes('belt') ? (['ELGD', 'EGC'] as const).filter((f) => settings.families.includes(f)) : []
+  if (choices.length === 0 && shown.length === 0) return null
+  const sides: AdditionalSlideSide[] = choices.some((a) => a.additionalSlide!.both) ? ['none', 'left', 'right', 'both'] : ['none', 'left', 'right']
   return (
     <div className="step-filters axis-options">
-      <div className="filter-group">
-        <span className="field-label">{t('추가 슬라이드')}</span>
-        <RadioGroup
-          options={sides}
-          value={sides.includes(settings.additionalSlide) ? settings.additionalSlide : 'none'}
-          label={(v) => t(slideLabel[v])}
-          onChange={(v) => onSettings({ ...settings, additionalSlide: v })}
-        />
-      </div>
-      {settings.additionalSlide !== 'none' && sides.includes(settings.additionalSlide) && (
+      {choices.length > 0 && (
+        <div className="filter-group">
+          <span className="field-label">{t('추가 슬라이드')}</span>
+          <RadioGroup
+            options={sides}
+            value={sides.includes(settings.additionalSlide) ? settings.additionalSlide : 'none'}
+            label={(v) => t(slideLabel[v])}
+            onChange={(v) => onSettings({ ...settings, additionalSlide: v })}
+          />
+        </div>
+      )}
+      {choices.length > 0 && settings.additionalSlide !== 'none' && sides.includes(settings.additionalSlide) && (
         <div className="filter-group slide-gap">
           <NumberField
             label={settings.additionalSlide === 'both' ? t('슬라이드 중심 간격 ({code})', { code: 'KL' }) : t('슬라이드 중심 간격')}
@@ -73,7 +77,7 @@ function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'sett
           />
         </div>
       )}
-      {settings.additionalSlide === 'both' && sides.includes('both') && (
+      {choices.length > 0 && settings.additionalSlide === 'both' && sides.includes('both') && (
         <div className="filter-group slide-gap">
           <NumberField
             label={t('슬라이드 중심 간격 ({code})', { code: 'KR' })}

@@ -391,7 +391,7 @@ describe('combination', () => {
       expect(found.missing).toEqual([])
       const box = await meshBox((await buildCombo(sel, found, { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)).step)
       // floor: the slides travel along x
-      return { box, slides: box.parts.filter((p) => /TB1-{4,}|high_?s\)/.test(p.name)).map((p) => (p.lo[0] + p.hi[0]) / 2).sort((a, b) => a - b) }
+      return { box, slides: box.parts.filter((p) => /TB1-{4,}|high_?(0_)?s\)/.test(p.name)).map((p) => (p.lo[0] + p.hi[0]) / 2).sort((a, b) => a - b) }
     }
     const egc = 'data/axes/Festo/Drawings/EGC/3012492_EGC-70-300-TB-KF-0H-GK.stp'
     const plain = await build('EGC-70-...-TB-KF-GK', egc, 'EAMM-A-L38-60P-G2', 'L38', 300, [])
@@ -416,6 +416,10 @@ describe('combination', () => {
       expect(one.slides[1] - one.slides[0]).toBeCloseTo(150, 0)
       expect(one.slides[0] + one.slides[1]).toBeCloseTo(0, 0)
     }
+    // ELGT-BS (slide …---(high_0_s)): 150 mm slides 5 mm apart
+    const elgt = await build('ELGT-BS-90-…20P', files[0], 'EAMM-A-T46-60P', 'T46-90', 500, ['right'], [155])
+    expect(elgt.slides).toHaveLength(2)
+    expect(elgt.slides[1] - elgt.slides[0]).toBeCloseTo(155, 0)
   }, 60000)
 
   it('puts the motor of a belt axis on either shaft end and either end of the axis', async () => {

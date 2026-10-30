@@ -106,14 +106,18 @@ export interface AxisOptions {
   belt: BeltMaterial | null
 }
 
+/** Axes of the chosen families and drive that offer an additional slide: the choice is shown (and applies) when any do */
+export const slideAxes = (all: Axis[], settings: Settings) =>
+  all.filter((a) => a.additionalSlide && settings.families.includes(a.family) && settings.drives.includes(a.drive))
+
 /**
- * Whether an axis can be ordered with the chosen additional slide: with one chosen, belt axes without it (ELGT-TB,
- * EGC-HD-TB …) or, for both, without both leave the list. Spindle axes are not affected, nor anything while the
- * choice is hidden (no ELGD / EGC listed).
+ * Whether an axis can be ordered with the chosen additional slide: with one chosen, axes without it (ELGT-TB,
+ * EGC-HD …) or, for both, without both leave the list. `choices` = `slideAxes`: while none of them offers the chosen
+ * side (the choice hidden, or both on ELGT / ELGD only) it shows 없음 and nothing changes.
  */
-export function offersSlides(axis: Axis, settings: Settings): boolean {
+export function offersSlides(axis: Axis, settings: Settings, choices: Axis[]): boolean {
   const side = settings.additionalSlide
-  if (side === 'none' || axis.drive !== 'belt' || !settings.families.some((f) => f === 'ELGD' || f === 'EGC')) return true
+  if (side === 'none' || !choices.some((a) => side !== 'both' || a.additionalSlide!.both)) return true
   return axis.additionalSlide != null && (side !== 'both' || axis.additionalSlide.both)
 }
 
@@ -198,7 +202,8 @@ export function axisOrder(axis: Axis, stroke: number, options: AxisOptions | nul
   const strokes = Object.keys(parts)
     .map(Number)
     .sort((a, b) => a - b)
-  const configured = axis.moduleNumber ? moduleStroke(axis.moduleStrokes, stroke + (options?.extension ?? 0)) : null
+  const floor = options?.slides.length ? (axis.additionalSlide?.minStroke ?? 0) : 0
+  const configured = axis.moduleNumber ? moduleStroke(axis.moduleStrokes, Math.max(stroke + (options?.extension ?? 0), floor)) : null
   const next = strokes.find((s) => s >= stroke)
   const standard = configured == null || (standardOnly && next != null) ? next : strokes.find((s) => s === configured)
   const ordered = standard ?? configured ?? Math.ceil(stroke)
@@ -843,8 +848,9 @@ export function evaluateAxis(axis: Axis, req: Requirements, settings: Settings, 
 const statusOrder: Record<Status, number> = { ok: 0, warn: 1, fail: 2 }
 
 export function selectAxes(all: Axis[], req: Requirements, settings: Settings, shafts: ConnectingShaft[] = []): AxisEvaluation[] {
+  const choices = slideAxes(all, settings)
   return all
-    .filter((a) => settings.families.includes(a.family) && settings.drives.includes(a.drive) && offersSlides(a, settings))
+    .filter((a) => settings.families.includes(a.family) && settings.drives.includes(a.drive) && offersSlides(a, settings, choices))
     .map((a) => evaluateAxis(a, req, settings, shafts))
     .filter((e): e is AxisEvaluation => e !== null)
     .sort((a, b) => statusOrder[a.status] - statusOrder[b.status] || a.axisMass - b.axisMass)

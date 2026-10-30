@@ -82,7 +82,7 @@ export interface Axis {
 }
 
 export interface AdditionalSlide {
-  /** type code of a slide on the left / right (ELGD ZL/ZR, EGC KL/KR) */
+  /** type code of a slide on the left / right (ELGT-BS, ELGD ZL/ZR, EGC KL/KR) */
   left: string
   right: string
   /** both sides at once (EGC KL + KR) */
@@ -95,6 +95,8 @@ export interface AdditionalSlide {
   mass: number
   /** kg·cm² at the drive shaft per additional slide (EGC JW); null = JL × mass */
   inertia: number | null
+  /** mm, smallest ordered stroke with an additional slide (ELGT-BS: > 200 mm, so 250) */
+  minStroke?: number
 }
 
 export interface BeltMaterial {

@@ -183,13 +183,31 @@ describe('axis order options', () => {
     expect(e.inertia - evaluateAxis(egc, req, defaultSettings)!.inertia).toBeCloseTo(2 * 1.2673 + egc.inertiaJHPerMeter * 0.24)
     expect(e.checks.find((c) => c.label === '구동 토크')!.noteArgs).toEqual({ belt: 'PU2' })
     expect(evaluateAxis(egc, req, defaultSettings)!.order.model).toBe('EGC-80-1000-TB-KF-0H-GK')
-    // both slides exist on EGC only: ELGD-TB leaves the list, so do belt axes without the option; spindle axes stay
+    // both slides exist on EGC only: ELGD-TB and ELGT-BS leave the list, so do axes without the option
     const listed = selectAxes(axes, req, settings).map((x) => x.axis.id)
     expect(listed).toContain(egc.id)
     expect(listed).not.toContain(elgd.id)
     expect(listed).not.toContain('EGC-HD-125-…-TB-GK')
-    expect(listed).toContain('ELGT-BS-120-…10P')
-    expect(selectAxes(axes, req, { ...settings, additionalSlide: 'left' }).map((x) => x.axis.id)).toContain(elgd.id)
+    expect(listed).not.toContain('ELGT-BS-120-…10P')
+    const left = selectAxes(axes, req, { ...settings, additionalSlide: 'left' }).map((x) => x.axis.id)
+    expect(left).toEqual(expect.arrayContaining([elgd.id, 'ELGT-BS-120-…10P']))
+    expect(left).not.toContain('ELGT-TB-120')
+    // both, with no axis offering it listed (ELGT only): shown as 없음, nothing leaves
+    const elgtOnly = { ...settings, families: ['ELGT' as const] }
+    expect(selectAxes(axes, req, elgtOnly).length).toBe(selectAxes(axes, req, { ...elgtOnly, additionalSlide: 'none' }).length)
+  })
+
+  it('orders ELGT-BS with an additional slide (data sheet example ELGT-BS-120-600-10P-ZR)', () => {
+    const elgt = axes.find((a) => a.id === 'ELGT-BS-120-…10P')!
+    const at = (stroke: number, slidePitch = 0) =>
+      evaluateAxis(elgt, { ...req, stroke }, { ...defaultSettings, additionalSlide: 'right', slidePitch })!
+    // working stroke 460 + 135 mm slide + 5 mm between: 600, by module number
+    expect(at(460).order).toMatchObject({ model: 'ELGT-BS-120-600-10P-ZR', partNumber: elgt.moduleNumber, stroke: 600 })
+    expect(at(460).options!.pitches).toEqual([expect.closeTo(0.14)])
+    // a longer spacing: the next stroke of the 50 mm list
+    expect(at(460, 200).order.stroke).toBe(700)
+    // additional slides only above 200 mm stroke
+    expect(at(20).order.stroke).toBe(250)
   })
 })
 
