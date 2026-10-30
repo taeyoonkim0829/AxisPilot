@@ -97,8 +97,8 @@ export interface AxisOptions {
   slides: string[]
   /** mm the working stroke loses to them (slide length + gap each): the ordered stroke is that much longer */
   extension: number
-  /** mm, per additional slide (as `slides`): its distance from the slide, the entered one (`Settings.slideGap`, KR of
-   *  both: `slideGapRight`), at least the axis minimum */
+  /** mm, per additional slide (as `slides`): its distance from the slide, from the entered centre spacing
+   *  (`Settings.slidePitch`, KR of both: `slidePitchRight`), at least the axis minimum */
   gaps: number[]
   /** m, per additional slide: centre distance from the slide */
   pitches: number[]
@@ -119,12 +119,14 @@ export function axisOptions(axis: Axis, settings: Settings): AxisOptions | null 
   const slides =
     !extra || side === 'none' ? [] : side === 'both' ? (extra.both ? [extra.left, extra.right] : []) : [side === 'left' ? extra.left : extra.right]
   const chosen = settings.beltMaterial[axis.family]
-  const gaps = extra ? slides.map((_, i) => Math.max(i === 1 ? settings.slideGapRight : settings.slideGap, extra.gap)) : []
+  // centre spacing = half of both slide lengths + the distance between them
+  const half = extra ? ((axis.slideLength ?? extra.length) + extra.length) / 2 : 0
+  const gaps = extra ? slides.map((_, i) => Math.max((i === 1 ? settings.slidePitchRight : settings.slidePitch) - half, extra.gap)) : []
   return {
     slides,
     extension: extra ? gaps.reduce((sum, gap) => sum + extra.length + gap, 0) : 0,
     gaps,
-    pitches: extra ? gaps.map((gap) => ((axis.slideLength ?? extra.length) + extra.length) / 2000 + gap / 1000) : [],
+    pitches: gaps.map((gap) => (half + gap) / 1000),
     belt: materials?.length ? (materials.find((m) => m.code === chosen) ?? materials[0]) : null,
   }
 }
@@ -721,7 +723,7 @@ export function evaluateAxis(axis: Axis, req: Requirements, settings: Settings, 
             value: slideCount,
             unit: '',
             note:
-              options!.slides.some((_, i) => (i === 1 ? settings.slideGapRight : settings.slideGap) < extra.gap)
+              options!.pitches.some((p, i) => (i === 1 ? settings.slidePitchRight : settings.slidePitch) < Math.round(p * 1000))
                 ? '{codes}, 1개 {mass} kg, 슬라이드 사이 거리 {gap} mm (최소 거리), 중심 간격 {pitch} mm'
                 : '{codes}, 1개 {mass} kg, 슬라이드 사이 거리 {gap} mm, 중심 간격 {pitch} mm',
             noteArgs: {

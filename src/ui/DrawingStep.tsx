@@ -154,7 +154,7 @@ export function DrawingStep({ axis, drive, kit, req: input, sides, onSides, faci
                         codes: axis!.options.slides.join(' + '),
                         length: axis!.axis.additionalSlide.length,
                       })
-                    : t('추가 슬라이드 {codes} 포함, 슬라이드 사이 거리 {gap} mm', { codes: axis!.options.slides.join(' + '), gap: axis!.options.gaps.join(' / ') })
+                    : t('추가 슬라이드 {codes} 포함, 슬라이드 중심 간격 {pitch} mm', { codes: axis!.options.slides.join(' + '), pitch: axis!.options.pitches.map((p) => Math.round(p * 1000)).join(' / ') })
                   : null,
               ]
                 .filter(Boolean)

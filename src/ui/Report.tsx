@@ -283,7 +283,7 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
             ...(axis.options && a.additionalSlide
               ? ([
                   ['추가 슬라이드', axis.options.slides.length ? axis.options.slides.join(' + ') : t('없음')],
-                  ...(axis.options.slides.length ? [['슬라이드 사이 거리', `${axis.options.gaps.join(' / ')} mm`]] : []),
+                  ...(axis.options.slides.length ? [['슬라이드 중심 간격', `${axis.options.pitches.map((p) => Math.round(p * 1000)).join(' / ')} mm`]] : []),
                 ] as Row[])
               : []),
             ...(axis.options?.belt ? ([['벨트 재질', axis.options.belt.code ?? t('클로로프렌')]] as Row[]) : []),

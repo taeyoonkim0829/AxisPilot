@@ -57,23 +57,23 @@ function AxisOptionFilters({ settings, onSettings }: Pick<Props, 'settings' | 'o
       {settings.additionalSlide !== 'none' && sides.includes(settings.additionalSlide) && (
         <div className="filter-group slide-gap">
           <NumberField
-            label={settings.additionalSlide === 'both' ? t('슬라이드 사이 거리 ({code})', { code: 'KL' }) : t('슬라이드 사이 거리')}
+            label={settings.additionalSlide === 'both' ? t('슬라이드 중심 간격 ({code})', { code: 'KL' }) : t('슬라이드 중심 간격')}
             unit="mm"
-            value={settings.slideGap}
+            value={settings.slidePitch}
             step={1}
-            hint={shown.includes('ELGD') && settings.additionalSlide !== 'both' ? t('최소 거리 50mm') : undefined}
-            onChange={(slideGap) => onSettings({ ...settings, slideGap })}
+            hint={t('0 = 최소 간격')}
+            onChange={(slidePitch) => onSettings({ ...settings, slidePitch })}
           />
         </div>
       )}
       {settings.additionalSlide === 'both' && sides.includes('both') && (
         <div className="filter-group slide-gap">
           <NumberField
-            label={t('슬라이드 사이 거리 ({code})', { code: 'KR' })}
+            label={t('슬라이드 중심 간격 ({code})', { code: 'KR' })}
             unit="mm"
-            value={settings.slideGapRight}
+            value={settings.slidePitchRight}
             step={1}
-            onChange={(slideGapRight) => onSettings({ ...settings, slideGapRight })}
+            onChange={(slidePitchRight) => onSettings({ ...settings, slidePitchRight })}
           />
         </div>
       )}

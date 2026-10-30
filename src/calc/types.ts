@@ -150,10 +150,11 @@ export interface Settings {
   conservative: boolean
   /** Additional slide on axes that offer one (`Axis.additionalSlide`); 'both' only where both sides can be ordered */
   additionalSlide: AdditionalSlideSide
-  /** mm, distance between the main and the additional slide (KL of both); below the axis minimum (`AdditionalSlide.gap`) the minimum */
-  slideGap: number
+  /** mm, centre-to-centre spacing of the main and the additional slide (KL of both); below the axis minimum (half of
+   *  both slide lengths + `AdditionalSlide.gap`, so 0 = the closest) the minimum */
+  slidePitch: number
   /** mm, likewise for KR when both additional slides are ordered */
-  slideGapRight: number
+  slidePitchRight: number
   /** Toothed belt material by family (`BeltMaterial.code`; null = EGC chloroprene rubber) */
   beltMaterial: Partial<Record<AxisFamily, string | null>>
   /** m, motor cable length for the cable selection (Festo drives) */
@@ -184,8 +185,8 @@ export const defaultSettings: Settings = {
   conservative: false,
   cableLength: 5,
   additionalSlide: 'none',
-  slideGap: 0,
-  slideGapRight: 0,
+  slidePitch: 0,
+  slidePitchRight: 0,
   beltMaterial: { ELGD: 'PU2', EGC: null },
   standardStroke: false,
 }
