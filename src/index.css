@@ -565,6 +565,15 @@ h3 {
     padding: 0;
   }
 
+  /* the column rail is the top of the page, so the logo heads it */
+  .rail-brand {
+    display: flex;
+    width: auto;
+    padding: 14px 16px;
+    border-right: 0;
+    border-bottom: 1px solid rgb(255 255 255 / 0.16);
+  }
+
   .signs {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
