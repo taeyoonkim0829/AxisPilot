@@ -118,6 +118,9 @@ export function RouteRail({ axis, drive, kit, onExport, exporting, lang, onLang,
   return (
     <>
       <div className={`rail-veil${scrolled ? ' on' : ''}`} aria-hidden />
+      <div className="page-brand">
+        <img src={`${import.meta.env.BASE_URL}axispilot-logo-dark.svg`} alt="AxisPilot" width={171} height={32} />
+      </div>
       <header className={`rail${scrolled ? ' over' : ''}`}>
         <div className="rail-inner">
           <div className="rail-brand">
