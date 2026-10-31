@@ -12,7 +12,9 @@
 // +z, the axis shaft at the lower y — the pulley kits' axis pulley at the origin, the coupling kits' motor coupling at
 // the origin with the axis the centre distance towards −y) take the outermost housing face around each shaft that
 // the bolts crossing it pass through. Gearboxes (EMGA: output flange on top, input below or, -A- angle gearboxes, on
-// the side the body reaches out to) take the outermost flange face with no wider face right behind it.
+// the side the body reaches out to) take the outermost flange face with no wider face right behind it. Festo Korea's
+// SA kits (`saKitFrames`, BF…/EB…/GD… in any orientation) find the shaft from the coupling or base plate and the sides
+// from the screws: tips out of the axis face, heads outside the motor face.
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { join, resolve } from 'node:path'
@@ -127,7 +129,7 @@ function meshes(text) {
       for (const k of [0, 1, 2])
         if (Math.abs(Math.abs(normal[k]) - 1) < 1e-4) faces.push({ k, sign: Math.sign(normal[k]), pos: flo[k], area, lo: flo, hi: fhi })
     }
-    return { name: m.name ?? '', lo, hi, faces }
+    return { name: m.name ?? '', lo, hi, faces, points: p }
   })
 }
 
@@ -300,17 +302,18 @@ const fill = (f, k) => {
  * that the bolts crossing it pass through (a centring spigot is smaller than the bolt pattern, a raised pad the
  * partner sits on is not), and not a thin ring (a spigot without bolts nearby)
  */
-function kitFace(ms, c, sign, bolts) {
+function kitFace(ms, c, sign, bolts, k = 2, housing = (m) => !kitHardware(m.name)) {
+  const [a, b] = [0, 1, 2].filter((j) => j !== k)
   const faces = ms
-    .filter((m) => !kitHardware(m.name))
+    .filter(housing)
     .flatMap((m) => m.faces)
-    .filter((f) => f.k === 2 && f.sign === sign && contains(f, c, 2))
+    .filter((f) => f.k === k && f.sign === sign && contains(f, c, k))
   if (faces.length === 0) throw new Error(`no face at ${c} facing ${sign > 0 ? '+z' : '-z'}`)
   const largest = Math.max(...faces.map((f) => f.area))
   const ok = faces.filter((f) => {
-    if (f.area < 0.05 * largest || fill(f, 2) < 0.2) return false
-    const crossing = bolts.filter((b) => b.lo[2] < f.pos - 0.1 && b.hi[2] > f.pos + 0.1)
-    return crossing.every((b) => contains(f, [centre(b.lo, b.hi, 0), centre(b.lo, b.hi, 1)], 2))
+    if (f.area < 0.05 * largest || fill(f, k) < 0.2) return false
+    const crossing = bolts.filter((s) => s.lo[k] < f.pos - 0.1 && s.hi[k] > f.pos + 0.1)
+    return crossing.every((s) => contains(f, [centre(s.lo, s.hi, a), centre(s.lo, s.hi, b)], k))
   })
   if (ok.length === 0) throw new Error(`no flange face at ${c}`)
   return ok.reduce((a, b) => (b.pos * sign > a.pos * sign ? b : a))
@@ -349,6 +352,119 @@ function kitFrames(file, model) {
   if (m.pos <= a.pos) throw new Error('motor face not above the axis face')
   const json = { axisFace: frame(c, a.pos, [0, 0, 1], [0, 1, 0]), motorFace: frame(c, m.pos, [0, 0, 1], [0, 1, 0]) }
   return { json, info: `axial, faces z ${fixed(a.pos)} / ${fixed(m.pos)}` }
+}
+
+/**
+ * Festo Korea's SA kits (`<axis><size><A|U><flange>…-1000`, e.g. BF032A040M1B-1000; Creo exports in any orientation,
+ * parts mostly unnamed): the shaft runs along the coupling (axial) or across the base plate (parallel). The screws
+ * tell the sides: those holding the kit on the axis go in from inside the kit, their tips standing out of the axis
+ * face; the motor's go in from the motor side, their heads outside the motor face. Axial: the axis end is where the
+ * tips point out, the shaft centre the coupling's (else the screws'). Parallel: both faces lie on the side the screws
+ * stand out of the housing; the axis shaft is at the screw group pointing out there (its pulley, else the group's
+ * centre), the motor at the other group.
+ */
+const SA_COUPLING = /SFC|ALS-|SJC|SOHM|SDW|SHDW|DISK/i
+const SA_PULLEY = /SAPL/i
+function saKitFrames(file, model) {
+  const ms = meshes(readFileSync(file, 'latin1'))
+  const parallel = /^[A-Z]{2}\d{3}U/.test(model)
+  const ext = (m, j) => m.hi[j] - m.lo[j]
+  const volume = (m) => ext(m, 0) * ext(m, 1) * ext(m, 2)
+  const coupling = ms.filter((m) => SA_COUPLING.test(m.name))
+  const pulleys = ms.filter((m) => SA_PULLEY.test(m.name))
+  let k
+  if (!parallel && coupling.length) {
+    // along the coupling: the extent that differs from the other two (its diameter twice)
+    const e = [0, 1, 2].map((j) => Math.max(...coupling.map((m) => m.hi[j])) - Math.min(...coupling.map((m) => m.lo[j])))
+    k = [
+      [0, 1, 2],
+      [0, 2, 1],
+      [1, 2, 0],
+    ]
+      .map(([a, b, c]) => [Math.abs(e[a] - e[b]), c])
+      .sort((x, y) => x[0] - y[0])[0][1]
+  } else {
+    // the largest part's thin direction (parallel: the base plate; axial without a coupling: the flange)
+    const big = ms.reduce((a, b) => (volume(b) > volume(a) ? b : a))
+    k = [0, 1, 2].reduce((a, b) => (ext(big, b) < ext(big, a) ? b : a))
+  }
+  const [a, b] = [0, 1, 2].filter((j) => j !== k)
+  // slender parts along k; a screw's head is the end with the larger radius
+  const slender = (m) => Math.abs(ext(m, a) - ext(m, b)) < 1.5 && ext(m, a) <= 24 && ext(m, k) >= 1.8 * ext(m, a)
+  const screws = []
+  for (const m of ms) {
+    if (!slender(m) || ext(m, a) < 2.5 || SA_COUPLING.test(m.name) || SA_PULLEY.test(m.name)) continue
+    const c = [centre(m.lo, m.hi, a), centre(m.lo, m.hi, b)]
+    let rLo = 0
+    let rHi = 0
+    for (let i = 0; i < m.points.length; i += 3) {
+      const t = (m.points[i + k] - m.lo[k]) / ext(m, k)
+      const r = Math.hypot(m.points[i + a] - c[0], m.points[i + b] - c[1])
+      if (t < 0.12) rLo = Math.max(rLo, r)
+      else if (t > 0.88) rHi = Math.max(rHi, r)
+    }
+    if (Math.abs(rLo - rHi) >= 0.4) screws.push({ ...m, c, tip: rLo > rHi ? 1 : -1 })
+  }
+  if (screws.length === 0) throw new Error('no screws to tell the axis side')
+  const housing = (m) => !slender(m) && !SA_COUPLING.test(m.name) && !SA_PULLEY.test(m.name)
+  const body = ms.filter(housing)
+  const lo = Math.min(...body.map((m) => m.lo[k]))
+  const hi = Math.max(...body.map((m) => m.hi[k]))
+  const mean = (list) => [0, 1].map((i) => list.reduce((s, x) => s + x.c[i], 0) / list.length)
+  const unit = (j, sign) => [0, 1, 2].map((i) => (i === j ? sign : 0))
+  const at = (c, pos) => {
+    const o = [0, 0, 0]
+    o[a] = fixed(c[0])
+    o[b] = fixed(c[1])
+    o[k] = fixed(pos)
+    return o
+  }
+  if (!parallel) {
+    const mid = (lo + hi) / 2
+    const endOf = (x) => (centre(x.lo, x.hi, k) < mid ? -1 : 1)
+    // + for a screw pointing out of its end (axis side), − for one with its head out (motor side)
+    const vote = screws.reduce((s, x) => s + (x.tip === endOf(x) ? endOf(x) : -endOf(x)), 0)
+    if (vote === 0) throw new Error('screws do not tell the axis side')
+    const axisEnd = Math.sign(vote)
+    const span = (j) => (Math.min(...coupling.map((m) => m.lo[j])) + Math.max(...coupling.map((m) => m.hi[j]))) / 2
+    const c = coupling.length ? [span(a), span(b)] : mean(screws)
+    const fa = kitFace(ms, c, axisEnd, screws.filter((x) => endOf(x) === axisEnd), k, housing)
+    const fm = kitFace(ms, c, -axisEnd, screws.filter((x) => endOf(x) !== axisEnd), k, housing)
+    const axis = unit(k, -axisEnd)
+    const up = unit(b, 1)
+    const json = { axisFace: { origin: at(c, fa.pos), axis, up }, motorFace: { origin: at(c, fm.pos), axis, up } }
+    const info = `SA axial along ${'xyz'[k]}, axis end ${axisEnd > 0 ? '+' : '-'}, faces ${fixed(fa.pos)} / ${fixed(fm.pos)}, screw vote ${vote}`
+    return { json, info }
+  }
+  // the side the screws stand out of the housing: both faces lie there
+  const out = screws.reduce((s, x) => s + (x.lo[k] < lo - 0.5 ? -1 : 0) + (x.hi[k] > hi + 0.5 ? 1 : 0), 0)
+  if (out === 0) throw new Error('screws do not stand out on one side')
+  const n = Math.sign(out)
+  const axisScrews = screws.filter((x) => x.tip === n)
+  const motorScrews = screws.filter((x) => x.tip === -n)
+  if (!axisScrews.length || !motorScrews.length) throw new Error('no axis or no motor screws')
+  const dist = (u, v) => Math.hypot(u[0] - v[0], u[1] - v[1])
+  const pulleyNear = (g) => {
+    const p = pulleys.map((m) => [centre(m.lo, m.hi, a), centre(m.lo, m.hi, b)]).sort((u, v) => dist(u, g) - dist(v, g))[0]
+    return p && dist(p, g) < 15 ? p : g
+  }
+  const ca = pulleyNear(mean(axisScrews))
+  const cm = pulleyNear(mean(motorScrews))
+  const fa = kitFace(ms, ca, n, axisScrews, k, housing)
+  const fm = kitFace(ms, cm, n, motorScrews, k, housing)
+  const d = dist(ca, cm)
+  const dir = (u, v) => {
+    const o = [0, 0, 0]
+    o[a] = fixed((v[0] - u[0]) / d)
+    o[b] = fixed((v[1] - u[1]) / d)
+    return o
+  }
+  const json = {
+    axisFace: { origin: at(ca, fa.pos), axis: unit(k, -n), up: dir(cm, ca) },
+    motorFace: { origin: at(cm, fm.pos), axis: unit(k, n), up: dir(ca, cm) },
+  }
+  const info = `SA parallel across ${'xyz'[k]}, faces facing ${n > 0 ? '+' : '-'}${'xyz'[k]}, centre distance ${fixed(d)}, faces ${fixed(fa.pos)} / ${fixed(fm.pos)}`
+  return { json, info }
 }
 
 /**
@@ -530,7 +646,7 @@ for (const file of files) {
   const name = file.split(/[\\/]/).pop()
   // Apex files have no part number: `ab0421-p0401100102.stp`
   const model = /^\d+_(.+)\.stp$/i.exec(name)?.[1] ?? name.replace(/\.stp$/i, '').toUpperCase()
-  const make = /^EAMM-/.test(model) ? kitFrames : /^EMGA-/.test(model) ? gearboxFrames : /^A[BE]/.test(model) ? apexFrames : frames
+  const make = /^EAMM-/.test(model) ? kitFrames : /^[A-Z]{2}\d{3}[AU]\d{3}/.test(model) ? saKitFrames : /^EMGA-/.test(model) ? gearboxFrames : /^A[BE]/.test(model) ? apexFrames : frames
   try {
     const { json, info } = make(file, model)
     console.log(`${model}: ${info}`)
