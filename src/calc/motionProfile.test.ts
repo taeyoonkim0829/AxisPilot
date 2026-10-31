@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { accelerationForTime, accelTimeFor, minAccelTime, moveProfile, phaseState, samplePhases, tracePhases } from './motionProfile'
+import { accelerationForTime, accelTimeFor, minAccelTime, moveProfile, phaseState, samplePhases, sCurveShare, tracePhases } from './motionProfile'
 
 function integrate(distance: number, v: number, a: number, j: number) {
   const p = moveProfile(distance, v, a, j)
@@ -55,6 +55,12 @@ describe('moveProfile', () => {
 })
 
 describe('accelerationForTime', () => {
+  it('gives the S-curve share of the acceleration time', () => {
+    expect(sCurveShare(1, 5, 0)).toBe(0)
+    expect(sCurveShare(1, 5, 50)).toBeCloseTo(2 / 3) // 2 × 0.1 s ramps of 0.3 s
+    expect(sCurveShare(1, 5, 10)).toBe(1) // jerk too low to reach 5 m/s²
+  })
+
   it('inverts accelTimeFor with and without jerk', () => {
     expect(accelerationForTime(0.5, 0.1)).toBeCloseTo(5)
     const a = accelerationForTime(1, 0.3, 50)

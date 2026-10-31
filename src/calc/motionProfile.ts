@@ -57,6 +57,12 @@ export function accelTimeFor(v: number, aMax: number, jerk = 0): number {
   return accelShape(v, aMax, jerk).time
 }
 
+/** Share of the acceleration time spent in the jerk ramps: 0 = trapezoidal, 1 = pure S-curve (no constant-acceleration part). */
+export function sCurveShare(v: number, aMax: number, jerk = 0): number {
+  const { jerkTime, time } = accelShape(v, aMax, jerk)
+  return time > 0 ? (2 * jerkTime) / time : 0
+}
+
 /** Shortest possible acceleration time to v: 0 without a jerk limit, else the triangular profile 2·√(v/j) [s]. */
 export function minAccelTime(v: number, jerk = 0): number {
   return jerk > 0 && Number.isFinite(jerk) ? 2 * Math.sqrt(v / jerk) : 0

@@ -53,6 +53,7 @@ export const en: Record<string, string> = {
   '가속도': 'Acceleration',
   '가속 시간': 'Acceleration time',
   '가속 시간 {time} s': 'Acceleration time {time} s',
+  'S-커브 {pct}%': 'S-curve {pct}%',
   '저크 제한으로 최소 {time} s': 'At least {time} s due to the jerk limit',
   '가속도 {accel} m/s²': 'Acceleration {accel} m/s²',
   '저크': 'Jerk',

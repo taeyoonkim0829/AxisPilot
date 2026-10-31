@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { accelerationForTime, accelTimeFor, minAccelTime } from '../calc/motionProfile'
+import { accelerationForTime, accelTimeFor, minAccelTime, sCurveShare } from '../calc/motionProfile'
 import {
   MAX_GUIDES,
   guidePositions,
@@ -150,7 +150,13 @@ export function InputPanel({ req, settings, onReq, onSettings, mode, onMode }: P
                 }
               />
             )}
-            <NumberField label={t('저크')} unit="m/s³" value={req.jerk} onChange={(v) => setMotion({ jerk: v })} />
+            <NumberField
+              label={t('저크')}
+              unit="m/s³"
+              value={req.jerk}
+              onChange={(v) => setMotion({ jerk: v })}
+              hint={t('S-커브 {pct}%', { pct: fmt(sCurveShare(req.velocity, req.acceleration, req.jerk) * 100, 0) })}
+            />
             <NumberField label={t('휴지 시간')} unit="s" value={settings.dwellTime} onChange={(v) => setS('dwellTime', v)} />
           </div>
         </section>

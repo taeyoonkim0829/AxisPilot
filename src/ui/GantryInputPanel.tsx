@@ -5,7 +5,7 @@ import { NumberField, RadioGroup } from './common'
 import { ModeSwitch, type AppMode } from './ModeSwitch'
 import { fmt, mountingLabel } from './format'
 import { DetailSettings, ParallelSection } from './InputPanel'
-import { accelTimeFor } from '../calc/motionProfile'
+import { accelTimeFor, sCurveShare } from '../calc/motionProfile'
 
 const configHint: Record<GantryConfig, string> = {
   xyz: 'X축(바닥) 위에 Y축, Y축 슬라이드에 수직 Z축',
@@ -109,7 +109,13 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
                     onChange={(v) => setMotion(a, 'acceleration', v)}
                     hint={t('가속 시간 {time} s', { time: fmt(accelTimeFor(m.velocity, m.acceleration, m.jerk), 3) })}
                   />
-                  <NumberField label={t('저크')} unit="m/s³" value={m.jerk} onChange={(v) => setMotion(a, 'jerk', v)} />
+                  <NumberField
+                    label={t('저크')}
+                    unit="m/s³"
+                    value={m.jerk}
+                    onChange={(v) => setMotion(a, 'jerk', v)}
+                    hint={t('S-커브 {pct}%', { pct: fmt(sCurveShare(m.velocity, m.acceleration, m.jerk) * 100, 0) })}
+                  />
                 </div>
               </div>
             )
