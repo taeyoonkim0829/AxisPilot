@@ -149,25 +149,6 @@ h3 {
   padding: 0 24px;
 }
 
-.rail-brand {
-  flex: none;
-  width: 196px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-right: 20px;
-  border-right: 1px solid rgb(255 255 255 / 0.22);
-}
-
-.rail-logo {
-  display: block;
-  align-self: flex-start;
-  width: auto;
-  height: 32px;
-  /* the mark starts 4/48 of the height in from the SVG's left edge */
-  margin-left: -3px;
-}
-
 .signs {
   flex: 1;
   min-width: 0;
@@ -541,10 +522,6 @@ h3 {
 }
 
 @media (max-width: 1280px) {
-  .rail-brand {
-    display: none;
-  }
-
   .sign-btn {
     gap: 10px;
     padding: 14px 12px 14px 18px;
@@ -2015,21 +1992,32 @@ body {
   }
 }
 
-/* the logo on its own above the stacked rail; the rail's logo is hidden at this width */
+/* The logo stands on its own: beside the rail over the input column, fixed like the rail; above the stacked rail,
+   centred, on narrow screens. */
 .page-brand {
-  display: none;
+  position: fixed;
+  top: var(--rail-top);
+  left: max(24px, calc((100% - 1552px) / 2));
+  z-index: 10;
+  width: 320px;
+  height: var(--rail-h);
+  display: flex;
+  align-items: center;
+  padding: 0 22px;
+}
+
+.page-brand img {
+  height: 32px;
+  width: auto;
 }
 
 @media (max-width: 1000px) {
   .page-brand {
-    display: flex;
+    position: static;
+    width: auto;
+    height: auto;
     justify-content: center;
     padding: 20px 16px 4px;
-  }
-
-  .page-brand img {
-    height: 32px;
-    width: auto;
   }
 }
 
@@ -2071,15 +2059,10 @@ body {
     padding: 0 16px 0 0;
   }
 
-  /* as wide as the logo, the same space on both sides of it */
-  .app .rail-brand {
-    width: auto;
-    padding: 0 22px;
+  /* over the results column only (320px input column + 20px gap), as wide as its panels */
+  .app .rail {
+    margin-left: calc(max(24px, calc((100% - 1552px) / 2)) + 340px);
   }
-}
-
-.app .rail-brand {
-  border-right-color: var(--line);
 }
 
 .app .rail-actions {
