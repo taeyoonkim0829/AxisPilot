@@ -656,6 +656,8 @@ h3 {
 .inputs {
   position: sticky;
   top: calc(var(--rail-top) + var(--rail-h) + 20px);
+  /* above the scroll veil, which reaches over its top */
+  z-index: 10;
   max-height: calc(100vh - var(--rail-top) - var(--rail-h) - 40px);
   overflow-y: auto;
   display: flex;
@@ -2031,12 +2033,13 @@ body {
   }
 }
 
-/* Content scrolling under the floating rail: a blurred, darkened band from the top of the window to just below
-   the rail (fading out there), shown once the page has scrolled; the rail's own glass blurs harder then. */
+/* Content scrolling under the floating rail: a blurred, darkened band from the top of the window to 20px below
+   the rail (the inputs' sticky top; it fades out over the next 28px), shown once the page has scrolled; the rail's
+   own glass blurs harder then. The sticky inputs sit above it. */
 .rail-veil {
   position: fixed;
   inset: 0 0 auto;
-  height: calc(var(--rail-top) + var(--rail-h) + 28px);
+  height: calc(var(--rail-top) + var(--rail-h) + 48px);
   z-index: 9;
   pointer-events: none;
   background: linear-gradient(rgb(6 10 18 / 0.55), rgb(6 10 18 / 0.35) 70%, transparent);
