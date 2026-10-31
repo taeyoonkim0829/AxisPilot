@@ -138,7 +138,7 @@ The calculation report (`.report-stage`) is white paper and keeps the light toke
 **Character:** Korean text in a neutral workhorse sans; every figure and part number in a narrow road-sign face so long codes fit and columns align.
 
 ### Hierarchy
-- **Logo** (`.page-brand`, 32px high): the AxisPilot logo on its own, outside the rail, its dark-background version (`axispilot-logo-dark.svg`) in both themes because the page is dark. Above 1000px it is fixed like the rail, beside it over the 320px condition column (22px in from its left edge, centred in the rail's height, above the scroll veil); at 1000px and below (the rail stacks into a column at the top of the page) it stands above the rail, centred (20px above, 4px below), and the rail sits 16px above the mode switch, the same space as below it.
+- **Logo** (`.page-brand`, 35px high): the AxisPilot logo on its own, outside the rail, its dark-background version (`axispilot-logo-dark.svg`) in both themes because the page is dark. Above 1000px it is fixed like the rail, beside it over the 320px condition column (centred on it and in the rail's height, above the scroll veil); at 1000px and below (the rail stacks into a column at the top of the page) it stands above the rail, centred (20px above, 4px below), and the rail sits 16px above the mode switch, the same space as below it.
 - **Sign value** (600, 20px, 1.15): part numbers on the rail.
 - **Step title** (650, 17px): panel headings.
 - **Body** (400, 14px, 1.5): labels, notes, Korean copy.

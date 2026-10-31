@@ -2003,11 +2003,11 @@ body {
   height: var(--rail-h);
   display: flex;
   align-items: center;
-  padding: 0 22px;
+  justify-content: center;
 }
 
 .page-brand img {
-  height: 32px;
+  height: 35px;
   width: auto;
 }
 
@@ -2016,7 +2016,6 @@ body {
     position: static;
     width: auto;
     height: auto;
-    justify-content: center;
     padding: 20px 16px 4px;
   }
 }
