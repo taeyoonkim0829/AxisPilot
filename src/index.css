@@ -1946,8 +1946,9 @@ body {
     0 12px 24px -12px rgb(0 0 0 / 0.6),
     inset 0 1px 0 rgb(255 255 255 / 0.4),
     inset 0 -1px 0 rgb(255 255 255 / 0.08);
-  backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+  /* prefixed first: the build's CSS minifier keeps only the last of the pair, and Chrome ignores the -webkit- one */
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(170%);
 }
 
 .app .panel::before,
@@ -2030,8 +2031,8 @@ body {
   z-index: 9;
   pointer-events: none;
   background: linear-gradient(rgb(6 10 18 / 0.55), rgb(6 10 18 / 0.35) 70%, transparent);
-  backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
   mask-image: linear-gradient(#000 calc(100% - 28px), transparent);
   -webkit-mask-image: linear-gradient(#000 calc(100% - 28px), transparent);
   opacity: 0;
@@ -2043,8 +2044,8 @@ body {
 }
 
 .app .rail.over {
-  backdrop-filter: blur(calc(var(--glass-blur) * 1.5)) saturate(170%);
   -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 1.5)) saturate(170%);
+  backdrop-filter: blur(calc(var(--glass-blur) * 1.5)) saturate(170%);
 }
 
 @media (max-width: 1000px) {
@@ -2248,6 +2249,6 @@ body {
 
 .app .notice {
   background: var(--surface-solid);
-  backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
 }
