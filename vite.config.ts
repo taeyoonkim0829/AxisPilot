@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import react from '@vitejs/plugin-react'
 import { gzipSync } from 'node:zlib'
 import { defineConfig, type Plugin } from 'vite'
@@ -27,4 +28,6 @@ export default defineConfig({
   build: { chunkSizeWarningLimit: 1000 },
   // The OpenCascade tessellation worker (src/cad/occt.worker.ts) loads its WebAssembly with dynamic imports.
   worker: { format: 'es' },
+  // CAD tests read and tessellate real STEP files; on the slower CI runners one took 5.04 s against the 5 s default
+  test: { testTimeout: 30000 },
 })
