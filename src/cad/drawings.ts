@@ -22,6 +22,14 @@ export interface AxisMeta {
   stretch?: StretchSpec
   /** the profile's mounting face (underside), middle of the length: where a gantry kit holds the axis */
   profile?: { origin: Vec3; normal: Vec3 }
+  /** the jaw coupling hub on the drive shaft (ELGT-BS, ELGD-BS): its part name, the direction (across the shaft) of
+   *  one of its `count` jaws; turned to the kit's `coupling` when assembled */
+  coupling?: JawCoupling & { part: string }
+}
+/** Jaw coupling hub: `jaw` = direction from the shaft line to the centre of one of its `count` jaws */
+export interface JawCoupling {
+  jaw: Vec3
+  count: number
 }
 /** Gantry kit (data/adapters): the face on the base axis's slide and the one the carried axis's profile sits on */
 export interface AdapterMeta {
@@ -49,6 +57,9 @@ export interface BeamMeta extends AdapterMeta {
 export interface KitMeta {
   axisFace: Frame
   motorFace: Frame
+  /** kits meeting the axis's own coupling hub: `jaw` = where one of the axis hub's jaws goes (between the jaws of the
+   *  kit's hub facing the axis) */
+  coupling?: JawCoupling
 }
 export interface GearboxMeta {
   /** output flange (axis / kit side) and input flange (motor side) */

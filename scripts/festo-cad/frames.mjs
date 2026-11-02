@@ -15,6 +15,8 @@
 // the side the body reaches out to) take the outermost flange face with no wider face right behind it. Festo Korea's
 // SA kits (`saKitFrames`, BF…/EB…/GD… in any orientation) find the shaft from the coupling or base plate and the sides
 // from the screws: tips out of the axis face, heads outside the motor face.
+// Jaw couplings (`couplingOf`, also `--coupling` for existing JSONs): the EAMC hub on an axis's drive shaft (ELGT-BS,
+// ELGD-BS) and the kit hub facing it, their jaws found in a section near the jaw tips.
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { join, resolve } from 'node:path'
@@ -39,6 +41,8 @@ const axes = readdirSync(join(root, 'data/axes/festo'))
 
 const round = (v, step = 0.05) => Math.round(v / step) * step + 0 // + 0: no -0
 const fixed = (v) => Number(round(v).toFixed(2))
+/** direction components: 4 decimals (0.05 steps would turn a jaw by up to 3°) */
+const unitFixed = (v) => Number(v.toFixed(4)) + 0
 
 // ---- STEP: part instances with their placement and transform ----
 function parseEntities(text) {
@@ -129,8 +133,96 @@ function meshes(text) {
       for (const k of [0, 1, 2])
         if (Math.abs(Math.abs(normal[k]) - 1) < 1e-4) faces.push({ k, sign: Math.sign(normal[k]), pos: flo[k], area, lo: flo, hi: fhi })
     }
-    return { name: m.name ?? '', lo, hi, faces, points: p }
+    return { name: m.name ?? '', lo, hi, faces, points: p, index: idx }
   })
+}
+
+// ---- jaw couplings (EAMC hubs): where the jaws are ----
+/**
+ * Jaw centres of an EAMC hub on the line of frame `f` (the axis's drive, a kit's axis face) at the end its jaws point
+ * to (`end` +1: along f.axis, −1: against it): the hub's section 2–4 mm in from that end, cut at its outer part
+ * (radius > 60 %), split into jaws at angular gaps; null when that end has no jaws (a closed ring) or no hub is there.
+ * Returns the jaw count and one jaw's direction (file coordinates).
+ */
+function hubJaws(ms, f, end) {
+  const w = [f.axis[1] * f.up[2] - f.axis[2] * f.up[1], f.axis[2] * f.up[0] - f.axis[0] * f.up[2], f.axis[0] * f.up[1] - f.axis[1] * f.up[0]]
+  const local = (p) => {
+    const q = [p[0] - f.origin[0], p[1] - f.origin[1], p[2] - f.origin[2]]
+    return [0, 1, 2].map((i) => q[0] * [f.axis, f.up, w][i][0] + q[1] * [f.axis, f.up, w][i][1] + q[2] * [f.axis, f.up, w][i][2])
+  }
+  const hubs = ms
+    .filter((m) => /(^|\s)EAMC-\S*-GB/.test(m.name))
+    .map((m) => {
+      const pts = []
+      for (let i = 0; i < m.points.length; i += 3) pts.push(local([m.points[i], m.points[i + 1], m.points[i + 2]]))
+      const span = (k) => [Math.min(...pts.map((q) => q[k])), Math.max(...pts.map((q) => q[k]))]
+      const [y, z] = [span(1), span(2)]
+      return { m, pts, along: span(0), off: Math.hypot((y[0] + y[1]) / 2, (z[0] + z[1]) / 2) }
+    })
+    .filter((h) => h.off < 2)
+  if (!hubs.length) return null
+  // the hub at the jaw end: the one reaching farthest that way
+  const hub = hubs.reduce((a, b) => (b.along[end > 0 ? 1 : 0] * end > a.along[end > 0 ? 1 : 0] * end ? b : a))
+  const R = Math.max(...hub.pts.map((q) => Math.hypot(q[1], q[2])))
+  const tip = hub.along[end > 0 ? 1 : 0]
+  for (const depth of [2, 3, 4]) {
+    const t0 = tip - end * depth
+    const angles = []
+    const idx = hub.m.index
+    for (let t = 0; t < idx.length; t += 3) {
+      const v = [0, 1, 2].map((j) => hub.pts[idx[t + j]])
+      // the triangle's cut: a segment between two edge crossings, sampled every 0.25 mm (a coarse outer face is
+      // one long triangle)
+      const cut = []
+      for (let i = 0; i < 3; i++) {
+        const [p, q] = [v[i], v[(i + 1) % 3]]
+        const [a, b] = [p[0] - t0, q[0] - t0]
+        if (a < 0 === b < 0) continue
+        const s = a / (a - b)
+        cut.push([p[1] + s * (q[1] - p[1]), p[2] + s * (q[2] - p[2])])
+      }
+      if (cut.length !== 2) continue
+      const n = Math.ceil(Math.hypot(cut[1][0] - cut[0][0], cut[1][1] - cut[0][1]) / 0.25)
+      for (let j = 0; j <= n; j++) {
+        const y = cut[0][0] + ((cut[1][0] - cut[0][0]) * j) / n
+        const z = cut[0][1] + ((cut[1][1] - cut[0][1]) * j) / n
+        if (Math.hypot(y, z) > 0.6 * R) angles.push(((Math.atan2(z, y) * 180) / Math.PI + 360) % 360)
+      }
+    }
+    angles.sort((a, b) => a - b)
+    const runs = []
+    for (const a of angles) {
+      const r = runs.at(-1)
+      if (r && a - r[1] <= 8) r[1] = a
+      else runs.push([a, a])
+    }
+    if (runs.length > 1 && runs[0][0] + 360 - runs.at(-1)[1] <= 8) runs[0][0] = runs.pop()[0] - 360
+    const widths = runs.map(([a, b]) => b - a)
+    // jaws: two or more alike, gaps between them
+    if (runs.length < 2 || Math.max(...widths) - Math.min(...widths) > 6 || Math.max(...widths) > 300 / runs.length) continue
+    const c = ((runs[0][0] + runs[0][1]) / 2) * (Math.PI / 180)
+    const dir = [0, 1, 2].map((i) => unitFixed(Math.cos(c) * f.up[i] + Math.sin(c) * w[i]))
+    return { count: runs.length, jaw: dir, centre: c, part: hub.m.name.trim() }
+  }
+  return null
+}
+const turned = (f, c, count) => {
+  // the direction half a jaw pitch on from c (the gap between two jaws)
+  const w = [f.axis[1] * f.up[2] - f.axis[2] * f.up[1], f.axis[2] * f.up[0] - f.axis[0] * f.up[2], f.axis[0] * f.up[1] - f.axis[1] * f.up[0]]
+  const a = c + Math.PI / count
+  return [0, 1, 2].map((i) => unitFixed(Math.cos(a) * f.up[i] + Math.sin(a) * w[i]))
+}
+/** `coupling` for a frame JSON: an axis's hub (jaws towards the motor), a kit's hub facing the axis (the gap its jaws
+ *  leave for the axis hub's); none without such a hub */
+function couplingOf(file, json) {
+  const ms = meshes(readFileSync(file, 'latin1'))
+  if (json.drive) {
+    const h = hubJaws(ms, json.drive, 1)
+    return h && { part: h.part.replace(/^\d+\s+/, ''), jaw: h.jaw, count: h.count }
+  }
+  if (!json.axisFace) return null
+  const h = hubJaws(ms, json.axisFace, -1)
+  return h && { jaw: turned(json.axisFace, h.centre, h.count), count: h.count }
 }
 
 const centre = (lo, hi, k) => (lo[k] + hi[k]) / 2
@@ -626,8 +718,25 @@ const files = only.length
 let written = 0
 // --profile: add the `profile` frame to existing axis JSONs, keeping everything else
 const profileOnly = args.includes('--profile')
+// --coupling: add the jaw coupling hub (`coupling`) to existing axis and kit JSONs, keeping everything else
+const couplingOnly = args.includes('--coupling')
 for (const file of files) {
   const out = file.replace(/\.stp$/i, '.json')
+  if (couplingOnly) {
+    if (!existsSync(out) || /[\\/]gearboxes[\\/]/.test(resolve(file))) continue
+    const old = JSON.parse(readFileSync(out, 'utf8'))
+    if (old.coupling && !force) continue
+    try {
+      const coupling = couplingOf(file, old)
+      if (!coupling) continue
+      console.log(`${file.split(/[\\/]/).pop()}: ${JSON.stringify(coupling)}`)
+      if (!dryRun) writeFileSync(out, format({ ...old, coupling }))
+      written++
+    } catch (err) {
+      console.log(`${file}: FAILED ${err.message}`)
+    }
+    continue
+  }
   if (profileOnly) {
     if (!existsSync(out) || !resolve(file).startsWith(axesDir)) continue
     const old = JSON.parse(readFileSync(out, 'utf8'))
@@ -648,7 +757,9 @@ for (const file of files) {
   const model = /^\d+_(.+)\.stp$/i.exec(name)?.[1] ?? name.replace(/\.stp$/i, '').toUpperCase()
   const make = /^EAMM-/.test(model) ? kitFrames : /^[A-Z]{2}\d{3}[AU]\d{3}/.test(model) ? saKitFrames : /^EMGA-/.test(model) ? gearboxFrames : /^A[BE]/.test(model) ? apexFrames : frames
   try {
-    const { json, info } = make(file, model)
+    const { json: frameJson, info } = make(file, model)
+    const coupling = make === frames || make === kitFrames ? couplingOf(file, frameJson) : null
+    const json = coupling ? { ...frameJson, coupling } : frameJson
     console.log(`${model}: ${info}`)
     if (dryRun) console.log(JSON.stringify(json))
     else {

@@ -529,6 +529,50 @@ describe('combination', () => {
     expect(Math.abs(cog[2])).toBeCloseTo(30)
   }, 60000)
 
+  it("turns the axis's coupling hub so its jaws go between the kit hub's", async () => {
+    // ELGT-BS-90 carries the axis-side EAMC hub; EAMM-A-T46-60P brings the spider and the motor-side hub. As filed
+    // the hubs' jaws overlap by 30°; turned, each sits in the middle of a gap.
+    const sel = selection(500)
+    const combo = await buildCombo(sel, comboDrawings(sel, testDrawings), { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
+    type Mesh = OcctMesh & { index: { array: number[] } }
+    const meshes = (await occt).ReadStepFile(new TextEncoder().encode(combo.step), null).meshes as Mesh[]
+    const hub = (name: string) => meshes.find((m) => m.name.includes(name))!
+    const axisHub = hub('EAMC-30-GB16-D12x10-A')
+    const kitHub = hub('EAMC-30-GB16-D14x10')
+    // the shaft runs along X (floor mounting); its line through the axis hub's box centre
+    const p0 = axisHub.attributes.position.array
+    const mid = (k: number) => {
+      const v = p0.filter((_, i) => i % 3 === k)
+      return (Math.min(...v) + Math.max(...v)) / 2
+    }
+    const [cy, cz] = [mid(1), mid(2)]
+    const xs = (m: Mesh) => m.attributes.position.array.filter((_, i) => i % 3 === 0)
+    // where both hubs' jaws are: the overlap of their extents along the shaft, 1 mm in from each end
+    const lo = Math.max(Math.min(...xs(axisHub)), Math.min(...xs(kitHub))) + 1
+    const hi = Math.min(Math.max(...xs(axisHub)), Math.max(...xs(kitHub))) - 1
+    expect(hi).toBeGreaterThan(lo + 4)
+    // 5° sectors holding material of a hub in that span, outside 60 % of its radius (triangles sampled densely)
+    const sectors = (m: Mesh) => {
+      const p = m.attributes.position.array
+      const idx = m.index.array
+      const out = new Set<number>()
+      for (let t = 0; t < idx.length; t += 3)
+        for (let a = 0; a <= 8; a++)
+          for (let b = 0; a + b <= 8; b++) {
+            const w = [a / 8, b / 8, 1 - (a + b) / 8]
+            const q = [0, 1, 2].map((k) => w.reduce((s, wj, j) => s + wj * p[idx[t + j] * 3 + k], 0))
+            const r = Math.hypot(q[1] - cy, q[2] - cz)
+            if (q[0] > lo && q[0] < hi && r > 9) out.add(Math.floor((((Math.atan2(q[2] - cz, q[1] - cy) * 180) / Math.PI + 360) % 360) / 5))
+          }
+      return out
+    }
+    const own = sectors(axisHub)
+    const kit = sectors(kitHub)
+    expect(own.size).toBeGreaterThan(12)
+    expect(kit.size).toBeGreaterThan(12)
+    expect([...own].filter((s) => kit.has(s))).toEqual([])
+  }, 60000)
+
   it('turns the motor of an axial kit to the chosen connector side', async () => {
     const sel = selection(800)
     const found = comboDrawings(sel, testDrawings)

@@ -3,5 +3,6 @@
   "drive": { "origin": [0, 63.5, 28], "axis": [0, 0, 1], "up": [0, 1, 0] },
   "slide": { "origin": [0, 99, -80], "normal": [0, 1, 0], "travel": [0, 0, -1] },
   "stretch": { "part": "8176875 ELGD-BS-KF-80-300-0H-----(0-0-0-2-L---highh)", "axis": 2, "dir": -1, "range": [-442, -156], "move": [15083] },
-  "profile": { "origin": [0, 0, -214], "normal": [0, -1, 0] }
+  "profile": { "origin": [0, 0, -214], "normal": [0, -1, 0] },
+  "coupling": { "part": "EAMC-30-GB16-D12x10-A", "jaw": [0, 1, 0], "count": 3 }
 }

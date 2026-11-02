@@ -13,7 +13,7 @@ import {
   type MotorMeta,
   type ShaftMeta,
 } from './drawings'
-import { add, apply, cross, dot, identity, mate, rotate, scale, sub, turnAbout, type Frame, type Transform } from './geometry'
+import { add, apply, cross, dot, identity, invert, mate, rotate, scale, sub, turnAbout, type Frame, type Transform } from './geometry'
 import { directionBody, mapRefs, nextIdOf, parseStep, pointBody, pointOf, refs, typeOf, writeStep, type StepFile, type Vec3 } from './step'
 import { stretchedOrigin, stretchPart } from './stretch'
 import { definitionByName, placementIdsOf, shapeOf } from './structure'
@@ -334,6 +334,46 @@ function moveCaps(file: StepFile, drive: Frame, slide: AxisMeta['slide']) {
   }
 }
 
+/**
+ * The axis's own jaw coupling hub (ELGT-BS, ELGD-BS: in the axis file) turned about the drive shaft so its jaws go
+ * between those of the kit's hub (`kitJaw`, axis file coordinates) rather than into them: the smallest turn, a jaw
+ * pitch being the same. A copy of the file; unchanged when already in line.
+ */
+function turnHub(file: StepFile, hub: NonNullable<AxisMeta['coupling']>, drive: Frame, kitJaw: Vec3): StepFile {
+  const k = drive.axis
+  const across = (v: Vec3) => sub(v, scale(k, dot(v, k)))
+  const a = across(hub.jaw)
+  const b = across(kitJaw)
+  const pitch = (2 * Math.PI) / hub.count
+  let angle = Math.atan2(dot(cross(a, b), k), dot(a, b))
+  angle -= pitch * Math.round(angle / pitch)
+  const pd = definitionByName(file, hub.part)
+  const rep = pd != null ? shapeOf(file, pd) : null
+  if (Math.abs(angle) < 1e-3 || rep == null) return file
+  const turn = turnAbout(identity, drive.origin, k, a, add(scale(a, Math.cos(angle)), scale(cross(k, a), Math.sin(angle))))
+  const copy: StepFile = { header: file.header, entities: new Map(file.entities) }
+  const e = copy.entities
+  const direction = (id: number) => pointOf((e.get(id) ?? '').replace(/^DIRECTION/, 'CARTESIAN_POINT'))
+  let next = nextIdOf(e)
+  for (const id of placementIdsOf(copy, rep)) {
+    const body = e.get(id)!
+    const [location, z, x] = refs(body)
+    const p = pointOf(e.get(location) ?? '')
+    if (!p) continue
+    // new point and directions: the old ones may be shared
+    const renamed = new Map<number, number>([[location, next]])
+    e.set(next++, pointBody(apply(turn, p)))
+    for (const old of [z, x]) {
+      const d = old == null ? null : direction(old)
+      if (old == null || !d) continue
+      renamed.set(old, next)
+      e.set(next++, directionBody(rotate(turn, d)))
+    }
+    e.set(id, mapRefs(body, (r) => renamed.get(r) ?? r))
+  }
+  return copy
+}
+
 export const connectorSide = (options: ComboOptions, parallel: boolean): Side =>
   options.motorConnector ?? (parallel ? options.kitSide : 'up')
 
@@ -603,6 +643,10 @@ export async function comboParts(
       if (Math.hypot(...radial) > 1)
         kitToWorld = turnAbout(kitToWorld, apply(axisToWorld, drive.origin), out, radial, sideVector(orientation.kitSide))
     }
+    // the axis's coupling hub meshing with the kit's (its jaws between the kit hub's)
+    const hub = axisMeta.coupling
+    if (hub && kitMeta.coupling?.count === hub.count && !at.otherSide && !mirror)
+      file = turnHub(file, hub, drive, rotate(invert(axisToWorld), rotate(kitToWorld, kitMeta.coupling.jaw)))
     const parts: (AssemblyPart & { role: PartRole })[] = [
       { role: 'axis', name: sel.axisModel, file, transform: axisToWorld },
       { role: 'kit', name: sel.kit.product, file: kitFile, transform: kitToWorld },
