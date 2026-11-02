@@ -162,23 +162,34 @@ function copySlide(file: StepFile, shifts: Vec3[]): boolean {
   return true
 }
 
-/** Moves the slide part by `shift` (file mm; new points, the old ones may be shared). False when it is no part of its own. */
-const moveSlide = (file: StepFile, shift: Vec3) => movePart(file, SLIDE_PART, shift)
+/** Moves the slide part by `shift` (file mm). False when it is no part of its own. */
+const moveSlide = (file: StepFile, shift: Vec3) => placePart(file, SLIDE_PART, { r: identity.r, t: shift })
 
-/** Moves every instance of the part named `name` by `shift` (file mm). False when there is no such part. */
-function movePart(file: StepFile, name: string | RegExp, shift: Vec3): boolean {
+/**
+ * Places every instance of the part named `name` by `t` (file coordinates) on top of where it sits, editing the
+ * entities (new points and directions: the old ones may be shared). False when there is no such part.
+ */
+function placePart(file: StepFile, name: string | RegExp, t: Transform): boolean {
   const pd = definitionByName(file, name)
   const rep = pd != null ? shapeOf(file, pd) : null
   const placements = rep != null ? placementIdsOf(file, rep) : []
   const e = file.entities
+  const direction = (id: number) => pointOf((e.get(id) ?? '').replace(/^DIRECTION/, 'CARTESIAN_POINT'))
   let next = nextIdOf(e)
   for (const id of placements) {
     const body = e.get(id)!
-    const location = pointOf(e.get(refs(body)[0]) ?? '')
-    if (!location) return false
-    e.set(next, pointBody(add(location, shift)))
-    e.set(id, mapRefs(body, (r) => (r === refs(body)[0] ? next : r)))
-    next++
+    const [location, z, x] = refs(body)
+    const p = pointOf(e.get(location) ?? '')
+    if (!p) return false
+    const renamed = new Map<number, number>([[location, next]])
+    e.set(next++, pointBody(apply(t, p)))
+    for (const old of [z, x]) {
+      const d = old == null ? null : direction(old)
+      if (old == null || !d) continue
+      renamed.set(old, next)
+      e.set(next++, directionBody(rotate(t, d)))
+    }
+    e.set(id, mapRefs(body, (r) => renamed.get(r) ?? r))
   }
   return placements.length > 0
 }
@@ -350,31 +361,23 @@ function turnHub(file: StepFile, hub: NonNullable<AxisMeta['coupling']>, drive: 
   const pitch = (2 * Math.PI) / hub.count
   let angle = Math.atan2(dot(cross(a, b), k), dot(a, b))
   angle -= pitch * Math.round(angle / pitch)
-  const pd = definitionByName(file, hub.part)
-  const rep = pd != null ? shapeOf(file, pd) : null
-  if (Math.abs(angle) < 1e-3 || rep == null) return file
+  if (Math.abs(angle) < 1e-3) return file
   const turn = turnAbout(identity, drive.origin, k, a, add(scale(a, Math.cos(angle)), scale(cross(k, a), Math.sin(angle))))
   const copy: StepFile = { header: file.header, entities: new Map(file.entities) }
-  const e = copy.entities
-  const direction = (id: number) => pointOf((e.get(id) ?? '').replace(/^DIRECTION/, 'CARTESIAN_POINT'))
-  let next = nextIdOf(e)
-  for (const id of placementIdsOf(copy, rep)) {
-    const body = e.get(id)!
-    const [location, z, x] = refs(body)
-    const p = pointOf(e.get(location) ?? '')
-    if (!p) continue
-    // new point and directions: the old ones may be shared
-    const renamed = new Map<number, number>([[location, next]])
-    e.set(next++, pointBody(apply(turn, p)))
-    for (const old of [z, x]) {
-      const d = old == null ? null : direction(old)
-      if (old == null || !d) continue
-      renamed.set(old, next)
-      e.set(next++, directionBody(rotate(turn, d)))
-    }
-    e.set(id, mapRefs(body, (r) => renamed.get(r) ?? r))
-  }
-  return copy
+  return placePart(copy, hub.part, turn) ? copy : file
+}
+
+/**
+ * The kit's coupling where the file has it touching the axis (`KitMeta.couplingShift`): turned end for end about
+ * `flip` (its centre; its bores the other way round) and moved `by` mm along the shaft. Edits the file.
+ */
+export function placeCoupling(file: StepFile, kit: KitMeta) {
+  const s = kit.couplingShift
+  if (!s) return
+  const f = kit.axisFace
+  const flip = s.flip ? turnAbout(identity, s.flip, f.up, f.axis, scale(f.axis, -1)) : identity
+  const t: Transform = { r: flip.r, t: add(flip.t, scale(f.axis, s.by)) }
+  for (const part of s.parts) placePart(file, part, t)
 }
 
 export const connectorSide = (options: ComboOptions, parallel: boolean): Side =>
@@ -560,8 +563,7 @@ export async function comboParts(
   const world = mountingFrame(req.mounting)
   const parallel = sel.kit.type === 'parallel'
   const kitFile = parseStep(kitText)
-  // a coupling filed reaching into the axis goes into the kit housing
-  for (const part of kitMeta.couplingShift?.parts ?? []) movePart(kitFile, part, scale(kitMeta.axisFace.axis, kitMeta.couplingShift!.by))
+  placeCoupling(kitFile, kitMeta)
   const gearboxFile = gearboxText ? parseStep(gearboxText) : null
   const motorFile = parseStep(motorText)
 
@@ -631,6 +633,8 @@ export async function comboParts(
         file = { header: stretched.header, entities: new Map(stretched.entities) }
         moveCaps(file, drive, slide)
       }
+      // a head capped on both sides (EGC-HD-TB): the cap over the shaft end the kit goes on comes off
+      if (capsAt(file, drive, slide).length) file = withoutCaps(file, drive, slide)
       // axis → world: slide centre at the origin, travel and slide normal by the mounting
       axisToWorld = axisToWorldOf(axisMeta, req.mounting, at, slide.origin)
     }

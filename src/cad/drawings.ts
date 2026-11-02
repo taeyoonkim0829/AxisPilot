@@ -60,9 +60,11 @@ export interface KitMeta {
   /** kits meeting the axis's own coupling hub: `jaw` = where one of the axis hub's jaws goes (between the jaws of the
    *  kit's hub facing the axis) */
   coupling?: JawCoupling
-  /** the coupling as filed reaches into the axis (EAMM-A-D50/-D60/-S60: 43.5 mm beyond the axis face): its parts
-   *  (PRODUCT names) moved `by` mm along `axisFace.axis`, to the middle between the two faces */
-  couplingShift?: { parts: string[]; by: number }
+  /** the coupling as filed touches the axis: its parts (PRODUCT names) moved `by` mm along `axisFace.axis`, after a
+   *  half turn about `axisFace.up` through `flip` (its centre) when its bores are the wrong way round. EAMM-A-D50/-D60/
+   *  -S60 filed 43.5 mm beyond the axis face go to the middle between the two faces (`frames.mjs`); others the least
+   *  that clears the axis (`couplings.mjs`) */
+  couplingShift?: { parts: string[]; by: number; flip?: Vec3 }
 }
 export interface GearboxMeta {
   /** output flange (axis / kit side) and input flange (motor side) */

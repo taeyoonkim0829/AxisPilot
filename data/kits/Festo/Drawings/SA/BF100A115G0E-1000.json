@@ -1,4 +1,5 @@
 {
   "axisFace": { "origin": [0, -0.4, 0], "axis": [1, 0, 0], "up": [0, 0, 1] },
-  "motorFace": { "origin": [132, -0.4, 0], "axis": [1, 0, 0], "up": [0, 0, 1] }
+  "motorFace": { "origin": [132, -0.4, 0], "axis": [1, 0, 0], "up": [0, 0, 1] },
+  "couplingShift": { "parts": ["ALS-065-R-24B-32B"], "by": 2.5 }
 }

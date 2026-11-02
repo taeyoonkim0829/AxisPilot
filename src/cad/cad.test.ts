@@ -2,6 +2,7 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { axes, gearboxes, kits, motors, shafts } from '../data'
 import {
   buildCombo,
+  placeCoupling,
   comboDrawings,
   defaultComboOptions,
   drivePositionWords,
@@ -10,7 +11,7 @@ import {
   type ComboOptions,
   type ComboSelection,
 } from './combo'
-import { gearboxDrawingFor, motorDrawingFor, parseDrawingPath, shaftDrawingFor, siemensVariant, type Drawing, type ShaftMeta } from './drawings'
+import { gearboxDrawingFor, motorDrawingFor, parseDrawingPath, shaftDrawingFor, siemensVariant, type Drawing, type KitMeta, type ShaftMeta } from './drawings'
 import { apply, invert, mate, type Frame } from './geometry'
 import { closure, parseStep, pointOf, refs, typeOf, writeStep, type StepFile } from './step'
 import { stretchPart, type StretchSpec } from './stretch'
@@ -598,6 +599,40 @@ describe('combination', () => {
     const coupling = part('EAMC-42-50')
     expect(coupling.hi[0]).toBeLessThan(housing.hi[0] - 5)
     expect(coupling.lo[0]).toBeGreaterThan(housing.hi[0] - 63.2 + 5)
+  }, 60000)
+
+  it('takes the cover cap off the shaft end the kit goes on when the head is capped on both sides', async () => {
+    // EGC-HD-125-TB: both shaft ends of the drive head carry a cap (CUP); the kit's coupling goes where one sits
+    const paths = ['data/axes/Festo/Drawings/EGC/556823_EGC-HD-125-500-TB-0H-GK.stp', 'data/kits/Festo/Drawings/EAMM-A/1190076_EAMM-A-M43-60G.stp', files[2]]
+    const drawings = paths.map((path) => ({ ...parseDrawingPath(path)!, url: path, meta: metas[`../../${path.replace(/\.stp$/, '.json')}`] ?? null }))
+    const sel: ComboSelection = {
+      axis: axes.find((a) => a.model === 'EGC-HD-125-…-TB-GK')!,
+      axisModel: 'EGC-HD-125-500-TB-GK',
+      stroke: 500,
+      motor: motors.find((m) => m.model === 'EMMT-AS-60-S-HS')!,
+      gearbox: null,
+      kit: kits.find((k) => k.product === 'EAMM-A-M43-60G')!,
+    }
+    const caps = (step: string) => [...parseStep(step).entities.values()].filter((b) => typeOf(b) === 'NEXT_ASSEMBLY_USAGE_OCCURRENCE' && b.includes('CUP')).length
+    const combo = await buildCombo(sel, comboDrawings(sel, drawings), { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
+    expect(caps(combo.step)).toBe(caps(await text(paths[0])) - 1)
+  }, 60000)
+
+  it('turns a coupling filed with its bores the wrong way round end for end', async () => {
+    // EAMM-A-D100-100A files EAMC-56-58-19-24 with its Ø19 bore towards the axis; the ESBF-BS-100 shaft is Ø24
+    const path = 'data/kits/Festo/Drawings/EAMM-A/3356796_EAMM-A-D100-100A.stp'
+    const meta = metas[`../../${path.replace(/\.stp$/, '.json')}`] as KitMeta
+    expect(meta.couplingShift?.flip).toBeDefined()
+    const file = parseStep(await text(path))
+    placeCoupling(file, meta)
+    const mesh = (await occt).ReadStepFile(new TextEncoder().encode(writeStep(file)), null).meshes.find((m) => m.name.includes('EAMC-56-58'))!
+    // the smallest radius at the coupling's axis end (+z from the axis face): its bore there
+    const p = mesh.attributes.position.array
+    const z = p.filter((_, i) => i % 3 === 2)
+    const lo = Math.min(...z)
+    let r = Infinity
+    for (let i = 0; i < p.length; i += 3) if (p[i + 2] < lo + 0.5) r = Math.min(r, Math.hypot(p[i], p[i + 1]))
+    expect(2 * r).toBeCloseTo(24, 0)
   }, 60000)
 
   it('turns the motor of an axial kit to the chosen connector side', async () => {

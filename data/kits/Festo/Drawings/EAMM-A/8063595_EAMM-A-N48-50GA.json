@@ -1,4 +1,5 @@
 {
   "axisFace": { "origin": [0, 0, 0], "axis": [0, 0, 1], "up": [0, 1, 0] },
-  "motorFace": { "origin": [0, 0, 43], "axis": [0, 0, 1], "up": [0, 1, 0] }
+  "motorFace": { "origin": [0, 0, 43], "axis": [0, 0, 1], "up": [0, 1, 0] },
+  "couplingShift": { "parts": ["5200241 EAMD-42-40-12-16x25"], "by": 1 }
 }

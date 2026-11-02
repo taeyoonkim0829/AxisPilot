@@ -42,6 +42,10 @@ node scripts/festo-cad/import.mjs <folder>           # copy them (--move to move
   (part numbers from the ELGT-BS / ELGD catalogs, `-Kind adapters`), copied as `<partNumber>_<model>.stp`; their frame
   JSONs come from `node scripts/festo-cad/adapter-frames.mjs` (rules in its header). `frames.mjs --profile` adds
   the profile's mounting face (`profile`) to existing axis JSONs, where a gantry kit holds a carried axis.
+- Couplings: `frames.mjs --coupling` adds the jaw hubs (`coupling`: the axis's own hub on ELGT-BS / ELGD-BS, the kit
+  hub meeting it) and `couplingShift` for EAMM-A-D50/-D60/-S60, whose coupling is filed inside the axis. After new
+  axis or kit drawings, `node scripts/festo-cad/couplings.mjs` lists the kit couplings still entering an axis they
+  fit; `--write` gives those kits the least `couplingShift` that clears (rules in its header).
 - ELGT-TB-…-CS (customer solution) is not in the catalog: its files are Festo Korea's Creo exports, one per standard
   stroke (`<partNumber>_ELGT-TB-<size>-<stroke>-CS.stp`). `frames.mjs` finds their unnamed cover caps by geometry and
   writes no `stretch` (the profile is not a part of its own), so every stroke needs its own file.
