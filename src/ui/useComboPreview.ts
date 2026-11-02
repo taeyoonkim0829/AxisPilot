@@ -8,8 +8,10 @@ import { isStaleBuild, STALE_BUILD_NOTICE } from './staleBuild'
 
 // Building, previewing and exporting an assembled combination (step 5 and the gantry drawing).
 
-/** Drawing files fetched once per page (a rebuild for another spacing or orientation reuses them); failures are dropped */
+/** Drawing files fetched once per page (a rebuild for another spacing or orientation reuses them); failures are
+ *  dropped, and only the last FILES_KEPT used stay (an ELGT-TB-…-CS file is 25–33 MB, one per stroke) */
 const fileCache = new Map<string, Promise<string>>()
+const FILES_KEPT = 20 // a gantry drawing uses up to ~15 files (axes, kits, motors, gearboxes, gantry kits, shaft)
 
 async function fetchText(d: Drawing, attempts = 2): Promise<string> {
   try {
@@ -28,11 +30,13 @@ async function fetchText(d: Drawing, attempts = 2): Promise<string> {
 
 export const loadText = (d: Drawing) => {
   let text = fileCache.get(d.url)
-  if (!text) {
+  if (text) fileCache.delete(d.url) // re-inserted below: Map order = last use
+  else {
     text = fetchText(d)
-    fileCache.set(d.url, text)
     text.catch(() => fileCache.delete(d.url))
   }
+  fileCache.set(d.url, text)
+  if (fileCache.size > FILES_KEPT) fileCache.delete(fileCache.keys().next().value!)
   return text
 }
 

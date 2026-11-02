@@ -234,7 +234,9 @@ if (write) {
     }
     const parts = meta.couplingShift?.parts ?? [...new Set(coupling.map((m) => m.name.trim()))]
     const by = Number(((meta.couplingShift?.by ?? 0) + extra + 0.5).toFixed(2))
-    const couplingShift = { parts, by, ...(flip ? { flip } : {}) }
+    // a flip it has already stays (the shift was found with it)
+    const turned = flip ?? meta.couplingShift?.flip
+    const couplingShift = { parts, by, ...(turned ? { flip: turned } : {}) }
     console.log(`${kit.product}: ${JSON.stringify(couplingShift)}`)
     const out = f.replace(/\.stp$/i, '.json')
     const old = JSON.parse(readFileSync(out, 'utf8'))

@@ -37,6 +37,32 @@ async function pipe(bytes: Uint8Array, stream: CompressionStream | Decompression
   return new Uint8Array(await new Response(out).arrayBuffer())
 }
 
+/** bytes a shared state may unpack to (a real one is a few kB): a crafted link must not fill the tab's memory */
+export const MAX_SHARED_BYTES = 1 << 20
+
+async function inflate(bytes: Uint8Array): Promise<Uint8Array> {
+  const reader = new Blob([bytes as BlobPart]).stream().pipeThrough(new DecompressionStream('deflate-raw')).getReader()
+  const parts: Uint8Array[] = []
+  let size = 0
+  for (;;) {
+    const { done, value } = await reader.read()
+    if (done) break
+    size += value.length
+    if (size > MAX_SHARED_BYTES) {
+      await reader.cancel()
+      throw new Error('shared state too large')
+    }
+    parts.push(value)
+  }
+  const out = new Uint8Array(size)
+  let at = 0
+  for (const p of parts) {
+    out.set(p, at)
+    at += p.length
+  }
+  return out
+}
+
 const toBase64Url = (bytes: Uint8Array) => {
   let text = ''
   for (let i = 0; i < bytes.length; i += 0x8000) text += String.fromCharCode(...bytes.subarray(i, i + 0x8000))
@@ -54,7 +80,7 @@ export async function encodeShare(shared: Shared): Promise<string> {
 export async function decodeShare(value: string): Promise<Shared | null> {
   if (!value.startsWith(VERSION)) return null
   try {
-    const bytes = await pipe(fromBase64Url(value.slice(VERSION.length)), new DecompressionStream('deflate-raw'))
+    const bytes = await inflate(fromBase64Url(value.slice(VERSION.length)))
     return withDefaults(JSON.parse(new TextDecoder().decode(bytes)))
   } catch {
     return null
