@@ -1,4 +1,5 @@
 {
   "axisFace": { "origin": [-0.3, 0, 0], "axis": [0, 0, 1], "up": [0, 1, 0] },
-  "motorFace": { "origin": [-0.3, 0, 62.5], "axis": [0, 0, 1], "up": [0, 1, 0] }
+  "motorFace": { "origin": [-0.3, 0, 62.5], "axis": [0, 0, 1], "up": [0, 1, 0] },
+  "couplingShift": { "parts": ["8228281 EAMC-42-50-11-16-U"], "by": 49.75 }
 }

@@ -163,8 +163,11 @@ function copySlide(file: StepFile, shifts: Vec3[]): boolean {
 }
 
 /** Moves the slide part by `shift` (file mm; new points, the old ones may be shared). False when it is no part of its own. */
-function moveSlide(file: StepFile, shift: Vec3): boolean {
-  const pd = definitionByName(file, SLIDE_PART)
+const moveSlide = (file: StepFile, shift: Vec3) => movePart(file, SLIDE_PART, shift)
+
+/** Moves every instance of the part named `name` by `shift` (file mm). False when there is no such part. */
+function movePart(file: StepFile, name: string | RegExp, shift: Vec3): boolean {
+  const pd = definitionByName(file, name)
   const rep = pd != null ? shapeOf(file, pd) : null
   const placements = rep != null ? placementIdsOf(file, rep) : []
   const e = file.entities
@@ -557,6 +560,8 @@ export async function comboParts(
   const world = mountingFrame(req.mounting)
   const parallel = sel.kit.type === 'parallel'
   const kitFile = parseStep(kitText)
+  // a coupling filed reaching into the axis goes into the kit housing
+  for (const part of kitMeta.couplingShift?.parts ?? []) movePart(kitFile, part, scale(kitMeta.axisFace.axis, kitMeta.couplingShift!.by))
   const gearboxFile = gearboxText ? parseStep(gearboxText) : null
   const motorFile = parseStep(motorText)
 

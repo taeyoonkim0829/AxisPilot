@@ -573,6 +573,33 @@ describe('combination', () => {
     expect([...own].filter((s) => kit.has(s))).toEqual([])
   }, 60000)
 
+  it('moves a coupling filed reaching into the axis into the kit housing', async () => {
+    // EAMM-A-D60-70A has its coupling 43.5 mm beyond the axis face, inside the ESBF-BS-63 head; it goes to the middle
+    // between the kit's faces (63.2 mm apart), clear of the axis
+    const paths = [
+      'data/axes/Festo/Drawings/ESBF/574095_ESBF-BS-63-400-5P.stp',
+      'data/kits/Festo/Drawings/EAMM-A/543161_EAMM-A-D60-70A.stp',
+      files[2],
+    ]
+    const drawings = paths.map((path) => ({ ...parseDrawingPath(path)!, url: path, meta: metas[`../../${path.replace(/\.stp$/, '.json')}`] ?? null }))
+    const sel: ComboSelection = {
+      axis: axes.find((a) => a.model === 'ESBF-BS-63-…-5P')!,
+      axisModel: 'ESBF-BS-63-400-5P',
+      stroke: 400,
+      motor: motors.find((m) => m.model === 'EMMT-AS-60-S-HS')!,
+      gearbox: null,
+      kit: kits.find((k) => k.product === 'EAMM-A-D60-70A')!,
+    }
+    const combo = await buildCombo(sel, comboDrawings(sel, drawings), { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
+    const box = await meshBox(combo.step)
+    const part = (name: string) => box.parts.find((p) => p.name.includes(name))!
+    // floor: the shaft along X, the motor at −X; the kit housing runs from the axis face (its +X end) towards it
+    const housing = part('EAMK-A-D60')
+    const coupling = part('EAMC-42-50')
+    expect(coupling.hi[0]).toBeLessThan(housing.hi[0] - 5)
+    expect(coupling.lo[0]).toBeGreaterThan(housing.hi[0] - 63.2 + 5)
+  }, 60000)
+
   it('turns the motor of an axial kit to the chosen connector side', async () => {
     const sel = selection(800)
     const found = comboDrawings(sel, testDrawings)

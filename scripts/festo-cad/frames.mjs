@@ -16,7 +16,8 @@
 // SA kits (`saKitFrames`, BF…/EB…/GD… in any orientation) find the shaft from the coupling or base plate and the sides
 // from the screws: tips out of the axis face, heads outside the motor face.
 // Jaw couplings (`couplingOf`, also `--coupling` for existing JSONs): the EAMC hub on an axis's drive shaft (ELGT-BS,
-// ELGD-BS) and the kit hub facing it, their jaws found in a section near the jaw tips.
+// ELGD-BS) and the kit hub facing it (EAMM-A, SA GT…/GD…), their jaws found in a section near the jaw tips; and
+// `couplingShift` for the EAMM-A-D50/-D60/-S60 kits whose coupling is filed inside the axis.
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { join, resolve } from 'node:path'
@@ -150,16 +151,21 @@ function hubJaws(ms, f, end) {
     const q = [p[0] - f.origin[0], p[1] - f.origin[1], p[2] - f.origin[2]]
     return [0, 1, 2].map((i) => q[0] * [f.axis, f.up, w][i][0] + q[1] * [f.axis, f.up, w][i][1] + q[2] * [f.axis, f.up, w][i][2])
   }
-  const hubs = ms
-    .filter((m) => /(^|\s)EAMC-\S*-GB/.test(m.name))
-    .map((m) => {
-      const pts = []
-      for (let i = 0; i < m.points.length; i += 3) pts.push(local([m.points[i], m.points[i + 1], m.points[i + 2]]))
-      const span = (k) => [Math.min(...pts.map((q) => q[k])), Math.max(...pts.map((q) => q[k]))]
-      const [y, z] = [span(1), span(2)]
-      return { m, pts, along: span(0), off: Math.hypot((y[0] + y[1]) / 2, (z[0] + z[1]) / 2) }
-    })
-    .filter((h) => h.off < 2)
+  const placed = (m) => {
+    const pts = []
+    for (let i = 0; i < m.points.length; i += 3) pts.push(local([m.points[i], m.points[i + 1], m.points[i + 2]]))
+    const span = (k) => [Math.min(...pts.map((q) => q[k])), Math.max(...pts.map((q) => q[k]))]
+    const [y, z] = [span(1), span(2)]
+    return { m, pts, along: span(0), off: Math.hypot((y[0] + y[1]) / 2, (z[0] + z[1]) / 2), r: Math.max(...pts.map((q) => Math.hypot(q[1], q[2]))) }
+  }
+  let hubs = ms.filter((m) => /(^|\s)EAMC-\S*-GB/.test(m.name)).map(placed).filter((h) => h.off < 2)
+  // Festo Korea's SA kits name their coupling's spider (SJC-30S-…) but not its hubs: the unnamed parts on the shaft
+  // line no wider than the spider
+  const spider = ms.filter((m) => SA_COUPLING.test(m.name)).map(placed).filter((h) => h.off < 2)
+  if (!hubs.length && spider.length) {
+    const r = Math.max(...spider.map((s) => s.r))
+    hubs = ms.filter((m) => !SA_COUPLING.test(m.name) && !hardware(m.name)).map(placed).filter((h) => h.off < 2 && h.r < 1.3 * r)
+  }
   if (!hubs.length) return null
   // the hub at the jaw end: the one reaching farthest that way
   const hub = hubs.reduce((a, b) => (b.along[end > 0 ? 1 : 0] * end > a.along[end > 0 ? 1 : 0] * end ? b : a))
@@ -223,6 +229,33 @@ function couplingOf(file, json) {
   if (!json.axisFace) return null
   const h = hubJaws(ms, json.axisFace, -1)
   return h && { jaw: turned(json.axisFace, h.centre, h.count), count: h.count }
+}
+
+/**
+ * EAMM-A-D50/-D60/-S60 (ESBF-BS-50/63, ELGD-BS-120): Festo files the coupling 43.5 mm beyond the axis face, so
+ * assembled it lies inside the axis head (a clash check over every axis–kit pair found these alone). `couplingShift`
+ * moves it to the middle between the axis and motor faces. Other kits' couplings reaching beyond the face go into
+ * the axis's recess or hollow shaft (EGC) and stay.
+ */
+const BURIED_COUPLING = /^EAMM-A-(D50|D60|S60)-/
+function couplingShiftOf(file, json) {
+  const model = /^\d+_(.+)\.stp$/i.exec(file.split(/[\\/]/).pop())?.[1] ?? ''
+  if (!BURIED_COUPLING.test(model) || !json.axisFace) return null
+  const f = json.axisFace
+  const along = (p) => (p[0] - f.origin[0]) * f.axis[0] + (p[1] - f.origin[1]) * f.axis[1] + (p[2] - f.origin[2]) * f.axis[2]
+  const parts = meshes(readFileSync(file, 'latin1')).filter((m) => /(^|\s)EAM[CD]-/.test(m.name))
+  if (!parts.length) return null
+  let lo = Infinity
+  let hi = -Infinity
+  for (const m of parts)
+    for (let i = 0; i < m.points.length; i += 3) {
+      const t = along([m.points[i], m.points[i + 1], m.points[i + 2]])
+      lo = Math.min(lo, t)
+      hi = Math.max(hi, t)
+    }
+  // the other kits of these series have it in the housing already
+  if (lo > -10) return null
+  return { parts: [...new Set(parts.map((m) => m.name.trim()))], by: fixed(along(json.motorFace.origin) / 2 - (lo + hi) / 2) }
 }
 
 const centre = (lo, hi, k) => (lo[k] + hi[k]) / 2
@@ -725,12 +758,14 @@ for (const file of files) {
   if (couplingOnly) {
     if (!existsSync(out) || /[\\/]gearboxes[\\/]/.test(resolve(file))) continue
     const old = JSON.parse(readFileSync(out, 'utf8'))
-    if (old.coupling && !force) continue
+    if ((old.coupling || old.couplingShift) && !force) continue
     try {
-      const coupling = couplingOf(file, old)
-      if (!coupling) continue
-      console.log(`${file.split(/[\\/]/).pop()}: ${JSON.stringify(coupling)}`)
-      if (!dryRun) writeFileSync(out, format({ ...old, coupling }))
+      const add = Object.fromEntries(
+        [['coupling', couplingOf(file, old)], ['couplingShift', couplingShiftOf(file, old)]].filter(([, v]) => v),
+      )
+      if (!Object.keys(add).length) continue
+      console.log(`${file.split(/[\\/]/).pop()}: ${JSON.stringify(add)}`)
+      if (!dryRun) writeFileSync(out, format({ ...old, ...add }))
       written++
     } catch (err) {
       console.log(`${file}: FAILED ${err.message}`)
@@ -758,8 +793,9 @@ for (const file of files) {
   const make = /^EAMM-/.test(model) ? kitFrames : /^[A-Z]{2}\d{3}[AU]\d{3}/.test(model) ? saKitFrames : /^EMGA-/.test(model) ? gearboxFrames : /^A[BE]/.test(model) ? apexFrames : frames
   try {
     const { json: frameJson, info } = make(file, model)
-    const coupling = make === frames || make === kitFrames ? couplingOf(file, frameJson) : null
-    const json = coupling ? { ...frameJson, coupling } : frameJson
+    const coupling = make === frames || make === kitFrames || make === saKitFrames ? couplingOf(file, frameJson) : null
+    const couplingShift = make === kitFrames ? couplingShiftOf(file, frameJson) : null
+    const json = { ...frameJson, ...(coupling ? { coupling } : {}), ...(couplingShift ? { couplingShift } : {}) }
     console.log(`${model}: ${info}`)
     if (dryRun) console.log(JSON.stringify(json))
     else {
