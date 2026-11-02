@@ -124,7 +124,9 @@ def main(only: str | None) -> None:
                 continue
             along = dot(rel, d["axis"])
             radial = math.sqrt(max(0.0, dot(rel, rel) - along * along))
-            if "(CUP)" in label and -10 < along < 5 and radial + half < 80:
+            # cover caps: CADENAS names them (CUP); in the ELGT-TB-…-CS Creo files they are unnamed discs 1 mm thick
+            thin = min(box.max.X - box.min.X, box.max.Y - box.min.Y, box.max.Z - box.min.Z) < 2
+            if ("(CUP)" in label or thin) and -10 < along < 5 and radial + half < 80:
                 continue
             if ameta.get("coupling") and ameta["coupling"]["part"] in label:
                 hub_leaf = label

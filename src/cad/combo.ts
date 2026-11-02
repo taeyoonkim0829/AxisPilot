@@ -277,9 +277,12 @@ export function shaftDrivePosition(meta: AxisMeta, mounting: Mounting, position:
   return motorFacesTwin(meta, mounting, position) ? { ...position, otherSide: !position.otherSide } : position
 }
 
+/** Shaft cover caps: CADENAS names them (CUP), the ELGT-TB-120/-160-…-CS Creo files by their Festo part number */
+const CAP = /\(CUP\)|^'249342[45]'$/
+
 /** Shaft cover caps (CUP) at the drive head on the side `end` faces */
 function capsAt(file: StepFile, end: Frame, slide: AxisMeta['slide']) {
-  const pd = definitionByName(file, '(CUP)')
+  const pd = definitionByName(file, CAP)
   const rep = pd != null ? shapeOf(file, pd) : null
   if (rep == null) return []
   const centre = sub(end.origin, scale(end.axis, dot(sub(end.origin, slide.origin), end.axis)))
@@ -318,7 +321,7 @@ function withoutCaps(file: StepFile, end: Frame, slide: AxisMeta['slide']): Step
  * (EGC-HD-TB) keep their caps.
  */
 function moveCaps(file: StepFile, drive: Frame, slide: AxisMeta['slide']) {
-  const pd = definitionByName(file, '(CUP)')
+  const pd = definitionByName(file, CAP)
   const rep = pd != null ? shapeOf(file, pd) : null
   if (rep == null) return
   const e = file.entities

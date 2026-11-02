@@ -342,7 +342,10 @@ function frames(file, model) {
     // the outermost face of a quarter of the cross-section or more: the end face the kit sits on (not the shaft,
     // the centering collar or, further in, the profile end hidden in an end cap)
     const section = width * (profile.hi[1] - profile.lo[1])
-    const face = near.filter((f) => f.area > 0.25 * section).reduce((a, b) => (b.pos * motor > a.pos * motor ? b : a))
+    // a face reaching the profile's outline counts at any area: the ESBF-80/-100 cylinder's shoulder around the
+    // centering collar is a thin square ring (corner bores cut it), the larger face inside lies 5.5 mm deeper
+    const outline = (f) => [0, 1].every((k) => f.hi[k] - f.lo[k] > 0.95 * (profile.hi[k] - profile.lo[k]))
+    const face = near.filter((f) => f.area > 0.25 * section || (outline(f) && f.area > 0.1 * section)).reduce((a, b) => (b.pos * motor > a.pos * motor ? b : a))
     const tips = near.filter((f) => f.area < 0.2 * face.area && f.pos * motor > face.pos * motor)
     if (tips.length === 0) throw new Error('no shaft beyond the drive face')
     const tip = tips.reduce((a, b) => (b.pos * motor > a.pos * motor ? b : a))

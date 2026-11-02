@@ -618,6 +618,23 @@ describe('combination', () => {
     expect(caps(combo.step)).toBe(caps(await text(paths[0])) - 1)
   }, 60000)
 
+  it('takes the cap off the ELGT-TB-…-CS shaft end too, named by its part number in the Creo file', async () => {
+    const paths = ['data/axes/Festo/Drawings/ELGT/TB/8195618_ELGT-TB-120-300-CS.stp', 'data/kits/Festo/Drawings/EAMM-A/8197468_EAMM-A-N48-60P.stp', files[2]]
+    const drawings = paths.map((path) => ({ ...parseDrawingPath(path)!, url: path, meta: metas[`../../${path.replace(/\.stp$/, '.json')}`] ?? null }))
+    const sel: ComboSelection = {
+      axis: axes.find((a) => a.model === 'ELGT-TB-120')!,
+      axisModel: 'ELGT-TB-120-300-CS',
+      stroke: 300,
+      motor: motors.find((m) => m.model === 'EMMT-AS-60-S-HS')!,
+      gearbox: null,
+      kit: kits.find((k) => k.product === 'EAMM-A-N48-60P')!,
+    }
+    const caps = (step: string) => [...parseStep(step).entities.values()].filter((b) => typeOf(b) === 'NEXT_ASSEMBLY_USAGE_OCCURRENCE' && b.includes("'2493424'")).length
+    const combo = await buildCombo(sel, comboDrawings(sel, drawings), { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
+    expect(caps(await text(paths[0]))).toBe(4)
+    expect(caps(combo.step)).toBe(3)
+  }, 120000)
+
   it('turns a coupling filed with its bores the wrong way round end for end', async () => {
     // EAMM-A-D100-100A files EAMC-56-58-19-24 with its Ø19 bore towards the axis; the ESBF-BS-100 shaft is Ø24
     const path = 'data/kits/Festo/Drawings/EAMM-A/3356796_EAMM-A-D100-100A.stp'
