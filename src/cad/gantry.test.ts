@@ -5,6 +5,7 @@ import { adapters, axes, kits, motors } from '../data'
 import type { Axis, AxisAdapter } from '../data/types'
 import { buildCombo, comboDrawings, defaultComboOptions, type ComboSelection } from './combo'
 import { mountingDrawingFor, parseDrawingPath, type AdapterMeta, type BeamMeta, type Drawing } from './drawings'
+import { yEndClashes } from './clearance'
 import { beamAtLength, beamTooShort, buildGantry, type GantryAxisDrawing } from './gantry'
 import { writeStep } from './step'
 
@@ -22,6 +23,23 @@ const defaultGantry: GantryInputs = { ...appGantry, yMounting: 'floor' }
 type OcctMesh = { name: string; attributes: { position: { array: number[] } } }
 type Occt = { ReadStepFile: (data: Uint8Array, params: null) => { success: boolean; meshes: OcctMesh[] } }
 const occt = import('occt-import-js').then((m) => (m.default as () => Promise<Occt>)())
+
+/** meshes of an assembly tagged with their top-level part, as occtMesh.ts does in the browser */
+async function bodies(step: string, partCount: number) {
+  type Node = { meshes: number[]; children: Node[] }
+  const lib = (await occt) as unknown as { ReadStepFile: (d: Uint8Array, p: null) => { root: Node; meshes: (OcctMesh & { index: { array: number[] } })[] } }
+  const result = lib.ReadStepFile(new TextEncoder().encode(step), null)
+  let level: Node[] = [result.root]
+  while (level.length === 1 && level[0].children.length > 0 && level[0].meshes.length === 0) level = level[0].children
+  const partOf = new Map<number, number>()
+  const walk = (node: Node, part: number) => {
+    for (const m of node.meshes) partOf.set(m, part)
+    node.children.forEach((c) => walk(c, part))
+  }
+  expect(level).toHaveLength(partCount)
+  level.forEach((node, i) => walk(node, i))
+  return result.meshes.map((m, i) => ({ part: partOf.get(i) ?? 0, name: m.name, positions: Float32Array.from(m.attributes.position.array), index: Uint32Array.from(m.index.array) }))
+}
 
 /** bounding box of each mesh whose name matches */
 async function boxes(step: string, re: RegExp) {
@@ -200,6 +218,33 @@ describe('gantry kits', () => {
 })
 
 describe('gantry drawing', () => {
+  it('draws the Y slide mid-travel and finds Z running into a twin X axis at the end of the Y travel', async () => {
+    const elgt = (size: number) => axes.find((x) => x.family === 'ELGT' && x.drive === 'spindle' && x.size === size)!
+    const [x, y, z] = [elgt(160), elgt(120), elgt(90)]
+    const build = async (g: GantryInputs, twin?: { spacing: number; drive: boolean }) => {
+      const parts = [{ ...axisDrawing('x', x, 1000, g), twin }, axisDrawing('y', y, 500, g), axisDrawing('z', z, 200, g)]
+      const xy = gantryJoint(g, 'x', 'y', x, y, 500, adapters, parts[1].sel.stroke + y.baseLength!)
+      const yz = gantryJoint(g, 'y', 'z', y, z, 200, adapters, parts[2].sel.stroke + z.baseLength!)
+      const combo = await buildGantry(g, parts, [jointDrawing(xy), jointDrawing(yz)], load)
+      return { combo, clashes: yEndClashes(combo.parts, await bodies(combo.step, combo.parts.length), combo.y!) }
+    }
+    // one X axis: the Z axis hangs beside it over the whole Y travel
+    const single: GantryInputs = { ...defaultGantry, yMounting: 'wall', parallel: { ...defaultGantry.parallel, x: { ...defaultGantry.parallel.x, mode: 'single' } } }
+    const one = await build(single)
+    expect(one.combo.y!.offset).toBeCloseTo(0)
+    // the Y slide (and the plate on it) in the middle of the Y profile
+    const found = await boxes(one.combo.step, /EHAM-MA|ELGT-BS-120/)
+    const plate = found.find((b) => /EHAM-MA/.test(b.name))!
+    const yAxis = found.filter((b) => /ELGT-BS-120/.test(b.name))
+    const mid = (Math.min(...yAxis.map((b) => b.lo[1])) + Math.max(...yAxis.map((b) => b.hi[1]))) / 2
+    expect(Math.abs((plate.lo[1] + plate.hi[1]) / 2 - mid)).toBeLessThan(45)
+    expect(one.clashes).toEqual([])
+    // two X axes 752 mm apart (the angle kits' fit): the Y travel takes Z (reaching below the X axes) over one of them
+    const twin: GantryInputs = { ...single, parallel: { ...single.parallel, x: { ...single.parallel.x, mode: 'twinMotor', spacing: 752 } } }
+    const two = await build(twin, { spacing: 752, drive: true })
+    expect(two.clashes.some((c) => c.moving.startsWith('Z ') && c.fixed.startsWith('X ELGT-BS-160'))).toBe(true)
+  }, 300000)
+
   it('builds a long twin X axis (more entity ids than a call takes as arguments)', async () => {
     // ELGT lengthened by whole hole pitches: 3000 mm takes the file past 100 000 entities
     const x = axes.find((a) => a.family === 'ELGT' && a.drive === 'spindle' && a.size === 160)!

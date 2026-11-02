@@ -1,8 +1,9 @@
-import type { ReactNode } from 'react'
-import { gantryAxes, type GantryInputs } from '../calc/gantry'
+import { useEffect, useState, type ReactNode } from 'react'
+import { gantryAxes, gantryChain, type GantryInputs } from '../calc/gantry'
 import type { AxisAdapter } from '../data/types'
 import type { GantryAxis } from '../calc/gantry'
 import type { ComboOptions } from '../cad/combo'
+import { yEndClashes, type EndClash } from '../cad/clearance'
 import { adapterDrawingFor, bracketDrawingUrl, mountingDrawingFor, type BeamMeta, type Drawing } from '../cad/drawings'
 import { beamTooShort, buildGantry, type GantryAxisDrawing, type GantryJointDrawing } from '../cad/gantry'
 import { useT } from '../i18n'
@@ -57,7 +58,18 @@ export function GantryDrawing({
     },
   }))
   const complete = inputs.every((i) => i.selection && i.found)
-  const ready = complete && inputs.every((i) => i.found!.missing.length === 0)
+  // every carrier joins the axis it carries with a gantry kit that has a drawing; without one there is no way to mount
+  // the axis as drawn, so no gantry drawing is made (the joint row says why)
+  const kitless = gantryChain(gantry.config)
+    .slice(1)
+    .flatMap((base) => {
+      const j = results.find((r) => r.axis === base)?.joint
+      const carried = gantryChain(gantry.config)[gantryChain(gantry.config).indexOf(base) - 1]
+      const pair = `${base.toUpperCase()}–${carried.toUpperCase()}`
+      if (!j?.kit) return [{ pair, drawing: false }]
+      return j.kits.every((k) => adapterDrawingFor(k)) && (!j.beam || adapterDrawingFor(j.beam.bracket)) ? [] : [{ pair, drawing: true }]
+    })
+  const ready = complete && inputs.every((i) => i.found!.missing.length === 0) && kitless.length === 0
   const key = complete
     ? [
         ...inputs.map((i) => {
@@ -82,10 +94,28 @@ export function GantryDrawing({
       loadText,
     ),
   )
+  const [clearance, setClearance] = useState<{ key: string; clashes: EndClash[] | null } | null>(null)
+  useEffect(() => {
+    if (!ready || !key) return
+    let cancelled = false
+    state
+      .meshes()
+      .then(({ combo, meshes }) => {
+        if (!cancelled) setClearance({ key, clashes: combo.y ? yEndClashes(combo.parts, meshes, combo.y) : [] })
+      })
+      .catch(() => {
+        if (!cancelled) setClearance({ key, clashes: null })
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [key, ready]) // eslint-disable-line react-hooks/exhaustive-deps -- once per combination
+  const current = clearance?.key === key ? clearance.clashes : undefined
+  const yStroke = inputs.find((i) => i.a === 'y')?.selection?.stroke
   const name = () => `Gantry_${gantry.config.toUpperCase()}_${inputs.map((i) => i.selection!.axisModel).join('_')}`
   const title = (c: { name: string }) => [
     c.name,
-    `Gantry ${gantry.config.toUpperCase()}, axes at the start position; gantry kits from the axis data sheets.`,
+    `Gantry ${gantry.config.toUpperCase()}, axes at the start position, the Y slide at mid-travel; gantry kits from the axis data sheets.`,
     'Third-angle projection, units: mm. 3D models: manufacturer CAD data (see STEP header for licence).',
   ]
   const missing = inputs.flatMap((i) => (i.found?.missing.length ? [`${i.a.toUpperCase()}: ${i.found.missing.map((m) => t(roleWords[m] ?? m)).join(', ')}`] : []))
@@ -210,7 +240,7 @@ export function GantryDrawing({
           </div>
           <p className="muted small-print">
             {t(
-              '조합 키트는 ELGT-BS, ELGD 데이터시트의 조합표 기준입니다. EGC는 Festo 키트가 없어 주문 제작 브래킷(앵글 브래킷, 어댑터 플레이트)을 씁니다. 축은 시작 위치에 그리며, 위쪽 축은 조립 설명서대로 키트가 잡는 위치(핀과 볼트 구멍)에 붙이고, 그 데이터가 없는 키트는 입력한 장착 오프셋을 따릅니다. 키트가 없는 결합은 입력한 장착 위치에 축만 배치합니다. 키트에 축을 고정하는 프로파일 마운팅(EAHF)과 슬롯 너트는 도면에 없습니다.',
+              '조합 키트는 ELGT-BS, ELGD 데이터시트의 조합표 기준입니다. EGC는 Festo 키트가 없어 주문 제작 브래킷(앵글 브래킷, 어댑터 플레이트)을 씁니다. 축은 시작 위치에, Y축 슬라이드는 행정 가운데에 그리며, 위쪽 축은 조립 설명서대로 키트가 잡는 위치(핀과 볼트 구멍)에 붙이고, 그 데이터가 없는 키트는 입력한 장착 오프셋을 따릅니다. 키트가 없는 결합은 입력한 장착 위치에 축만 배치합니다. 키트에 축을 고정하는 프로파일 마운팅(EAHF)과 슬롯 너트는 도면에 없습니다.',
             )}
             {unkitted.length > 0 && (
               <span className="warn-text"> {t('키트 없이 배치한 결합: {pairs}', { pairs: unkitted.join(', ') })}</span>
@@ -221,10 +251,40 @@ export function GantryDrawing({
               {w}
             </p>
           ))}
+          {kitless.length > 0 && (
+            <p className="warn-text">
+              {t('조합 키트가 없는 결합이 있어 조합축 도면을 만들지 않습니다: {pairs}. 축 크기나 계열을 바꿔 키트가 있는 조합을 고르거나 브래킷을 따로 설계하세요.', {
+                pairs: kitless.map((k) => (k.drawing ? `${k.pair} (${t('키트 도면 없음')})` : k.pair)).join(', '),
+              })}
+            </p>
+          )}
+          {ready && current === undefined && <p className="muted small-print">{t('Y축 행정 끝 위치의 간섭을 검사하는 중…')}</p>}
+          {ready && current === null && <p className="muted small-print">{t('Y축 행정 끝 위치의 간섭을 검사하지 못했습니다.')}</p>}
+          {ready && current && current.length === 0 && yStroke != null && (
+            <p className="muted small-print">{t('Y축이 행정 양 끝(가운데 ±{half} mm)에 가도 X축 · Y 구동부와 간섭하지 않습니다.', { half: fmt(yStroke / 2, 0) })}</p>
+          )}
+          {ready &&
+            current &&
+            current.length > 0 &&
+            [-1, 1].map((end) => {
+              const at = current.filter((c) => c.end === end)
+              return (
+                at.length > 0 && (
+                  <p key={end} className="warn-text">
+                    {t('Y축 슬라이드가 행정 {end} 끝(가운데에서 {dir}{half} mm)에 가면 간섭합니다: {pairs}. X축 간격, Y 스트로크, 장착 위치나 Z 스트로크를 조정하세요.', {
+                      end: end < 0 ? t('시작') : t('반대'),
+                      dir: end < 0 ? '−' : '+',
+                      half: fmt((yStroke ?? 0) / 2, 0),
+                      pairs: at.map((c) => `${c.moving} ↔ ${c.fixed}`).join(', '),
+                    })}
+                  </p>
+                )
+              )
+            })}
           {missing.length > 0 && (
             <p className="muted small-print">{t('도면이 없는 부품이 있어 조합할 수 없습니다: {parts}. 관리자에게 문의하세요.',{ parts: missing.join(' · ') })}</p>
           )}
-          <ComboPreviewPanel state={state} ready={ready} onStep={() => state.exportStep(name)} onDxf={() => state.exportDxf(name, title)} />
+          {kitless.length === 0 && <ComboPreviewPanel state={state} ready={ready} onStep={() => state.exportStep(name)} onDxf={() => state.exportDxf(name, title)} />}
         </>
       )}
     </section>

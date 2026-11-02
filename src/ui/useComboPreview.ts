@@ -134,5 +134,7 @@ export function useComboPreview<C extends Combo>(key: string, ready: boolean, bu
     }
   }, [key, stale]) // eslint-disable-line react-hooks/exhaustive-deps -- rebuild when the inputs change
 
-  return { preview, busy, error, shown, shownRoles, stale, showPreview, exportStep, exportDxf }
+  /** the combination and its meshes, built (and cached) without opening the preview: for checks on the geometry */
+  const meshes = meshesFor
+  return { preview, busy, error, shown, shownRoles, stale, showPreview, exportStep, exportDxf, meshes }
 }

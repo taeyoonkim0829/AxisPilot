@@ -50,6 +50,9 @@ export interface GantryJointDrawing {
 export interface GantryCombo extends Combo {
   /** joints placed without a kit drawing (at the entered mounting point), as `X–Y` */
   unkitted: string[]
+  /** the Y axis: its slide's travel (world, unit), ordered stroke and where the slide is drawn (mm along the travel from
+   *  the middle; 0 = centred): the Y slide's ends are at ±stroke/2 */
+  y?: { travel: Vec3; stroke: number; offset: number }
 }
 
 const near = (a: Vec3, b: Vec3) => dot(a, b) > 0.999
@@ -136,8 +139,8 @@ export async function buildGantry(
       chain.map(async (a) => {
         const d = byAxis.get(a)!
         const cog = { x: -d.req.cog.x, y: -d.req.cog.y, z: d.req.cog.z }
-        // the carried axis sits on the slides: twin X axes side by side
-        const options = { ...d.options, twinFacing: false }
+        // the carried axis sits on the slides: twin X axes side by side; the Y slide in the middle of its travel
+        const options = { ...d.options, twinFacing: false, slideCentred: a === 'y' }
         return [a, await comboParts(d.sel, d.found, { mounting: d.req.mounting, cog }, load, options, d.twin)] as const
       }),
     ),
@@ -164,7 +167,7 @@ export async function buildGantry(
 
   // combination → world for each axis, from the base up
   const placed = new Map<GantryAxis, Transform>()
-  const kits: (AssemblyPart & { role: PartRole })[] = []
+  const kits: (AssemblyPart & { role: PartRole; axis: GantryAxis })[] = []
   const unkitted: string[] = []
   /** slide surface centres (start position) of a placed axis, both members of a twin arrangement; with additional
    *  slides the main slide's, which carries the kit (the calc's mounting point) */
@@ -252,7 +255,7 @@ export async function buildGantry(
       if (!kt) return
       const url = pick.url
       if (!files.has(url)) files.set(url, parseStep(kitTexts.get(url)!))
-      kits.push({ role: 'adapter', name: `${pick.kit.model}${k ? ` (${k + 1})` : ''}`, file: files.get(url)!, transform: kt })
+      kits.push({ role: 'adapter', axis: below, name: `${pick.kit.model}${k ? ` (${k + 1})` : ''}`, file: files.get(url)!, transform: kt })
       // its profile mountings, one jaw on each seat of the kit's wall
       const m = pick.mountings
       if (m && pick.meta.mountings) {
@@ -260,7 +263,7 @@ export async function buildGantry(
         const key = `${m.drawing.url}#jaw`
         if (!files.has(key)) files.set(key, firstInstance(parseStep(kitTexts.get(m.drawing.url)!)))
         pick.meta.mountings.forEach((seat, s) =>
-          kits.push({ role: 'adapter', name: `${m.model}${k ? ` (${k + 1})` : ''} ${s + 1}`, file: files.get(key)!, transform: mate(kt, seat, jaw) }),
+          kits.push({ role: 'adapter', axis: below, name: `${m.model}${k ? ` (${k + 1})` : ''} ${s + 1}`, file: files.get(key)!, transform: mate(kt, seat, jaw) }),
         )
       }
     })
@@ -273,7 +276,7 @@ export async function buildGantry(
       const end = beam.bracket.beam!.end
       const endA = add(face, scale(run, dot(slides[0], run) + end - dot(face, run)))
       const bt = mate(identity, { origin: endA, axis: w.n, up: scale(run, -1) }, bm.base)
-      kits.push({ role: 'adapter', name: `${beam.bracket.model} L ${Math.round(beam.length)}`, file: beamAtLength(kitTexts.get(beam.drawing!.url)!, beam.bracket, bm, beam.length), transform: bt })
+      kits.push({ role: 'adapter', axis: below, name: `${beam.bracket.model} L ${Math.round(beam.length)}`, file: beamAtLength(kitTexts.get(beam.drawing!.url)!, beam.bracket, bm, beam.length), transform: bt })
       // the carrying face: the beam front (Y profile underside), or the plate on the pad (Z)
       const front = (x: number): Vec3 => apply(bt, [x, bm.carried.origin[1], bm.carried.origin[2]])
       face = front(0)
@@ -285,7 +288,7 @@ export async function buildGantry(
           unkitted.push(pair)
           continue
         }
-        kits.push({ role: 'adapter', name: beam.plate!.kit.model, file: parseStep(kitTexts.get(beam.plate!.drawing!.url)!), transform: pt })
+        kits.push({ role: 'adapter', axis: below, name: beam.plate!.kit.model, file: parseStep(kitTexts.get(beam.plate!.drawing!.url)!), transform: pt })
         face = apply(pt, pm.carried.origin)
       }
     }
@@ -298,10 +301,10 @@ export async function buildGantry(
     placed.set(a, t)
   }
 
-  const parts: (AssemblyPart & { role: PartRole })[] = []
+  const parts: (AssemblyPart & { role: PartRole; axis: GantryAxis })[] = []
   for (const a of [...chain].reverse()) {
     const t = placed.get(a)!
-    for (const p of built.get(a)!.parts) parts.push({ ...p, name: `${a.toUpperCase()} ${p.name}`, transform: compose(t, p.transform) })
+    for (const p of built.get(a)!.parts) parts.push({ ...p, axis: a, name: `${a.toUpperCase()} ${p.name}`, transform: compose(t, p.transform) })
   }
   parts.push(...kits)
   const tool = chain[0]
@@ -313,11 +316,20 @@ export async function buildGantry(
   return {
     name,
     step,
-    parts: parts.map(({ role, name, transform }) => ({ role, name, transform })),
+    parts: parts.map(({ role, name, transform, axis }) => ({ role, name, transform, axis })),
     cog,
     slideCentre: [0, 0, 0],
     axisStroke: bottomCombo.axisStroke,
     stretch: bottomCombo.stretch,
     unkitted,
+    ...(byAxis.has('y') && placed.has('y')
+      ? {
+          y: {
+            travel: rotate(placed.get('y')!, built.get('y')!.slide.up),
+            stroke: byAxis.get('y')!.sel.stroke,
+            offset: built.get('y')!.slideOffset,
+          },
+        }
+      : {}),
   }
 }

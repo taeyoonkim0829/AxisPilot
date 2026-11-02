@@ -42,3 +42,4 @@ data/**/Drawings/**/*.dwl2
 !data/adapters/Custom/Drawings/*.pdf
 # cadgen / python caches
 cad/**/__pycache__/
+tmp/

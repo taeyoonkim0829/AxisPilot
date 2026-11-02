@@ -88,6 +88,9 @@ export interface ComboOptions {
   /** Motor sync: both axes turned on their sides about their travel, the slides facing each other across the
    *  spacing (`facingTurn`); false = side by side, slides up */
   twinFacing?: boolean
+  /** the slide drawn in the middle of the profile (the middle of its travel) instead of at the start position; the
+   *  gantry drawing's Y axis */
+  slideCentred?: boolean
 }
 
 /**
@@ -426,6 +429,8 @@ export interface ComboPart {
   role: PartRole
   name: string
   transform: Transform
+  /** gantry drawing: the axis the part belongs to (a gantry kit: the base axis whose slide it stands on) */
+  axis?: 'x' | 'y' | 'z'
 }
 
 export interface Combo {
@@ -497,6 +502,8 @@ export interface ComboParts {
   /** world vectors from the slide frame (with additional slides the centre of the group) to the main slide, per member
    *  as `patternOffsets`: a gantry kit sits on the main slide only */
   mainOffsets: Vec3[]
+  /** mm along the travel (`slide.up`) from the middle of the profile to the slide as drawn: 0 when centred */
+  slideOffset: number
 }
 
 export async function comboParts(
@@ -556,6 +563,17 @@ export async function comboParts(
       base = { ...base, slide: { ...base.slide, origin: add(base.slide.origin, scale(t, centre)) } }
     }
   }
+  // the slide (with additional slides the group) in the middle of the profile, i.e. of its travel, on request; a
+  // slide that is no part of its own (Creo exports) stays where the file has it
+  let slideOffset = dot(sub(base.slide.origin, middle), base.slide.travel)
+  if (options.slideCentred && Math.abs(slideOffset) > 0.01) {
+    const file: StepFile = { header: stretched.header, entities: new Map(stretched.entities) }
+    if (moveSlide(file, scale(base.slide.travel, -slideOffset))) {
+      stretched = file
+      base = { ...base, slide: { ...base.slide, origin: sub(base.slide.origin, scale(base.slide.travel, slideOffset)) } }
+      slideOffset = 0
+    }
+  }
   const { slide } = base
   // with a connecting shaft the motor takes the shaft end away from the second axis
   const chosen = turnable(sel.axis) ? options.drive : DRIVE_POSITIONS[0]
@@ -604,7 +622,8 @@ export async function comboParts(
     }
     const turned = { ...at, otherEnd: !at.otherEnd }
     let slideOrigin = slide.origin
-    if (turned.otherEnd !== position.otherEnd) {
+    // a centred slide is in the middle either way round
+    if (turned.otherEnd !== position.otherEnd && !(options.slideCentred && slideOffset === 0)) {
       // the slides keep their spacing: the group travels the stroke less its span
       const span = (extra ?? []).reduce((sum, s) => sum + s.pitch, 0)
       const shift = scale(slide.travel, sel.stroke - span)
@@ -751,5 +770,6 @@ export async function comboParts(
     driveFlange: apply(axisToWorld, axisMeta.drive.origin),
     patternOffsets,
     mainOffsets,
+    slideOffset,
   }
 }
