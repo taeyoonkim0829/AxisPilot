@@ -35,7 +35,7 @@ export const parallelModeLabel = {
   single: '단일 축',
   twinMotor: '2축 · 모터 동기',
   twinShaft: '2축 · 기구 동기',
-  guides: '축 + LM 가이드',
+  guides: '가이드 축',
 } as const
 
 export const driveLabel ={ belt: '벨트', spindle: '볼스크류' } as const

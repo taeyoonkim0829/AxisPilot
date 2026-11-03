@@ -585,7 +585,6 @@ export const en: Record<string, string> = {
   '단일 축': 'Single axis',
   '2축 · 모터 동기': 'Motor sync',
   '2축 · 기구 동기': 'Shaft sync',
-  '축 + LM 가이드': '+LM Guide',
   '축 1개로 부하를 지지하고 구동': 'One axis carries and drives the load',
   '평행한 축 2개를 모터 2개로 동기 제어. 모터·키트·드라이브는 축 1개 기준 (각 2개)':
     'Two parallel axes, two synchronised motors. Motor, kit and drive are sized for one axis (two of each)',
@@ -656,7 +655,6 @@ export const en: Record<string, string> = {
   '도면이 없어 조합 도면에서 뺐습니다': 'No drawing: left out of the combination drawing',
   '가이드 축을 축–가이드 간격만큼 옆에 배치하고 슬라이드 높이를 축 슬라이드에 맞춥니다.': 'The guide axes are placed beside the axis at the axis–guide spacing, their slides level with the axis slide.',
   '가이드 종류': 'Guide type',
-  '가이드 축 (EGC-FA · ELFD)': 'Guide axis (EGC-FA · ELFD)',
   'EGC에는 EGC-FA, ELGD에는 ELFD를 같은 크기로 적용 (다른 축은 LM 가이드로 계산)': 'EGC takes EGC-FA, ELGD takes ELFD of the same size (other axes are calculated with LM guides)',
   '가이드 1개 추가 질량': 'Added mass per guide',
   '브래킷 등, 가이드 축 슬라이드 질량은 자동 포함': 'brackets etc.; the guide axis slide is included automatically',
