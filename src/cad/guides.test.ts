@@ -78,4 +78,15 @@ describe('guides in the combination drawing', () => {
     const profile = guideParts.reduce((a, b) => (b.hi[0] - b.lo[0] > a.hi[0] - a.lo[0] ? b : a))
     expect(profile.hi[0] - profile.lo[0]).toBeGreaterThan(500 + 150)
   }, 60000)
+
+  it('runs the guide axis the same way as a ball screw EGC (whose file travels the other way)', async () => {
+    const r = { ...req, stroke: 500, parallel: { ...defaultParallel, mode: 'guides' as const, spacing: 300, guideCount: 1, guideAxis: true } }
+    const { selection, found, twin, req: cogReq } = inputs('EGC-80-...-BS-10P-KF-GK', 'EAMM-A-S48-60P-G3', 'EMMT-AS-60-M-HS', r)
+    const parts = await boxes((await buildCombo(selection!, found!, cogReq, load, undefined, twin)).step)
+    const longest = (list: typeof parts) => list.reduce((a, b) => (b.hi[0] - b.lo[0] > a.hi[0] - a.lo[0] ? b : a))
+    const axis = longest(parts.filter((p) => p.hi[1] < 150))
+    const guide = longest(parts.filter((p) => p.lo[1] > 150))
+    expect(guide.lo[0]).toBeCloseTo(axis.lo[0], 0)
+    expect(guide.hi[0]).toBeCloseTo(axis.hi[0], 0)
+  }, 60000)
 })

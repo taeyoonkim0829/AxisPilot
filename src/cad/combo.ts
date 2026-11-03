@@ -746,7 +746,12 @@ export async function comboParts(
       name += ` + ${guide.model}`
     } else if (meta.slide) {
       const g = meta.slide
-      const level = mate(axisToWorld, { origin: slide.origin, axis: slide.normal, up: slide.travel }, { origin: at(g.origin), axis: g.normal, up: g.travel })
+      // the guide profile runs from its slide the way the axis profile does (EGC/ELGD-BS files travel towards the
+      // shorter side: the guide's travel would turn it end for end)
+      const along = (s: { origin: Vec3; travel: Vec3 }, profile?: { origin: Vec3 }) =>
+        profile && dot(sub(profile.origin, s.origin), s.travel) < 0 ? -1 : 1
+      const up = scale(slide.travel, along(axisMeta.slide, axisMeta.profile) * along(g, meta.profile))
+      const level = mate(axisToWorld, { origin: slide.origin, axis: slide.normal, up }, { origin: at(g.origin), axis: g.normal, up: g.travel })
       guide.offsets.forEach((o, i) =>
         parts.push({
           role: 'guide',
