@@ -11,11 +11,11 @@ import { RadioGroup } from './common'
 
 const ROLE_COLORS: Record<PartRole, string> = {
   axis: '#b9c1cb',
-  kit: '#8d97a3',
-  gearbox: '#5f7088',
-  motor: '#343a42',
-  shaft: '#7a8794',
-  adapter: '#a1866a',
+  kit: '#3d7fd9',
+  gearbox: '#e0892b',
+  motor: '#3a4250',
+  shaft: '#3fa7a0',
+  adapter: '#b07a4a',
 }
 const COG_COLOR = '#d6392b'
 
@@ -28,12 +28,19 @@ const VIEW_DIRS: Record<ViewName, Vec3> = {
 }
 const viewLabel: Record<ViewName, string> = { iso: '등각', front: '정면', top: '평면', side: '우측면' }
 
+/** maker: the colours of the makers' STEP files (bodies without one take their part's colour); part: one colour per part */
+type ColourMode = 'maker' | 'part'
+const colourLabel: Record<ColourMode, string> = { maker: '제조사 색', part: '부품별 색' }
+
 export default function ComboViewer({ meshes, roles, cog }: { meshes: PartMesh[]; roles: PartRole[]; cog: Vec3 }) {
   const t = useT()
   const host = useRef<HTMLDivElement>(null)
   const setView = useRef<(v: ViewName) => void>(() => {})
   const [view, setViewName] = useState<ViewName>('iso')
   const viewRef = useRef<ViewName>('iso')
+  const [colours, setColours] = useState<ColourMode>('maker')
+  const coloursRef = useRef<ColourMode>('maker')
+  const setColouring = useRef<(c: ColourMode) => void>(() => {})
 
   useEffect(() => {
     const el = host.current!
@@ -62,6 +69,19 @@ export default function ComboViewer({ meshes, roles, cog }: { meshes: PartMesh[]
     const byRole = Object.fromEntries(Object.entries(ROLE_COLORS).map(([r, c]) => [r, material(c)])) as unknown as Record<PartRole, THREE.Material>
     const edgeMaterial = new THREE.LineBasicMaterial({ color: edgeColor, transparent: true, opacity: 0.3 })
     materials.push(edgeMaterial)
+    // the files' colours: linear RGB, one material per colour
+    const byColour = new Map<string, THREE.Material>()
+    const makerMaterial = (rgb: number[]) => {
+      const key = rgb.join()
+      let m = byColour.get(key)
+      if (!m) {
+        m = material('#ffffff')
+        ;(m as THREE.MeshStandardMaterial).color.setRGB(rgb[0], rgb[1], rgb[2], THREE.LinearSRGBColorSpace)
+        byColour.set(key, m)
+      }
+      return m
+    }
+    const painted: { mesh: THREE.Mesh; part: THREE.Material; maker: THREE.Material | THREE.Material[] }[] = []
     for (const m of meshes) {
       const g = new THREE.BufferGeometry()
       g.setAttribute('position', new THREE.BufferAttribute(m.positions, 3))
@@ -69,7 +89,21 @@ export default function ComboViewer({ meshes, roles, cog }: { meshes: PartMesh[]
       g.setIndex(new THREE.BufferAttribute(m.index, 1))
       if (!m.normals) g.computeVertexNormals()
       geometries.push(g)
-      group.add(new THREE.Mesh(g, byRole[roles[m.part] ?? 'axis']))
+      const part = byRole[roles[m.part] ?? 'axis']
+      const own = m.color ? makerMaterial(m.color) : part
+      let maker: THREE.Material | THREE.Material[] = own
+      // (only when the faces cover every triangle: a group-drawn mesh leaves out what no group holds)
+      const covered = m.faces.reduce((n, f) => n + f.last - f.first + 1, 0) === m.index.length / 3
+      if (covered && m.faces.some((f) => f.color)) {
+        // faces coloured on their own: one draw group per face, the body's colour where a face has none
+        maker = m.faces.map((f, i) => {
+          g.addGroup(f.first * 3, (f.last - f.first + 1) * 3, i)
+          return f.color ? makerMaterial(f.color) : own
+        })
+      }
+      const mesh = new THREE.Mesh(g, coloursRef.current === 'maker' ? maker : part)
+      painted.push({ mesh, part, maker })
+      group.add(mesh)
       let edges: THREE.BufferGeometry
       if (m.edges) {
         edges = new THREE.BufferGeometry()
@@ -113,6 +147,10 @@ export default function ComboViewer({ meshes, roles, cog }: { meshes: PartMesh[]
     controls.target.copy(centre)
     const render = () => renderer.render(scene, camera)
     controls.addEventListener('change', render)
+    setColouring.current = (c) => {
+      for (const p of painted) p.mesh.material = c === 'maker' ? p.maker : p.part
+      render()
+    }
     setView.current = (v) => {
       const dir = new THREE.Vector3(...VIEW_DIRS[v]).normalize()
       // fit the bounding sphere into the narrower of the two fields of view
@@ -152,11 +190,17 @@ export default function ComboViewer({ meshes, roles, cog }: { meshes: PartMesh[]
     viewRef.current = v
     setView.current(v)
   }
-  const present = [...new Set(roles)]
+  const paint = (c: ColourMode) => {
+    setColours(c)
+    coloursRef.current = c
+    setColouring.current(c)
+  }
+  const present = colours === 'part' ? [...new Set(roles)] : []
   return (
     <div className="combo-viewer">
       <div className="combo-viewer-bar">
         <RadioGroup options={Object.keys(VIEW_DIRS) as ViewName[]} value={view} onChange={pick} label={(v) => t(viewLabel[v])} />
+        <RadioGroup options={['maker', 'part'] as ColourMode[]} value={colours} onChange={paint} label={(c) => t(colourLabel[c])} />
         <ul className="combo-legend">
           {present.map((r) => (
             <li key={r}>

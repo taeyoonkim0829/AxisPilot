@@ -13,6 +13,9 @@ export interface PartMesh extends DrawMesh {
   /** feature edges for the 3D view (line segment pairs, xyz), computed in the worker */
   edges?: Float32Array
   name: string
+  /** the maker's colour of the body (linear RGB 0–1), null when its file gives none; faces may override it */
+  color: number[] | null
+  faces: { first: number; last: number; color: number[] | null }[]
 }
 
 /** Crease angle (degrees) above which a mesh edge is drawn in the 3D view */

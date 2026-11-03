@@ -578,6 +578,8 @@ export const en: Record<string, string> = {
   '평면': 'Top',
   '우측면': 'Right',
   '무게 중심': 'Centre of gravity',
+  '제조사 색': 'Maker colours',
+  '부품별 색': 'Colour by part',
   // Parallel arrangement
   '축 구성': 'Axis arrangement',
   '단일 축': 'Single axis',

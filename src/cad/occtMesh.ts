@@ -38,6 +38,7 @@ export async function meshStep(step: Uint8Array, partCount: number): Promise<Par
     positions: Float32Array.from(m.attributes.position.array),
     normals: m.attributes.normal ? Float32Array.from(m.attributes.normal.array) : null,
     index: Uint32Array.from(m.index.array),
+    color: m.color ?? null,
     faces: m.brep_faces,
   }))
 }
