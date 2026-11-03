@@ -185,14 +185,15 @@ describe('drawing files', () => {
     expect(name('HG-JR/hg-jr103b.stp')).toEqual(['HG-JR103B'])
   })
 
-  it('has a drawing for every 200 V HG-KR, HG-SR and HG-JR motor', () => {
+  it('has a drawing for every HG-KR, HG-SR and HG-JR motor', () => {
     const all = allPaths.map((path) => ({ ...parseDrawingPath(path)!, url: path, meta: null }))
     const hg = motors.filter((m) => /^HG-(KR|SR|JR)/.test(m.model))
     expect(hg.length).toBe(86)
-    // the 400 V class (…4) has files only for HG-JR3534/5034 so far
-    const missing = hg.filter((m) => !motorDrawingFor(m, all))
-    expect(missing.every((m) => m.voltage === 400)).toBe(true)
-    expect(missing.length).toBe(28)
+    expect(hg.filter((m) => !motorDrawingFor(m, all)).map((m) => m.model)).toEqual([])
+    // the 400 V class (…4) takes the 200 V file of its outline drawing, but HG-JR3534/5034, which have their own
+    const jr534 = motorDrawingFor(motors.find((m) => m.model === 'HG-JR534B')!, all)
+    expect([jr534?.drawing.model, jr534?.sameOutline]).toEqual(['HG-JR53B', true])
+    expect(motorDrawingFor(motors.find((m) => m.model === 'HG-JR3534')!, all)?.drawing.model).toBe('HG-JR3534')
   })
 
   it('matches HK motors without the voltage class in the model', () => {

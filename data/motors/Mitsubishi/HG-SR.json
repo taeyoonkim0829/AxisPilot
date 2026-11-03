@@ -943,7 +943,8 @@
       "regenPower": 15,
       "amplifier": "MR-J4-60A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-SR52"
     },
     {
       "id": "HG-SR1024",
@@ -978,7 +979,8 @@
       "regenPower": 15,
       "amplifier": "MR-J4-100A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-SR102"
     },
     {
       "id": "HG-SR1524",
@@ -1013,7 +1015,8 @@
       "regenPower": 100,
       "amplifier": "MR-J4-200A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-SR152"
     },
     {
       "id": "HG-SR2024",
@@ -1048,7 +1051,8 @@
       "regenPower": 100,
       "amplifier": "MR-J4-200A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-SR202"
     },
     {
       "id": "HG-SR3524",
@@ -1083,7 +1087,8 @@
       "regenPower": 100,
       "amplifier": "MR-J4-350A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-SR352"
     },
     {
       "id": "HG-SR5024",
@@ -1118,7 +1123,8 @@
       "regenPower": 130,
       "amplifier": "MR-J4-500A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-SR502"
     },
     {
       "id": "HG-SR7024",
@@ -1153,7 +1159,8 @@
       "regenPower": 170,
       "amplifier": "MR-J4-700A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-SR702"
     },
     {
       "id": "HG-SR524B",
@@ -1188,7 +1195,8 @@
       "regenPower": 15,
       "amplifier": "MR-J4-60A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-SR52B"
     },
     {
       "id": "HG-SR1024B",
@@ -1223,7 +1231,8 @@
       "regenPower": 15,
       "amplifier": "MR-J4-100A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-SR102B"
     },
     {
       "id": "HG-SR1524B",
@@ -1258,7 +1267,8 @@
       "regenPower": 100,
       "amplifier": "MR-J4-200A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-SR152B"
     },
     {
       "id": "HG-SR2024B",
@@ -1293,7 +1303,8 @@
       "regenPower": 100,
       "amplifier": "MR-J4-200A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-SR202B"
     },
     {
       "id": "HG-SR3524B",
@@ -1328,7 +1339,8 @@
       "regenPower": 100,
       "amplifier": "MR-J4-350A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-SR352B"
     },
     {
       "id": "HG-SR5024B",
@@ -1363,7 +1375,8 @@
       "regenPower": 130,
       "amplifier": "MR-J4-500A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-SR502B"
     },
     {
       "id": "HG-SR7024B",
@@ -1398,7 +1411,8 @@
       "regenPower": 170,
       "amplifier": "MR-J4-700A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-SR702B"
     }
   ]
 }

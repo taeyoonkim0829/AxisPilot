@@ -593,7 +593,8 @@
       "regenPower": 15,
       "amplifier": "MR-J4-60A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-JR53"
     },
     {
       "id": "HG-JR734",
@@ -628,7 +629,8 @@
       "regenPower": 15,
       "amplifier": "MR-J4-100A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-JR73"
     },
     {
       "id": "HG-JR1034",
@@ -663,7 +665,8 @@
       "regenPower": 15,
       "amplifier": "MR-J4-100A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-JR103"
     },
     {
       "id": "HG-JR1534",
@@ -698,7 +701,8 @@
       "regenPower": 100,
       "amplifier": "MR-J4-200A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-JR153"
     },
     {
       "id": "HG-JR2034",
@@ -733,7 +737,8 @@
       "regenPower": 100,
       "amplifier": "MR-J4-200A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-JR203"
     },
     {
       "id": "HG-JR3534",
@@ -838,7 +843,8 @@
       "regenPower": 170,
       "amplifier": "MR-J4-700A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-JR703"
     },
     {
       "id": "HG-JR9034",
@@ -873,7 +879,8 @@
       "regenPower": 500,
       "amplifier": "MR-J4-11KA4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-JR903"
     },
     {
       "id": "HG-JR53B",
@@ -978,7 +985,8 @@
       "regenPower": 15,
       "amplifier": "MR-J4-60A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-JR53B"
     },
     {
       "id": "HG-JR734B",
@@ -1013,7 +1021,8 @@
       "regenPower": 15,
       "amplifier": "MR-J4-100A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-JR73B"
     },
     {
       "id": "HG-JR1034B",
@@ -1048,7 +1057,8 @@
       "regenPower": 15,
       "amplifier": "MR-J4-100A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-JR103B"
     },
     {
       "id": "HG-JR1534B",
@@ -1083,7 +1093,8 @@
       "regenPower": 100,
       "amplifier": "MR-J4-200A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-JR153B"
     },
     {
       "id": "HG-JR2034B",
@@ -1118,7 +1129,8 @@
       "regenPower": 100,
       "amplifier": "MR-J4-200A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-JR203B"
     },
     {
       "id": "HG-JR3534B",
@@ -1223,7 +1235,8 @@
       "regenPower": 170,
       "amplifier": "MR-J4-700A4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-JR703B"
     },
     {
       "id": "HG-JR9034B",
@@ -1258,7 +1271,8 @@
       "regenPower": 500,
       "amplifier": "MR-J4-11KA4/B4",
       "interfaceCode": null,
-      "controller": "MR-J4-400V"
+      "controller": "MR-J4-400V",
+      "sameOutline": "HG-JR903B"
     }
   ]
 }
