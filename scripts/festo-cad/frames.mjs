@@ -18,6 +18,11 @@
 // Jaw couplings (`couplingOf`, also `--coupling` for existing JSONs): the EAMC hub on an axis's drive shaft (ELGT-BS,
 // ELGD-BS) and the kit hub facing it (EAMM-A, SA GT…/GD…), their jaws found in a section near the jaw tips; and
 // `couplingShift` for the EAMM-A-D50/-D60/-S60 kits whose coupling is filed inside the axis.
+// Guides without drive (data/guides): the guide axes EGC-FA / ELFD as an axis without a drive (slide, length change,
+// profile; the slide's travel points from the end it starts at); the EAGF guide unit (`eagfFrames`): the housing face
+// on the ESBF's front flange (`mount`), the yoke plate's front face (`yoke`), the guide rods' length change behind the
+// housing. ESBF axes also get `front` (the front flange face, largest +z face of the cylinder profile at its front),
+// where the EAGF sits; `--front` adds it to existing ESBF JSONs.
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { join, resolve } from 'node:path'
@@ -39,6 +44,10 @@ const walk = (dir) =>
 const axes = readdirSync(join(root, 'data/axes/festo'))
   .filter((f) => f.endsWith('.json'))
   .flatMap((f) => JSON.parse(readFileSync(join(root, 'data/axes/festo', f), 'utf8')).items)
+const guidesDir = join(root, 'data/guides/Festo/Drawings')
+const guideItems = readdirSync(join(root, 'data/guides/Festo'))
+  .filter((f) => f.endsWith('.json'))
+  .flatMap((f) => JSON.parse(readFileSync(join(root, 'data/guides/Festo', f), 'utf8')).items)
 
 const round = (v, step = 0.05) => Math.round(v / step) * step + 0 // + 0: no -0
 const fixed = (v) => Number(round(v).toFixed(2))
@@ -272,6 +281,8 @@ function frames(file, model) {
   const width = profile.hi[0] - profile.lo[0]
   const x0 = centre(profile.lo, profile.hi, 0)
   const family = /^ESBF/.test(model) ? 'ESBF' : /-TB-/.test(model) ? 'TB' : 'BS'
+  // guide axes (EGC-FA, ELFD): no drive; the slide's travel points from the end it starts at
+  const guide = /-FA-|^ELFD-/.test(model)
   const others = ms.filter((m) => m !== profile)
 
   // motor end (±z) and, for belt axes, the kit side (±x)
@@ -319,13 +330,16 @@ function frames(file, model) {
     )
     if (candidates.length === 0) throw new Error('no slide part found')
     const s = candidates.reduce((a, b) => (b.hi[1] > a.hi[1] ? b : a))
+    if (guide) motor = Math.sign(centre(s.lo, s.hi, 2) - centre(profile.lo, profile.hi, 2)) || 1
     slide = { origin: [fixed(x0), fixed(s.hi[1]), fixed(centre(s.lo, s.hi, 2))], normal: [0, 1, 0], travel: [0, 0, -motor], part: s }
   }
 
   // drive
   let drive
   const structural = ms.filter((m) => !hardware(m.name) && m !== slide.part)
-  if (family === 'TB') {
+  if (guide) {
+    drive = null
+  } else if (family === 'TB') {
     const caps = others.filter((m) => isCap(m) && Math.sign(centre(m.lo, m.hi, 2) - centre(profile.lo, profile.hi, 2)) === motor)
     const cap = caps[0]
     const shaft = [centre(cap.lo, cap.hi, 1), centre(cap.lo, cap.hi, 2)]
@@ -392,9 +406,16 @@ function frames(file, model) {
   // parts running along the whole axis change length with it (ESBF piston rod)
   const also = family === "ESBF" ? others.filter((m) => m.hi[2] - m.lo[2] >= 0.6 * length).map((m) => m.name) : []
   const stroke = strokeOf(model)
+  // ESBF: the front flange face (largest +z face of the cylinder profile at its front), on the rod axis
+  let front = null
+  if (family === 'ESBF') {
+    const ends = profile.faces.filter((f) => f.k === 2 && f.sign === 1 && f.pos > profile.hi[2] - 40)
+    const face = ends.reduce((a, b) => (b.area > a.area ? b : a))
+    front = { origin: [slide.origin[0], slide.origin[1], fixed(face.pos)], axis: [0, 0, 1], up: [0, 1, 0] }
+  }
   const json = {
     stroke,
-    drive,
+    ...(drive ? { drive } : {}),
     slide: {
       origin: slide.origin,
       normal: slide.normal,
@@ -409,8 +430,9 @@ function frames(file, model) {
       : {}),
     // the profile's mounting face (underside), middle of its length: where a gantry kit holds a carried axis
     profile: { origin: [fixed(x0), fixed(profile.lo[1]), fixed(centre(profile.lo, profile.hi, 2))], normal: [0, -1, 0] },
+    ...(front ? { front } : {}),
   }
-  return { json, info: `${family} motor ${motor > 0 ? '+z' : '-z'}${family === 'TB' ? ` side ${side > 0 ? '+x' : '-x'}` : ''}, ${stretchable ? `range ${range}, moving ${move.length}` : 'no length change'}, profile ${fixed(length)} mm` }
+  return { json, info: `${guide ? 'guide axis' : family} motor ${motor > 0 ? '+z' : '-z'}${family === 'TB' ? ` side ${side > 0 ? '+x' : '-x'}` : ''}, ${stretchable ? `range ${range}, moving ${move.length}` : 'no length change'}, profile ${fixed(length)} mm` }
 }
 
 // ---- mounting kits and gearboxes ----
@@ -724,7 +746,45 @@ function childBox(e, i) {
   return count ? { lo, hi } : null
 }
 
+/**
+ * EAGF guide unit (CADENAS: length along z, yoke plate at +z, guide rods across x): `mount` = the housing's face
+ * against the cylinder's front flange (the largest −z face round the bore), `axis` +z, `up` across the rods
+ * (+x, their plane); `yoke` = the yoke plate's front face centre; the rods (`(FST)`, one part) change length behind
+ * the housing.
+ */
+function eagfFrames(file, model) {
+  const text = readFileSync(file, 'latin1')
+  const ms = meshes(text)
+  const housing = ms.find((m) => /---\(F\)$/.test(m.name.trim()) && /EAGF/.test(m.name))
+  const yoke = ms.find((m) => /---\(J\)$/.test(m.name.trim()))
+  const rods = ms.filter((m) => /\(FST\)$/.test(m.name.trim()))
+  if (!housing || !yoke || rods.length === 0) throw new Error('housing, yoke plate or guide rods not found')
+  const width = housing.hi[0] - housing.lo[0]
+  const x0 = centre(housing.lo, housing.hi, 0)
+  const y0 = centre(housing.lo, housing.hi, 1)
+  const bore = housing.faces.filter((f) => f.k === 2 && f.sign === -1 && Math.abs(centre(f.lo, f.hi, 0) - x0) < 0.3 * width && f.area > 50)
+  if (bore.length === 0) throw new Error('no mounting face round the bore')
+  const face = bore.reduce((a, b) => (b.area > a.area ? b : a))
+  // the rods' length change: behind the housing (its back face), clear of their ends
+  const tail = Math.min(...rods.map((r) => r.lo[2]))
+  const range = [Math.ceil(tail + 10), Math.floor(housing.lo[2] - 5)]
+  if (range[1] - range[0] < 20) throw new Error('rods too short behind the housing')
+  const json = {
+    stroke: strokeOf(model),
+    mount: { origin: [fixed(x0), fixed(y0), fixed(face.pos)], axis: [0, 0, 1], up: [1, 0, 0] },
+    yoke: [fixed(x0), fixed(y0), fixed(yoke.hi[2])],
+    stretch: { part: rods[0].name, axis: 2, dir: -1, range },
+  }
+  return { json, info: `EAGF mount z ${fixed(face.pos)}, yoke z ${fixed(yoke.hi[2])}, ${rods.length} rods, range ${range}` }
+}
+
+const typeRe = (code) => new RegExp(`^${code.split('…').map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('(\\d+)')}$`, 'i')
+
 function strokeOf(model) {
+  for (const g of guideItems) {
+    const m = typeRe(g.typeCode).exec(model)
+    if (m) return Number(m[1])
+  }
   for (const a of axes) {
     const code = a.typeCode ?? a.model
     const re = new RegExp(`^${code.split('…').map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('(\\d+)')}$`, 'i')
@@ -750,14 +810,30 @@ const format = (json) =>
 
 const files = only.length
   ? only
-  : [axesDir, join(root, 'data/kits/Festo/Drawings'), join(root, 'data/gearboxes/Festo/Drawings'), join(root, 'data/gearboxes/Apex/Drawings')].flatMap(walk)
+  : [axesDir, guidesDir, join(root, 'data/kits/Festo/Drawings'), join(root, 'data/gearboxes/Festo/Drawings'), join(root, 'data/gearboxes/Apex/Drawings')].flatMap(walk)
 let written = 0
 // --profile: add the `profile` frame to existing axis JSONs, keeping everything else
 const profileOnly = args.includes('--profile')
 // --coupling: add the jaw coupling hub (`coupling`) to existing axis and kit JSONs, keeping everything else
 const couplingOnly = args.includes('--coupling')
+// --front: add the front flange frame (`front`) to existing ESBF JSONs, keeping everything else
+const frontOnly = args.includes('--front')
 for (const file of files) {
   const out = file.replace(/\.stp$/i, '.json')
+  if (frontOnly) {
+    if (!existsSync(out) || !/ESBF-/.test(file)) continue
+    const old = JSON.parse(readFileSync(out, 'utf8'))
+    if (old.front && !force) continue
+    try {
+      const { json } = frames(file, /^\d+_(.+)\.stp$/i.exec(file.split(/[\\/]/).pop())[1])
+      console.log(`${file.split(/[\\/]/).pop()}: front ${JSON.stringify(json.front)}`)
+      if (!dryRun) writeFileSync(out, format({ ...old, front: json.front }))
+      written++
+    } catch (err) {
+      console.log(`${file}: FAILED ${err.message}`)
+    }
+    continue
+  }
   if (couplingOnly) {
     if (!existsSync(out) || /[\\/]gearboxes[\\/]/.test(resolve(file))) continue
     const old = JSON.parse(readFileSync(out, 'utf8'))
@@ -793,10 +869,10 @@ for (const file of files) {
   const name = file.split(/[\\/]/).pop()
   // Apex files have no part number: `ab0421-p0401100102.stp`
   const model = /^\d+_(.+)\.stp$/i.exec(name)?.[1] ?? name.replace(/\.stp$/i, '').toUpperCase()
-  const make = /^EAMM-/.test(model) ? kitFrames : /^[A-Z]{2}\d{3}[AU]\d{3}/.test(model) ? saKitFrames : /^EMGA-/.test(model) ? gearboxFrames : /^A[BE]/.test(model) ? apexFrames : frames
+  const make = /^EAGF-/.test(model) ? eagfFrames : /^EAMM-/.test(model) ? kitFrames : /^[A-Z]{2}\d{3}[AU]\d{3}/.test(model) ? saKitFrames : /^EMGA-/.test(model) ? gearboxFrames : /^A[BE]/.test(model) ? apexFrames : frames
   try {
     const { json: frameJson, info } = make(file, model)
-    const coupling = make === frames || make === kitFrames || make === saKitFrames ? couplingOf(file, frameJson) : null
+    const coupling = (make === frames && !/-FA-|^ELFD-/.test(model)) || make === kitFrames || make === saKitFrames ? couplingOf(file, frameJson) : null
     const couplingShift = make === kitFrames ? couplingShiftOf(file, frameJson) : null
     const json = { ...frameJson, ...(coupling ? { coupling } : {}), ...(couplingShift ? { couplingShift } : {}) }
     console.log(`${model}: ${info}`)

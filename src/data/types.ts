@@ -478,3 +478,56 @@ export interface AxisAdapter {
     pattern?: string
   }
 }
+
+/**
+ * A guide without drive (data/guides): `cylinder` = guide unit on an electric cylinder (EAGF on ESBF, the yoke
+ * plate on the piston rod, used with 외부 가이드 사용); `axis` = guide axis beside a drive axis of the same profile
+ * (EGC-FA beside EGC, ELFD beside ELGD), in place of an LM guide of a parallel arrangement.
+ */
+export interface GuideUnit {
+  id: string
+  maker: 'Festo'
+  family: 'EAGF' | 'EGC-FA' | 'ELFD'
+  kind: 'cylinder' | 'axis'
+  model: string
+  /** order type code, … = stroke */
+  typeCode: string
+  /** modular product system, ordered with any stroke in `strokeRange` */
+  moduleNumber: string
+  /** standard strokes with a part number of their own (mm → part number) */
+  strokePartNumbers?: Record<string, string>
+  size: number
+  /** axes it fits */
+  axes: { family: AxisFamily; variant: Axis['variant']; size: number }[]
+  /** long / extended slide (ELFD …-L), for an axis with the long slide */
+  longSlide: boolean
+  /** mm, [min, max] stroke */
+  strokeRange: [number, number]
+  /** kg at 0 mm stroke (slide included) / per 10 mm stroke */
+  baseMass: number
+  massPer10mm: number
+  /** kg, moving mass (slide; EAGF: yoke plate and guide rods at 0 mm stroke) */
+  movingMass: number
+  /** kg per 10 mm stroke added to the moving mass (EAGF guide rods) */
+  movingMassPer10mm?: number
+  /** EAGF: mm, centre of gravity of the moving mass from the yoke plate towards the guide side, at 0 mm stroke / per 10 mm stroke */
+  cogMoving?: [number, number]
+  /** N, displacement force / no-load resistance to shifting */
+  displacementForce: number | null
+  maxSpeed: number | null
+  maxAcceleration: number | null
+  /** N, Nm: values of the load comparison factor fv (5000 km); EAGF: dynamic values at the guide centre */
+  FyMax: number
+  FzMax: number
+  MxMax: number
+  MyMax: number
+  MzMax: number
+  /** EAGF: static max. forces and torques, never to be exceeded */
+  staticMax?: { Fy: number; Fz: number; Mx: number; My: number; Mz: number }
+  /** EAGF: mm, distance X from the yoke plate's front face to the guide centre at 0 stroke */
+  distanceX?: number
+  /** mm⁴, second moment of area of the profile (guide axes) */
+  Iy: number | null
+  Iz: number | null
+  dataSource: string
+}

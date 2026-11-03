@@ -1,0 +1,6 @@
+{
+  "stroke": 50,
+  "slide": { "origin": [0, 82, -64], "normal": [0, 1, 0], "travel": [0, 0, -1] },
+  "stretch": { "part": "8182487 ELFD-KF-60-50-0H-----(highh)", "axis": 2, "dir": -1, "range": [-162, -128], "move": [10059] },
+  "profile": { "origin": [0, 0, -89.25], "normal": [0, -1, 0] }
+}

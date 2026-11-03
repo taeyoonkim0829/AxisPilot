@@ -1,0 +1,220 @@
+{
+  "items": [
+    {
+      "id": "ELFD-KF-60",
+      "maker": "Festo",
+      "family": "ELFD",
+      "kind": "axis",
+      "model": "ELFD-KF-60",
+      "typeCode": "ELFD-KF-60-…-0H",
+      "moduleNumber": "8182487",
+      "size": 60,
+      "axes": [
+        {
+          "family": "ELGD",
+          "variant": "",
+          "size": 60
+        }
+      ],
+      "longSlide": false,
+      "strokeRange": [
+        50,
+        8500
+      ],
+      "baseMass": 1.261,
+      "massPer10mm": 0.049,
+      "movingMass": 0.419,
+      "displacementForce": 6,
+      "maxSpeed": 3,
+      "maxAcceleration": 50,
+      "FyMax": 1945,
+      "FzMax": 2000,
+      "MxMax": 38,
+      "MyMax": 15,
+      "MzMax": 15,
+      "Iy": 485000,
+      "Iz": 731000,
+      "dataSource": "ELFD catalog 2026/08, data sheet p.5, 7–8, 11, module numbers p.26"
+    },
+    {
+      "id": "ELFD-KF-60-L",
+      "maker": "Festo",
+      "family": "ELFD",
+      "kind": "axis",
+      "model": "ELFD-KF-60-L",
+      "typeCode": "ELFD-KF-60-…-0H-L",
+      "moduleNumber": "8182487",
+      "size": 60,
+      "axes": [
+        {
+          "family": "ELGD",
+          "variant": "",
+          "size": 60
+        }
+      ],
+      "longSlide": true,
+      "strokeRange": [
+        50,
+        8500
+      ],
+      "baseMass": 1.683,
+      "massPer10mm": 0.049,
+      "movingMass": 0.643,
+      "displacementForce": 6,
+      "maxSpeed": 3,
+      "maxAcceleration": 50,
+      "FyMax": 3890,
+      "FzMax": 3600,
+      "MxMax": 75,
+      "MyMax": 150,
+      "MzMax": 140,
+      "Iy": 485000,
+      "Iz": 731000,
+      "dataSource": "ELFD catalog 2026/08, data sheet p.5, 7–8, 11, module numbers p.26"
+    },
+    {
+      "id": "ELFD-KF-80",
+      "maker": "Festo",
+      "family": "ELFD",
+      "kind": "axis",
+      "model": "ELFD-KF-80",
+      "typeCode": "ELFD-KF-80-…-0H",
+      "moduleNumber": "8182488",
+      "size": 80,
+      "axes": [
+        {
+          "family": "ELGD",
+          "variant": "",
+          "size": 80
+        }
+      ],
+      "longSlide": false,
+      "strokeRange": [
+        50,
+        8500
+      ],
+      "baseMass": 2.345,
+      "massPer10mm": 0.076,
+      "movingMass": 0.911,
+      "displacementForce": 6,
+      "maxSpeed": 3,
+      "maxAcceleration": 50,
+      "FyMax": 2800,
+      "FzMax": 3500,
+      "MxMax": 106,
+      "MyMax": 42,
+      "MzMax": 42,
+      "Iy": 1213000,
+      "Iz": 2052000,
+      "dataSource": "ELFD catalog 2026/08, data sheet p.5, 7–8, 11, module numbers p.26"
+    },
+    {
+      "id": "ELFD-KF-80-L",
+      "maker": "Festo",
+      "family": "ELFD",
+      "kind": "axis",
+      "model": "ELFD-KF-80-L",
+      "typeCode": "ELFD-KF-80-…-0H-L",
+      "moduleNumber": "8182488",
+      "size": 80,
+      "axes": [
+        {
+          "family": "ELGD",
+          "variant": "",
+          "size": 80
+        }
+      ],
+      "longSlide": true,
+      "strokeRange": [
+        50,
+        8500
+      ],
+      "baseMass": 3.645,
+      "massPer10mm": 0.076,
+      "movingMass": 1.615,
+      "displacementForce": 6,
+      "maxSpeed": 3,
+      "maxAcceleration": 50,
+      "FyMax": 5500,
+      "FzMax": 5600,
+      "MxMax": 200,
+      "MyMax": 390,
+      "MzMax": 390,
+      "Iy": 1213000,
+      "Iz": 2052000,
+      "dataSource": "ELFD catalog 2026/08, data sheet p.5, 7–8, 11, module numbers p.26"
+    },
+    {
+      "id": "ELFD-KF-120",
+      "maker": "Festo",
+      "family": "ELFD",
+      "kind": "axis",
+      "model": "ELFD-KF-120",
+      "typeCode": "ELFD-KF-120-…-0H",
+      "moduleNumber": "8182489",
+      "size": 120,
+      "axes": [
+        {
+          "family": "ELGD",
+          "variant": "",
+          "size": 120
+        }
+      ],
+      "longSlide": false,
+      "strokeRange": [
+        50,
+        8500
+      ],
+      "baseMass": 3.993,
+      "massPer10mm": 0.112,
+      "movingMass": 1.369,
+      "displacementForce": 12.5,
+      "maxSpeed": 3,
+      "maxAcceleration": 50,
+      "FyMax": 2957,
+      "FzMax": 6500,
+      "MxMax": 170,
+      "MyMax": 50,
+      "MzMax": 60,
+      "Iy": 3550000,
+      "Iz": 8985000,
+      "dataSource": "ELFD catalog 2026/08, data sheet p.5, 7–8, 11, module numbers p.26"
+    },
+    {
+      "id": "ELFD-KF-120-L",
+      "maker": "Festo",
+      "family": "ELFD",
+      "kind": "axis",
+      "model": "ELFD-KF-120-L",
+      "typeCode": "ELFD-KF-120-…-0H-L",
+      "moduleNumber": "8182489",
+      "size": 120,
+      "axes": [
+        {
+          "family": "ELGD",
+          "variant": "",
+          "size": 120
+        }
+      ],
+      "longSlide": true,
+      "strokeRange": [
+        50,
+        8500
+      ],
+      "baseMass": 6.575,
+      "massPer10mm": 0.112,
+      "movingMass": 2.82,
+      "displacementForce": 12.5,
+      "maxSpeed": 3,
+      "maxAcceleration": 50,
+      "FyMax": 5914,
+      "FzMax": 9000,
+      "MxMax": 350,
+      "MyMax": 620,
+      "MzMax": 580,
+      "Iy": 3550000,
+      "Iz": 8985000,
+      "dataSource": "ELFD catalog 2026/08, data sheet p.5, 7–8, 11, module numbers p.26"
+    }
+  ]
+}

@@ -3,5 +3,6 @@
   "drive": { "origin": [0, 0, -522.5], "axis": [0, 0, -1], "up": [0, 1, 0] },
   "slide": { "origin": [0, 0, 47.5], "normal": [0, 1, 0], "travel": [0, 0, 1] },
   "stretch": { "part": "ESBF-BS-32-400---(ZR_-_-)", "also": ["ESBF-BS-32-400-10P---(KS_0)"], "axis": 2, "dir": -1, "range": [-492, -92], "move": [12132, 12146] },
-  "profile": { "origin": [0, -22.5, -256.75], "normal": [0, -1, 0] }
+  "profile": { "origin": [0, -22.5, -256.75], "normal": [0, -1, 0] },
+  "front": { "origin": [0, 0, 0], "axis": [0, 0, 1], "up": [0, 1, 0] }
 }

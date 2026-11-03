@@ -1,7 +1,7 @@
 import type { AxisEvaluation } from '../calc/axisSelection'
 import type { KitEvaluation } from '../calc/kitSelection'
 import { gearboxStatus, type DriveEvaluation } from '../calc/motorSelection'
-import type { Status } from '../calc/types'
+import { worstStatus, type Status } from '../calc/types'
 import { cableRoleLabel } from './format'
 
 /** Part, maker, model, order number, quantity and verdict of everything to order for one axis */
@@ -56,9 +56,20 @@ export function partRows(
       kit ? nDrive : null,
       kitEval?.status ?? null,
     ],
-    ...(layout.guides
-      ? ([[t('LM 가이드'), '—', t('별도 선정 (참고값: 3장)'), null, layout.guides, null]] as SelectionRow[])
-      : []),
+    ...(axis.guide
+      ? ([
+          [
+            t(axis.guide.guide.kind === 'axis' ? '가이드 축' : '가이드 유닛'),
+            'Festo',
+            axis.guide.model,
+            axis.guide.partNumber,
+            axis.guide.count,
+            worstStatus(axis.checks.filter((c) => c.label.startsWith('가이드 축') || c.label.startsWith('가이드 유닛'))),
+          ],
+        ] as SelectionRow[])
+      : layout.guides
+        ? ([[t('LM 가이드'), '—', t('별도 선정 (참고값: 3장)'), null, layout.guides, null]] as SelectionRow[])
+        : []),
     ...(axis.shaft ? ([[t('연결축'), 'Festo', axis.shaft.model, axis.shaft.shaft.partNumber, 1, null]] as SelectionRow[]) : []),
   ]
 }

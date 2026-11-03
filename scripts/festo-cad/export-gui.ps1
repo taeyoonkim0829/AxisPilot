@@ -16,8 +16,8 @@ param(
 
 $pos = @{
   search    = 225, 97     # search box
-  result    = 950, 292    # first search result row
-  export    = 375, 60     # toolbar export button (after STEP was chosen once)
+  result    = 1190, 280   # first search result row (right of the filter panel)
+  export    = 340, 62     # toolbar export button (after STEP was chosen once), not its drop-down arrow
 }
 # in the STEP export dialog, from its top left corner (it opens at varying heights)
 $dialogPos = @{ target = 386, 110; ok = 606, 189 }

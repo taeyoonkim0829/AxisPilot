@@ -172,7 +172,7 @@ export function AxisStep({ results, selectedId, onSelect, settings, onSettings }
         />
         {shownFamilies.includes('ESBF') && settings.families.includes('ESBF') && (
           <ToggleButton
-            label={t('ESBF 외부 가이드 사용')}
+            label={t('ESBF 외부 가이드 (EAGF)')}
             checked={settings.externalGuide}
             onChange={(v) => onSettings({ ...settings, externalGuide: v })}
           />

@@ -1,14 +1,16 @@
 import type { Mounting, Requirements } from '../calc/types'
-import type { Axis, Gearbox, Kit, Motor } from '../data/types'
+import type { Axis, Gearbox, GuideUnit, Kit, Motor } from '../data/types'
 import { assemble, sourceNotice, type AssemblyPart } from './assemble'
 import {
   axisDrawingsFor,
   gearboxDrawingFor,
+  guideDrawingFor,
   kitDrawingFor,
   motorDrawingFor,
   type AxisMeta,
   type Drawing,
   type GearboxMeta,
+  type GuideMeta,
   type KitMeta,
   type MotorMeta,
   type ShaftMeta,
@@ -18,7 +20,7 @@ import { directionBody, mapRefs, nextIdOf, parseStep, pointBody, pointOf, refs, 
 import { stretchedOrigin, stretchPart } from './stretch'
 import { definitionByName, placementIdsOf, shapeOf } from './structure'
 
-export type PartRole = 'axis' | 'kit' | 'gearbox' | 'motor' | 'shaft' | 'adapter'
+export type PartRole = 'axis' | 'kit' | 'gearbox' | 'motor' | 'shaft' | 'adapter' | 'guide'
 
 export interface ComboSelection {
   axis: Axis
@@ -33,6 +35,9 @@ export interface ComboSelection {
   motor: Motor
   gearbox: Gearbox | null
   kit: Kit
+  /** guide without drive: the EAGF on an electric cylinder (no `offsets`), or guide axes `offsets` mm beside the
+   *  axis along the slide's lateral (+y) direction */
+  guide?: { guide: GuideUnit; model: string; stroke: number; offsets: number[] }
 }
 
 /** Drawings found for a selection; `missing` lists the parts without one (no assembly then). */
@@ -44,6 +49,8 @@ export interface ComboDrawings {
   motorSameOutline: boolean
   gearbox: Drawing<GearboxMeta> | null
   kit: Drawing<KitMeta> | null
+  /** the guide's drawing; without one (or, EAGF, without the cylinder's `front` frame) the guide is left out */
+  guide: Drawing<GuideMeta> | null
   missing: PartRole[]
 }
 
@@ -57,7 +64,17 @@ export function comboDrawings(sel: ComboSelection, all?: Drawing[]): ComboDrawin
   if (!kit?.meta) missing.push('kit')
   if (sel.gearbox && !gearbox?.meta) missing.push('gearbox')
   if (!motor) missing.push('motor')
-  return { axis, motor: motor?.drawing ?? null, motorOtherOptions: motor?.otherOptions ?? false, motorSameOutline: motor?.sameOutline ?? false, gearbox, kit, missing }
+  const guide = sel.guide ? guideDrawingFor(sel.guide.guide, sel.guide.stroke, all) : null
+  return {
+    axis,
+    motor: motor?.drawing ?? null,
+    motorOtherOptions: motor?.otherOptions ?? false,
+    motorSameOutline: motor?.sameOutline ?? false,
+    gearbox,
+    kit,
+    guide: guide && (sel.guide!.guide.kind === 'axis' || axis?.meta?.front) ? guide : null,
+    missing,
+  }
 }
 
 // Festo convention (flange at z = 0, shaft +z, connector +y); Mitsubishi's flange motors have their connectors at −y
@@ -522,12 +539,14 @@ export async function comboParts(
   const kitMeta = found.kit.meta!
   const motorMeta = (found.motor.meta as MotorMeta | null) ?? defaultMotorMeta(sel.motor.maker)
   const shaftTwin = twin && !twin.drive ? (twin.shaft ?? null) : null
-  const [axisText, kitText, motorText, gearboxText, shaftText] = await Promise.all([
+  const guide = sel.guide && found.guide ? { ...sel.guide, drawing: found.guide } : null
+  const [axisText, kitText, motorText, gearboxText, shaftText, guideText] = await Promise.all([
     load(found.axis),
     load(found.kit),
     load(found.motor),
     found.gearbox ? load(found.gearbox) : Promise.resolve(null),
     shaftTwin ? load(shaftTwin.drawing) : Promise.resolve(null),
+    guide ? load(guide.drawing) : Promise.resolve(null),
   ])
 
   let stretched = parseStep(axisText)
@@ -710,6 +729,35 @@ export async function comboParts(
   const parts = first.parts
   const lateral = cross(world.normal, world.travel)
   let name = parts.map((p) => p.name).join(' + ')
+  // Guide without drive: the EAGF on the cylinder's front flange (the payload then sits on its yoke plate), or the
+  // guide axes beside the axis, their slides level with its slide at the start position, lengthened to the stroke
+  let payloadAt: Vec3 = [0, 0, 0]
+  if (guide && guideText) {
+    const meta = guide.drawing.meta!
+    let file = parseStep(guideText)
+    const d = guide.stroke - meta.stroke
+    if (d !== 0 && meta.stretch) file = stretchPart(file, meta.stretch, d).file
+    const at = (p: Vec3) => (d !== 0 && meta.stretch ? stretchedOrigin(p, meta.stretch, d) : p)
+    if (meta.mount && meta.yoke && axisMeta.front) {
+      const front = { ...axisMeta.front, origin: stretch !== 0 && axisMeta.stretch ? stretchedOrigin(axisMeta.front.origin, axisMeta.stretch, stretch) : axisMeta.front.origin }
+      const transform = mate(axisToWorld, front, { ...meta.mount, origin: at(meta.mount.origin) })
+      parts.push({ role: 'guide', name: guide.model, file, transform })
+      payloadAt = apply(transform, at(meta.yoke))
+      name += ` + ${guide.model}`
+    } else if (meta.slide) {
+      const g = meta.slide
+      const level = mate(axisToWorld, { origin: slide.origin, axis: slide.normal, up: slide.travel }, { origin: at(g.origin), axis: g.normal, up: g.travel })
+      guide.offsets.forEach((o, i) =>
+        parts.push({
+          role: 'guide',
+          name: guide.offsets.length > 1 ? `${guide.model} (${i + 1})` : guide.model,
+          file,
+          transform: { ...level, t: add(level.t, scale(lateral, o)) },
+        }),
+      )
+      name += ` + ${guide.offsets.length} × ${guide.model}`
+    }
+  }
   // Second axis of a twin arrangement at +y (the COG's lateral direction), by default the mirror image of the
   // first (`mirroredDrive`; a slide standing out to one side drawn mirrored, `mirrorAxis`), with its own drive train
   // (drive position `options.twinDrive`, kit side and connector `twinOrientation`) when it has a motor
@@ -758,9 +806,9 @@ export async function comboParts(
   // COG in the first slide's frame (x travel, y lateral, z normal); a facing pair turns it with the slide, y then
   // measured from the slide centre again (both slides at the same height), not from the arrangement's centre
   const cogY = facing ? req.cog.y - twin!.spacing / 2 : req.cog.y
-  const cogOnSlide = add(add(scale(world.travel, req.cog.x), scale(lateral, cogY)), scale(world.normal, req.cog.z))
+  const cogOnSlide = add(payloadAt, add(add(scale(world.travel, req.cog.x), scale(lateral, cogY)), scale(world.normal, req.cog.z)))
   const cog = facing ? apply(facingTurn(identity, req.mounting, 1), cogOnSlide) : cogOnSlide
-  const notices = [...new Set([axisText, kitText, motorText, gearboxText, shaftText].flatMap((t) => (t && sourceNotice(t)) || []))]
+  const notices = [...new Set([axisText, kitText, motorText, gearboxText, shaftText, guideText].flatMap((t) => (t && sourceNotice(t)) || []))]
   return {
     name,
     parts,

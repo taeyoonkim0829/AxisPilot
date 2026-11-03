@@ -1,0 +1,6 @@
+{
+  "stroke": 400,
+  "mount": { "origin": [0, 0, 0], "axis": [0, 0, 1], "up": [1, 0, 0] },
+  "yoke": [0, 0, 77],
+  "stretch": { "part": "3038089 EAGF-40-400-KF---(FST)", "axis": 2, "dir": -1, "range": [-485, -86] }
+}

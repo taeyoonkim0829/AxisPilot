@@ -58,8 +58,10 @@ export interface ParallelConfig {
   guideCount: number
   /** guides, two or more: the axis at the edge (−y, the default) instead of in the middle */
   guideAxisEdge?: boolean
-  /** kg, moving mass per LM guide (carriages and bracket) */
+  /** kg, moving mass per LM guide (carriages and bracket); with `guideAxis` added to the guide axis's slide */
   guideMass: number
+  /** guides: guide axes of the axis's profile (EGC-FA beside EGC, ELFD beside ELGD) instead of LM guides */
+  guideAxis?: boolean
   /** twinShaft: kg·cm², connecting shaft and its couplings, at the axis drive shaft */
   shaftInertia: number
 }

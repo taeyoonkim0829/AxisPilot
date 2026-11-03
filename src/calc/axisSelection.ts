@@ -1,8 +1,9 @@
 // Axis sizing: motion profile, required force/torque at the axis drive shaft,
 // guide load comparison value, deflection and life. Motor-independent.
-import type { AdditionalSlide, Axis, BeltMaterial, ConnectingShaft } from '../data/types'
+import type { AdditionalSlide, Axis, BeltMaterial, ConnectingShaft, GuideUnit } from '../data/types'
 import { curveAt } from './curve'
 import { dwellPhase, moveProfile, samplePhases, type MoveProfile, type Phase } from './motionProfile'
+import { cylinderGuideFor, eagfLoads, guideAxisFor, guideChecks, guideFv, type GuideFit } from './guideSelection'
 import { connectingShaftFor, noShaftCheck, shaftChecks, type ShaftFit } from './shaftSelection'
 import { check, guidePositions, verticalForward, worstStatus, type Check, type ParallelMode, type Requirements, type Settings, type Status } from './types'
 
@@ -89,6 +90,9 @@ export interface AxisEvaluation {
   noLoadTorque: number
   /** twinShaft: the Festo KSK connecting shaft fitted between the axes; null without one */
   shaft: ShaftFit | null
+  /** the guide without drive: EAGF on an ESBF with 외부 가이드 사용, or the guide axes (EGC-FA / ELFD) in place of
+   *  the LM guides; null without one */
+  guide: GuideFit | null
 }
 
 /** Order options of an axis from the settings */
@@ -484,7 +488,13 @@ function pressCycle(req: Requirements): AxisEvaluation['press'] {
   }
 }
 
-export function evaluateAxis(axis: Axis, req: Requirements, settings: Settings, shafts: ConnectingShaft[] = []): AxisEvaluation | null {
+export function evaluateAxis(
+  axis: Axis,
+  req: Requirements,
+  settings: Settings,
+  shafts: ConnectingShaft[] = [],
+  guides: GuideUnit[] = [],
+): AxisEvaluation | null {
   const feed = axisFeed(axis)
   if (!feed || !(req.stroke > 0 && req.velocity > 0 && req.acceleration > 0)) return null
   // An electric cylinder has no profile to move.
@@ -530,7 +540,18 @@ export function evaluateAxis(axis: Axis, req: Requirements, settings: Settings, 
   const noLoad = options?.belt?.noLoadTorque ?? axis.noLoadTorque
   // Parallel arrangement: with two axes each carries its share of the payload (the more loaded one is checked);
   // LM guides add their moving mass to the axis drive.
-  const layout = parallelLayout(req)
+  const arrangement = parallelLayout(req)
+  // Guides without drive: the guide axes of the axis's profile in place of the LM guides (their slides add to the
+  // entered mass per guide), the EAGF on an electric cylinder with an external guide; both add their displacement force.
+  const guideAxis =
+    arrangement.mode === 'guides' && req.parallel?.guideAxis ? guideAxisFor(axis, builtStroke, arrangement.guides, guides) : null
+  const cylinderGuide = settings.externalGuide && axis.rodLateralForceCurve ? cylinderGuideFor(axis, builtStroke, guides) : null
+  const layout = guideAxis ? { ...arrangement, guideMass: arrangement.guideMass + guideAxis.count * guideAxis.movingMass } : arrangement
+  const guideDrag = cylinderGuide
+    ? (cylinderGuide.guide.displacementForce ?? 0)
+    : guideAxis
+      ? guideAxis.count * (guideAxis.guide.displacementForce ?? 0)
+      : 0
   const share = layout.share
   const slide = axis.slideMass + extraMass + ((axis.slideMassPer10mm ?? 0) * builtStroke) / 10
   const mAxis = axisMass(axis, builtStroke) + extraMass
@@ -538,7 +559,7 @@ export function evaluateAxis(axis: Axis, req: Requirements, settings: Settings, 
   const profile = req.movingProfile ? mAxis - axis.slideMass - extraMass : 0
   const driveMass = req.movingProfile ? Math.max(0, req.movingProfile.driveMass) : 0
   const moved = req.movingProfile ? profile + driveMass : slide
-  const axisPayload = share * req.payload + layout.guideMass
+  const axisPayload = share * req.payload + layout.guideMass + (cylinderGuide?.movingMass ?? 0)
   const mass = axisPayload + moved
   const axisInertia =
     axis.inertiaJ0 +
@@ -554,7 +575,7 @@ export function evaluateAxis(axis: Axis, req: Requirements, settings: Settings, 
     (v: number, a: number, dir: 1 | -1 | 0, load = 0): DriveState => {
       // Weight opposes the forward move when it goes up and helps it when it goes down (top-down pressing).
       const gravity = vertical ? (down ? -1 : 1) * m * G : 0
-      const resistance = mu * m * G + k * (settings.guideResistance + settings.externalForce)
+      const resistance = mu * m * G + k * (settings.guideResistance + settings.externalForce) + guideDrag
       const sgn = v !== 0 ? Math.sign(v) : dir
       const external = gravity + sgn * resistance + k * load
       const torque = J * 1e-4 * a * toRad + (external * feed) / (2000 * Math.PI) + sgn * noLoad
@@ -682,14 +703,25 @@ export function evaluateAxis(axis: Axis, req: Requirements, settings: Settings, 
   const axisLoads = members.filter((_, i) => layout.isAxis[i]).map((l) => slideGroupLoads(l, slidePositions))
   const loads = axisLoads.reduce((a, b) => (guideComparisonValue(b, axis).fv > guideComparisonValue(a, axis).fv ? b : a))
   let fv = 0
+  // fv of the guide without drive (EAGF, or the most loaded guide axis)
+  let guideUnitFv = 0
   if (axis.rodLateralForceCurve) {
     // Electric cylinder: without an external guide the payload hangs on the piston rod.
     const lateral = Math.max(...axisLoads.map((l) => Math.hypot(l.Fy, l.Fz)))
     checks.push(
-      settings.externalGuide
+      cylinderGuide
+        ? { ...check('로드 횡하중 Fq', lateral, null, 'N', '{model}이 부하를 받음 — 검토 생략'), noteArgs: { model: cylinderGuide.model } }
+        : settings.externalGuide
         ? check('로드 횡하중 Fq', lateral, null, 'N', '외부 가이드 사용 — 검토 생략')
         : { ...check('로드 횡하중 Fq', lateral, curveAt(axis.rodLateralForceCurve, req.stroke), 'N'), note: '무게 중심 오프셋에 의한 모멘트는 포함하지 않음' },
     )
+    // The EAGF carries the payload and its own moving mass at the rod fully extended
+    if (cylinderGuide) {
+      const total = req.payload + cylinderGuide.movingMass
+      const unit = eagfLoads(cylinderGuide, req.payload, req.cog, req.stroke, slideForces(req, total, fwd.peakAcceleration))
+      checks.push(...guideChecks(cylinderGuide, unit, peakVelocity, fwd.peakAcceleration))
+      guideUnitFv = guideFv(unit, cylinderGuide.guide)
+    }
   } else {
     const guide = guideComparisonValue(loads, axis)
     fv = guide.fv
@@ -701,6 +733,14 @@ export function evaluateAxis(axis: Axis, req: Requirements, settings: Settings, 
           ? { note: '슬라이드 {n}개에 걸친 부하, 가장 큰 하중의 슬라이드 기준', noteArgs: { n: slideCount + 1 } }
           : {}),
     })
+  }
+
+  if (guideAxis) {
+    const unit = members
+      .filter((_, i) => !layout.isAxis[i])
+      .reduce((a, b) => (guideFv(b, guideAxis.guide) > guideFv(a, guideAxis.guide) ? b : a))
+    checks.push(...guideChecks(guideAxis, unit, peakVelocity, fwd.peakAcceleration))
+    guideUnitFv = guideFv(unit, guideAxis.guide)
   }
 
   if (!vertical) {
@@ -727,8 +767,12 @@ export function evaluateAxis(axis: Axis, req: Requirements, settings: Settings, 
       unit: 'kg',
       ...(layout.axes > 1
         ? { note: '축 1개당, 부하 분담 {share}%', noteArgs: { share: Math.round(share * 100) } }
-        : layout.guides > 0
+        : guideAxis
+          ? { note: '가이드 축 {mass} kg 포함', noteArgs: { mass: round1(layout.guideMass) } }
+          : layout.guides > 0
           ? { note: 'LM 가이드 {mass} kg 포함', noteArgs: { mass: layout.guideMass } }
+          : cylinderGuide
+          ? { note: '{model} {mass} kg 포함', noteArgs: { model: cylinderGuide.model, mass: round1(cylinderGuide.movingMass) } }
           : req.movingProfile
             ? { note: '프로파일 이동: 축 프로파일 {profile} kg + 구동부 {drive} kg', noteArgs: { profile: round1(profile), drive: round1(driveMass) } }
             : {}),
@@ -766,7 +810,22 @@ export function evaluateAxis(axis: Axis, req: Requirements, settings: Settings, 
   if (shaft) info.push({ label: '모터 구동 이동 질량 (2축 합계)', value: req.payload + 2 * slide, unit: 'kg' })
   // LM guides: the largest load on one guide, for choosing the guide blocks
   const guideMembers = members.filter((_, i) => !layout.isAxis[i])
-  if (guideMembers.length) {
+  const guideFit = guideAxis ?? cylinderGuide
+  if (guideFit)
+    info.push({
+      label: guideFit.guide.kind === 'axis' ? '가이드 축' : '가이드 유닛',
+      value: guideFit.count,
+      unit: '',
+      note: '{model}, 주문번호 {partNumber}, 1개 {mass} kg (이동 질량 {moving} kg)',
+      noteArgs: { model: guideFit.model, partNumber: guideFit.partNumber, mass: round1(guideFit.mass), moving: round1(guideFit.movingMass) },
+    })
+  else if (layout.mode === 'guides' && req.parallel?.guideAxis)
+    info.push({ label: '가이드 축', value: Number.NaN, unit: '', note: '이 축에 맞는 가이드 축(EGC-FA / ELFD)이 없어 LM 가이드로 계산' })
+  if (guideUnitFv > 0) {
+    const km = GUIDE_REFERENCE_LIFE_KM / guideUnitFv ** 3
+    info.push({ label: '가이드 예상 수명 (가이드 축 · 유닛)', value: km, unit: 'km', ...lifeNote(km, req.stroke, cycleTime, settings.hoursPerDay) })
+  }
+  if (guideMembers.length && !guideAxis) {
     for (const [key, label, unit] of LM_LOAD_LABELS) {
       const value = Math.max(...guideMembers.map((l) => l[key]))
       if (value > 0) info.push({ label, value, unit, note: '1개당 최대 (정하중 + 가속)' })
@@ -842,16 +901,23 @@ export function evaluateAxis(axis: Axis, req: Requirements, settings: Settings, 
     options,
     noLoadTorque: noLoad,
     shaft: ksk,
+    guide: guideFit,
   }
 }
 
 const statusOrder: Record<Status, number> = { ok: 0, warn: 1, fail: 2 }
 
-export function selectAxes(all: Axis[], req: Requirements, settings: Settings, shafts: ConnectingShaft[] = []): AxisEvaluation[] {
+export function selectAxes(
+  all: Axis[],
+  req: Requirements,
+  settings: Settings,
+  shafts: ConnectingShaft[] = [],
+  guides: GuideUnit[] = [],
+): AxisEvaluation[] {
   const choices = slideAxes(all, settings)
   return all
     .filter((a) => settings.families.includes(a.family) && settings.drives.includes(a.drive) && offersSlides(a, settings, choices))
-    .map((a) => evaluateAxis(a, req, settings, shafts))
+    .map((a) => evaluateAxis(a, req, settings, shafts, guides))
     .filter((e): e is AxisEvaluation => e !== null)
     .sort((a, b) => statusOrder[a.status] - statusOrder[b.status] || a.axisMass - b.axisMass)
 }

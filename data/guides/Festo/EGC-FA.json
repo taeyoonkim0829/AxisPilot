@@ -1,0 +1,148 @@
+{
+  "items": [
+    {
+      "id": "EGC-70-FA-GK",
+      "maker": "Festo",
+      "family": "EGC-FA",
+      "kind": "axis",
+      "model": "EGC-70-FA-GK",
+      "typeCode": "EGC-70-…-FA-0H-GK",
+      "moduleNumber": "558864",
+      "size": 70,
+      "axes": [
+        {
+          "family": "EGC",
+          "variant": "",
+          "size": 70
+        }
+      ],
+      "longSlide": false,
+      "strokeRange": [
+        50,
+        5000
+      ],
+      "baseMass": 1.2,
+      "massPer10mm": 0.042,
+      "movingMass": 0.3,
+      "displacementForce": null,
+      "maxSpeed": 5,
+      "maxAcceleration": 50,
+      "FyMax": 1850,
+      "FzMax": 1850,
+      "MxMax": 16,
+      "MyMax": 51,
+      "MzMax": 51,
+      "Iy": 395000,
+      "Iz": 577000,
+      "dataSource": "EGC-FA catalog 2026/05, data sheet p.7–11, module numbers p.35"
+    },
+    {
+      "id": "EGC-80-FA-GK",
+      "maker": "Festo",
+      "family": "EGC-FA",
+      "kind": "axis",
+      "model": "EGC-80-FA-GK",
+      "typeCode": "EGC-80-…-FA-0H-GK",
+      "moduleNumber": "558865",
+      "size": 80,
+      "axes": [
+        {
+          "family": "EGC",
+          "variant": "",
+          "size": 80
+        }
+      ],
+      "longSlide": false,
+      "strokeRange": [
+        50,
+        8500
+      ],
+      "baseMass": 2,
+      "massPer10mm": 0.062,
+      "movingMass": 0.55,
+      "displacementForce": null,
+      "maxSpeed": 5,
+      "maxAcceleration": 50,
+      "FyMax": 3050,
+      "FzMax": 3050,
+      "MxMax": 36,
+      "MyMax": 97,
+      "MzMax": 97,
+      "Iy": 844000,
+      "Iz": 1160000,
+      "dataSource": "EGC-FA catalog 2026/05, data sheet p.7–11, module numbers p.35"
+    },
+    {
+      "id": "EGC-120-FA-GK",
+      "maker": "Festo",
+      "family": "EGC-FA",
+      "kind": "axis",
+      "model": "EGC-120-FA-GK",
+      "typeCode": "EGC-120-…-FA-0H-GK",
+      "moduleNumber": "558866",
+      "size": 120,
+      "axes": [
+        {
+          "family": "EGC",
+          "variant": "",
+          "size": 120
+        }
+      ],
+      "longSlide": false,
+      "strokeRange": [
+        50,
+        8500
+      ],
+      "baseMass": 7.3,
+      "massPer10mm": 0.15,
+      "movingMass": 2,
+      "displacementForce": null,
+      "maxSpeed": 5,
+      "maxAcceleration": 50,
+      "FyMax": 6890,
+      "FzMax": 6890,
+      "MxMax": 144,
+      "MyMax": 380,
+      "MzMax": 380,
+      "Iy": 4620000,
+      "Iz": 5650000,
+      "dataSource": "EGC-FA catalog 2026/05, data sheet p.7–11, module numbers p.35"
+    },
+    {
+      "id": "EGC-185-FA-GK",
+      "maker": "Festo",
+      "family": "EGC-FA",
+      "kind": "axis",
+      "model": "EGC-185-FA-GK",
+      "typeCode": "EGC-185-…-FA-0H-GK",
+      "moduleNumber": "558868",
+      "size": 185,
+      "axes": [
+        {
+          "family": "EGC",
+          "variant": "",
+          "size": 185
+        }
+      ],
+      "longSlide": false,
+      "strokeRange": [
+        50,
+        8500
+      ],
+      "baseMass": 20.8,
+      "massPer10mm": 0.29,
+      "movingMass": 6,
+      "displacementForce": null,
+      "maxSpeed": 5,
+      "maxAcceleration": 50,
+      "FyMax": 15200,
+      "FzMax": 15200,
+      "MxMax": 529,
+      "MyMax": 1157,
+      "MzMax": 1157,
+      "Iy": 23400000,
+      "Iz": 27400000,
+      "dataSource": "EGC-FA catalog 2026/05, data sheet p.7–11, module numbers p.35"
+    }
+  ]
+}

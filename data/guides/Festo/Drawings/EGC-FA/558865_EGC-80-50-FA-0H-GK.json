@@ -1,0 +1,6 @@
+{
+  "stroke": 50,
+  "slide": { "origin": [0, 76.5, -25], "normal": [0, 1, 0], "travel": [0, 0, 1] },
+  "stretch": { "part": "EGC-80--20678GK0--0----0_0_R0L22000", "axis": 2, "dir": 1, "range": [40, 96], "move": [7951] },
+  "profile": { "origin": [0, 0, 0], "normal": [0, -1, 0] }
+}

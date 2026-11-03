@@ -1,0 +1,334 @@
+{
+  "items": [
+    {
+      "id": "EAGF-V2-KF-32",
+      "maker": "Festo",
+      "family": "EAGF",
+      "kind": "cylinder",
+      "model": "EAGF-V2-KF-32",
+      "typeCode": "EAGF-V2-KF-32-…",
+      "moduleNumber": "3038083",
+      "strokePartNumbers": {
+        "100": "2782679",
+        "200": "2782818",
+        "320": "2782885",
+        "400": "2782923"
+      },
+      "size": 32,
+      "axes": [
+        {
+          "family": "ESBF",
+          "variant": "",
+          "size": 32
+        }
+      ],
+      "longSlide": false,
+      "strokeRange": [
+        1,
+        500
+      ],
+      "baseMass": 1.685,
+      "massPer10mm": 0.018,
+      "movingMass": 0.724,
+      "movingMassPer10mm": 0.018,
+      "cogMoving": [
+        30,
+        4.1
+      ],
+      "displacementForce": 15,
+      "maxSpeed": null,
+      "maxAcceleration": null,
+      "FyMax": 750,
+      "FzMax": 750,
+      "MxMax": 28,
+      "MyMax": 34,
+      "MzMax": 34,
+      "staticMax": {
+        "Fy": 1020,
+        "Fz": 1020,
+        "Mx": 38,
+        "My": 46,
+        "Mz": 46
+      },
+      "distanceX": 83,
+      "Iy": null,
+      "Iz": null,
+      "dataSource": "EAGF catalog 2026/03, EAGF-V2-KF with ESBF p.10–12, ordering data p.22"
+    },
+    {
+      "id": "EAGF-V2-KF-40",
+      "maker": "Festo",
+      "family": "EAGF",
+      "kind": "cylinder",
+      "model": "EAGF-V2-KF-40",
+      "typeCode": "EAGF-V2-KF-40-…",
+      "moduleNumber": "3038089",
+      "strokePartNumbers": {
+        "100": "2782939",
+        "200": "2782976",
+        "320": "2783047",
+        "400": "2783080"
+      },
+      "size": 40,
+      "axes": [
+        {
+          "family": "ESBF",
+          "variant": "",
+          "size": 40
+        }
+      ],
+      "longSlide": false,
+      "strokeRange": [
+        1,
+        500
+      ],
+      "baseMass": 2.517,
+      "massPer10mm": 0.032,
+      "movingMass": 1.283,
+      "movingMassPer10mm": 0.032,
+      "cogMoving": [
+        38,
+        4.2
+      ],
+      "displacementForce": 15,
+      "maxSpeed": null,
+      "maxAcceleration": null,
+      "FyMax": 1000,
+      "FzMax": 1000,
+      "MxMax": 44,
+      "MyMax": 52,
+      "MzMax": 52,
+      "staticMax": {
+        "Fy": 1260,
+        "Fz": 1260,
+        "Mx": 55,
+        "My": 65,
+        "Mz": 65
+      },
+      "distanceX": 85,
+      "Iy": null,
+      "Iz": null,
+      "dataSource": "EAGF catalog 2026/03, EAGF-V2-KF with ESBF p.10–12, ordering data p.22"
+    },
+    {
+      "id": "EAGF-V2-KF-50",
+      "maker": "Festo",
+      "family": "EAGF",
+      "kind": "cylinder",
+      "model": "EAGF-V2-KF-50",
+      "typeCode": "EAGF-V2-KF-50-…",
+      "moduleNumber": "3038094",
+      "strokePartNumbers": {
+        "100": "2783639",
+        "200": "2784152",
+        "320": "2784164",
+        "400": "2784184"
+      },
+      "size": 50,
+      "axes": [
+        {
+          "family": "ESBF",
+          "variant": "",
+          "size": 50
+        }
+      ],
+      "longSlide": false,
+      "strokeRange": [
+        1,
+        500
+      ],
+      "baseMass": 4.059,
+      "massPer10mm": 0.049,
+      "movingMass": 2.015,
+      "movingMassPer10mm": 0.049,
+      "cogMoving": [
+        46,
+        4.3
+      ],
+      "displacementForce": 15,
+      "maxSpeed": null,
+      "maxAcceleration": null,
+      "FyMax": 1260,
+      "FzMax": 1260,
+      "MxMax": 65,
+      "MyMax": 70,
+      "MzMax": 70,
+      "staticMax": {
+        "Fy": 1600,
+        "Fz": 1600,
+        "Mx": 83,
+        "My": 89,
+        "Mz": 89
+      },
+      "distanceX": 99,
+      "Iy": null,
+      "Iz": null,
+      "dataSource": "EAGF catalog 2026/03, EAGF-V2-KF with ESBF p.10–12, ordering data p.22"
+    },
+    {
+      "id": "EAGF-V2-KF-63",
+      "maker": "Festo",
+      "family": "EAGF",
+      "kind": "cylinder",
+      "model": "EAGF-V2-KF-63",
+      "typeCode": "EAGF-V2-KF-63-…",
+      "moduleNumber": "2608521",
+      "strokePartNumbers": {
+        "100": "1725842",
+        "200": "1725843",
+        "320": "1725844",
+        "400": "1725845"
+      },
+      "size": 63,
+      "axes": [
+        {
+          "family": "ESBF",
+          "variant": "",
+          "size": 63
+        }
+      ],
+      "longSlide": false,
+      "strokeRange": [
+        1,
+        500
+      ],
+      "baseMass": 5.525,
+      "massPer10mm": 0.049,
+      "movingMass": 2.56,
+      "movingMassPer10mm": 0.049,
+      "cogMoving": [
+        48,
+        4.1
+      ],
+      "displacementForce": 15,
+      "maxSpeed": null,
+      "maxAcceleration": null,
+      "FyMax": 1260,
+      "FzMax": 1260,
+      "MxMax": 75,
+      "MyMax": 90,
+      "MzMax": 90,
+      "staticMax": {
+        "Fy": 1600,
+        "Fz": 1600,
+        "Mx": 95,
+        "My": 115,
+        "Mz": 115
+      },
+      "distanceX": 117,
+      "Iy": null,
+      "Iz": null,
+      "dataSource": "EAGF catalog 2026/03, EAGF-V2-KF with ESBF p.10–12, ordering data p.22"
+    },
+    {
+      "id": "EAGF-V2-KF-80",
+      "maker": "Festo",
+      "family": "EAGF",
+      "kind": "cylinder",
+      "model": "EAGF-V2-KF-80",
+      "typeCode": "EAGF-V2-KF-80-…",
+      "moduleNumber": "2608528",
+      "strokePartNumbers": {
+        "100": "1725846",
+        "200": "1725847",
+        "320": "1725848",
+        "400": "1725849"
+      },
+      "size": 80,
+      "axes": [
+        {
+          "family": "ESBF",
+          "variant": "",
+          "size": 80
+        }
+      ],
+      "longSlide": false,
+      "strokeRange": [
+        1,
+        550
+      ],
+      "baseMass": 10.517,
+      "massPer10mm": 0.076,
+      "movingMass": 5.166,
+      "movingMassPer10mm": 0.076,
+      "cogMoving": [
+        54,
+        3.8
+      ],
+      "displacementForce": 40,
+      "maxSpeed": null,
+      "maxAcceleration": null,
+      "FyMax": 2300,
+      "FzMax": 2300,
+      "MxMax": 170,
+      "MyMax": 191,
+      "MzMax": 191,
+      "staticMax": {
+        "Fy": 3120,
+        "Fz": 3120,
+        "Mx": 231,
+        "My": 259,
+        "Mz": 259
+      },
+      "distanceX": 142,
+      "Iy": null,
+      "Iz": null,
+      "dataSource": "EAGF catalog 2026/03, EAGF-V2-KF with ESBF p.10–12, ordering data p.22"
+    },
+    {
+      "id": "EAGF-V2-KF-100",
+      "maker": "Festo",
+      "family": "EAGF",
+      "kind": "cylinder",
+      "model": "EAGF-V2-KF-100",
+      "typeCode": "EAGF-V2-KF-100-…",
+      "moduleNumber": "2608532",
+      "strokePartNumbers": {
+        "100": "1725850",
+        "200": "1725851",
+        "320": "1725852",
+        "400": "1725853"
+      },
+      "size": 100,
+      "axes": [
+        {
+          "family": "ESBF",
+          "variant": "",
+          "size": 100
+        }
+      ],
+      "longSlide": false,
+      "strokeRange": [
+        1,
+        550
+      ],
+      "baseMass": 13.263,
+      "massPer10mm": 0.076,
+      "movingMass": 6.148,
+      "movingMassPer10mm": 0.076,
+      "cogMoving": [
+        47,
+        3.6
+      ],
+      "displacementForce": 40,
+      "maxSpeed": null,
+      "maxAcceleration": null,
+      "FyMax": 2300,
+      "FzMax": 2300,
+      "MxMax": 198,
+      "MyMax": 197,
+      "MzMax": 197,
+      "staticMax": {
+        "Fy": 3120,
+        "Fz": 3120,
+        "Mx": 268,
+        "My": 267,
+        "Mz": 267
+      },
+      "distanceX": 145,
+      "Iy": null,
+      "Iz": null,
+      "dataSource": "EAGF catalog 2026/03, EAGF-V2-KF with ESBF p.10–12, ordering data p.22"
+    }
+  ]
+}

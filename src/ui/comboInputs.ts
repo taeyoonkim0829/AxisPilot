@@ -35,6 +35,22 @@ export function comboInputs(
           motor: drive.motor,
           gearbox: drive.gearbox,
           kit,
+          ...(axis.guide
+            ? {
+                guide: {
+                  guide: axis.guide.guide,
+                  model: axis.guide.model,
+                  stroke: axis.guide.stroke,
+                  // guide axes beside the axis (mm from it along +y), from the arrangement
+                  offsets:
+                    axis.guide.guide.kind === 'axis'
+                      ? axis.layout.positions
+                          .map((p, i) => (axis.layout.isAxis[i] ? null : Math.round((p - axis.layout.positions[axis.layout.isAxis.indexOf(true)]) * 1000)))
+                          .filter((o): o is number => o != null)
+                      : [],
+                },
+              }
+            : {}),
         }
       : null
   const found = selection ? comboDrawings(selection) : null
@@ -72,4 +88,5 @@ export const comboKey = (selection: ComboSelection, req: Requirements, twin: Twi
     req.cog.y,
     req.cog.z,
     twin ? `${twin.spacing}/${twin.drive}/${twin.shaft?.model ?? ''}` : '',
+    selection.guide ? `${selection.guide.model}@${selection.guide.offsets.join(',')}` : '',
   ].join('|')

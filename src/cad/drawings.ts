@@ -1,4 +1,4 @@
-import type { Axis, AxisAdapter, ConnectingShaft, Gearbox, Kit, Motor } from '../data/types'
+import type { Axis, AxisAdapter, ConnectingShaft, Gearbox, GuideUnit, Kit, Motor } from '../data/types'
 import type { Frame } from './geometry'
 import type { StretchSpec } from './stretch'
 import type { Vec3 } from './step'
@@ -7,7 +7,7 @@ import type { Vec3 } from './step'
 // (Festo) or the maker's own file name (Mitsubishi `hg-kr13_.stp`), each with a JSON of the same name holding its
 // mating frames (see data/README.md).
 
-export type DrawingKind = 'axes' | 'motors' | 'gearboxes' | 'kits' | 'shafts' | 'adapters'
+export type DrawingKind = 'axes' | 'motors' | 'gearboxes' | 'kits' | 'shafts' | 'adapters' | 'guides'
 
 export interface AxisMeta {
   /** mm, stroke of the model in the file */
@@ -25,6 +25,23 @@ export interface AxisMeta {
   /** the jaw coupling hub on the drive shaft (ELGT-BS, ELGD-BS): its part name, the direction (across the shaft) of
    *  one of its `count` jaws; turned to the kit's `coupling` when assembled */
   coupling?: JawCoupling & { part: string }
+  /** electric cylinder (ESBF): the front flange face on the rod axis, `axis` along the travel (out of the face),
+   *  `up` = the slide normal; where a guide unit (EAGF) sits */
+  front?: Frame
+}
+/** A guide without drive (data/guides): guide axes take `slide`/`profile`/`stretch` like an axis; the EAGF `mount`,
+ *  `yoke` and `stretch` (its guide rods) */
+export interface GuideMeta {
+  /** mm, stroke of the model in the file */
+  stroke: number
+  slide?: AxisMeta['slide']
+  profile?: AxisMeta['profile']
+  /** EAGF: the housing face on the cylinder's front flange, on the guide centre, `axis` towards the yoke plate,
+   *  `up` across the guide rods (their plane) */
+  mount?: Frame
+  /** EAGF: centre of the yoke plate's front face (the payload's mounting face) at 0 stroke */
+  yoke?: Vec3
+  stretch?: StretchSpec
 }
 /** Jaw coupling hub: `jaw` = direction from the shaft line to the centre of one of its `count` jaws */
 export interface JawCoupling {
@@ -119,7 +136,7 @@ export const bracketDrawingUrl = (path: string | undefined): string | null => (p
 export function parseDrawingPath(
   path: string,
 ): Pick<Drawing, 'kind' | 'maker' | 'partNumber' | 'model' | 'names' | 'path'> | null {
-  const m = /data\/(axes|motors|gearboxes|kits|shafts|adapters)\/([^/]+)\/Drawings\/(?:.*\/)?([^/]+)\.(?:stp|step)$/i.exec(path)
+  const m = /data\/(axes|motors|gearboxes|kits|shafts|adapters|guides)\/([^/]+)\/Drawings\/(?:.*\/)?([^/]+)\.(?:stp|step)$/i.exec(path)
   if (!m) return null
   const [, kind, maker, base] = m
   const named = /^(\d{5,})_(.+)$/.exec(base)
@@ -212,6 +229,13 @@ export const kitDrawingFor =(kit: Kit, all = drawings) =>
   (all.find(
     (d) => d.kind === 'kits' && (d.names.includes(kit.product) || (kit.partNumber != null && d.partNumber === kit.partNumber)),
   ) as Drawing<KitMeta> | undefined) ?? null
+
+/** A guide's drawing (any of its part numbers: module number or a standard stroke's), the stroke nearest first */
+export function guideDrawingFor(guide: GuideUnit, stroke: number, all = drawings): Drawing<GuideMeta> | null {
+  const numbers = new Set([guide.moduleNumber, ...Object.values(guide.strokePartNumbers ?? {})])
+  const list = all.filter((d) => d.kind === 'guides' && d.meta && d.partNumber && numbers.has(d.partNumber)) as Drawing<GuideMeta>[]
+  return list.sort((a, b) => Math.abs(a.meta!.stroke - stroke) - Math.abs(b.meta!.stroke - stroke))[0] ?? null
+}
 
 export const shaftDrawingFor = (shaft: ConnectingShaft, all = drawings) =>
   (all.find((d) => d.kind === 'shafts' && d.meta && d.partNumber === shaft.partNumber) as Drawing<ShaftMeta> | undefined) ?? null

@@ -40,7 +40,7 @@ interface Props {
   tabs?: ReactNode
 }
 
-const roleLabel: Record<PartRole, string> = { axis: '축', kit: '연결키트', gearbox: '감속기', motor: '모터', shaft: '연결축', adapter: '조합 키트' }
+const roleLabel: Record<PartRole, string> = { axis: '축', kit: '연결키트', gearbox: '감속기', motor: '모터', shaft: '연결축', adapter: '조합 키트', guide: '가이드' }
 
 /** Step 5: the manufacturers' CAD models of the selection, assembled — 3D preview, STEP and DXF export. */
 export function DrawingStep({ axis, drive, kit, req: input, sides, onSides, facingChoice = true, tabs }: Props) {
@@ -184,6 +184,22 @@ export function DrawingStep({ axis, drive, kit, req: input, sides, onSides, faci
                 ? t('외형 치수가 같은 모터의 도면')
                 : null,
           },
+          ...(selection.guide
+            ? [
+                {
+                  role: 'guide' as const,
+                  model:
+                    selection.guide.offsets.length > 1 ? `${selection.guide.model} × ${selection.guide.offsets.length}` : selection.guide.model,
+                  drawing: found.guide,
+                  warn: !found.guide,
+                  note: !found.guide
+                    ? t('도면이 없어 조합 도면에서 뺐습니다')
+                    : (found.guide.meta?.stroke ?? selection.guide.stroke) !== selection.guide.stroke
+                      ? t('스트로크 {from} mm 모델을 {to} mm로 길이 보정', { from: found.guide.meta!.stroke, to: selection.guide.stroke })
+                      : null,
+                },
+              ]
+            : []),
           ...(axis!.shaft
             ? [
                 {
@@ -257,7 +273,9 @@ export function DrawingStep({ axis, drive, kit, req: input, sides, onSides, faci
                     ? twin?.shaft
                       ? '두 번째 축을 축 간격만큼 옆에 배치하고 연결축(KSK)으로 잇습니다. 모터는 두 번째 축 반대쪽 샤프트 끝에 둡니다.'
                       : '두 번째 축을 축 간격만큼 옆에 함께 배치합니다. 연결축은 도면에 포함되지 않습니다.'
-                    : 'LM 가이드는 도면에 포함되지 않습니다.',
+                    : axis.guide
+                      ? '가이드 축을 축–가이드 간격만큼 옆에 배치하고 슬라이드 높이를 축 슬라이드에 맞춥니다.'
+                      : 'LM 가이드는 도면에 포함되지 않습니다.',
               )}
             </p>
           )}

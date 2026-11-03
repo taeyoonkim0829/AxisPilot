@@ -53,3 +53,8 @@ node scripts/festo-cad/import.mjs <folder>           # copy them (--move to move
   `node scripts/festo-cad/motor-frames.mjs [--dry-run] file.stp …` writes their `flange` JSON from the geometry
   (shaft, flange face, connector side; rules in its header).
 - Export as STEP AP214 or AP242 with the default (CADENAS) file name; only `.stp`/`.step` is read.
+- Guides without drive (`data/guides/Festo/Drawings/<family>/`): exported with `export-gui.ps1 -List <csv>` from a
+  hand-made list (EAGF-V2-KF: the 400 mm standard part numbers; EGC-FA / ELFD: the module numbers, which open at
+  stroke 50 with the standard slide), copied as `<partNumber>_<model>.stp` (the model from the file's first PRODUCT);
+  `frames.mjs` writes their JSONs (guide axes like an axis without a drive; EAGF `mount` / `yoke` / rod `stretch`).
+  `frames.mjs --front` adds the front flange frame (`front`) to existing ESBF JSONs, where the EAGF sits.

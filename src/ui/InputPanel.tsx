@@ -281,6 +281,18 @@ export function ParallelSection({
           onChange={(n) => setParallel('guideCount', n)}
         />
       )}
+      {parallel.mode === 'guides' && (
+        <div className="field">
+          <span className="field-label">{t('가이드 종류')}</span>
+          <RadioGroup
+            options={['lm', 'axis'] as const}
+            value={parallel.guideAxis ? 'axis' : 'lm'}
+            onChange={(v) => setParallel('guideAxis', v === 'axis')}
+            label={(v) => t(v === 'axis' ? '가이드 축 (EGC-FA · ELFD)' : 'LM 가이드')}
+          />
+          {parallel.guideAxis && <p className="field-hint">{t('EGC에는 EGC-FA, ELGD에는 ELFD를 같은 크기로 적용 (다른 축은 LM 가이드로 계산)')}</p>}
+        </div>
+      )}
       {parallel.mode === 'guides' && guidePositions(parallel).guides >= 2 && (
         <div className="field">
           <span className="field-label">{t('축 위치')}</span>
@@ -303,11 +315,11 @@ export function ParallelSection({
           />
           {parallel.mode === 'guides' && (
             <NumberField
-              label={t('가이드 1개 이동 질량')}
+              label={t(parallel.guideAxis ? '가이드 1개 추가 질량' : '가이드 1개 이동 질량')}
               unit="kg"
               value={parallel.guideMass}
               onChange={(v) => setParallel('guideMass', v)}
-              hint={t('블록 + 브래킷')}
+              hint={t(parallel.guideAxis ? '브래킷 등, 가이드 축 슬라이드 질량은 자동 포함' : '블록 + 브래킷')}
             />
           )}
           {parallel.mode === 'twinShaft' && (
