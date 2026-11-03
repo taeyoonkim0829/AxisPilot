@@ -83,6 +83,10 @@ describe('parallel arrangement', () => {
     expect(comboInputs(ev, null, null, req).twin?.shaft?.model).toBe('KSK-80-318')
     expect(shaftTooShort(close)).toBe(true)
     expect(comboInputs(close, null, null, { ...req, parallel: { ...req.parallel!, spacing: 250 } }).twin?.shaft).toBeUndefined()
+    // ELGT-TB takes the KSK of the ELGD with its interface code: LN = 400 − 132 (TB-120), 400 − 172 (TB-160)
+    const tb = (id: string) => evaluateAxis(axes.find((a) => a.id === id)!, req, defaultSettings, shafts)!.shaft?.model
+    expect(tb('ELGT-TB-120')).toBe('KSK-80-268')
+    expect(tb('ELGT-TB-160')).toBe('KSK-120-228')
     // no KSK for a spindle axis: the entered inertia, with a warning
     const other = evaluateAxis(spindle, req, defaultSettings, shafts)!
     expect(other.shaft).toBeNull()

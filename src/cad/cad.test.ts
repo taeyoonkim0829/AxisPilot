@@ -643,6 +643,21 @@ describe('combination', () => {
     const combo = await buildCombo(sel, comboDrawings(sel, drawings), { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
     expect(caps(await text(paths[0]))).toBe(4)
     expect(caps(combo.step)).toBe(3)
+    // two ELGT-TB joined by a KSK-80 (same N48 interface as ELGD-60): LN = 400 − 132, the shaft end on the first
+    // axis's free drive cover (y = 66), that cover's cap taken off too
+    const ksk = 'data/shafts/Festo/Drawings/562521_KSK-80-200.stp'
+    const drawing = shaftDrawingFor(shafts.find((s) => s.model === 'KSK-80')!, [
+      { ...parseDrawingPath(ksk)!, url: ksk, meta: metas[`../../${ksk.replace(/\.stp$/, '.json')}`] ?? null },
+    ])!
+    const twin = await buildCombo(sel, comboDrawings(sel, drawings), { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load, undefined, {
+      spacing: 400,
+      drive: false,
+      shaft: { model: 'KSK-80-268', length: 268, drawing },
+    })
+    expect(twin.parts.map((p) => p.role)).toEqual(['axis', 'kit', 'motor', 'axis', 'shaft'])
+    expect(caps(twin.step)).toBe(3 + 2)
+    const end = (drawing.meta as ShaftMeta).end.origin
+    expect(Math.abs(apply(twin.parts[4].transform, end)[1])).toBeCloseTo(66, 0)
   }, 120000)
 
   it('turns a coupling filed with its bores the wrong way round end for end', async () => {
