@@ -185,6 +185,15 @@ describe('drawing files', () => {
     expect(name('HG-JR/hg-jr103b.stp')).toEqual(['HG-JR103B'])
   })
 
+  it('finds the file every sameOutline names (Mitsubishi, Siemens 1FK2)', () => {
+    const all = allPaths.map((path) => ({ ...parseDrawingPath(path)!, url: path, meta: null }))
+    const linked = motors.filter((m) => m.sameOutline)
+    expect(linked.filter((m) => motorDrawingFor(m, all)?.drawing.names.includes(m.sameOutline!) !== true).map((m) => m.model)).toEqual([])
+    // 1FK2: the S210 manual's dimension tables ignore the winding letter; frame 30 keeps the M12 (AG) / M17 (AH, AK) split
+    const ak = motorDrawingFor(motors.find((m) => m.model === '1FK2104-4AK0 (230V)')!, all)
+    expect([ak?.drawing.model, ak?.sameOutline]).toEqual(['1FK2104-4AF00-0MA0', true])
+  })
+
   it('has a drawing for every HG-KR, HG-SR and HG-JR motor', () => {
     const all = allPaths.map((path) => ({ ...parseDrawingPath(path)!, url: path, meta: null }))
     const hg = motors.filter((m) => /^HG-(KR|SR|JR)/.test(m.model))

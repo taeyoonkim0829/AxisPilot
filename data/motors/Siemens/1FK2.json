@@ -138,7 +138,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "60PA"
+      "interfaceCode": "60PA",
+      "sameOutline": "1FK2203-2AK00-0MA0"
     },
     {
       "id": "1FK2103-4AG0",
@@ -313,7 +314,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "80PA"
+      "interfaceCode": "80PA",
+      "sameOutline": "1FK2104-4AF00-0MA0"
     },
     {
       "id": "1FK2104-4AK0 (230V)",
@@ -348,7 +350,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "80PA"
+      "interfaceCode": "80PA",
+      "sameOutline": "1FK2104-4AF00-0MA0"
     },
     {
       "id": "1FK2104-5AF0",
@@ -453,7 +456,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "80PA"
+      "interfaceCode": "80PA",
+      "sameOutline": "1FK2104-5AF00-0MA0"
     },
     {
       "id": "1FK2104-5AK0 (230V)",
@@ -488,7 +492,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "80PA"
+      "interfaceCode": "80PA",
+      "sameOutline": "1FK2104-5AF00-0MA0"
     },
     {
       "id": "1FK2104-6AF0",
@@ -943,7 +948,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "60PA"
+      "interfaceCode": "60PA",
+      "sameOutline": "1FK2103-2AG00-0MA0"
     },
     {
       "id": "1FK2203-2AK0",
@@ -1013,7 +1019,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "60PA"
+      "interfaceCode": "60PA",
+      "sameOutline": "1FK2103-4AG00-0MA0"
     },
     {
       "id": "1FK2203-4AK0",
@@ -1153,7 +1160,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "80PA"
+      "interfaceCode": "80PA",
+      "sameOutline": "1FK2204-5AF00-0MA0"
     },
     {
       "id": "1FK2204-5AK0 (230V)",
@@ -1188,7 +1196,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "80PA"
+      "interfaceCode": "80PA",
+      "sameOutline": "1FK2204-5AF00-0MA0"
     },
     {
       "id": "1FK2204-6AF0",
@@ -1223,7 +1232,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "80PA"
+      "interfaceCode": "80PA",
+      "sameOutline": "1FK2104-6AF00-0MA0"
     },
     {
       "id": "1FK2204-6AF0 (230V)",
@@ -1258,7 +1268,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "80PA"
+      "interfaceCode": "80PA",
+      "sameOutline": "1FK2104-6AF00-0MA0"
     },
     {
       "id": "1FK2205-2AF0",
@@ -2343,7 +2354,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "80PA"
+      "interfaceCode": "80PA",
+      "sameOutline": "1FK2104-4AF10-0MA0"
     },
     {
       "id": "1FK2104-4AK1 (230V)",
@@ -2378,7 +2390,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "80PA"
+      "interfaceCode": "80PA",
+      "sameOutline": "1FK2104-4AF10-0MA0"
     },
     {
       "id": "1FK2104-5AF1",
@@ -2483,7 +2496,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "80PA"
+      "interfaceCode": "80PA",
+      "sameOutline": "1FK2104-5AF10-0MA0"
     },
     {
       "id": "1FK2104-5AK1 (230V)",
@@ -2518,7 +2532,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "80PA"
+      "interfaceCode": "80PA",
+      "sameOutline": "1FK2104-5AF10-0MA0"
     },
     {
       "id": "1FK2104-6AF1",
@@ -2833,7 +2848,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "sameOutline": "1FK2206-4AF10-0MA0"
     },
     {
       "id": "1FK2106-4AF1 (230V)",
@@ -2868,7 +2884,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "sameOutline": "1FK2206-4AF10-0MA0"
     },
     {
       "id": "1FK2106-6AF1",
@@ -3008,7 +3025,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "60PA"
+      "interfaceCode": "60PA",
+      "sameOutline": "1FK2103-2AH10-1MA0"
     },
     {
       "id": "1FK2203-4AG1",
@@ -3113,7 +3131,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "80PA"
+      "interfaceCode": "80PA",
+      "sameOutline": "1FK2104-5AF10-0MA0"
     },
     {
       "id": "1FK2204-5AF1 (230V)",
@@ -3148,7 +3167,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "80PA"
+      "interfaceCode": "80PA",
+      "sameOutline": "1FK2104-5AF10-0MA0"
     },
     {
       "id": "1FK2204-5AK1",
@@ -3183,7 +3203,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "80PA"
+      "interfaceCode": "80PA",
+      "sameOutline": "1FK2104-5AF10-0MA0"
     },
     {
       "id": "1FK2204-5AK1 (230V)",
@@ -3218,7 +3239,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "80PA"
+      "interfaceCode": "80PA",
+      "sameOutline": "1FK2104-5AF10-0MA0"
     },
     {
       "id": "1FK2204-6AF1",
