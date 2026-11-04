@@ -25,7 +25,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7□A001□ / L7□A001□",
-      "interfaceCode": null
+      "interfaceCode": "40R"
     },
     {
       "id": "APM-EAR5A brake",
@@ -52,7 +52,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7□A001□ / L7□A001□",
-      "interfaceCode": null
+      "interfaceCode": "40R"
     },
     {
       "id": "APM-EA01A",
@@ -79,7 +79,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7□A001□ / L7□A001□",
-      "interfaceCode": null
+      "interfaceCode": "40R"
     },
     {
       "id": "APM-EA01A brake",
@@ -106,7 +106,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7□A001□ / L7□A001□",
-      "interfaceCode": null
+      "interfaceCode": "40R"
     },
     {
       "id": "APM-EA015A",
@@ -133,7 +133,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7□A002□ / L7□A002□",
-      "interfaceCode": null
+      "interfaceCode": "40R"
     },
     {
       "id": "APM-EB01A",
@@ -160,7 +160,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7NHA001U / L7□A001□ / L7CA001U",
-      "interfaceCode": null
+      "interfaceCode": "60PA"
     },
     {
       "id": "APM-EB01A brake",
@@ -187,7 +187,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7NHA001U / L7□A001□ / L7CA001U",
-      "interfaceCode": null
+      "interfaceCode": "60PA"
     },
     {
       "id": "APM-EB02A",
@@ -214,7 +214,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7NHA002U / L7□A002□ / L7CA002U",
-      "interfaceCode": null
+      "interfaceCode": "60PA"
     },
     {
       "id": "APM-EB02A brake",
@@ -241,7 +241,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7NHA002U / L7□A002□ / L7CA002U",
-      "interfaceCode": null
+      "interfaceCode": "60PA"
     },
     {
       "id": "APM-EB04A",
@@ -268,7 +268,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7NHA004U / L7□A004□ / L7CA004U",
-      "interfaceCode": null
+      "interfaceCode": "60PA"
     },
     {
       "id": "APM-EB04A brake",
@@ -295,7 +295,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7NHA004U / L7□A004□ / L7CA004U",
-      "interfaceCode": null
+      "interfaceCode": "60PA"
     },
     {
       "id": "APM-EC04A",
@@ -376,7 +376,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7NHA008U / L7□A008□L7CA008U",
-      "interfaceCode": null
+      "interfaceCode": "80PA"
     },
     {
       "id": "APM-EC06A brake",
@@ -403,7 +403,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7NHA008U / L7□A008□L7CA008U",
-      "interfaceCode": null
+      "interfaceCode": "80PA"
     },
     {
       "id": "APM-EC08A",
@@ -430,7 +430,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7NHA008U / L7□A008□L7CA008U",
-      "interfaceCode": null
+      "interfaceCode": "80PA"
     },
     {
       "id": "APM-EC08A brake",
@@ -457,7 +457,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7NHA008U / L7□A008□L7CA008U",
-      "interfaceCode": null
+      "interfaceCode": "80PA"
     },
     {
       "id": "APM-EC10A",
@@ -484,7 +484,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7NHA010U / L7□A010□L7CA010U",
-      "interfaceCode": null
+      "interfaceCode": "80PA"
     },
     {
       "id": "APM-EC10A brake",
@@ -511,7 +511,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7NHA010U / L7□A010□L7CA010U",
-      "interfaceCode": null
+      "interfaceCode": "80PA"
     },
     {
       "id": "APM-EE09A",
@@ -646,7 +646,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7□A020□ / L7□A020□",
-      "interfaceCode": null
+      "interfaceCode": "130M2"
     },
     {
       "id": "APM-EE22A brake",
@@ -673,7 +673,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7□A020□ / L7□A020□",
-      "interfaceCode": null
+      "interfaceCode": "130M2"
     },
     {
       "id": "APM-EE30A",
@@ -754,7 +754,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7/L7□A035□",
-      "interfaceCode": null
+      "interfaceCode": "176M1"
     },
     {
       "id": "APM-EF30A brake",
@@ -781,7 +781,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7/L7□A035□",
-      "interfaceCode": null
+      "interfaceCode": "176M1"
     },
     {
       "id": "APM-EF50A",
@@ -808,7 +808,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7/L7□A050□",
-      "interfaceCode": null
+      "interfaceCode": "176M1"
     },
     {
       "id": "APM-EF50A brake",
@@ -835,7 +835,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": "iX7/L7□A050□",
-      "interfaceCode": null
+      "interfaceCode": "176M1"
     },
     {
       "id": "APM-EE06D",
@@ -974,7 +974,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M2",
       "sameOutline": "APM-EE22A"
     },
     {
@@ -1002,7 +1002,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M2",
       "sameOutline": "APM-EE22A"
     },
     {
@@ -1086,7 +1086,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EF30A"
     },
     {
@@ -1114,7 +1114,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EF30A"
     },
     {
@@ -1142,7 +1142,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EF50A"
     },
     {
@@ -1170,7 +1170,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EF50A"
     },
     {
@@ -1198,7 +1198,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "176M1"
     },
     {
       "id": "APM-EF55D brake",
@@ -1225,7 +1225,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "176M1"
     },
     {
       "id": "APM-EF75D",
@@ -1418,7 +1418,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M2",
       "sameOutline": "APM-EE22A"
     },
     {
@@ -1446,7 +1446,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M2",
       "sameOutline": "APM-EE22A"
     },
     {
@@ -1530,7 +1530,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EF30A"
     },
     {
@@ -1558,7 +1558,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EF30A"
     },
     {
@@ -1586,7 +1586,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EF50A"
     },
     {
@@ -1614,7 +1614,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EF50A"
     },
     {
@@ -1642,7 +1642,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EF55D"
     },
     {
@@ -1670,7 +1670,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EF55D"
     },
     {
@@ -1920,7 +1920,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M2",
       "sameOutline": "APM-EE22A"
     },
     {
@@ -1948,7 +1948,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M2",
       "sameOutline": "APM-EE22A"
     },
     {
@@ -2032,7 +2032,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EF30A"
     },
     {
@@ -2060,7 +2060,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EF30A"
     },
     {
@@ -2088,7 +2088,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EF50A"
     },
     {
@@ -2116,7 +2116,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EF50A"
     },
     {
@@ -2144,7 +2144,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EF55D"
     },
     {
@@ -2172,7 +2172,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EF55D"
     },
     {
@@ -2364,7 +2364,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "130M2"
     },
     {
       "id": "APM-EEP22A brake",
@@ -2391,7 +2391,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "130M2"
     },
     {
       "id": "APM-EEP30A",
@@ -2472,7 +2472,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "176M1"
     },
     {
       "id": "APM-EFP30A brake",
@@ -2499,7 +2499,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "176M1"
     },
     {
       "id": "APM-EFP50A",
@@ -2526,7 +2526,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "176M1"
     },
     {
       "id": "APM-EFP50A brake",
@@ -2553,7 +2553,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "176M1"
     },
     {
       "id": "APM-EEP06D",
@@ -2692,7 +2692,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M2",
       "sameOutline": "APM-EEP22A"
     },
     {
@@ -2720,7 +2720,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M2",
       "sameOutline": "APM-EEP22A"
     },
     {
@@ -2804,7 +2804,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EFP30A"
     },
     {
@@ -2832,7 +2832,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EFP30A"
     },
     {
@@ -2860,7 +2860,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EFP50A"
     },
     {
@@ -2888,7 +2888,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EFP50A"
     },
     {
@@ -2916,7 +2916,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "176M1"
     },
     {
       "id": "APM-EFP55D brake",
@@ -2943,7 +2943,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "176M1"
     },
     {
       "id": "APM-EFP75D",
@@ -3136,7 +3136,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M2",
       "sameOutline": "APM-EEP22A"
     },
     {
@@ -3164,7 +3164,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M2",
       "sameOutline": "APM-EEP22A"
     },
     {
@@ -3248,7 +3248,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EFP30A"
     },
     {
@@ -3276,7 +3276,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EFP30A"
     },
     {
@@ -3304,7 +3304,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EFP50A"
     },
     {
@@ -3332,7 +3332,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EFP50A"
     },
     {
@@ -3360,7 +3360,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EFP55D"
     },
     {
@@ -3388,7 +3388,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EFP55D"
     },
     {
@@ -3638,7 +3638,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M2",
       "sameOutline": "APM-EEP22A"
     },
     {
@@ -3666,7 +3666,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M2",
       "sameOutline": "APM-EEP22A"
     },
     {
@@ -3750,7 +3750,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EFP30A"
     },
     {
@@ -3778,7 +3778,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EFP30A"
     },
     {
@@ -3806,7 +3806,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EFP50A"
     },
     {
@@ -3834,7 +3834,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EFP50A"
     },
     {
@@ -3862,7 +3862,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EFP55D"
     },
     {
@@ -3890,7 +3890,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "sameOutline": "APM-EFP55D"
     },
     {
