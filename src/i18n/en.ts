@@ -587,7 +587,6 @@ export const en: Record<string, string> = {
   '작성': 'Drawn',
   '품명': 'Part',
   '규격 · 형식': 'Model / type',
-  '주기': 'Notes',
   '사양': 'Specifications',
   '제품 중량': 'Product mass',
   '가반하중 (부하 질량)': 'Payload',

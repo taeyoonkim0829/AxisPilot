@@ -212,6 +212,88 @@ export function projectView(model: Model, view: ViewDef): Seg[] {
   return mergeCollinear(segs)
 }
 
+/** A mounting hole on the bottom: centre (world x, y) and diameter, mm */
+export interface Hole {
+  x: number
+  y: number
+  d: number
+}
+
+/**
+ * The holes opening on the underside of the axis: B-rep faces that are vertical cylinders (all normals horizontal,
+ * the vertices on one circle; split walls merged) reaching down to within 1.5 mm of the axis's lowest point. Returns the holes and the axis's length
+ * along x, or null when there are none.
+ */
+export function mountingHoles(meshes: DrawMesh[]): { holes: Hole[]; x0: number; x1: number } | null {
+  let zMin = Infinity
+  let x0 = Infinity
+  let x1 = -Infinity
+  for (const m of meshes)
+    for (let i = 0; i < m.positions.length; i += 3) {
+      zMin = Math.min(zMin, m.positions[i + 2])
+      x0 = Math.min(x0, m.positions[i])
+      x1 = Math.max(x1, m.positions[i])
+    }
+  // vertical cylinder faces (a file may split a hole's wall into arcs): circle through three spread vertices,
+  // every vertex on it; arcs of one hole merged by centre and radius
+  const arcs: { x: number; y: number; r: number; z0: number }[] = []
+  for (const m of meshes) {
+    const p = m.positions
+    for (const f of m.faces) {
+      const ids = new Set<number>()
+      let vertical = true
+      for (let t = f.first; t <= f.last && vertical; t++) {
+        const [a, b, c] = [m.index[t * 3], m.index[t * 3 + 1], m.index[t * 3 + 2]]
+        const u = [p[b * 3] - p[a * 3], p[b * 3 + 1] - p[a * 3 + 1], p[b * 3 + 2] - p[a * 3 + 2]]
+        const v = [p[c * 3] - p[a * 3], p[c * 3 + 1] - p[a * 3 + 1], p[c * 3 + 2] - p[a * 3 + 2]]
+        const n = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]]
+        const len = Math.hypot(n[0], n[1], n[2])
+        if (len > 1e-9 && Math.abs(n[2] / len) > 0.02) vertical = false
+        ids.add(a).add(b).add(c)
+      }
+      if (!vertical || ids.size < 6) continue
+      const pts = [...ids].map((i) => [p[i * 3], p[i * 3 + 1], p[i * 3 + 2]])
+      const far = (from: number[], score: (q: number[]) => number) => pts.reduce((a, q) => (score(q) > score(a) ? q : a))
+      const A = pts[0]
+      const B = far(A, (q) => Math.hypot(q[0] - A[0], q[1] - A[1]))
+      const C = far(A, (q) => Math.abs((B[0] - A[0]) * (q[1] - A[1]) - (B[1] - A[1]) * (q[0] - A[0])))
+      const d = 2 * (A[0] * (B[1] - C[1]) + B[0] * (C[1] - A[1]) + C[0] * (A[1] - B[1]))
+      if (Math.abs(d) < 1e-6) continue
+      const sq = (q: number[]) => q[0] * q[0] + q[1] * q[1]
+      const cx = (sq(A) * (B[1] - C[1]) + sq(B) * (C[1] - A[1]) + sq(C) * (A[1] - B[1])) / d
+      const cy = (sq(A) * (C[0] - B[0]) + sq(B) * (A[0] - C[0]) + sq(C) * (B[0] - A[0])) / d
+      const r = Math.hypot(A[0] - cx, A[1] - cy)
+      if (r < 1 || r > 12) continue
+      if (pts.some((q) => Math.abs(Math.hypot(q[0] - cx, q[1] - cy) - r) > 0.03 * r + 0.02)) continue
+      arcs.push({ x: cx, y: cy, r, z0: Math.min(...pts.map((q) => q[2])) })
+    }
+  }
+  const holes: (Hole & { z0: number })[] = []
+  for (const a of arcs) {
+    const h = holes.find((o) => Math.hypot(o.x - a.x, o.y - a.y) < 0.3 && Math.abs(o.d / 2 - a.r) < 0.1)
+    if (h) h.z0 = Math.min(h.z0, a.z0)
+    else holes.push({ x: a.x, y: a.y, d: Math.round(2 * a.r * 10) / 10, z0: a.z0 })
+  }
+  // open at the bottom (the profile's underside may sit a little above the heads')
+  const open = holes.filter((h) => h.z0 <= zMin + 1.5).map(({ x, y, d }) => ({ x, y, d }))
+  return open.length ? { holes: open, x0, x1 } : null
+}
+
+
+/** gaps along a row, equal neighbours (±0.05 mm) merged: [from, to, count, pitch] */
+function chain(points: number[]): [number, number, number, number][] {
+  const out: [number, number, number, number][] = []
+  for (let i = 1; i < points.length; i++) {
+    const gap = points[i] - points[i - 1]
+    const last = out[out.length - 1]
+    if (last && Math.abs(last[3] - gap) < 0.05) {
+      last[1] = points[i]
+      last[2]++
+    } else out.push([points[i - 1], points[i], 1, gap])
+  }
+  return out
+}
+
 /** Joins chained segments that continue in the same direction (tessellated straight edges). */
 function mergeCollinear(segs: Seg[]): Seg[] {
   const key = (x: number, y: number) => `${Math.round(x * 100)},${Math.round(y * 100)}`
@@ -305,7 +387,7 @@ export const DEFAULT_LABELS: SheetLabels = {
   part: 'PART',
   model: 'MODEL / TYPE',
   qty: 'QTY',
-  notes: 'NOTES',
+  notes: 'Note',
   specs: 'SPECIFICATIONS',
   stroke: 'STROKE',
   cogNote: 'COG: payload centre of gravity (thin two-dot chain lines).',
@@ -326,6 +408,8 @@ export interface DrawingInput {
   stroke?: { from: Vec3; to: Vec3; length: number }
   /** specification table rows: label, value */
   specs?: [string, string][]
+  /** the axis's own meshes, for its mounting holes on the bottom view (pitch dimensions and callouts) */
+  axisMeshes?: DrawMesh[]
 }
 
 /** A-series sheets, landscape (paper mm) and their border margin (KS A 0106: 20 mm on A0 / A1, 10 mm below); the
@@ -337,8 +421,10 @@ const SHEETS = [
   { name: 'A0', w: 1189, h: 841, c: 20 },
 ] as const
 const FILING = 25
-/** recommended scales (KS A ISO 5455): denominators, 0.5 = 2:1 */
-const SCALES = [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500]
+/** scales (KS A ISO 5455 recommended, plus 1:3): denominators, 0.5 = 2:1 */
+const SCALES = [0.5, 1, 2, 3, 5, 10, 20, 50, 100, 200, 500]
+/** the drawing should be readable: the smallest sheet on which the views fit at 1:3 or larger */
+const READABLE = 3
 /** line widths (paper mm): thick outline / border, thin is a hairline (LINE) */
 const THICK = 0.5
 const BORDER = 0.7
@@ -381,8 +467,11 @@ function wrap(line: string, width: number): string[] {
 }
 
 /** Lays out the three views (third-angle) on a KS sheet with border, title block, parts list and notes. */
-export function layoutSheet({ meshes, cog, title, parts = [], date, labels: L = DEFAULT_LABELS, stroke, specs = [] }: DrawingInput): Sheet {
+export function layoutSheet({ meshes, cog, title, parts = [], date, labels: L = DEFAULT_LABELS, stroke, specs = [], axisMeshes }: DrawingInput): Sheet {
   const model = buildModel(meshes)
+  const mounting = axisMeshes ? mountingHoles(axisMeshes) : null
+  // below the bottom view: the hole pitch chain, then the overall length
+  const below = mounting ? DIM_ROOM + DIM_OFFSET : DIM_ROOM
   const views = [VIEWS.front, VIEWS.top, VIEWS.side, VIEWS.bottom].map((v) => {
     const segs = projectView(model, v)
     return { v, segs, box: bbox(segs) }
@@ -393,7 +482,7 @@ export function layoutSheet({ meshes, cog, title, parts = [], date, labels: L = 
   // views and their dimensions at scale 1/n (paper mm)
   const content = (n: number) => ({
     w: DIM_ROOM + (wOf(front) + wOf(side)) / n + VIEW_GAP,
-    h: DIM_ROOM + (hOf(bottom) + hOf(front) + hOf(top)) / n + 2 * VIEW_GAP,
+    h: below + (hOf(bottom) + hOf(front) + hOf(top)) / n + 2 * VIEW_GAP,
   })
 
   // parts list rows: equal names counted together, in assembly order
@@ -414,7 +503,7 @@ export function layoutSheet({ meshes, cog, title, parts = [], date, labels: L = 
   const notesH = NOTE_PITCH * (notes.length + 1) + 3
   const blockH = titleH + partsH + specsH + notesH
 
-  // the smallest sheet on which the views fit at 1:10 or larger, else the largest scale on A0; the views go above
+  // the smallest sheet on which the views fit at 1:3 or larger, else the largest scale on A0; the views go above
   // the title block column or to its left, whichever fits
   const fit = (sheet: (typeof SHEETS)[number], n: number) => {
     const inner = { x0: FILING, y0: sheet.c, x1: sheet.w - sheet.c, y1: sheet.h - sheet.c }
@@ -428,7 +517,7 @@ export function layoutSheet({ meshes, cog, title, parts = [], date, labels: L = 
   }
   const best = (sheet: (typeof SHEETS)[number]) => SCALES.map((n) => fit(sheet, n)).find((f) => f != null) ?? null
   const a0 = SHEETS[SHEETS.length - 1]
-  const layout = SHEETS.map(best).find((f) => f != null && f.n <= 10) ??
+  const layout = SHEETS.map(best).find((f) => f != null && f.n <= READABLE) ??
     best(a0) ?? {
       // too large for A0 at any standard scale: the smallest one, above the title block anyway
       sheet: a0,
@@ -458,7 +547,7 @@ export function layoutSheet({ meshes, cog, title, parts = [], date, labels: L = 
   // ---- views (third angle): bottom view at the lower left, the front view above it, the top view above that, the
   // right side view right of the front view; centred in the region
   const ox = region.x0 + PAD + (region.x1 - region.x0 - 2 * PAD - c.w) / 2 + DIM_ROOM
-  const oy = region.y0 + PAD + (region.y1 - region.y0 - 2 * PAD - c.h) / 2 + DIM_ROOM
+  const oy = region.y0 + PAD + (region.y1 - region.y0 - 2 * PAD - c.h) / 2 + below
   const fy = P(oy + VIEW_GAP) + hOf(bottom)
   const at: [number, number][] = [
     [P(ox) - front.x0, fy - front.y0],
@@ -483,7 +572,10 @@ export function layoutSheet({ meshes, cog, title, parts = [], date, labels: L = 
       }
     }
     if (i === 1) dxf.dimension(b.x0, b.y0, b.x0, b.y1, -P(DIM_OFFSET), 'v')
-    if (i === 3) dxf.dimension(b.x0, b.y0, b.x1, b.y0, -P(DIM_OFFSET), 'h')
+    if (i === 3) {
+      dxf.dimension(b.x0, b.y0, b.x1, b.y0, -P(mounting ? 2 * DIM_OFFSET : DIM_OFFSET), 'h')
+      if (mounting) holeDimensions(dxf, mounting, b, dx, dy, n)
+    }
     if (cog) {
       // centre of gravity: two-dot chain lines (무게 중심선) across the view and a small circle
       const x = dot(cog, v.right) + dx
@@ -597,6 +689,46 @@ export function layoutSheet({ meshes, cog, title, parts = [], date, labels: L = 
   dxf.text('TEXT', P(bx0), P(y), P(TEXT_DIM), L.notes)
 
   return dxf
+}
+
+/**
+ * The mounting holes on the bottom view (KS B 0001): the pitch chain of the longest row from the axis end to end below
+ * the view (equal pitches as `n×p(=total)`), the spacing of the rows on its right, and one callout `n×Ød` per
+ * hole size with a leader to a hole.
+ */
+function holeDimensions(dxf: Sheet, m: { holes: Hole[]; x0: number; x1: number }, b: { x0: number; y0: number; x1: number; y1: number }, dx: number, dy: number, n: number) {
+  const P = (v: number) => v * n
+  // bottom view: x as world x, up = world −y
+  const vx = (x: number) => x + dx
+  const vy = (y: number) => -y + dy
+  const sizes = [...new Set(m.holes.map((h) => h.d))].sort((a, c) => m.holes.filter((h) => h.d === c).length - m.holes.filter((h) => h.d === a).length)
+  const main = m.holes.filter((h) => h.d === sizes[0])
+  const rows: Hole[][] = []
+  for (const h of [...main].sort((a, c) => a.y - c.y)) {
+    const row = rows.find((r) => Math.abs(r[0].y - h.y) < 0.5)
+    if (row) row.push(h)
+    else rows.push([h])
+  }
+  const longest = rows.reduce((a, r) => (r.length > a.length ? r : a))
+  const xs = [m.x0, ...longest.map((h) => h.x).sort((a, c) => a - c), m.x1]
+  for (const [from, to, count, pitch] of chain(xs)) {
+    const label = count > 1 ? `${count}×${dimValue(pitch)}(=${dimValue(to - from)})` : undefined
+    dxf.dimension(vx(from), b.y0, vx(to), b.y0, -P(DIM_OFFSET), 'h', label)
+  }
+  // the rows' spacing, right of the view
+  if (rows.length > 1) {
+    const ys = rows.map((r) => vy(r[0].y)).sort((a, c) => a - c)
+    for (let i = 1; i < ys.length; i++) dxf.dimension(b.x1, ys[i - 1], b.x1, ys[i], P(DIM_OFFSET), 'v')
+  }
+  // callouts: count × diameter, the leader to the hole nearest the view's right end
+  sizes.slice(0, 3).forEach((d, k) => {
+    const of = m.holes.filter((h) => h.d === d)
+    const h = of.reduce((a, c) => (c.x > a.x ? c : a))
+    const tx = b.x1 + P(DIM_OFFSET + 8)
+    const ty = b.y1 - P(6 + k * 6)
+    dxf.line('DIM', vx(h.x), vy(h.y), tx - P(1), ty + P(1))
+    dxf.text('DIM', tx, ty, P(TEXT_SMALL), `${of.length}\u00d7\u00d8${dimValue(d)}`)
+  })
 }
 
 /** Third-angle projection symbol (KS A ISO 128 / 5456): the truncated cone, narrow end towards its end view on the right. */
@@ -755,6 +887,8 @@ export const drawingDxf = (input: DrawingInput) => toDxf(layoutSheet(input))
 /** the DXF (R12, no code page) takes ASCII: common symbols spelled out, anything else '?' */
 const ascii = (s: string) =>
   s
+    .replace(/Ø/g, '%%c')
+    .replace(/×/g, 'x')
     .replace(/²/g, '^2')
     .replace(/±/g, '+/-')
     .replace(/[·•]/g, '.')

@@ -61,6 +61,8 @@ const drawingInput = (combo: Combo, meshes: PartMesh[], title: string[], specs?:
   title,
   parts: combo.parts.map(({ role, name }) => ({ role, name })),
   stroke: combo.stroke,
+  // the axis (the first part; its twin when there is one) for its mounting holes
+  axisMeshes: meshes.filter((m) => combo.parts[m.part]?.role === 'axis' && m.part === combo.parts.findIndex((p) => p.role === 'axis')),
 })
 
 /** the PDF sheet's words in the app language (the DXF keeps the English defaults) */
@@ -76,7 +78,7 @@ const sheetLabels = (t: ReturnType<typeof useT>): SheetLabels => ({
   part: t('품명'),
   model: t('규격 · 형식'),
   qty: t('수량'),
-  notes: t('주기'),
+  notes: 'Note',
   specs: t('사양'),
   stroke: t('스트로크'),
   cogNote: t('COG: 부하의 무게 중심 (가는 2점 쇄선).'),
