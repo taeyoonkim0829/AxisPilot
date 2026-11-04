@@ -96,3 +96,28 @@ describe('additional slides', () => {
     expect(slideGroupLoads(loads, [0])).toBe(loads)
   })
 })
+
+describe('ball screw support', () => {
+  it('orders ELGD-BS -SU with its speed curve and no-load torque', () => {
+    const r = { stroke: 1000, velocity: 0.7 }
+    const plain = run('ELGD-BS-KF-80-…10P', r)
+    expect(checkOf(plain.checks, '속도')!.status).toBe('fail')
+    const su = run('ELGD-BS-KF-80-…10P', r, { spindleSupport: true })
+    expect(su.spindleSupport).toBe(true)
+    expect(su.order.model).toBe('ELGD-BS-KF-80-1000-0H-10P-SU')
+    expect(su.order.partNumber).toBe('8176875')
+    expect(checkOf(su.checks, '속도')!.limit).toBeGreaterThan(0.7)
+    expect(su.noLoadTorque).toBe(0.35)
+    expect(plain.noLoadTorque).toBe(0.269)
+  })
+
+  it('gives EGC-BS -S full speed, only above its minimum stroke', () => {
+    const su = run('EGC-80-...-BS-10P-KF-GK', { stroke: 1500 }, { spindleSupport: true })
+    expect(su.order.model).toBe('EGC-80-1500-BS-10P-S-KF-0H-ML-GK')
+    expect(checkOf(su.checks, '속도')!.limit).toBe(0.5)
+    expect(checkOf(run('EGC-80-...-BS-10P-KF-GK', { stroke: 1500 }).checks, '속도')!.limit).toBeLessThan(0.3)
+    const short = run('EGC-80-...-BS-10P-KF-GK', { stroke: 700 }, { spindleSupport: true })
+    expect(short.spindleSupport).toBe(false)
+    expect(infoOf(short, '볼스크류 서포트').noteArgs).toEqual({ min: 780 })
+  })
+})

@@ -871,7 +871,7 @@ h3 {
   border-top: 1px solid var(--sign);
 }
 
-/* Count input (LM 가이드 수) with small − / + buttons at its right */
+/* Count input (가이드 수) with small − / + buttons at its right */
 .count-btn {
   flex: none;
   width: 28px;

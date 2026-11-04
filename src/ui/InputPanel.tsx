@@ -274,7 +274,7 @@ export function ParallelSection({
       <p className="field-hint application-hint">{t(parallelModeHint[parallel.mode])}</p>
       {parallel.mode === 'guides' && (
         <CountField
-          label={t('LM 가이드 수')}
+          label={t('가이드 수')}
           value={guidePositions(parallel).guides}
           min={1}
           max={MAX_GUIDES}

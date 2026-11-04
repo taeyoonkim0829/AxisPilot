@@ -52,6 +52,8 @@ export interface AxisEvaluation {
   axis: Axis
   /** Model and order number for the required stroke */
   order: AxisOrder
+  /** ordered with its ball screw support (`Settings.spindleSupport`, above the stroke it is offered at) */
+  spindleSupport: boolean
   status: Status
   checks: Check[]
   info: InfoItem[]
@@ -250,13 +252,13 @@ export function screwLoadFactor(v: number): number {
  * Peak velocity vs the max speed. A ball screw's max speed falls above a stroke (critical speed of the screw):
  * the data sheet's speed-stroke curve is read at the built stroke.
  */
-function speedCheck(axis: Axis, velocity: number, stroke: number): Check {
+function speedCheck(axis: Axis, velocity: number, stroke: number, support = false): Check {
   if (!axis.speedCurve) return check('속도', velocity, axis.maxSpeed, 'm/s')
   const limit = Math.min(axis.maxSpeed, curveAt(axis.speedCurve, stroke))
-  if (limit >= axis.maxSpeed) return check('속도', velocity, limit, 'm/s')
+  if (limit >= axis.maxSpeed) return { ...check('속도', velocity, limit, 'm/s'), ...(support ? { note: '볼스크류 서포트 사용' } : {}) }
   return {
     ...check('속도', velocity, limit, 'm/s'),
-    note: '스트로크 {stroke} mm의 속도-스트로크 선도 기준 (최대 {max} m/s)',
+    note: support ? '볼스크류 서포트 사용, 스트로크 {stroke} mm의 속도-스트로크 선도 기준 (최대 {max} m/s)' : '스트로크 {stroke} mm의 속도-스트로크 선도 기준 (최대 {max} m/s)',
     noteArgs: { stroke: Math.round(stroke), max: axis.maxSpeed },
   }
 }
@@ -531,13 +533,17 @@ export function evaluateAxis(
   const mu = settings.friction[axis.drive]
   // Mass and inertia follow the built stroke (the ordered one for ESBF), the motion the required one.
   const options = axisOptions(axis, settings)
-  const order = axisOrder(axis, req.stroke, options, settings.standardStroke)
+  // Ball screw support: its own order type (no standard part numbers), speed curve and no-load torque
+  const offered = settings.spindleSupport ? axis.spindleSupport : null
+  const support = offered && req.stroke > (offered.minStroke ?? 0) ? offered : null
+  const ordered = support ? { ...axis, typeCode: support.typeCode, strokePartNumbers: null, speedCurve: support.speedCurve } : axis
+  const order = axisOrder(ordered, req.stroke, options, settings.standardStroke)
   const builtStroke = order.stroke ?? req.stroke
   // Additional slides move with the main one; the belt material changes the no-load torque.
   const extra: AdditionalSlide | null = options?.slides.length ? axis.additionalSlide! : null
   const slideCount = extra ? options!.slides.length : 0
   const extraMass = slideCount * (extra?.mass ?? 0)
-  const noLoad = options?.belt?.noLoadTorque ?? axis.noLoadTorque
+  const noLoad = options?.belt?.noLoadTorque ?? support?.noLoadTorque ?? axis.noLoadTorque
   // Parallel arrangement: with two axes each carries its share of the payload (the more loaded one is checked);
   // LM guides add their moving mass to the axis drive.
   const arrangement = parallelLayout(req)
@@ -612,7 +618,7 @@ export function evaluateAxis(
           noteArgs: { codes: options!.slides.join(' + '), extension: options!.extension },
         }
       : check('스트로크', req.stroke, axis.maxStroke, 'mm'),
-    speedCheck(axis, peakVelocity, builtStroke),
+    speedCheck(ordered, peakVelocity, builtStroke, support != null),
     check('가속도', fwd.peakAcceleration, axis.maxAcceleration, 'm/s²'),
     feedForceCheck(axis, peakForce, builtStroke),
     belt && belt.noLoadTorque == null
@@ -621,7 +627,9 @@ export function evaluateAxis(
           note: '{belt} 벨트의 무부하 토크 데이터 없음 — 기본 벨트 값 사용',
           noteArgs: { belt: belt.code ?? '' },
         }
-      : check('구동 토크', peakShaftTorque, axis.maxDrivingTorque, 'Nm'),
+      : support && support.noLoadTorque == null
+        ? { ...check('구동 토크', peakShaftTorque, axis.maxDrivingTorque, 'Nm'), note: '볼스크류 서포트: 무부하 토크가 더 클 수 있음 (데이터시트 값 없음)' }
+        : check('구동 토크', peakShaftTorque, axis.maxDrivingTorque, 'Nm'),
   ]
   // The motor-side axis passes the second axis's torque on through its drive shaft.
   if (shaft) {
@@ -807,6 +815,8 @@ export function evaluateAxis(
       note: '{model}, 주문번호 {partNumber} (J0 + JL·LN)',
       noteArgs: { model: ksk.model, partNumber: ksk.shaft.partNumber },
     })
+  if (offered && !support)
+    info.push({ label: '볼스크류 서포트', value: Number.NaN, unit: '', note: '{min} mm 초과 스트로크에서만 주문 가능 — 미적용', noteArgs: { min: offered.minStroke ?? 0 } })
   if (shaft) info.push({ label: '모터 구동 이동 질량 (2축 합계)', value: req.payload + 2 * slide, unit: 'kg' })
   // LM guides: the largest load on one guide, for choosing the guide blocks
   const guideMembers = members.filter((_, i) => !layout.isAxis[i])
@@ -900,6 +910,7 @@ export function evaluateAxis(
     layout,
     options,
     noLoadTorque: noLoad,
+    spindleSupport: support != null,
     shaft: ksk,
     guide: guideFit,
   }

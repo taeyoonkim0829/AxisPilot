@@ -441,7 +441,8 @@
         [950, 0.26],
         [975, 0.24],
         [1000, 0.23]
-      ]
+      ],
+      "spindleSupport": { "typeCode": "EGC-70-…-BS-10P-S-KF-0H-ML-GK", "minStroke": 705, "speedCurve": [[0, 0.5]] }
     },
     {
       "id": "EGC-80-...-BS-10P-KF-GK",
@@ -567,7 +568,8 @@
         [1875, 0.092],
         [1900, 0.082],
         [2000, 0.082]
-      ]
+      ],
+      "spindleSupport": { "typeCode": "EGC-80-…-BS-10P-S-KF-0H-ML-GK", "minStroke": 780, "speedCurve": [[0, 0.5]] }
     },
     {
       "id": "EGC-80-...-BS-20P-KF-GK",
@@ -681,7 +683,8 @@
         [1850, 0.182],
         [1975, 0.152],
         [2000, 0.152]
-      ]
+      ],
+      "spindleSupport": { "typeCode": "EGC-80-…-BS-20P-S-KF-0H-ML-GK", "minStroke": 780, "speedCurve": [[0, 1]] }
     },
     {
       "id": "EGC-120-...-BS-10P-KF-GK",
@@ -801,7 +804,8 @@
         [2350, 0.09],
         [2450, 0.09],
         [2500, 0.08]
-      ]
+      ],
+      "spindleSupport": { "typeCode": "EGC-120-…-BS-10P-S-KF-0H-ML-GK", "minStroke": 883, "speedCurve": [[0, 0.6]] }
     },
     {
       "id": "EGC-120-...-BS-25P-KF-GK",
@@ -910,7 +914,8 @@
         [2200, 0.27],
         [2250, 0.25],
         [2500, 0.21]
-      ]
+      ],
+      "spindleSupport": { "typeCode": "EGC-120-…-BS-25P-S-KF-0H-ML-GK", "minStroke": 883, "speedCurve": [[0, 1.5]] }
     },
     {
       "id": "EGC-185-...-BS-40P-KF-GK",
@@ -1001,7 +1006,8 @@
         [2300, 0.596],
         [2649, 0.455],
         [2999, 0.364]
-      ]
+      ],
+      "spindleSupport": { "typeCode": "EGC-185-…-BS-40P-S-KF-0H-ML-GK", "minStroke": 1224, "speedCurve": [[0, 2]] }
     },
     {
       "id": "EGC-HD-125-…-BS-10P-GK",
@@ -1094,7 +1100,8 @@
         [850, 0.26],
         [875, 0.24],
         [900, 0.23]
-      ]
+      ],
+      "spindleSupport": { "typeCode": "EGC-HD-125-…-BS-10P-S-0H-GK", "minStroke": 605, "speedCurve": [[0, 0.5]] }
     },
     {
       "id": "EGC-HD-160-…-BS-10P-GK",
@@ -1210,7 +1217,8 @@
         [1775, 0.09],
         [1800, 0.08],
         [1900, 0.08]
-      ]
+      ],
+      "spindleSupport": { "typeCode": "EGC-HD-160-…-BS-10P-S-0H-GK", "minStroke": 680, "speedCurve": [[0, 0.5]] }
     },
     {
       "id": "EGC-HD-160-…-BS-20P-GK",
@@ -1315,7 +1323,8 @@
         [1800, 0.17],
         [1825, 0.16],
         [1900, 0.15]
-      ]
+      ],
+      "spindleSupport": { "typeCode": "EGC-HD-160-…-BS-20P-S-0H-GK", "minStroke": 680, "speedCurve": [[0, 1]] }
     },
     {
       "id": "EGC-HD-220-…-BS-10P-GK",
@@ -1426,7 +1435,8 @@
         [2250, 0.09],
         [2350, 0.09],
         [2400, 0.08]
-      ]
+      ],
+      "spindleSupport": { "typeCode": "EGC-HD-220-…-BS-10P-S-0H-GK", "minStroke": 783, "speedCurve": [[0, 0.6]] }
     },
     {
       "id": "EGC-HD-220-…-BS-25P-GK",
@@ -1525,7 +1535,8 @@
         [2100, 0.27],
         [2150, 0.25],
         [2400, 0.21]
-      ]
+      ],
+      "spindleSupport": { "typeCode": "EGC-HD-220-…-BS-25P-S-0H-GK", "minStroke": 783, "speedCurve": [[0, 1.5]] }
     },
     {
       "id": "EGC-HD-125-…-TB-GK",
@@ -2058,7 +2069,8 @@
         [850, 0.26],
         [875, 0.24],
         [900, 0.23]
-      ]
+      ],
+      "spindleSupport": { "typeCode": "EGC-70-…-BS-10P-S-KF-0H-ML-GV", "minStroke": 605, "speedCurve": [[0, 0.5]] }
     },
     {
       "id": "EGC-80-...-BS-10P-KF-GV",
@@ -2174,7 +2186,8 @@
         [1775, 0.092],
         [1800, 0.082],
         [1900, 0.082]
-      ]
+      ],
+      "spindleSupport": { "typeCode": "EGC-80-…-BS-10P-S-KF-0H-ML-GV", "minStroke": 680, "speedCurve": [[0, 0.5]] }
     },
     {
       "id": "EGC-80-...-BS-20P-KF-GV",
@@ -2278,7 +2291,8 @@
         [1750, 0.182],
         [1875, 0.152],
         [1900, 0.152]
-      ]
+      ],
+      "spindleSupport": { "typeCode": "EGC-80-…-BS-20P-S-KF-0H-ML-GV", "minStroke": 680, "speedCurve": [[0, 1]] }
     },
     {
       "id": "EGC-120-...-BS-10P-KF-GV",
@@ -2389,7 +2403,8 @@
         [2250, 0.09],
         [2350, 0.09],
         [2400, 0.08]
-      ]
+      ],
+      "spindleSupport": { "typeCode": "EGC-120-…-BS-10P-S-KF-0H-ML-GV", "minStroke": 783, "speedCurve": [[0, 0.6]] }
     },
     {
       "id": "EGC-120-...-BS-25P-KF-GV",
@@ -2489,7 +2504,8 @@
         [2100, 0.27],
         [2150, 0.25],
         [2400, 0.21]
-      ]
+      ],
+      "spindleSupport": { "typeCode": "EGC-120-…-BS-25P-S-KF-0H-ML-GV", "minStroke": 783, "speedCurve": [[0, 1.5]] }
     },
     {
       "id": "EGC-185-...-BS-40P-KF-GV",
@@ -2580,7 +2596,8 @@
         [2200, 0.596],
         [2549, 0.455],
         [2899, 0.364]
-      ]
+      ],
+      "spindleSupport": { "typeCode": "EGC-185-…-BS-40P-S-KF-0H-ML-GV", "minStroke": 1124, "speedCurve": [[0, 2]] }
     }
   ]
 }

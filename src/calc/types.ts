@@ -167,6 +167,8 @@ export interface Settings {
   cableLength: number
   /** Order the axis at the next standard stroke (standard part number) instead of the modular product system's */
   standardStroke: boolean
+  /** Order ball screw axes with their ball screw support (`Axis.spindleSupport`) where offered */
+  spindleSupport: boolean
 }
 
 export const defaultSettings: Settings = {
@@ -195,6 +197,7 @@ export const defaultSettings: Settings = {
   slidePitchRight: 0,
   beltMaterial: { ELGD: 'PU2', EGC: null },
   standardStroke: false,
+  spindleSupport: false,
 }
 
 /** Motor power supply: 200–240 V AC, 380–480 V AC, DC (24/48 V) */

@@ -33,6 +33,9 @@ export interface Axis {
   slideMassPer10mm?: number | null
   /** ball screw axes: [working stroke mm, max. speed m/s], read from the data sheet speed-stroke curve */
   speedCurve?: [number, number][] | null
+  /** ball screw support (ELGD-BS -SU, EGC-BS -S): order type, the stroke it is offered above, its no-load torque
+   *  (where the data sheet gives one) and the speed-stroke curve with it */
+  spindleSupport?: { typeCode: string; minStroke?: number; noLoadTorque?: number; speedCurve: [number, number][] } | null
   /** ELGD-BS: [working stroke mm, max. feed force N] towards the motor (screw buckling), read from the data sheet curve */
   feedForceCurve?: [number, number][] | null
   /** ESBF: [rod length mm, max. pressure force N] — buckling limit, read from the data sheet curve */
