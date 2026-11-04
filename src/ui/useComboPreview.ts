@@ -109,7 +109,7 @@ export function useComboPreview<C extends Combo>(key: string, ready: boolean, bu
     run(t('DXF 도면을 만드는 중…'), async () => {
       const { combo, meshes } = await meshesFor()
       const { drawingDxf } = await import('../cad/dxf')
-      download(`${fileSafe(name(combo))}.dxf`, drawingDxf({ meshes, cog: combo.cog, title: title(combo) }), 'application/dxf')
+      download(`${fileSafe(name(combo))}.dxf`, drawingDxf({ meshes, cog: combo.cog, title: title(combo), parts: combo.parts.map(({ role, name }) => ({ role, name })) }), 'application/dxf')
     })
 
   const stale = preview && ready && shown != null && shown.key !== key

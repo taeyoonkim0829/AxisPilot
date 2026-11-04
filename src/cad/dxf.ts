@@ -2,7 +2,8 @@ import { dot, sub } from './geometry'
 import type { Vec3 } from './step'
 
 // 2D drawing from the tessellated assembly: front, top and right side view (third-angle projection) with the
-// model edges (B-rep face borders) and silhouettes, hidden parts removed with a depth buffer.
+// model edges (B-rep face borders) and silhouettes, hidden parts removed with a depth buffer (an assembly outline
+// drawing: hidden lines are left out, as KS B 0001 allows), laid out on a KS sheet.
 
 export interface DrawMesh {
   /** world mm, xyz per vertex */
@@ -257,49 +258,273 @@ function mergeCollinear(segs: Seg[]): Seg[] {
   return out
 }
 
+
+// ---- the drawing sheet, after KS A 0005 (제도 통칙) and KS B 0001 (기계 제도), KS A 0106 (sheet sizes) ----
+// Model space is full size (mm), so a CAD user measures true lengths; the sheet, its text, line widths and line type
+// patterns are drawn at the drawing scale (paper mm × the scale's denominator) and print at that scale.
+
+export interface DrawingPart {
+  /** what the part is (axis, kit, motor …) */
+  role: string
+  /** model / type code */
+  name: string
+}
+
 export interface DrawingInput {
   meshes: DrawMesh[]
   cog: Vec3 | null
-  /** title lines (ASCII) */
+  /** the drawing title first, then notes (ASCII) */
   title: string[]
+  /** the assembly's parts, for the parts list (equal names are counted together) */
+  parts?: DrawingPart[]
+  /** date for the title block, YYYY-MM-DD (default today) */
+  date?: string
 }
 
-/** Lays out the three views with overall dimensions and the COG mark; returns DXF (R12) text. */
-export function drawingDxf({ meshes, cog, title }: DrawingInput): string {
+/** A-series sheets, landscape (paper mm) and their border margin (KS A 0106: 20 mm on A0 / A1, 10 mm below); the
+ *  filing margin on the left is 25 mm. */
+const SHEETS = [
+  { name: 'A3', w: 420, h: 297, c: 10 },
+  { name: 'A2', w: 594, h: 420, c: 10 },
+  { name: 'A1', w: 841, h: 594, c: 20 },
+  { name: 'A0', w: 1189, h: 841, c: 20 },
+] as const
+const FILING = 25
+/** recommended scales (KS A ISO 5455): denominators, 0.5 = 2:1 */
+const SCALES = [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500]
+/** line widths (paper mm): thick outline / border, thin is a hairline (LINE) */
+const THICK = 0.5
+const BORDER = 0.7
+/** text heights (paper mm, KS A 0107 series) */
+const TEXT_DIM = 3.5
+const TEXT_SMALL = 2.5
+/** title block and parts list width (KS: at most 170 mm) */
+const BLOCK_W = 170
+const TITLE_ROWS = [12, 10, 8]
+const PART_ROW = 7
+const NOTE_PITCH = 4.5
+const NOTE_CHARS = 66
+/** room the views keep for their dimensions (paper mm) and the space between views */
+const DIM_OFFSET = 10
+const DIM_ROOM = 18
+const VIEW_GAP = 28
+const PAD = 8
+
+const scaleText = (n: number) => (n < 1 ? `${1 / n}:1` : `1:${n}`)
+/** dimension value: whole mm, or one decimal */
+const dimValue = (v: number) => String(Math.round(v * 10) / 10)
+
+function wrap(line: string, width: number): string[] {
+  const out: string[] = []
+  let rest = line.trim()
+  while (rest.length > width) {
+    const cut = rest.lastIndexOf(' ', width)
+    const at = cut > width / 2 ? cut : width
+    out.push(rest.slice(0, at).trimEnd())
+    rest = rest.slice(at).trimStart()
+  }
+  if (rest) out.push(rest)
+  return out
+}
+
+/** Lays out the three views (third-angle) on a KS sheet with border, title block, parts list and notes; DXF R12. */
+export function drawingDxf({ meshes, cog, title, parts = [], date }: DrawingInput): string {
   const model = buildModel(meshes)
-  const dxf = new DxfWriter()
-  const views = [VIEWS.front, VIEWS.top, VIEWS.side].map((v) => ({ v, segs: projectView(model, v) }))
-  const boxes = views.map(({ segs }) => bbox(segs))
-  const size = Math.max(...boxes.map((b) => Math.max(b.x1 - b.x0, b.y1 - b.y0)))
-  const gap = Math.max(60, size * 0.12)
-  const text = Math.max(3.5, Math.round(size / 120))
-  // third-angle: top view above the front view, right side view to its right
-  const [front, top, side] = boxes
-  const offsets: [number, number][] = [
-    [-front.x0, -front.y0],
-    [-front.x0, front.y1 - front.y0 + gap - top.y0],
-    [front.x1 - front.x0 + gap - side.x0, -front.y0],
+  const views = [VIEWS.front, VIEWS.top, VIEWS.side].map((v) => {
+    const segs = projectView(model, v)
+    return { v, segs, box: bbox(segs) }
+  })
+  const [front, top, side] = views.map((v) => v.box)
+  const wOf = (b: ReturnType<typeof bbox>) => b.x1 - b.x0
+  const hOf = (b: ReturnType<typeof bbox>) => b.y1 - b.y0
+  // views and their dimensions at scale 1/n (paper mm)
+  const content = (n: number) => ({
+    w: DIM_ROOM + (wOf(front) + wOf(side)) / n + VIEW_GAP,
+    h: DIM_ROOM + (hOf(front) + hOf(top)) / n + VIEW_GAP,
+  })
+
+  // parts list rows: equal names counted together, in assembly order
+  const rows: { role: string; name: string; qty: number }[] = []
+  for (const p of parts) {
+    const row = rows.find((r) => r.name === p.name && r.role === p.role)
+    if (row) row.qty++
+    else rows.push({ role: p.role, name: p.name, qty: 1 })
+  }
+  const [name = 'Assembly', ...given] = title
+  const notes = [
+    'Dimensions in mm. Third angle projection.',
+    ...(cog ? ['COG: payload centre of gravity (thin two-dot chain lines).'] : []),
+    ...given,
+  ].flatMap((line, i) => wrap(`${i + 1}. ${line}`, NOTE_CHARS))
+  const titleH = TITLE_ROWS.reduce((a, b) => a + b, 0)
+  const partsH = rows.length ? PART_ROW * (rows.length + 1) : 0
+  const notesH = NOTE_PITCH * (notes.length + 1) + 3
+  const blockH = titleH + partsH + notesH
+
+  // the smallest sheet on which the views fit at 1:10 or larger, else the largest scale on A0; the views go above
+  // the title block column or to its left, whichever fits
+  const fit = (sheet: (typeof SHEETS)[number], n: number) => {
+    const inner = { x0: FILING, y0: sheet.c, x1: sheet.w - sheet.c, y1: sheet.h - sheet.c }
+    const c = content(n)
+    const regions = [
+      { x0: inner.x0, y0: inner.y0 + blockH, x1: inner.x1, y1: inner.y1 },
+      { x0: inner.x0, y0: inner.y0, x1: inner.x1 - BLOCK_W, y1: inner.y1 },
+    ]
+    const region = regions.find((r) => r.x1 - r.x0 >= c.w + 2 * PAD && r.y1 - r.y0 >= c.h + 2 * PAD)
+    return region && blockH <= inner.y1 - inner.y0 ? { sheet, n, region, c } : null
+  }
+  const best = (sheet: (typeof SHEETS)[number]) => SCALES.map((n) => fit(sheet, n)).find((f) => f != null) ?? null
+  const a0 = SHEETS[SHEETS.length - 1]
+  const layout = SHEETS.map(best).find((f) => f != null && f.n <= 10) ??
+    best(a0) ?? {
+      // too large for A0 at any standard scale: the smallest one, above the title block anyway
+      sheet: a0,
+      n: SCALES[SCALES.length - 1],
+      region: { x0: FILING, y0: a0.c + blockH, x1: a0.w - a0.c, y1: a0.h - a0.c },
+      c: content(SCALES[SCALES.length - 1]),
+    }
+  const { sheet, n, region, c } = layout
+  const inner = { x0: FILING, y0: sheet.c, x1: sheet.w - sheet.c, y1: sheet.h - sheet.c }
+  const P = (v: number) => v * n
+
+  const dxf = new DxfWriter(n)
+
+  // ---- border (윤곽선) and centring marks (중심 마크)
+  dxf.rect('BORDER', P(inner.x0), P(inner.y0), P(inner.x1), P(inner.y1), P(BORDER))
+  dxf.line('BORDER', 0, 0, P(sheet.w), 0)
+  dxf.line('BORDER', P(sheet.w), 0, P(sheet.w), P(sheet.h))
+  dxf.line('BORDER', P(sheet.w), P(sheet.h), 0, P(sheet.h))
+  dxf.line('BORDER', 0, P(sheet.h), 0, 0)
+  const mx = (inner.x0 + inner.x1) / 2
+  const my = (inner.y0 + inner.y1) / 2
+  dxf.thick('BORDER', P(mx), 0, P(mx), P(inner.y0 + 5), P(THICK))
+  dxf.thick('BORDER', P(mx), P(sheet.h), P(mx), P(inner.y1 - 5), P(THICK))
+  dxf.thick('BORDER', 0, P(my), P(inner.x0 + 5), P(my), P(THICK))
+  dxf.thick('BORDER', P(sheet.w), P(my), P(inner.x1 - 5), P(my), P(THICK))
+
+  // ---- views: front at the lower left, top above it, right side to its right, centred in the region
+  const ox = region.x0 + PAD + (region.x1 - region.x0 - 2 * PAD - c.w) / 2 + DIM_ROOM
+  const oy = region.y0 + PAD + (region.y1 - region.y0 - 2 * PAD - c.h) / 2 + DIM_ROOM
+  const at: [number, number][] = [
+    [P(ox) - front.x0, P(oy) - front.y0],
+    [P(ox) - top.x0, P(oy + VIEW_GAP) + hOf(front) - top.y0],
+    [P(ox + VIEW_GAP) + wOf(front) - side.x0, P(oy) - side.y0],
   ]
-  views.forEach(({ v, segs }, i) => {
-    const [ox, oy] = offsets[i]
-    for (const s of segs) dxf.line('OUTLINE', s[0] + ox, s[1] + oy, s[2] + ox, s[3] + oy)
-    const b = boxes[i]
-    const box = { x0: b.x0 + ox, y0: b.y0 + oy, x1: b.x1 + ox, y1: b.y1 + oy }
-    dxf.dimension(box.x0, box.y0, box.x1, box.y0, -gap * 0.35, text)
-    dxf.dimension(box.x0, box.y0, box.x0, box.y1, gap * 0.35, text)
-    dxf.text('TEXT', (box.x0 + box.x1) / 2, box.y0 - gap * 0.7, text, v.name, true)
+  views.forEach(({ v, segs, box }, i) => {
+    const [dx, dy] = at[i]
+    for (const s of segs) dxf.thick('OUTLINE', s[0] + dx, s[1] + dy, s[2] + dx, s[3] + dy, P(THICK))
+    const b = { x0: box.x0 + dx, y0: box.y0 + dy, x1: box.x1 + dx, y1: box.y1 + dy }
+    // overall dimensions, each once: length and height on the front view, depth on the top view
+    if (i === 0) {
+      dxf.dimension(b.x0, b.y0, b.x1, b.y0, -P(DIM_OFFSET), 'h')
+      dxf.dimension(b.x0, b.y0, b.x0, b.y1, -P(DIM_OFFSET), 'v')
+    }
+    if (i === 1) dxf.dimension(b.x0, b.y0, b.x0, b.y1, -P(DIM_OFFSET), 'v')
     if (cog) {
-      const x = dot(cog, v.right) + ox
-      const y = dot(cog, v.up) + oy
-      const r = text * 1.2
-      dxf.circle('COG', x, y, r)
-      dxf.line('COG', x - r * 1.8, y, x + r * 1.8, y)
-      dxf.line('COG', x, y - r * 1.8, x, y + r * 1.8)
-      dxf.text('COG', x + r * 2, y + r * 0.6, text * 0.8, 'COG')
+      // centre of gravity: two-dot chain lines (무게 중심선) across the view and a small circle
+      const x = dot(cog, v.right) + dx
+      const y = dot(cog, v.up) + dy
+      const over = P(4)
+      dxf.line('COG', b.x0 - over, y, b.x1 + over, y)
+      dxf.line('COG', x, b.y0 - over, x, b.y1 + over)
+      dxf.circle('COG-MARK', x, y, P(1.5))
+      dxf.text('COG-MARK', x + P(2.5), y + P(2), P(TEXT_SMALL), 'COG')
     }
   })
-  title.forEach((line, i) => dxf.text('TEXT', 0, -gap * 1.4 - i * text * 1.8, text, line))
+
+  // ---- title block (표제란) at the lower right
+  const bx0 = inner.x1 - BLOCK_W
+  let y = inner.y0
+  const cell = (x0: number, y0: number, x1: number, y1: number) => {
+    dxf.line('TITLE', P(x0), P(y0), P(x1), P(y0))
+    dxf.line('TITLE', P(x1), P(y0), P(x1), P(y1))
+    dxf.line('TITLE', P(x1), P(y1), P(x0), P(y1))
+    dxf.line('TITLE', P(x0), P(y1), P(x0), P(y0))
+  }
+  /** text vertically centred in a row, left (with a 2 mm gap) or centred in its cell */
+  const put = (x0: number, x1: number, y0: number, h: number, value: string, size = TEXT_SMALL, centred = false) =>
+    dxf.text('TEXT', P(centred ? (x0 + x1) / 2 : x0 + 2), P(y0 + (h - size) / 2), P(size), value, centred ? 'centre' : 'left')
+  const row = (h: number, cells: [number, string, number?][]) => {
+    let x = bx0
+    for (const [w, value, size] of cells) {
+      cell(x, y, x + w, y + h)
+      put(x, x + w, y, h, value, size)
+      x += w
+    }
+    y += h
+  }
+  row(TITLE_ROWS[2], [
+    [22, 'DATE'],
+    [36, date ?? new Date().toISOString().slice(0, 10)],
+    [16, 'UNIT'],
+    [24, 'mm'],
+    [18, 'DRAWN'],
+    [54, 'AxisPilot'],
+  ])
+  const projectionY = y
+  row(TITLE_ROWS[1], [
+    [22, 'DWG. NO.'],
+    [36, `AP-${(date ?? new Date().toISOString().slice(0, 10)).replace(/-/g, '')}`],
+    [16, 'SCALE'],
+    [24, scaleText(n), TEXT_DIM],
+    [18, 'PROJ.'],
+    [54, ''],
+  ])
+  projectionSymbol(dxf, P(bx0 + 170 - 27), P(projectionY + TITLE_ROWS[1] / 2), n)
+  // the title: the largest standard height whose text fits the cell
+  // (a character about as wide as it is high, spacing included)
+  const room = BLOCK_W - 22 - 4
+  const titleSize = [5, TEXT_DIM, TEXT_SMALL].find((h) => name.length * h <= room) ?? TEXT_SMALL
+  row(TITLE_ROWS[0], [
+    [22, 'TITLE'],
+    [148, name, titleSize],
+  ])
+  dxf.rect('TITLE', P(bx0), P(inner.y0), P(inner.x1), P(y), P(THICK))
+
+  // ---- parts list (부품란) above it: header at the bottom, numbers counting upwards
+  if (rows.length) {
+    const cols: [number, string][] = [
+      [12, 'NO.'],
+      [34, 'PART'],
+      [104, 'MODEL / TYPE'],
+      [20, 'QTY'],
+    ]
+    const partsY0 = y
+    const line = (values: string[]) => {
+      let x = bx0
+      cols.forEach(([w], i) => {
+        cell(x, y, x + w, y + PART_ROW)
+        put(x, x + w, y, PART_ROW, values[i], TEXT_SMALL, i !== 2)
+        x += w
+      })
+      y += PART_ROW
+    }
+    line(cols.map(([, h]) => h))
+    rows.forEach((r, i) => line([String(i + 1), r.role.toUpperCase(), r.name, String(r.qty)]))
+    dxf.rect('TITLE', P(bx0), P(partsY0), P(inner.x1), P(y), P(THICK))
+  }
+
+  // ---- notes (주기) above the parts list
+  y += 3
+  for (const note of [...notes].reverse()) {
+    dxf.text('TEXT', P(bx0), P(y), P(TEXT_SMALL), note)
+    y += NOTE_PITCH
+  }
+  dxf.text('TEXT', P(bx0), P(y), P(TEXT_DIM), 'NOTES')
+
   return dxf.toString()
+}
+
+/** Third-angle projection symbol (KS A ISO 128 / 5456): the truncated cone, narrow end towards its end view on the right. */
+function projectionSymbol(dxf: DxfWriter, cx: number, cy: number, n: number) {
+  const P = (v: number) => v * n
+  const [x0, x1] = [cx - P(10), cx - P(2)]
+  dxf.line('TITLE', x0, cy - P(3), x0, cy + P(3))
+  dxf.line('TITLE', x1, cy - P(1.5), x1, cy + P(1.5))
+  dxf.line('TITLE', x0, cy + P(3), x1, cy + P(1.5))
+  dxf.line('TITLE', x0, cy - P(3), x1, cy - P(1.5))
+  dxf.circle('TITLE', cx + P(6), cy, P(3))
+  dxf.circle('TITLE', cx + P(6), cy, P(1.5))
 }
 
 const bbox = (segs: Seg[]) => {
@@ -313,58 +538,97 @@ const bbox = (segs: Seg[]) => {
   return b
 }
 
-const LAYERS: [string, number][] = [
-  ['OUTLINE', 7],
-  ['DIM', 3],
-  ['COG', 1],
-  ['TEXT', 7],
+/** layers: name, colour, line type (외형선 thick continuous, 치수선 thin, 무게 중심선 thin two-dot chain) */
+const LAYERS: [string, number, string][] = [
+  ['OUTLINE', 7, 'CONTINUOUS'],
+  ['DIM', 3, 'CONTINUOUS'],
+  ['COG', 1, 'PHANTOM'],
+  ['COG-MARK', 1, 'CONTINUOUS'],
+  ['TEXT', 7, 'CONTINUOUS'],
+  ['BORDER', 7, 'CONTINUOUS'],
+  ['TITLE', 7, 'CONTINUOUS'],
 ]
+/** two-dot chain line pattern (paper mm; $LTSCALE takes the drawing scale): dash, gap, dot, gap, dot, gap */
+const PHANTOM = [12, -1.5, 0, -1.5, 0, -1.5]
 
 class DxfWriter {
   private out: string[] = []
+  /** the drawing scale's denominator: paper mm × n = model mm */
+  private n: number
+  constructor(n: number) {
+    this.n = n
+  }
   private put(...pairs: (string | number)[]) {
     for (let i = 0; i < pairs.length; i += 2) this.out.push(String(pairs[i]), typeof pairs[i + 1] === 'number' ? fix(pairs[i + 1] as number) : String(pairs[i + 1]))
   }
   line(layer: string, x1: number, y1: number, x2: number, y2: number) {
     this.put(0, 'LINE', 8, layer, 10, x1, 20, y1, 30, 0, 11, x2, 21, y2, 31, 0)
   }
+  /** a line with a width (thick lines: R12 has no line weights, a wide polyline prints at its width) */
+  thick(layer: string, x1: number, y1: number, x2: number, y2: number, width: number) {
+    this.polyline(layer, [[x1, y1], [x2, y2]], width, false)
+  }
+  rect(layer: string, x0: number, y0: number, x1: number, y1: number, width: number) {
+    this.polyline(layer, [[x0, y0], [x1, y0], [x1, y1], [x0, y1]], width, true)
+  }
+  private polyline(layer: string, points: [number, number][], width: number, closed: boolean) {
+    this.put(0, 'POLYLINE', 8, layer, 66, '1', 10, 0, 20, 0, 30, 0, 70, closed ? '1' : '0', 40, width, 41, width)
+    for (const [x, y] of points) this.put(0, 'VERTEX', 8, layer, 10, x, 20, y, 30, 0)
+    this.put(0, 'SEQEND', 8, layer)
+  }
   circle(layer: string, x: number, y: number, r: number) {
     this.put(0, 'CIRCLE', 8, layer, 10, x, 20, y, 30, 0, 40, r)
   }
-  text(layer: string, x: number, y: number, height: number, value: string, centred = false) {
+  text(layer: string, x: number, y: number, height: number, value: string, align: 'left' | 'centre' = 'left', rotation = 0) {
     this.put(0, 'TEXT', 8, layer, 10, x, 20, y, 30, 0, 40, height, 1, value.replace(/[^\x20-\x7e]/g, '?'))
-    if (centred) this.put(72, '1', 11, x, 21, y, 31, 0)
+    if (rotation) this.put(50, rotation)
+    if (align === 'centre') this.put(72, '1', 11, x, 21, y, 31, 0)
   }
-  /** Linear dimension between two points, drawn as lines and text, offset perpendicular to it */
-  dimension(x1: number, y1: number, x2: number, y2: number, offset: number, height: number) {
-    const horizontal = Math.abs(y2 - y1) < Math.abs(x2 - x1)
-    const value = Math.hypot(x2 - x1, y2 - y1)
-    const tick = height * 0.6
-    if (horizontal) {
+  /** filled arrowhead (length 3, width 1 paper mm) at (x, y) pointing along (ux, uy) */
+  private arrow(x: number, y: number, ux: number, uy: number) {
+    const l = 3 * this.n
+    const w = 0.5 * this.n
+    const bx = x - ux * l
+    const by = y - uy * l
+    this.put(0, 'SOLID', 8, 'DIM', 10, x, 20, y, 30, 0, 11, bx - uy * w, 21, by + ux * w, 31, 0, 12, bx + uy * w, 22, by - ux * w, 32, 0, 13, bx + uy * w, 23, by - ux * w, 33, 0)
+  }
+  /**
+   * Linear dimension (KS B 0001): thin dimension line `offset` from the feature (below / left when negative) with
+   * filled arrows, extension lines from a 1 mm gap to 2 mm beyond it, the value in mm above the line (vertical:
+   * turned to read from the right, on its left).
+   */
+  dimension(x1: number, y1: number, x2: number, y2: number, offset: number, dir: 'h' | 'v') {
+    const n = this.n
+    const s = Math.sign(offset)
+    const h = TEXT_DIM * n
+    if (dir === 'h') {
       const y = y1 + offset
-      this.line('DIM', x1, y1, x1, y + Math.sign(offset) * tick)
-      this.line('DIM', x2, y2, x2, y + Math.sign(offset) * tick)
+      for (const x of [x1, x2]) this.line('DIM', x, y1 + s * n, x, y + s * 2 * n)
       this.line('DIM', x1, y, x2, y)
-      for (const x of [x1, x2]) this.line('DIM', x - tick / 2, y - tick / 2, x + tick / 2, y + tick / 2)
-      this.text('DIM', (x1 + x2) / 2, y + height * 0.4, height, fix(value, 1), true)
+      this.arrow(x1, y, -1, 0)
+      this.arrow(x2, y, 1, 0)
+      this.text('DIM', (x1 + x2) / 2, y + n, h, dimValue(Math.abs(x2 - x1)), 'centre')
     } else {
-      const x = x1 - offset
-      this.line('DIM', x1, y1, x - Math.sign(offset) * tick, y1)
-      this.line('DIM', x2, y2, x - Math.sign(offset) * tick, y2)
+      const x = x1 + offset
+      for (const yy of [y1, y2]) this.line('DIM', x1 + s * n, yy, x + s * 2 * n, yy)
       this.line('DIM', x, y1, x, y2)
-      for (const y of [y1, y2]) this.line('DIM', x - tick / 2, y - tick / 2, x + tick / 2, y + tick / 2)
-      this.put(0, 'TEXT', 8, 'DIM', 10, x - height * 0.4, 20, (y1 + y2) / 2, 30, 0, 40, height, 1, fix(value, 1), 50, 90, 72, '1', 11, x - height * 0.4, 21, (y1 + y2) / 2, 31, 0)
+      this.arrow(x, y1, 0, -1)
+      this.arrow(x, y2, 0, 1)
+      this.put(0, 'TEXT', 8, 'DIM', 10, x - n, 20, (y1 + y2) / 2, 30, 0, 40, h, 1, dimValue(Math.abs(y2 - y1)), 50, 90, 72, '1', 11, x - n, 21, (y1 + y2) / 2, 31, 0)
     }
   }
   toString() {
-    const head = ['0', 'SECTION', '2', 'HEADER', '9', '$ACADVER', '1', 'AC1009', '9', '$INSUNITS', '70', '4', '0', 'ENDSEC']
+    const head = ['0', 'SECTION', '2', 'HEADER', '9', '$ACADVER', '1', 'AC1009', '9', '$INSUNITS', '70', '4', '9', '$LTSCALE', '40', fix(this.n), '0', 'ENDSEC']
+    const total = PHANTOM.reduce((a, b) => a + Math.abs(b), 0)
     const tables = [
       '0', 'SECTION', '2', 'TABLES',
-      '0', 'TABLE', '2', 'LTYPE', '70', '1',
+      '0', 'TABLE', '2', 'LTYPE', '70', '2',
       '0', 'LTYPE', '2', 'CONTINUOUS', '70', '0', '3', 'Solid line', '72', '65', '73', '0', '40', '0.0',
+      '0', 'LTYPE', '2', 'PHANTOM', '70', '0', '3', 'Two-dot chain ____ . . ____', '72', '65', '73', String(PHANTOM.length), '40', fix(total),
+      ...PHANTOM.flatMap((v) => ['49', fix(v)]),
       '0', 'ENDTAB',
       '0', 'TABLE', '2', 'LAYER', '70', String(LAYERS.length),
-      ...LAYERS.flatMap(([name, color]) => ['0', 'LAYER', '2', name, '70', '0', '62', String(color), '6', 'CONTINUOUS']),
+      ...LAYERS.flatMap(([name, color, ltype]) => ['0', 'LAYER', '2', name, '70', '0', '62', String(color), '6', ltype]),
       '0', 'ENDTAB',
       '0', 'ENDSEC',
     ]

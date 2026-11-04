@@ -382,7 +382,7 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
             onDxf={() => state.exportDxf(partsName, dxfTitle)}
           />
           <p className="muted small-print">
-            {t('제조사 CAD 데이터(STEP)를 그대로 조립합니다. 무게 중심(빨간 점)은 슬라이드 중심(시작 위치) 기준입니다. DXF는 정면·평면·우측면도(제3각법)입니다.')}
+            {t('제조사 CAD 데이터(STEP)를 그대로 조립합니다. 무게 중심(빨간 점)은 슬라이드 중심(시작 위치) 기준입니다. DXF는 KS 제도 기준(KS A 0005 · KS B 0001)의 정면·평면·우측면도(제3각법)로, 표준 척도와 용지에 윤곽선, 표제란, 부품란을 넣습니다.')}
           </p>
         </>
       )}
