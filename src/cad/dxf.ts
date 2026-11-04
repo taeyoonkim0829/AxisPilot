@@ -253,10 +253,10 @@ export function mountingHoles(meshes: DrawMesh[]): { holes: Hole[]; x0: number; 
       }
       if (!vertical || ids.size < 6) continue
       const pts = [...ids].map((i) => [p[i * 3], p[i * 3 + 1], p[i * 3 + 2]])
-      const far = (from: number[], score: (q: number[]) => number) => pts.reduce((a, q) => (score(q) > score(a) ? q : a))
+      const far = (score: (q: number[]) => number) => pts.reduce((a, q) => (score(q) > score(a) ? q : a))
       const A = pts[0]
-      const B = far(A, (q) => Math.hypot(q[0] - A[0], q[1] - A[1]))
-      const C = far(A, (q) => Math.abs((B[0] - A[0]) * (q[1] - A[1]) - (B[1] - A[1]) * (q[0] - A[0])))
+      const B = far((q) => Math.hypot(q[0] - A[0], q[1] - A[1]))
+      const C = far((q) => Math.abs((B[0] - A[0]) * (q[1] - A[1]) - (B[1] - A[1]) * (q[0] - A[0])))
       const d = 2 * (A[0] * (B[1] - C[1]) + B[0] * (C[1] - A[1]) + C[0] * (A[1] - B[1]))
       if (Math.abs(d) < 1e-6) continue
       const sq = (q: number[]) => q[0] * q[0] + q[1] * q[1]
