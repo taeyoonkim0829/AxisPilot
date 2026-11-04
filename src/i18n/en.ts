@@ -202,6 +202,7 @@ export const en: Record<string, string> = {
   // Step 2: motor
   '모터 선정': 'Motor selection',
   '적합 {pass}': '{pass} passed',
+  '이 모터 시리즈에는 이 전원이 없습니다': 'This motor series does not run on this supply',
   '브레이크 모터만': 'Brake motors only',
   '메이커': 'Maker',
   '정격 출력': 'Rated power',
