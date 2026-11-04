@@ -1,0 +1,506 @@
+{
+  "items": [
+    {
+      "id": "L7NHA001U",
+      "model": "L7NHA001U",
+      "family": "L7NH",
+      "maker": "LS",
+      "partNumber": "L7NHA001U",
+      "motorType": null,
+      "supply": "3~ 200–230 V AC",
+      "voltageClass": "200V",
+      "motors": "^(APMC\\-FAL01A|APMC\\-FALR5A|APMC\\-FBL01A|APM\\-EA01A|APM\\-EAR5A|APM\\-EB01A)( \\(brake\\))?$",
+      "nominalCurrent": 1.4,
+      "peakCurrent": 4.2,
+      "peakDuration": 1.6,
+      "nominalPower": 100,
+      "peakPower": null,
+      "maxCableLength": 20,
+      "internalResistor": {
+        "resistance": 100,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 50
+      },
+      "externalResistance": [
+        50,
+        null
+      ],
+      "externalMaxPower": null,
+      "resistorVoltage": null,
+      "brakingResistors": [
+        "APCS-140R50"
+      ]
+    },
+    {
+      "id": "L7NHA002U",
+      "model": "L7NHA002U",
+      "family": "L7NH",
+      "maker": "LS",
+      "partNumber": "L7NHA002U",
+      "motorType": null,
+      "supply": "3~ 200–230 V AC",
+      "voltageClass": "200V",
+      "motors": "^(APMC\\-FAL015A|APMC\\-FBL02A|APM\\-EA015A|APM\\-EB02A)( \\(brake\\))?$",
+      "nominalCurrent": 1.7,
+      "peakCurrent": 5.1,
+      "peakDuration": 1.6,
+      "nominalPower": 200,
+      "peakPower": null,
+      "maxCableLength": 20,
+      "internalResistor": {
+        "resistance": 100,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 50
+      },
+      "externalResistance": [
+        50,
+        null
+      ],
+      "externalMaxPower": null,
+      "resistorVoltage": null,
+      "brakingResistors": [
+        "APCS-140R50"
+      ]
+    },
+    {
+      "id": "L7NHA004U",
+      "model": "L7NHA004U",
+      "family": "L7NH",
+      "maker": "LS",
+      "partNumber": "L7NHA004U",
+      "motorType": null,
+      "supply": "3~ 200–230 V AC",
+      "voltageClass": "200V",
+      "motors": "^(APMC\\-FBL04A|APMC\\-FCL03D|APMC\\-FCL04A|APM\\-EB04A|APM\\-EC04A|APM\\-EE03M|APM\\-FE03M)( \\(brake\\))?$",
+      "nominalCurrent": 3.0,
+      "peakCurrent": 9.0,
+      "peakDuration": 2.7,
+      "nominalPower": 400,
+      "peakPower": null,
+      "maxCableLength": 20,
+      "internalResistor": {
+        "resistance": 100,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 50
+      },
+      "externalResistance": [
+        50,
+        null
+      ],
+      "externalMaxPower": null,
+      "resistorVoltage": null,
+      "brakingResistors": [
+        "APCS-140R50"
+      ]
+    },
+    {
+      "id": "L7NHA008U",
+      "model": "L7NHA008U",
+      "family": "L7NH",
+      "maker": "LS",
+      "partNumber": "L7NHA008U",
+      "motorType": null,
+      "supply": "3~ 200–230 V AC",
+      "voltageClass": "200V",
+      "motors": "^(APMC\\-FCL05D|APMC\\-FCL06A|APMC\\-FCL06D|APMC\\-FCL07D|APMC\\-FCL08A|APM\\-EC06A|APM\\-EC08A|APM\\-EE05G|APM\\-EE06D|APM\\-EE06M|APM\\-FE05G|APM\\-FE06D|APM\\-FE06M)( \\(brake\\))?$",
+      "nominalCurrent": 5.2,
+      "peakCurrent": 15.6,
+      "peakDuration": 4.6,
+      "nominalPower": 800,
+      "peakPower": null,
+      "maxCableLength": 20,
+      "internalResistor": {
+        "resistance": 40,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 100
+      },
+      "externalResistance": [
+        30,
+        null
+      ],
+      "externalMaxPower": null,
+      "resistorVoltage": null,
+      "brakingResistors": [
+        "APCS-300R30"
+      ]
+    },
+    {
+      "id": "L7NHA010U",
+      "model": "L7NHA010U",
+      "family": "L7NH",
+      "maker": "LS",
+      "partNumber": "L7NHA010U",
+      "motorType": null,
+      "supply": "3~ 200–230 V AC",
+      "voltageClass": "200V",
+      "motors": "^(APMC\\-FCL10A|APM\\-EC10A|APM\\-EE09A|APM\\-EE09G|APM\\-EE09M|APM\\-EE11D|APM\\-FE09A|APM\\-FE09G|APM\\-FE09M|APM\\-FE11D)( \\(brake\\))?$",
+      "nominalCurrent": 6.75,
+      "peakCurrent": 20.25,
+      "peakDuration": 4.6,
+      "nominalPower": 1000,
+      "peakPower": null,
+      "maxCableLength": 20,
+      "internalResistor": {
+        "resistance": 40,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 100
+      },
+      "externalResistance": [
+        30,
+        null
+      ],
+      "externalMaxPower": null,
+      "resistorVoltage": null,
+      "brakingResistors": [
+        "APCS-300R30"
+      ]
+    },
+    {
+      "id": "L7NHA020U",
+      "model": "L7NHA020U",
+      "family": "L7NH",
+      "maker": "LS",
+      "partNumber": "L7NHA020U",
+      "motorType": null,
+      "supply": "3~ 200–230 V AC",
+      "voltageClass": "200V",
+      "motors": "^(APM\\-EE12M|APM\\-EE13G|APM\\-EE15A|APM\\-EE16D|APM\\-EE17G|APM\\-EE22A|APM\\-EE22D|APM\\-EF12M|APM\\-EF20G|APM\\-EF20M|APM\\-EF22D|APM\\-FE12M|APM\\-FE13G|APM\\-FE15A|APM\\-FE16D|APM\\-FE17G|APM\\-FE22A|APM\\-FE22D|APM\\-FF12M|APM\\-FF20G|APM\\-FF20M|APM\\-FF22D|APM\\-FG12M|APM\\-FG20G|APM\\-FG20M|APM\\-FG22D)( \\(brake\\))?$",
+      "nominalCurrent": 13.5,
+      "peakCurrent": 40.5,
+      "peakDuration": 2.7,
+      "nominalPower": 2000,
+      "peakPower": null,
+      "maxCableLength": 20,
+      "internalResistor": {
+        "resistance": 13,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 150
+      },
+      "externalResistance": [
+        10,
+        null
+      ],
+      "externalMaxPower": null,
+      "resistorVoltage": null,
+      "brakingResistors": [
+        "APC-600R30x3"
+      ]
+    },
+    {
+      "id": "L7NHA035U",
+      "model": "L7NHA035U",
+      "family": "L7NH",
+      "maker": "LS",
+      "partNumber": "L7NHA035U",
+      "motorType": null,
+      "supply": "3~ 200–230 V AC",
+      "voltageClass": "200V",
+      "motors": "^(APM\\-EE30A|APM\\-EF30A|APM\\-EF30G|APM\\-EF30M|APM\\-EF35D|APM\\-FE30A|APM\\-FF30A|APM\\-FF30G|APM\\-FF30M|APM\\-FF35D|APM\\-FG30G|APM\\-FG30M|APM\\-FG35D)( \\(brake\\))?$",
+      "nominalCurrent": 16.7,
+      "peakCurrent": 50.1,
+      "peakDuration": 2.7,
+      "nominalPower": 3500,
+      "peakPower": null,
+      "maxCableLength": 20,
+      "internalResistor": {
+        "resistance": 13,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 150
+      },
+      "externalResistance": [
+        10,
+        null
+      ],
+      "externalMaxPower": null,
+      "resistorVoltage": null,
+      "brakingResistors": [
+        "APC-600R30x3"
+      ]
+    },
+    {
+      "id": "L7NHA050U",
+      "model": "L7NHA050U",
+      "family": "L7NH",
+      "maker": "LS",
+      "partNumber": "L7NHA050U",
+      "motorType": null,
+      "supply": "3~ 200–230 V AC",
+      "voltageClass": "200V",
+      "motors": "^(APM\\-EF44G|APM\\-EF44M|APM\\-EF50A|APM\\-EF55D|APM\\-FF44G|APM\\-FF44M|APM\\-FF50A|APM\\-FF55D|APM\\-FG44G|APM\\-FG44M|APM\\-FG55D)( \\(brake\\))?$",
+      "nominalCurrent": 32.0,
+      "peakCurrent": 90.9,
+      "peakDuration": null,
+      "nominalPower": 5000,
+      "peakPower": null,
+      "maxCableLength": 20,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": null
+      },
+      "externalResistance": [
+        7,
+        null
+      ],
+      "externalMaxPower": null,
+      "resistorVoltage": null,
+      "brakingResistors": [
+        "APC-600R28x4"
+      ]
+    },
+    {
+      "id": "L7NHA075U",
+      "model": "L7NHA075U",
+      "family": "L7NH",
+      "maker": "LS",
+      "partNumber": "L7NHA075U",
+      "motorType": null,
+      "supply": "3~ 200–230 V AC",
+      "voltageClass": "200V",
+      "motors": "^(APM\\-EF60G|APM\\-EF75D|APM\\-EF75G|APM\\-FF60G|APM\\-FF75D|APM\\-FF75G|APM\\-FG60G|APM\\-FG60M|APM\\-FG75D)( \\(brake\\))?$",
+      "nominalCurrent": 39.4,
+      "peakCurrent": 98.5,
+      "peakDuration": null,
+      "nominalPower": 7500,
+      "peakPower": null,
+      "maxCableLength": 20,
+      "internalResistor": {
+        "resistance": null,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": null
+      },
+      "externalResistance": [
+        7,
+        null
+      ],
+      "externalMaxPower": null,
+      "resistorVoltage": null,
+      "brakingResistors": [
+        "APC-600R28x4"
+      ]
+    },
+    {
+      "id": "L7NHA150U",
+      "model": "L7NHA150U",
+      "family": "L7NH",
+      "maker": "LS",
+      "partNumber": "L7NHA150U",
+      "motorType": null,
+      "supply": "3~ 200–230 V AC",
+      "voltageClass": "200V",
+      "motors": "^(APM\\-FG110D|APM\\-FG110G|APM\\-FG150G|APM\\-FG85G)( \\(brake\\))?$",
+      "nominalCurrent": 76.0,
+      "peakCurrent": 190.0,
+      "peakDuration": null,
+      "nominalPower": 15000,
+      "peakPower": null,
+      "maxCableLength": 20,
+      "internalResistor": null,
+      "externalResistance": [
+        3.3,
+        null
+      ],
+      "externalMaxPower": null,
+      "resistorVoltage": null,
+      "brakingResistors": [
+        "APCS-2000R3R3"
+      ]
+    },
+    {
+      "id": "L7NHB010U",
+      "model": "L7NHB010U",
+      "family": "L7NH",
+      "maker": "LS",
+      "partNumber": "L7NHB010U",
+      "motorType": null,
+      "supply": "3~ 380–480 V AC",
+      "voltageClass": "400V",
+      "motors": "^(APM\\-EEP03M|APM\\-EEP05G|APM\\-EEP06D|APM\\-EEP06M|APM\\-EEP09A|APM\\-EEP09G|APM\\-EEP09M|APM\\-EEP11D|APM\\-FEP03M|APM\\-FEP05G|APM\\-FEP06D|APM\\-FEP06M|APM\\-FEP09A|APM\\-FEP09G|APM\\-FEP09M|APM\\-FEP11D)( \\(brake\\))?$",
+      "nominalCurrent": 3.7,
+      "peakCurrent": 11.1,
+      "peakDuration": 3.0,
+      "nominalPower": 1000,
+      "peakPower": null,
+      "maxCableLength": 20,
+      "internalResistor": {
+        "resistance": 100,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 100
+      },
+      "externalResistance": [
+        82,
+        null
+      ],
+      "externalMaxPower": null,
+      "resistorVoltage": null,
+      "brakingResistors": [
+        "APCS-300R82"
+      ]
+    },
+    {
+      "id": "L7NHB020U",
+      "model": "L7NHB020U",
+      "family": "L7NH",
+      "maker": "LS",
+      "partNumber": "L7NHB020U",
+      "motorType": null,
+      "supply": "3~ 380–480 V AC",
+      "voltageClass": "400V",
+      "motors": "^(APM\\-EEP12M|APM\\-EEP13G|APM\\-EEP15A|APM\\-EEP16D|APM\\-EEP17G|APM\\-EEP22A|APM\\-EEP22D|APM\\-EFP12M|APM\\-EFP20G|APM\\-EFP20M|APM\\-EFP22D|APM\\-FEP12M|APM\\-FEP13G|APM\\-FEP15A|APM\\-FEP16D|APM\\-FEP17G|APM\\-FEP22A|APM\\-FEP22D|APM\\-FFP12M|APM\\-FFP20G|APM\\-FFP20M|APM\\-FFP22D|APM\\-FGP12M|APM\\-FGP20G|APM\\-FGP20M|APM\\-FGP22D)( \\(brake\\))?$",
+      "nominalCurrent": 8.0,
+      "peakCurrent": 24.0,
+      "peakDuration": 2.5,
+      "nominalPower": 2000,
+      "peakPower": null,
+      "maxCableLength": 20,
+      "internalResistor": {
+        "resistance": 40,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 150
+      },
+      "externalResistance": [
+        37.5,
+        null
+      ],
+      "externalMaxPower": null,
+      "resistorVoltage": null,
+      "brakingResistors": [
+        "APCS-600R75x2"
+      ]
+    },
+    {
+      "id": "L7NHB035U",
+      "model": "L7NHB035U",
+      "family": "L7NH",
+      "maker": "LS",
+      "partNumber": "L7NHB035U",
+      "motorType": null,
+      "supply": "3~ 380–480 V AC",
+      "voltageClass": "400V",
+      "motors": "^(APM\\-EEP30A|APM\\-EFP30A|APM\\-EFP30G|APM\\-EFP30M|APM\\-EFP35D|APM\\-FEP30A|APM\\-FFP30A|APM\\-FFP30G|APM\\-FFP30M|APM\\-FFP35D|APM\\-FGP30G|APM\\-FGP30M|APM\\-FGP35D)( \\(brake\\))?$",
+      "nominalCurrent": 10.1,
+      "peakCurrent": 30.3,
+      "peakDuration": 2.5,
+      "nominalPower": 3500,
+      "peakPower": null,
+      "maxCableLength": 20,
+      "internalResistor": {
+        "resistance": 40,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 150
+      },
+      "externalResistance": [
+        37.5,
+        null
+      ],
+      "externalMaxPower": null,
+      "resistorVoltage": null,
+      "brakingResistors": [
+        "APCS-600R75x2"
+      ]
+    },
+    {
+      "id": "L7NHB050U",
+      "model": "L7NHB050U",
+      "family": "L7NH",
+      "maker": "LS",
+      "partNumber": "L7NHB050U",
+      "motorType": null,
+      "supply": "3~ 380–480 V AC",
+      "voltageClass": "400V",
+      "motors": "^(APM\\-EFP44G|APM\\-EFP44M|APM\\-EFP50A|APM\\-EFP55D|APM\\-FFP44G|APM\\-FFP44M|APM\\-FFP50A|APM\\-FFP55D|APM\\-FGP44G|APM\\-FGP44M|APM\\-FGP55D)( \\(brake\\))?$",
+      "nominalCurrent": 17.5,
+      "peakCurrent": 47.3,
+      "peakDuration": 5.0,
+      "nominalPower": 5000,
+      "peakPower": null,
+      "maxCableLength": 20,
+      "internalResistor": {
+        "resistance": 27,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 120
+      },
+      "externalResistance": [
+        25,
+        null
+      ],
+      "externalMaxPower": null,
+      "resistorVoltage": null,
+      "brakingResistors": [
+        "APCS-600R75x3"
+      ]
+    },
+    {
+      "id": "L7NHB075U",
+      "model": "L7NHB075U",
+      "family": "L7NH",
+      "maker": "LS",
+      "partNumber": "L7NHB075U",
+      "motorType": null,
+      "supply": "3~ 380–480 V AC",
+      "voltageClass": "400V",
+      "motors": "^(APM\\-EFP60G|APM\\-EFP60M|APM\\-EFP75D|APM\\-EFP75G|APM\\-FFP60G|APM\\-FFP75D|APM\\-FFP75G|APM\\-FGP60G|APM\\-FGP60M|APM\\-FGP75D)( \\(brake\\))?$",
+      "nominalCurrent": 22.8,
+      "peakCurrent": 57.0,
+      "peakDuration": 5.0,
+      "nominalPower": 7500,
+      "peakPower": null,
+      "maxCableLength": 20,
+      "internalResistor": {
+        "resistance": 27,
+        "pulsePower": null,
+        "pulseEnergy": null,
+        "nominalPower": 240
+      },
+      "externalResistance": [
+        25,
+        null
+      ],
+      "externalMaxPower": null,
+      "resistorVoltage": null,
+      "brakingResistors": [
+        "APCS-600R75x3"
+      ]
+    },
+    {
+      "id": "L7NHB150U",
+      "model": "L7NHB150U",
+      "family": "L7NH",
+      "maker": "LS",
+      "partNumber": "L7NHB150U",
+      "motorType": null,
+      "supply": "3~ 380–480 V AC",
+      "voltageClass": "400V",
+      "motors": "^(APM\\-FGP110D|APM\\-FGP110G|APM\\-FGP150G|APM\\-FGP85G)( \\(brake\\))?$",
+      "nominalCurrent": 39.0,
+      "peakCurrent": 97.5,
+      "peakDuration": 2.7,
+      "nominalPower": 15000,
+      "peakPower": null,
+      "maxCableLength": 20,
+      "internalResistor": null,
+      "externalResistance": [
+        13.4,
+        null
+      ],
+      "externalMaxPower": null,
+      "resistorVoltage": null,
+      "brakingResistors": [
+        "APCS-2000R13R4"
+      ]
+    }
+  ]
+}

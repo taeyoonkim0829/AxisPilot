@@ -191,8 +191,10 @@ export interface Controller {
   peakPower: number | null
   /** m, without external mains filter; null = not documented */
   maxCableLength: number | null
-  /** integrated braking resistor: Ω, W (pulse), Ws, W (nominal); null = none. Pulse values null = not documented (Mitsubishi) */
-  internalResistor: { resistance: number | null; pulsePower: number | null; pulseEnergy: number | null; nominalPower: number } | null
+  /** integrated braking resistor: Ω, W (pulse), Ws, W (nominal); null = none. Pulse values null = not documented
+   *  (Mitsubishi); `nominalPower` null = built in but not rated in the documentation (LS L7NHA050/075): any
+   *  regeneration then takes an external resistor */
+  internalResistor: { resistance: number | null; pulsePower: number | null; pulseEnergy: number | null; nominalPower: number | null } | null
   /** Ω [min, max] for an external braking resistor (Siemens: minimum only) */
   externalResistance: [number, number | null]
   /** W, max. continuous power of an external braking resistor */

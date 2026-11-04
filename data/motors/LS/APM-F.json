@@ -25,7 +25,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "40R"
+      "interfaceCode": "40R",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FALR5A brake",
@@ -52,7 +53,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "40R"
+      "interfaceCode": "40R",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FAL01A",
@@ -79,7 +81,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "40R"
+      "interfaceCode": "40R",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FAL01A brake",
@@ -106,7 +109,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "40R"
+      "interfaceCode": "40R",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FAL015A",
@@ -133,7 +137,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "40R"
+      "interfaceCode": "40R",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FBL01A",
@@ -160,7 +165,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "60PA"
+      "interfaceCode": "60PA",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FBL01A brake",
@@ -187,7 +193,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "60PA"
+      "interfaceCode": "60PA",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FBL02A",
@@ -214,7 +221,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "60PA"
+      "interfaceCode": "60PA",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FBL02A brake",
@@ -241,7 +249,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "60PA"
+      "interfaceCode": "60PA",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FBL04A",
@@ -268,7 +277,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "60PA"
+      "interfaceCode": "60PA",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FBL04A brake",
@@ -295,7 +305,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "60PA"
+      "interfaceCode": "60PA",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FCL04A",
@@ -322,7 +333,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FCL04A brake",
@@ -349,7 +361,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FCL06A",
@@ -376,7 +389,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "80PA"
+      "interfaceCode": "80PA",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FCL06A brake",
@@ -403,7 +417,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "80PA"
+      "interfaceCode": "80PA",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FCL08A",
@@ -430,7 +445,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "80PA"
+      "interfaceCode": "80PA",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FCL08A brake",
@@ -457,7 +473,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "80PA"
+      "interfaceCode": "80PA",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FCL10A",
@@ -484,7 +501,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "80PA"
+      "interfaceCode": "80PA",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FCL10A brake",
@@ -511,7 +529,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "80PA"
+      "interfaceCode": "80PA",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FCL03D",
@@ -539,7 +558,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APMC-FCL04A"
+      "sameOutline": "APMC-FCL04A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FCL03D brake",
@@ -567,7 +587,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APMC-FCL04A"
+      "sameOutline": "APMC-FCL04A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FCL05D",
@@ -595,7 +616,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "80PA",
-      "sameOutline": "APMC-FCL06A"
+      "sameOutline": "APMC-FCL06A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FCL05D brake",
@@ -623,7 +645,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "80PA",
-      "sameOutline": "APMC-FCL06A"
+      "sameOutline": "APMC-FCL06A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FCL06D",
@@ -651,7 +674,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "80PA",
-      "sameOutline": "APMC-FCL08A"
+      "sameOutline": "APMC-FCL08A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FCL06D brake",
@@ -679,7 +703,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "80PA",
-      "sameOutline": "APMC-FCL08A"
+      "sameOutline": "APMC-FCL08A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FCL07D",
@@ -707,7 +732,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "80PA",
-      "sameOutline": "APMC-FCL10A"
+      "sameOutline": "APMC-FCL10A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APMC-FCL07D brake",
@@ -735,7 +761,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "80PA",
-      "sameOutline": "APMC-FCL10A"
+      "sameOutline": "APMC-FCL10A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE09A",
@@ -762,7 +789,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE09A brake",
@@ -789,7 +817,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE15A",
@@ -816,7 +845,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE15A brake",
@@ -843,7 +873,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE22A",
@@ -870,7 +901,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "130M2"
+      "interfaceCode": "130M2",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE22A brake",
@@ -897,7 +929,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "130M2"
+      "interfaceCode": "130M2",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE30A",
@@ -924,7 +957,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE30A brake",
@@ -951,7 +985,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF30A",
@@ -978,7 +1013,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "176M1"
+      "interfaceCode": "176M1",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF30A brake",
@@ -1005,7 +1041,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "176M1"
+      "interfaceCode": "176M1",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF50A",
@@ -1032,7 +1069,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "176M1"
+      "interfaceCode": "176M1",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF50A brake",
@@ -1059,7 +1097,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "176M1"
+      "interfaceCode": "176M1",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE06D",
@@ -1087,7 +1126,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FE09A"
+      "sameOutline": "APM-FE09A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE06D brake",
@@ -1115,7 +1155,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FE09A"
+      "sameOutline": "APM-FE09A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE11D",
@@ -1143,7 +1184,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FE15A"
+      "sameOutline": "APM-FE15A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE11D brake",
@@ -1171,7 +1213,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FE15A"
+      "sameOutline": "APM-FE15A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE16D",
@@ -1199,7 +1242,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "130M2",
-      "sameOutline": "APM-FE22A"
+      "sameOutline": "APM-FE22A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE16D brake",
@@ -1227,7 +1271,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "130M2",
-      "sameOutline": "APM-FE22A"
+      "sameOutline": "APM-FE22A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE22D",
@@ -1255,7 +1300,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FE30A"
+      "sameOutline": "APM-FE30A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE22D brake",
@@ -1283,7 +1329,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FE30A"
+      "sameOutline": "APM-FE30A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF22D",
@@ -1311,7 +1358,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FF30A"
+      "sameOutline": "APM-FF30A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF22D brake",
@@ -1339,7 +1387,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FF30A"
+      "sameOutline": "APM-FF30A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF35D",
@@ -1367,7 +1416,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FF50A"
+      "sameOutline": "APM-FF50A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF35D brake",
@@ -1395,7 +1445,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FF50A"
+      "sameOutline": "APM-FF50A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF55D",
@@ -1422,7 +1473,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "176M1"
+      "interfaceCode": "176M1",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF55D brake",
@@ -1449,7 +1501,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "176M1"
+      "interfaceCode": "176M1",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF75D",
@@ -1476,7 +1529,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF75D brake",
@@ -1503,7 +1557,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG22D",
@@ -1530,7 +1585,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG22D brake",
@@ -1557,7 +1613,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG35D",
@@ -1584,7 +1641,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG35D brake",
@@ -1611,7 +1669,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG55D",
@@ -1638,7 +1697,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG55D brake",
@@ -1665,7 +1725,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG75D",
@@ -1692,7 +1753,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG75D brake",
@@ -1719,7 +1781,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG110D",
@@ -1746,7 +1809,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG110D brake",
@@ -1773,7 +1837,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE05G",
@@ -1801,7 +1866,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FE09A"
+      "sameOutline": "APM-FE09A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE05G brake",
@@ -1829,7 +1895,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FE09A"
+      "sameOutline": "APM-FE09A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE09G",
@@ -1857,7 +1924,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FE15A"
+      "sameOutline": "APM-FE15A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE09G brake",
@@ -1885,7 +1953,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FE15A"
+      "sameOutline": "APM-FE15A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE13G",
@@ -1913,7 +1982,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "130M2",
-      "sameOutline": "APM-FE22A"
+      "sameOutline": "APM-FE22A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE13G brake",
@@ -1941,7 +2011,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "130M2",
-      "sameOutline": "APM-FE22A"
+      "sameOutline": "APM-FE22A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE17G",
@@ -1969,7 +2040,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FE30A"
+      "sameOutline": "APM-FE30A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE17G brake",
@@ -1997,7 +2069,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FE30A"
+      "sameOutline": "APM-FE30A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF20G",
@@ -2025,7 +2098,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FF30A"
+      "sameOutline": "APM-FF30A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF20G brake",
@@ -2053,7 +2127,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FF30A"
+      "sameOutline": "APM-FF30A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF30G",
@@ -2081,7 +2156,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FF50A"
+      "sameOutline": "APM-FF50A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF30G brake",
@@ -2109,7 +2185,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FF50A"
+      "sameOutline": "APM-FF50A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF44G",
@@ -2137,7 +2214,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FF55D"
+      "sameOutline": "APM-FF55D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF44G brake",
@@ -2165,7 +2243,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FF55D"
+      "sameOutline": "APM-FF55D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF60G",
@@ -2193,7 +2272,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FF75D"
+      "sameOutline": "APM-FF75D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF60G brake",
@@ -2221,7 +2301,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FF75D"
+      "sameOutline": "APM-FF75D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF75G",
@@ -2248,7 +2329,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF75G brake",
@@ -2275,7 +2357,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG20G",
@@ -2303,7 +2386,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FG22D"
+      "sameOutline": "APM-FG22D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG20G brake",
@@ -2331,7 +2415,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FG22D"
+      "sameOutline": "APM-FG22D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG30G",
@@ -2359,7 +2444,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FG35D"
+      "sameOutline": "APM-FG35D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG30G brake",
@@ -2387,7 +2473,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FG35D"
+      "sameOutline": "APM-FG35D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG44G",
@@ -2415,7 +2502,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FG55D"
+      "sameOutline": "APM-FG55D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG44G brake",
@@ -2443,7 +2531,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FG55D"
+      "sameOutline": "APM-FG55D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG60G",
@@ -2471,7 +2560,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FG75D"
+      "sameOutline": "APM-FG75D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG60G brake",
@@ -2499,7 +2589,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FG75D"
+      "sameOutline": "APM-FG75D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG85G",
@@ -2527,7 +2618,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FG110D"
+      "sameOutline": "APM-FG110D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG85G brake",
@@ -2555,7 +2647,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FG110D"
+      "sameOutline": "APM-FG110D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG110G",
@@ -2582,7 +2675,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG110G brake",
@@ -2609,7 +2703,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG150G",
@@ -2636,7 +2731,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG150G brake",
@@ -2663,7 +2759,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE03M",
@@ -2691,7 +2788,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FE09A"
+      "sameOutline": "APM-FE09A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE03M brake",
@@ -2719,7 +2817,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FE09A"
+      "sameOutline": "APM-FE09A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE06M",
@@ -2747,7 +2846,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FE15A"
+      "sameOutline": "APM-FE15A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE06M brake",
@@ -2775,7 +2875,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FE15A"
+      "sameOutline": "APM-FE15A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE09M",
@@ -2803,7 +2904,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "130M2",
-      "sameOutline": "APM-FE22A"
+      "sameOutline": "APM-FE22A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE09M brake",
@@ -2831,7 +2933,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "130M2",
-      "sameOutline": "APM-FE22A"
+      "sameOutline": "APM-FE22A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE12M",
@@ -2859,7 +2962,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FE30A"
+      "sameOutline": "APM-FE30A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FE12M brake",
@@ -2887,7 +2991,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FE30A"
+      "sameOutline": "APM-FE30A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF12M",
@@ -2915,7 +3020,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FF30A"
+      "sameOutline": "APM-FF30A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF12M brake",
@@ -2943,7 +3049,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FF30A"
+      "sameOutline": "APM-FF30A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF20M",
@@ -2971,7 +3078,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FF50A"
+      "sameOutline": "APM-FF50A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF20M brake",
@@ -2999,7 +3107,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FF50A"
+      "sameOutline": "APM-FF50A",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF30M",
@@ -3027,7 +3136,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FF55D"
+      "sameOutline": "APM-FF55D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF30M brake",
@@ -3055,7 +3165,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FF55D"
+      "sameOutline": "APM-FF55D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF44M",
@@ -3083,7 +3194,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FF75D"
+      "sameOutline": "APM-FF75D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FF44M brake",
@@ -3111,7 +3223,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FF75D"
+      "sameOutline": "APM-FF75D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG12M",
@@ -3139,7 +3252,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FG22D"
+      "sameOutline": "APM-FG22D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG12M brake",
@@ -3167,7 +3281,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FG22D"
+      "sameOutline": "APM-FG22D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG20M",
@@ -3195,7 +3310,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FG35D"
+      "sameOutline": "APM-FG35D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG20M brake",
@@ -3223,7 +3339,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FG35D"
+      "sameOutline": "APM-FG35D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG30M",
@@ -3251,7 +3368,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FG55D"
+      "sameOutline": "APM-FG55D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG30M brake",
@@ -3279,7 +3397,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FG55D"
+      "sameOutline": "APM-FG55D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG44M",
@@ -3307,7 +3426,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FG75D"
+      "sameOutline": "APM-FG75D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG44M brake",
@@ -3335,7 +3455,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FG75D"
+      "sameOutline": "APM-FG75D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG60M",
@@ -3363,7 +3484,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FG110D"
+      "sameOutline": "APM-FG110D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FG60M brake",
@@ -3391,7 +3513,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FG110D"
+      "sameOutline": "APM-FG110D",
+      "controller": "L7NH-200V"
     },
     {
       "id": "APM-FEP09A",
@@ -3418,7 +3541,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP09A brake",
@@ -3445,7 +3569,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP15A",
@@ -3472,7 +3597,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP15A brake",
@@ -3499,7 +3625,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP22A",
@@ -3526,7 +3653,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "130M2"
+      "interfaceCode": "130M2",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP22A brake",
@@ -3553,7 +3681,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "130M2"
+      "interfaceCode": "130M2",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP30A",
@@ -3580,7 +3709,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP30A brake",
@@ -3607,7 +3737,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP30A",
@@ -3634,7 +3765,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "176M1"
+      "interfaceCode": "176M1",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP30A brake",
@@ -3661,7 +3793,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "176M1"
+      "interfaceCode": "176M1",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP50A",
@@ -3688,7 +3821,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "176M1"
+      "interfaceCode": "176M1",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP50A brake",
@@ -3715,7 +3849,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "176M1"
+      "interfaceCode": "176M1",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP06D",
@@ -3743,7 +3878,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FEP09A"
+      "sameOutline": "APM-FEP09A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP06D brake",
@@ -3771,7 +3907,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FEP09A"
+      "sameOutline": "APM-FEP09A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP11D",
@@ -3799,7 +3936,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FEP15A"
+      "sameOutline": "APM-FEP15A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP11D brake",
@@ -3827,7 +3965,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FEP15A"
+      "sameOutline": "APM-FEP15A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP16D",
@@ -3855,7 +3994,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "130M2",
-      "sameOutline": "APM-FEP22A"
+      "sameOutline": "APM-FEP22A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP16D brake",
@@ -3883,7 +4023,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "130M2",
-      "sameOutline": "APM-FEP22A"
+      "sameOutline": "APM-FEP22A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP22D",
@@ -3911,7 +4052,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FEP30A"
+      "sameOutline": "APM-FEP30A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP22D brake",
@@ -3939,7 +4081,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FEP30A"
+      "sameOutline": "APM-FEP30A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP22D",
@@ -3967,7 +4110,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FFP30A"
+      "sameOutline": "APM-FFP30A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP22D brake",
@@ -3995,7 +4139,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FFP30A"
+      "sameOutline": "APM-FFP30A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP35D",
@@ -4023,7 +4168,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FFP50A"
+      "sameOutline": "APM-FFP50A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP35D brake",
@@ -4051,7 +4197,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FFP50A"
+      "sameOutline": "APM-FFP50A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP55D",
@@ -4078,7 +4225,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "176M1"
+      "interfaceCode": "176M1",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP55D brake",
@@ -4105,7 +4253,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": "176M1"
+      "interfaceCode": "176M1",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP75D",
@@ -4132,7 +4281,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP75D brake",
@@ -4159,7 +4309,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP22D",
@@ -4186,7 +4337,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP22D brake",
@@ -4213,7 +4365,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP35D",
@@ -4240,7 +4393,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP35D brake",
@@ -4267,7 +4421,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP55D",
@@ -4294,7 +4449,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP55D brake",
@@ -4321,7 +4477,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP75D",
@@ -4348,7 +4505,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP75D brake",
@@ -4375,7 +4533,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP110D",
@@ -4402,7 +4561,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP110D brake",
@@ -4429,7 +4589,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP05G",
@@ -4457,7 +4618,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FEP09A"
+      "sameOutline": "APM-FEP09A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP05G brake",
@@ -4485,7 +4647,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FEP09A"
+      "sameOutline": "APM-FEP09A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP09G",
@@ -4513,7 +4676,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FEP15A"
+      "sameOutline": "APM-FEP15A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP09G brake",
@@ -4541,7 +4705,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FEP15A"
+      "sameOutline": "APM-FEP15A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP13G",
@@ -4569,7 +4734,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "130M2",
-      "sameOutline": "APM-FEP22A"
+      "sameOutline": "APM-FEP22A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP13G brake",
@@ -4597,7 +4763,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "130M2",
-      "sameOutline": "APM-FEP22A"
+      "sameOutline": "APM-FEP22A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP17G",
@@ -4625,7 +4792,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FEP30A"
+      "sameOutline": "APM-FEP30A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP17G brake",
@@ -4653,7 +4821,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FEP30A"
+      "sameOutline": "APM-FEP30A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP20G",
@@ -4681,7 +4850,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FFP30A"
+      "sameOutline": "APM-FFP30A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP20G brake",
@@ -4709,7 +4879,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FFP30A"
+      "sameOutline": "APM-FFP30A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP30G",
@@ -4737,7 +4908,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FFP50A"
+      "sameOutline": "APM-FFP50A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP30G brake",
@@ -4765,7 +4937,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FFP50A"
+      "sameOutline": "APM-FFP50A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP44G",
@@ -4793,7 +4966,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FFP55D"
+      "sameOutline": "APM-FFP55D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP44G brake",
@@ -4821,7 +4995,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FFP55D"
+      "sameOutline": "APM-FFP55D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP60G",
@@ -4849,7 +5024,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FFP75D"
+      "sameOutline": "APM-FFP75D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP60G brake",
@@ -4877,7 +5053,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FFP75D"
+      "sameOutline": "APM-FFP75D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP75G",
@@ -4904,7 +5081,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP75G brake",
@@ -4931,7 +5109,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP20G",
@@ -4959,7 +5138,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FGP22D"
+      "sameOutline": "APM-FGP22D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP20G brake",
@@ -4987,7 +5167,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FGP22D"
+      "sameOutline": "APM-FGP22D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP30G",
@@ -5015,7 +5196,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FGP35D"
+      "sameOutline": "APM-FGP35D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP30G brake",
@@ -5043,7 +5225,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FGP35D"
+      "sameOutline": "APM-FGP35D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP44G",
@@ -5071,7 +5254,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FGP55D"
+      "sameOutline": "APM-FGP55D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP44G brake",
@@ -5099,7 +5283,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FGP55D"
+      "sameOutline": "APM-FGP55D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP60G",
@@ -5127,7 +5312,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FGP75D"
+      "sameOutline": "APM-FGP75D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP60G brake",
@@ -5155,7 +5341,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FGP75D"
+      "sameOutline": "APM-FGP75D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP85G",
@@ -5183,7 +5370,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FGP110D"
+      "sameOutline": "APM-FGP110D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP85G brake",
@@ -5211,7 +5399,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FGP110D"
+      "sameOutline": "APM-FGP110D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP110G",
@@ -5238,7 +5427,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP110G brake",
@@ -5265,7 +5455,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP150G",
@@ -5292,7 +5483,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP150G brake",
@@ -5319,7 +5511,8 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": null,
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP03M",
@@ -5347,7 +5540,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FEP09A"
+      "sameOutline": "APM-FEP09A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP03M brake",
@@ -5375,7 +5569,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FEP09A"
+      "sameOutline": "APM-FEP09A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP06M",
@@ -5403,7 +5598,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FEP15A"
+      "sameOutline": "APM-FEP15A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP06M brake",
@@ -5431,7 +5627,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FEP15A"
+      "sameOutline": "APM-FEP15A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP09M",
@@ -5459,7 +5656,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "130M2",
-      "sameOutline": "APM-FEP22A"
+      "sameOutline": "APM-FEP22A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP09M brake",
@@ -5487,7 +5685,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "130M2",
-      "sameOutline": "APM-FEP22A"
+      "sameOutline": "APM-FEP22A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP12M",
@@ -5515,7 +5714,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FEP30A"
+      "sameOutline": "APM-FEP30A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FEP12M brake",
@@ -5543,7 +5743,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FEP30A"
+      "sameOutline": "APM-FEP30A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP12M",
@@ -5571,7 +5772,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FFP30A"
+      "sameOutline": "APM-FFP30A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP12M brake",
@@ -5599,7 +5801,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FFP30A"
+      "sameOutline": "APM-FFP30A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP20M",
@@ -5627,7 +5830,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FFP50A"
+      "sameOutline": "APM-FFP50A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP20M brake",
@@ -5655,7 +5859,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FFP50A"
+      "sameOutline": "APM-FFP50A",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP30M",
@@ -5683,7 +5888,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FFP55D"
+      "sameOutline": "APM-FFP55D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP30M brake",
@@ -5711,7 +5917,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": "176M1",
-      "sameOutline": "APM-FFP55D"
+      "sameOutline": "APM-FFP55D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP44M",
@@ -5739,7 +5946,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FFP75D"
+      "sameOutline": "APM-FFP75D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FFP44M brake",
@@ -5767,7 +5975,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FFP75D"
+      "sameOutline": "APM-FFP75D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP12M",
@@ -5795,7 +6004,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FGP22D"
+      "sameOutline": "APM-FGP22D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP12M brake",
@@ -5823,7 +6033,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FGP22D"
+      "sameOutline": "APM-FGP22D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP20M",
@@ -5851,7 +6062,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FGP35D"
+      "sameOutline": "APM-FGP35D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP20M brake",
@@ -5879,7 +6091,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FGP35D"
+      "sameOutline": "APM-FGP35D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP30M",
@@ -5907,7 +6120,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FGP55D"
+      "sameOutline": "APM-FGP55D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP30M brake",
@@ -5935,7 +6149,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FGP55D"
+      "sameOutline": "APM-FGP55D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP44M",
@@ -5963,7 +6178,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FGP75D"
+      "sameOutline": "APM-FGP75D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP44M brake",
@@ -5991,7 +6207,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FGP75D"
+      "sameOutline": "APM-FGP75D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP60M",
@@ -6019,7 +6236,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FGP110D"
+      "sameOutline": "APM-FGP110D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APM-FGP60M brake",
@@ -6047,7 +6265,8 @@
       "regenPower": null,
       "amplifier": null,
       "interfaceCode": null,
-      "sameOutline": "APM-FGP110D"
+      "sameOutline": "APM-FGP110D",
+      "controller": "L7NH-400V"
     },
     {
       "id": "APMC-FAL01A (48V)",

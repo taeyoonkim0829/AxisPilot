@@ -1,4 +1,4 @@
-// Drive package of a motor with drive data (Festo CMMT-AS / CMMT-ST, Siemens S210 / V90, Mitsubishi MR-J5 / MR-J4):
+// Drive package of a motor with drive data (Festo CMMT-AS / CMMT-ST, Siemens S210 / V90, Mitsubishi MR-J5 / MR-J4, LS L7NH):
 // servo drive, cables and braking resistor.
 import type { BrakingResistor, Cable, Controller } from '../data/types'
 import type { AxisEvaluation } from './axisSelection'
@@ -230,7 +230,7 @@ export function selectController(
   if (controller) {
     const internal = controller.internalResistor
     const needed = internal
-      ? averagePower > internal.nominalPower ||
+      ? averagePower > (internal.nominalPower ?? 0) ||
         (internal.pulseEnergy != null && eventEnergy > internal.pulseEnergy) ||
         (internal.pulsePower != null && peakRegen > internal.pulsePower)
       : eventEnergy > ST_REGEN_LIMIT

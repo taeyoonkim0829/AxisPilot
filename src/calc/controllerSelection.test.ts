@@ -55,6 +55,18 @@ describe('selectController', () => {
     expect(emmb.find((c) => c.role === 'adapter')!.type).toBe('NEFM-REG6-K-0.5-R3G8')
   })
 
+  it('pairs LS motors with the L7NH drive of the catalog table and its APCS cables', () => {
+    const fe = run('ELGD-BS-KF-60-…10P', 'APM-FE09A', {}, { cableLength: 5 }).selection
+    expect(fe.controller!.model).toBe('L7NHA010U')
+    expect(fe.cables.map((c) => c.partNumber)).toEqual(['APCS-PF05HS1', 'APCS-EF05DS'])
+    // brake motor: the power + brake cable
+    expect(run('ELGD-BS-KF-60-…10P', 'APM-FE09A brake').selection.cables[0].partNumber).toMatch(/^APCS-PF\d\dNB1$/)
+    // 400 V motor: L7NHB
+    expect(run('ELGD-BS-KF-60-…10P', 'APM-FEP09A').selection.controller!.model).toBe('L7NHB010U')
+    // FCL: separate brake cable
+    expect(run('ELGD-BS-KF-60-…10P', 'APMC-FCL06A brake').selection.cables.map((c) => c.role)).toEqual(['motor', 'encoder', 'brake'])
+  })
+
   it('warns beyond the cable selection table', () => {
     const { selection } = run('ELGD-BS-KF-60-…10P', 'EMMT-AS-60-M-HS', {}, { cableLength: 40 })
     expect(selection.cables.some((c) => c.role === 'motor')).toBe(false)
@@ -63,7 +75,7 @@ describe('selectController', () => {
 
   it('adds an external braking resistor when the integrated one is too small', () => {
     const { selection } = run('EGC-185-...-BS-40P-KF-GK', 'EMMT-AS-190-M-HS', { payload: 200, velocity: 1, acceleration: 5, mounting: 'vertical' })
-    expect(selection.resistor.averagePower).toBeGreaterThan(selection.controller!.internalResistor!.nominalPower)
+    expect(selection.resistor.averagePower).toBeGreaterThan(selection.controller!.internalResistor!.nominalPower!)
     expect(selection.resistor.required).toBe(true)
     expect(selection.controller!.brakingResistors).toContain(selection.resistor.item!.model)
     // a small horizontal move regenerates nothing: no-load torque and friction take the braking
