@@ -109,7 +109,7 @@ export interface BeltMaterial {
   noLoadTorque: number | null
 }
 
-export type MotorMaker = 'Festo' | 'Siemens' | 'Mitsubishi'
+export type MotorMaker = 'Festo' | 'Siemens' | 'Mitsubishi' | 'LS'
 
 export interface Motor {
   id: string

@@ -26,11 +26,11 @@ interface Props {
   onSelectGearbox: (gearboxId: string) => void
 }
 
-const makers: MotorMaker[] = ['Festo', 'Siemens', 'Mitsubishi']
+const makers: MotorMaker[] = ['Festo', 'Siemens', 'Mitsubishi', 'LS']
 
 const supplies: Supply[] = ['ac400', 'ac230', 'dc48']
-/** Power supply a maker starts on: the 400 V class for Festo and Siemens, 200 V for Mitsubishi */
-const makerSupply: Record<MotorMaker, Supply> = { Festo: 'ac400', Siemens: 'ac400', Mitsubishi: 'ac230' }
+/** Power supply a maker starts on: the 400 V class for Festo and Siemens, 200 V for Mitsubishi and LS */
+const makerSupply: Record<MotorMaker, Supply> = { Festo: 'ac400', Siemens: 'ac400', Mitsubishi: 'ac230', LS: 'ac230' }
 
 const ROW_LIMIT = 60
 

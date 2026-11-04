@@ -42,7 +42,7 @@ const familyOrder = ['EMMT-AS', 'EMMT-ST', 'EMMT-EC', 'EMMB-AS', 'EMMB-ST', 'EMM
 const familyRank = (f: string) => (familyOrder.includes(f) ? familyOrder.indexOf(f) : familyOrder.length)
 
 export const motorFamilies = Object.fromEntries(
-  (['Festo', 'Siemens', 'Mitsubishi'] as const).map((maker) => [
+  (['Festo', 'Siemens', 'Mitsubishi', 'LS'] as const).map((maker) => [
     maker,
     [...new Set(motors.filter((m) => m.maker === maker).map((m) => m.family))].sort(
       (a, b) => familyRank(a) - familyRank(b) || a.localeCompare(b),
