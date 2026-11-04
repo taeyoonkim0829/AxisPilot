@@ -20,14 +20,15 @@ const ROLE_COLORS: Record<PartRole, string> = {
 }
 const COG_COLOR = '#d6392b'
 
-type ViewName = 'iso' | 'front' | 'top' | 'side'
-const VIEW_DIRS: Record<ViewName, Vec3> = {
-  iso: [0.85, -1.3, 0.9],
-  front: [0, -1, 0],
-  top: [0, -0.0001, 1],
-  side: [1, 0, 0],
-}
-const viewLabel: Record<ViewName, string> = { iso: '등각', front: '정면', top: '평면', side: '우측면' }
+/** the home view: isometric from the front right, above */
+const HOME: Vec3 = [0.85, -1.3, 0.9]
+
+/**
+ * View cube faces in BoxGeometry order (+X, −X, +Y, −Y, +Z, −Z of the geometry). The cube is turned a quarter about X,
+ * so the geometry's +Y is world up (Z) and its +Z the front (world −Y, where the 정면 camera stands).
+ */
+const CUBE_FACES = ['우측면', '좌측면', '평면', '저면', '정면', '배면'] as const
+const CUBE_PX = 104
 
 /** maker: the colours of the makers' STEP files (bodies without one take their part's colour); part: one colour per part */
 type ColourMode = 'maker' | 'part'
@@ -36,15 +37,24 @@ const colourLabel: Record<ColourMode, string> = { maker: '제조사 색', part: 
 export default function ComboViewer({ meshes, roles, cog }: { meshes: PartMesh[]; roles: PartRole[]; cog: Vec3 }) {
   const t = useT()
   const host = useRef<HTMLDivElement>(null)
-  const setView = useRef<(v: ViewName) => void>(() => {})
-  const [view, setViewName] = useState<ViewName>('iso')
-  const viewRef = useRef<ViewName>('iso')
+  const cubeHost = useRef<HTMLDivElement>(null)
+  // the camera direction (from the target), kept when the scene is rebuilt
+  const viewDir = useRef(new THREE.Vector3(...HOME).normalize())
+  const goHome = useRef<() => void>(() => {})
+  const setCubeLabels = useRef<(labels: string[]) => void>(() => {})
   const [colours, setColours] = useState<ColourMode>('maker')
   const coloursRef = useRef<ColourMode>('maker')
   const setColouring = useRef<(c: ColourMode) => void>(() => {})
+  // the cube's face names follow the language
+  const labels = CUBE_FACES.map((f) => t(f))
+  const labelKey = labels.join('|')
+  // the names the scene builds the cube with (kept up to date by the effect below)
+  const labelsRef = useRef(labels)
 
   useEffect(() => {
     const el = host.current!
+    // the view to open with (the first renders below overwrite viewDir before the camera is placed)
+    const initial = viewDir.current.clone()
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true })
     renderer.setPixelRatio(window.devicePixelRatio)
     el.appendChild(renderer.domElement)
@@ -146,21 +156,164 @@ export default function ComboViewer({ meshes, roles, cog }: { meshes: PartMesh[]
 
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.target.copy(centre)
-    const render = () => renderer.render(scene, camera)
+
+    // ---- view cube: turns with the camera; click a face, edge or corner to look from there, drag it to orbit
+    const cubeEl = cubeHost.current!
+    const cubeRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+    cubeRenderer.setPixelRatio(window.devicePixelRatio)
+    cubeRenderer.setSize(CUBE_PX, CUBE_PX)
+    cubeEl.appendChild(cubeRenderer.domElement)
+    const cubeScene = new THREE.Scene()
+    const cubeCamera = new THREE.OrthographicCamera(-1.75, 1.75, 1.75, -1.75, 0.1, 10)
+    const cubeGeometry = new THREE.BoxGeometry(2, 2, 2)
+    const cubeEdges = new THREE.EdgesGeometry(cubeGeometry)
+    // the face, edge or corner under the pointer: a blue patch over that region
+    const hoverGeometry = new THREE.BoxGeometry(1, 1, 1)
+    geometries.push(cubeGeometry, cubeEdges, hoverGeometry)
+    const faceMaterials = CUBE_FACES.map(() => new THREE.MeshBasicMaterial({ color: '#ffffff' }))
+    const cubeLine = new THREE.LineBasicMaterial({ color: '#5b6573' })
+    const hoverMaterial = new THREE.MeshBasicMaterial({ color: '#3d7fd9', transparent: true, opacity: 0.55, depthWrite: false })
+    materials.push(...faceMaterials, cubeLine, hoverMaterial)
+    const cube = new THREE.Mesh(cubeGeometry, faceMaterials)
+    cube.rotation.x = Math.PI / 2
+    cube.add(new THREE.LineSegments(cubeEdges, cubeLine))
+    const hover = new THREE.Mesh(hoverGeometry, hoverMaterial)
+    hover.visible = false
+    cubeScene.add(cube, hover)
+
+    const render = () => {
+      renderer.render(scene, camera)
+      viewDir.current.copy(camera.position).sub(controls.target).normalize()
+      cubeCamera.position.copy(viewDir.current).multiplyScalar(4)
+      cubeCamera.quaternion.copy(camera.quaternion)
+      cubeRenderer.render(cubeScene, cubeCamera)
+    }
     controls.addEventListener('change', render)
-    setColouring.current = (c) => {
-      for (const p of painted) p.mesh.material = c === 'maker' ? p.maker : p.part
+
+    const textures: THREE.Texture[] = []
+    setCubeLabels.current = (names) => {
+      textures.forEach((x) => x.dispose())
+      textures.length = 0
+      names.forEach((name, i) => {
+        const c = document.createElement('canvas')
+        c.width = c.height = 128
+        const g = c.getContext('2d')!
+        g.fillStyle = '#e8ecf1'
+        g.fillRect(0, 0, 128, 128)
+        g.fillStyle = '#1f2630'
+        g.font = `600 ${name.length > 4 ? 24 : 30}px Pretendard, sans-serif`
+        g.textAlign = 'center'
+        g.textBaseline = 'middle'
+        g.fillText(name, 64, 66)
+        const tex = new THREE.CanvasTexture(c)
+        tex.colorSpace = THREE.SRGBColorSpace
+        textures.push(tex)
+        faceMaterials[i].map = tex
+        faceMaterials[i].needsUpdate = true
+      })
       render()
     }
-    setView.current = (v) => {
-      const dir = new THREE.Vector3(...VIEW_DIRS[v]).normalize()
-      // fit the bounding sphere into the narrower of the two fields of view
+
+    // distance at which the bounding sphere fills the narrower field of view
+    const fitDistance = () => {
       const vfov = (camera.fov * Math.PI) / 180
       const fov = Math.min(vfov, 2 * Math.atan(Math.tan(vfov / 2) * camera.aspect))
-      const distance = (size / 2 / Math.sin(fov / 2)) * 0.8
-      camera.position.copy(centre).addScaledVector(dir, distance)
-      controls.target.copy(centre)
+      return (size / 2 / Math.sin(fov / 2)) * 0.8
+    }
+    const place = (dir: THREE.Vector3, distance: number) => {
+      // straight down or up: a hair off the pole, so the view keeps X to the right
+      const d = dir.clone().normalize()
+      if (Math.abs(d.z) > 0.9999) d.set(0, -1e-4, Math.sign(d.z)).normalize()
+      camera.position.copy(controls.target).addScaledVector(d, distance)
       controls.update()
+      render()
+    }
+    let frame = 0
+    const lookFrom = (dir: THREE.Vector3, animate = true) => {
+      cancelAnimationFrame(frame)
+      controls.target.copy(centre)
+      const end = dir.clone().normalize()
+      const to = fitDistance()
+      const from = camera.position.distanceTo(controls.target)
+      if (!animate || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return place(end, to)
+      const start = viewDir.current.clone()
+      const turn = new THREE.Quaternion().setFromUnitVectors(start, end)
+      const t0 = performance.now()
+      const step = (now: number) => {
+        const k = Math.min(1, (now - t0) / 350)
+        const e = 1 - (1 - k) ** 3
+        place(start.clone().applyQuaternion(new THREE.Quaternion().slerp(turn, e)), from + (to - from) * e)
+        if (k < 1) frame = requestAnimationFrame(step)
+      }
+      frame = requestAnimationFrame(step)
+    }
+    goHome.current = () => lookFrom(new THREE.Vector3(...HOME))
+
+    // the region of the cube under the pointer: each coordinate −1, 0 or +1 (face, edge or corner)
+    const ray = new THREE.Raycaster()
+    const regionAt = (e: PointerEvent) => {
+      const r = cubeRenderer.domElement.getBoundingClientRect()
+      ray.setFromCamera(new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1), cubeCamera)
+      const hit = ray.intersectObject(cube, false)[0]
+      if (!hit) return null
+      const p = hit.point
+      return new THREE.Vector3(...[p.x, p.y, p.z].map((v) => (v > 0.6 ? 1 : v < -0.6 ? -1 : 0)))
+    }
+    const showHover = (q: THREE.Vector3 | null) => {
+      hover.visible = q != null
+      if (q) {
+        const c = [q.x, q.y, q.z]
+        hover.position.set(c[0] * 0.806, c[1] * 0.806, c[2] * 0.806)
+        hover.scale.set(c[0] ? 0.4 : 1.2, c[1] ? 0.4 : 1.2, c[2] ? 0.4 : 1.2)
+      }
+      cubeEl.style.cursor = q ? 'pointer' : 'grab'
+      render()
+    }
+    // dragging the cube orbits the camera about the target (Z stays up)
+    const orbit = (dx: number, dy: number) => {
+      const offset = camera.position.clone().sub(controls.target)
+      offset.applyAxisAngle(camera.up, -dx * 0.012)
+      const right = new THREE.Vector3().crossVectors(offset, camera.up).normalize()
+      const tilted = offset.clone().applyAxisAngle(right, dy * 0.012)
+      const polar = tilted.angleTo(camera.up)
+      if (polar > 0.01 && polar < Math.PI - 0.01) offset.copy(tilted)
+      camera.position.copy(controls.target).add(offset)
+      controls.update()
+      render()
+    }
+    let drag: { x: number; y: number; moved: boolean } | null = null
+    const onDown = (e: PointerEvent) => {
+      cancelAnimationFrame(frame)
+      drag = { x: e.clientX, y: e.clientY, moved: false }
+      cubeEl.setPointerCapture(e.pointerId)
+    }
+    const onMove = (e: PointerEvent) => {
+      if (!drag) return showHover(regionAt(e))
+      const dx = e.clientX - drag.x
+      const dy = e.clientY - drag.y
+      if (!drag.moved && Math.hypot(dx, dy) < 3) return
+      if (!drag.moved) showHover(null)
+      drag = { x: e.clientX, y: e.clientY, moved: true }
+      cubeEl.style.cursor = 'grabbing'
+      orbit(dx, dy)
+    }
+    const onUp = (e: PointerEvent) => {
+      const clicked = drag != null && !drag.moved
+      drag = null
+      const q = regionAt(e)
+      if (clicked && q) lookFrom(q)
+      showHover(q)
+    }
+    const onLeave = () => {
+      if (!drag) showHover(null)
+    }
+    cubeEl.addEventListener('pointerdown', onDown)
+    cubeEl.addEventListener('pointermove', onMove)
+    cubeEl.addEventListener('pointerup', onUp)
+    cubeEl.addEventListener('pointerleave', onLeave)
+
+    setColouring.current = (c) => {
+      for (const p of painted) p.mesh.material = c === 'maker' ? p.maker : p.part
       render()
     }
     const resize = () => {
@@ -174,10 +327,19 @@ export default function ComboViewer({ meshes, roles, cog }: { meshes: PartMesh[]
     const observer = new ResizeObserver(resize)
     observer.observe(el)
     resize()
-    setView.current(viewRef.current)
+    setCubeLabels.current(labelsRef.current)
+    lookFrom(initial, false)
 
     return () => {
+      cancelAnimationFrame(frame)
       observer.disconnect()
+      cubeEl.removeEventListener('pointerdown', onDown)
+      cubeEl.removeEventListener('pointermove', onMove)
+      cubeEl.removeEventListener('pointerup', onUp)
+      cubeEl.removeEventListener('pointerleave', onLeave)
+      textures.forEach((x) => x.dispose())
+      cubeRenderer.dispose()
+      cubeRenderer.domElement.remove()
       controls.dispose()
       geometries.forEach((g) => g.dispose())
       materials.forEach((m) => m.dispose())
@@ -186,11 +348,11 @@ export default function ComboViewer({ meshes, roles, cog }: { meshes: PartMesh[]
     }
   }, [meshes, roles, cog])
 
-  const pick = (v: ViewName) => {
-    setViewName(v)
-    viewRef.current = v
-    setView.current(v)
-  }
+  useEffect(() => {
+    labelsRef.current = labelKey.split('|')
+    setCubeLabels.current(labelsRef.current)
+  }, [labelKey])
+
   const paint = (c: ColourMode) => {
     setColours(c)
     coloursRef.current = c
@@ -200,7 +362,6 @@ export default function ComboViewer({ meshes, roles, cog }: { meshes: PartMesh[]
   return (
     <div className="combo-viewer">
       <div className="combo-viewer-bar">
-        <RadioGroup options={Object.keys(VIEW_DIRS) as ViewName[]} value={view} onChange={pick} label={(v) => t(viewLabel[v])} />
         <RadioGroup options={['maker', 'part'] as ColourMode[]} value={colours} onChange={paint} label={(c) => t(colourLabel[c])} />
         <ul className="combo-legend">
           {present.map((r) => (
@@ -215,7 +376,13 @@ export default function ComboViewer({ meshes, roles, cog }: { meshes: PartMesh[]
           </li>
         </ul>
       </div>
-      <div className="combo-canvas" ref={host} />
+      <div className="combo-stage">
+        <div className="combo-canvas" ref={host} />
+        <div className="view-cube" ref={cubeHost} title={t('클릭: 그 방향에서 보기 · 드래그: 회전')} />
+        <button type="button" className="view-home" onClick={() => goHome.current()} title={t('등각')} aria-label={t('등각')}>
+          ⌂
+        </button>
+      </div>
     </div>
   )
 }

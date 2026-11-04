@@ -32,9 +32,10 @@ function tightest(checks: Check[]): Check | null {
 }
 
 /** Highlights the step section nearest the top of the viewport. */
-function useActiveStep(stepIds: string[]): number {
+function useActiveStep(steps: string): number {
   const [active, setActive] = useState(0)
   useEffect(() => {
+    const stepIds = steps.split(',')
     const els = stepIds.map((id) => document.getElementById(id)).filter((e): e is HTMLElement => !!e)
     const visible = new Map<string, boolean>()
     const io = new IntersectionObserver(
@@ -48,7 +49,7 @@ function useActiveStep(stepIds: string[]): number {
     )
     els.forEach((e) => io.observe(e))
     return () => io.disconnect()
-  }, [stepIds.join()])
+  }, [steps])
   return active
 }
 
@@ -109,7 +110,7 @@ function Sign({
 export function RouteRail({ axis, drive, kit, gearbox = true, onExport, exporting, lang, onLang, axes, missing: required }: Props) {
   const t = useT()
   const stepIds = stepIdsOf(gearbox)
-  const active = useActiveStep(stepIds)
+  const active = useActiveStep(stepIds.join())
   const scrolled = useScrolled()
   const axisTight = axis && tightest(axis.checks)
   const driveTight = drive && tightest(drive.checks)

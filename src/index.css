@@ -1567,6 +1567,37 @@ th.num {
   touch-action: none;
 }
 
+/* view cube: top right of the 3D view, turning with the camera */
+.combo-stage {
+  position: relative;
+}
+
+.view-cube {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 104px;
+  height: 104px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.view-home {
+  position: absolute;
+  top: 10px;
+  right: 116px;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+
 /* ---------- motion profile chart ---------- */
 
 .profile-chart {
