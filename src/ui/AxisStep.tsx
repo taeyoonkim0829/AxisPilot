@@ -306,7 +306,13 @@ function InfoList({ items }: { items: AxisEvaluation['info'] }) {
           <dt>{t(i.label)}</dt>
           <dd className={i.alert ? 'fail-text' : undefined}>
             {fmt(i.value, 3)} {i.unit}
-            {i.note && <span className="muted"> ({t(i.note, i.noteArgs)})</span>}
+            {i.note &&
+              (i.unit === 'km' ? (
+                // life: the years on the line below the km
+                <span className="muted info-below">{t(i.note, i.noteArgs)}</span>
+              ) : (
+                <span className="muted"> ({t(i.note, i.noteArgs)})</span>
+              ))}
           </dd>
         </div>
       ))}

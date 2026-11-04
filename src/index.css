@@ -1287,6 +1287,11 @@ th.num {
   margin-bottom: 10px;
 }
 
+/* a note on its own line below the value (life in years under the km) */
+.info-below {
+  display: block;
+}
+
 .collapse-btn {
   display: inline-flex;
   align-items: center;

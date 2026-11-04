@@ -126,8 +126,23 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
   const a = axis.axis
   const guide = guideDetail(axis)
   const infoRow = (i: AxisEvaluation['info'][number]): Row => {
-    const text = `${q(i.value, i.unit)}${i.note ? ` (${t(i.note, i.noteArgs)})` : ''}`
-    return [i.label, i.alert ? <span key={i.label} className="fail-text">{text}</span> : text]
+    // life (km): the years on the line below
+    const below = i.unit === 'km' && i.note
+    const text = `${q(i.value, i.unit)}${i.note && !below ? ` (${t(i.note, i.noteArgs)})` : ''}`
+    const value = i.alert ? <span className="fail-text">{text}</span> : text
+    return [
+      i.label,
+      below ? (
+        <span key={i.label}>
+          {value}
+          <span className="muted info-below">{t(i.note!, i.noteArgs)}</span>
+        </span>
+      ) : i.alert ? (
+        <span key={i.label} className="fail-text">{text}</span>
+      ) : (
+        text
+      ),
+    ]
   }
   const g = drive?.gearbox ?? null
   const vertical = verticalForward(req)
