@@ -242,13 +242,28 @@ describe('drawing files', () => {
 
   it('matches Apex gearboxes by size and stage, not ratio', () => {
     const all = allPaths.map((path) => ({ ...parseDrawingPath(path)!, url: path, meta: null }))
-    const model = (id: string) => gearboxDrawingFor(gearboxes.find((g) => g.id === id)!, all)?.model ?? null
+    const model = (id: string) => gearboxDrawingFor(gearboxes.find((g) => g.id === id)!, null, all)?.model ?? null
     expect(model('AB042-3')).toBe('AB0421-P0401100102')
     expect(model('AB042-15')).toBe('AB0422-P0401100102')
     expect(model('AE050-20')).toBe('AE0502-P0403101002')
     expect(model('AER090-9')).toBe('AER0901-P0403300202')
     // the Design Tool offers no 2-stage AB060 for these motors
     expect(model('AB060-15')).toBeNull()
+  })
+
+  it('takes the Apex file whose adapter is for the motor, else the Mitsubishi one', () => {
+    const all = allPaths.map((path) => {
+      const info = parseDrawingPath(path)!
+      return { ...info, url: path, meta: metas[path.replace(/\.[^.]+$/, '.json')] ?? null }
+    }) as Drawing[]
+    const file = (gearbox: string, motor: string) =>
+      gearboxDrawingFor(gearboxes.find((g) => g.id === gearbox)!, motors.find((m) => m.model === motor)!, all)?.model ?? null
+    expect(file('AB090-5', '1FK2105-4AF0')).toBe('AB0901-P0401300601')
+    expect(file('AB090-5', '1FK2104-4AF0')).toBe('AB0901-P0401300305')
+    expect(file('AB090-5', 'HG-KR73')).toBe('AB0901-P0401300305')
+    expect(file('AB090-5', '1FL6042-1AF61-2LG1')).toBe('AB0901-P0401300302')
+    expect(file('AB090-5', '1FL6042-2AF21-1LG1')).toBe('AB0901-P0401300305')
+    expect(file('AB180-5', 'APM-FF75D (brake)')).toBe('AB1801-P0403600502')
   })
 })
 

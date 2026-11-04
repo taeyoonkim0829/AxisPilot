@@ -1,0 +1,5 @@
+{
+  "output": { "origin": [0, 0, 0], "axis": [0, 0, 1], "up": [0, 1, 0] },
+  "input": { "origin": [0, 0, 114], "axis": [0, 0, 1], "up": [0, 1, 0] },
+  "motors": ["APM-EE09A", "APM-EE15A", "APM-EE06D", "APM-EE11D", "APM-EE05G", "APM-EE09G", "APM-EE03M", "APM-EE06M", "APM-EEP09A", "APM-EEP15A", "APM-EEP06D", "APM-EEP11D", "APM-EEP05G", "APM-EEP09G", "APM-EEP03M", "APM-EEP06M", "APM-FE09A", "APM-FE15A", "APM-FE06D", "APM-FE11D", "APM-FE05G", "APM-FE09G", "APM-FE03M", "APM-FE06M", "APM-FEP09A", "APM-FEP15A", "APM-FEP06D", "APM-FEP11D", "APM-FEP05G", "APM-FEP09G", "APM-FEP03M", "APM-FEP06M"]
+}

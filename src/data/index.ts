@@ -1,4 +1,5 @@
 import type { Axis, AxisAdapter, BrakingResistor, Cable, ConnectingShaft, Controller, Gearbox, GuideUnit, Kit, Motor } from './types'
+import { namesMotor } from './names'
 
 // Product data is maintained directly in these JSON files (see data/README.md):
 // one file per maker and product family, data/<kind>/<maker>/<family>.json
@@ -50,15 +51,7 @@ export const motorFamilies = Object.fromEntries(
   ]),
 ) as Record<Motor['maker'], string[]>
 
-/**
- * Gearboxes whose compatibility list names this motor (Apex lists Mitsubishi frame codes like "KP053"). The code must
- * not run on into another digit: "SR52" is HG-SR52(B), not the 400 V HG-SR524.
- */
+/** Gearboxes whose compatibility list names this motor */
 export function gearboxesFor(motor: Motor, all: Gearbox[] = gearboxes): Gearbox[] {
-  const names = (code: string) => {
-    for (let i = motor.model.indexOf(code); i >= 0; i = motor.model.indexOf(code, i + 1))
-      if (!/\d/.test(motor.model[i + code.length] ?? '')) return true
-    return false
-  }
-  return all.filter((g) => g.compatibleMotors?.some(names))
+  return all.filter((g) => g.compatibleMotors?.some((c) => namesMotor(motor.model, c)))
 }

@@ -1,0 +1,5 @@
+{
+  "output": { "origin": [0, 0, 0], "axis": [0, 0, 1], "up": [0, -1, 0] },
+  "input": { "origin": [0, -78, 78], "axis": [0, -1, 0], "up": [0, 0, -1] },
+  "motors": ["1FK2103", "1FK2203", "1FL6032", "1FL6034", "APM-EB01A", "APM-EB02A", "APM-EB04A", "APMC-FBL01A", "APMC-FBL02A", "APMC-FBL04A"]
+}

@@ -1,4 +1,5 @@
 import type { Axis, AxisAdapter, ConnectingShaft, Gearbox, GuideUnit, Kit, Motor } from '../data/types'
+import { namesMotor } from '../data/names'
 import type { Frame } from './geometry'
 import type { StretchSpec } from './stretch'
 import type { Vec3 } from './step'
@@ -87,6 +88,9 @@ export interface GearboxMeta {
   /** output flange (axis / kit side) and input flange (motor side) */
   output: Frame
   input: Frame
+  /** Apex: the motors this file's adapter is for (compatibility codes as in `Gearbox.compatibleMotors`); files
+   *  without the list carry the Mitsubishi adapter and serve every other motor */
+  motors?: string[]
 }
 export interface ShaftMeta {
   /** mm, nominal length LN of the model in the file */
@@ -249,20 +253,20 @@ export const shaftDrawingFor = (shaft: ConnectingShaft, all = drawings) =>
 
 /**
  * By model or part number; Apex files are named by size, stage and motor adapter (`AB0421-P0401100102` = AB042,
- * 1 stage), not by ratio, so `AB042-3` takes the file starting `AB0421-`. Each downloaded adapter fits every motor
- * the gearbox lists (Apex Design Tool).
+ * 1 stage), not by ratio, so `AB042-3` takes the file starting `AB0421-`: the one whose adapter is for the motor
+ * (`GearboxMeta.motors`), else the one without a motor list (Mitsubishi adapter, Apex Design Tool).
  */
-export function gearboxDrawingFor(gearbox: Gearbox, all = drawings): Drawing<GearboxMeta> | null {
+export function gearboxDrawingFor(gearbox: Gearbox, motor: Motor | null = null, all = drawings): Drawing<GearboxMeta> | null {
   const apex = gearbox.maker === 'Apex' ? `${gearbox.model.replace(/-\d+$/, '')}${gearbox.stage ?? (gearbox.ratio > 10 ? 2 : 1)}-` : null
-  return (
-    (all.find(
-      (d) =>
-        d.kind === 'gearboxes' &&
-        (d.names.includes(gearbox.model) ||
-          (gearbox.partNumber != null && d.partNumber === gearbox.partNumber) ||
-          (apex != null && d.maker === 'Apex' && d.model.startsWith(apex))),
-    ) as Drawing<GearboxMeta> | undefined) ?? null
-  )
+  const list = all.filter(
+    (d) =>
+      d.kind === 'gearboxes' &&
+      (d.names.includes(gearbox.model) ||
+        (gearbox.partNumber != null && d.partNumber === gearbox.partNumber) ||
+        (apex != null && d.maker === 'Apex' && d.model.startsWith(apex))),
+  ) as Drawing<GearboxMeta>[]
+  const forMotor = (d: Drawing<GearboxMeta>) => motor != null && !!d.meta?.motors?.some((c) => namesMotor(motor.model, c))
+  return list.find(forMotor) ?? list.find((d) => !d.meta?.motors) ?? null
 }
 
 /** A gantry kit's drawing by part number; a custom bracket (no part number) by its model (`<id>_<model>.stp`) */

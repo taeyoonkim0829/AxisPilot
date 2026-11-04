@@ -57,7 +57,7 @@ export interface ComboDrawings {
 export function comboDrawings(sel: ComboSelection, all?: Drawing[]): ComboDrawings {
   const axis = axisDrawingsFor(sel.axis, sel.stroke, all)[0] ?? null
   const motor = motorDrawingFor(sel.motor, all)
-  const gearbox = sel.gearbox ? gearboxDrawingFor(sel.gearbox, all) : null
+  const gearbox = sel.gearbox ? gearboxDrawingFor(sel.gearbox, sel.motor, all) : null
   const kit = kitDrawingFor(sel.kit, all)
   const missing: PartRole[] = []
   if (!axis) missing.push('axis')

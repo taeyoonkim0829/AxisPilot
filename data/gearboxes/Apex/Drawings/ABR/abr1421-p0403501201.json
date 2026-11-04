@@ -1,0 +1,5 @@
+{
+  "output": { "origin": [0, 0, 0], "axis": [0, 0, 1], "up": [0, -1, 0] },
+  "input": { "origin": [0, -169.5, 165], "axis": [0, -1, 0], "up": [0, 0, -1] },
+  "motors": ["APM-FG22D", "APM-FG35D", "APM-FG55D", "APM-FG20G", "APM-FG30G", "APM-FG44G", "APM-FG12M", "APM-FG20M", "APM-FG30M", "APM-FGP22D", "APM-FGP35D", "APM-FGP55D", "APM-FGP20G", "APM-FGP30G", "APM-FGP44G", "APM-FGP12M", "APM-FGP20M", "APM-FGP30M"]
+}
