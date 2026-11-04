@@ -270,6 +270,44 @@ export interface DrawingPart {
   name: string
 }
 
+/** the sheet's own words (the DXF keeps these English defaults; the PDF takes the app language's) */
+export interface SheetLabels {
+  title: string
+  dwgNo: string
+  scale: string
+  projection: string
+  unit: string
+  date: string
+  drawn: string
+  no: string
+  part: string
+  model: string
+  qty: string
+  notes: string
+  unitsNote: string
+  cogNote: string
+  /** part roles as named in the parts list (default: the role in capitals) */
+  roles: Record<string, string>
+}
+
+export const DEFAULT_LABELS: SheetLabels = {
+  title: 'TITLE',
+  dwgNo: 'DWG. NO.',
+  scale: 'SCALE',
+  projection: 'PROJ.',
+  unit: 'UNIT',
+  date: 'DATE',
+  drawn: 'DRAWN',
+  no: 'NO.',
+  part: 'PART',
+  model: 'MODEL / TYPE',
+  qty: 'QTY',
+  notes: 'NOTES',
+  unitsNote: 'Dimensions in mm. Third angle projection.',
+  cogNote: 'COG: payload centre of gravity (thin two-dot chain lines).',
+  roles: {},
+}
+
 export interface DrawingInput {
   meshes: DrawMesh[]
   cog: Vec3 | null
@@ -279,6 +317,7 @@ export interface DrawingInput {
   parts?: DrawingPart[]
   /** date for the title block, YYYY-MM-DD (default today) */
   date?: string
+  labels?: SheetLabels
 }
 
 /** A-series sheets, landscape (paper mm) and their border margin (KS A 0106: 20 mm on A0 / A1, 10 mm below); the
@@ -314,12 +353,18 @@ const scaleText = (n: number) => (n < 1 ? `${1 / n}:1` : `1:${n}`)
 /** dimension value: whole mm, or one decimal */
 const dimValue = (v: number) => String(Math.round(v * 10) / 10)
 
+/** text width in ASCII characters: a character beyond ASCII (Hangul) about as wide as two */
+const textWidth = (s: string) => [...s].reduce((w, ch) => w + (ch.charCodeAt(0) > 0x7e ? 1.7 : 1), 0)
+
 function wrap(line: string, width: number): string[] {
   const out: string[] = []
   let rest = line.trim()
-  while (rest.length > width) {
-    const cut = rest.lastIndexOf(' ', width)
-    const at = cut > width / 2 ? cut : width
+  while (textWidth(rest) > width) {
+    // the last whole character within the width, back to a space when there is one in its second half
+    let end = 0
+    for (let w = 0; end < rest.length && w + textWidth(rest[end]) <= width; end++) w += textWidth(rest[end])
+    const cut = rest.lastIndexOf(' ', end)
+    const at = cut > end / 2 ? cut : Math.max(1, end)
     out.push(rest.slice(0, at).trimEnd())
     rest = rest.slice(at).trimStart()
   }
@@ -328,7 +373,7 @@ function wrap(line: string, width: number): string[] {
 }
 
 /** Lays out the three views (third-angle) on a KS sheet with border, title block, parts list and notes. */
-export function layoutSheet({ meshes, cog, title, parts = [], date }: DrawingInput): Sheet {
+export function layoutSheet({ meshes, cog, title, parts = [], date, labels: L = DEFAULT_LABELS }: DrawingInput): Sheet {
   const model = buildModel(meshes)
   const views = [VIEWS.front, VIEWS.top, VIEWS.side].map((v) => {
     const segs = projectView(model, v)
@@ -352,8 +397,8 @@ export function layoutSheet({ meshes, cog, title, parts = [], date }: DrawingInp
   }
   const [name = 'Assembly', ...given] = title
   const notes = [
-    'Dimensions in mm. Third angle projection.',
-    ...(cog ? ['COG: payload centre of gravity (thin two-dot chain lines).'] : []),
+    L.unitsNote,
+    ...(cog ? [L.cogNote] : []),
     ...given,
   ].flatMap((line, i) => wrap(`${i + 1}. ${line}`, NOTE_CHARS))
   const titleH = TITLE_ROWS.reduce((a, b) => a + b, 0)
@@ -454,29 +499,29 @@ export function layoutSheet({ meshes, cog, title, parts = [], date }: DrawingInp
     y += h
   }
   row(TITLE_ROWS[2], [
-    [22, 'DATE'],
+    [22, L.date],
     [36, date ?? new Date().toISOString().slice(0, 10)],
-    [16, 'UNIT'],
+    [16, L.unit],
     [24, 'mm'],
-    [18, 'DRAWN'],
+    [18, L.drawn],
     [54, 'AxisPilot'],
   ])
   const projectionY = y
   row(TITLE_ROWS[1], [
-    [22, 'DWG. NO.'],
+    [22, L.dwgNo],
     [36, `AP-${(date ?? new Date().toISOString().slice(0, 10)).replace(/-/g, '')}`],
-    [16, 'SCALE'],
+    [16, L.scale],
     [24, scaleText(n), TEXT_DIM],
-    [18, 'PROJ.'],
+    [18, L.projection],
     [54, ''],
   ])
   projectionSymbol(dxf, P(bx0 + 170 - 27), P(projectionY + TITLE_ROWS[1] / 2), n)
   // the title: the largest standard height whose text fits the cell
   // (a character about as wide as it is high, spacing included)
   const room = BLOCK_W - 22 - 4
-  const titleSize = [5, TEXT_DIM, TEXT_SMALL].find((h) => name.length * h <= room) ?? TEXT_SMALL
+  const titleSize = [5, TEXT_DIM, TEXT_SMALL].find((h) => textWidth(name) * h <= room) ?? TEXT_SMALL
   row(TITLE_ROWS[0], [
-    [22, 'TITLE'],
+    [22, L.title],
     [148, name, titleSize],
   ])
   dxf.rect('TITLE', P(bx0), P(inner.y0), P(inner.x1), P(y), P(THICK))
@@ -484,10 +529,10 @@ export function layoutSheet({ meshes, cog, title, parts = [], date }: DrawingInp
   // ---- parts list (부품란) above it: header at the bottom, numbers counting upwards
   if (rows.length) {
     const cols: [number, string][] = [
-      [12, 'NO.'],
-      [34, 'PART'],
-      [104, 'MODEL / TYPE'],
-      [20, 'QTY'],
+      [12, L.no],
+      [34, L.part],
+      [104, L.model],
+      [20, L.qty],
     ]
     const partsY0 = y
     const line = (values: string[]) => {
@@ -500,7 +545,7 @@ export function layoutSheet({ meshes, cog, title, parts = [], date }: DrawingInp
       y += PART_ROW
     }
     line(cols.map(([, h]) => h))
-    rows.forEach((r, i) => line([String(i + 1), r.role.toUpperCase(), r.name, String(r.qty)]))
+    rows.forEach((r, i) => line([String(i + 1), L.roles[r.role] ?? r.role.toUpperCase(), r.name, String(r.qty)]))
     dxf.rect('TITLE', P(bx0), P(partsY0), P(inner.x1), P(y), P(THICK))
   }
 
@@ -510,7 +555,7 @@ export function layoutSheet({ meshes, cog, title, parts = [], date }: DrawingInp
     dxf.text('TEXT', P(bx0), P(y), P(TEXT_SMALL), note)
     y += NOTE_PITCH
   }
-  dxf.text('TEXT', P(bx0), P(y), P(TEXT_DIM), 'NOTES')
+  dxf.text('TEXT', P(bx0), P(y), P(TEXT_DIM), L.notes)
 
   return dxf
 }
@@ -588,7 +633,7 @@ export class Sheet {
     this.ops.push({ k: 'circle', layer, x, y, r })
   }
   text(layer: string, x: number, y: number, height: number, value: string, align: 'left' | 'centre' = 'left', rotation = 0) {
-    this.ops.push({ k: 'text', layer, x, y, height, value: value.replace(/[^\x20-\x7e]/g, '?'), align, rotation })
+    this.ops.push({ k: 'text', layer, x, y, height, value, align, rotation })
   }
   /** filled arrowhead (length 3, width 1 paper mm) at (x, y) pointing along (ux, uy) */
   private arrow(x: number, y: number, ux: number, uy: number) {
@@ -639,7 +684,7 @@ export function toDxf(sheet: Sheet): string {
       put(0, 'SEQEND', 8, o.layer)
     } else if (o.k === 'circle') put(0, 'CIRCLE', 8, o.layer, 10, o.x, 20, o.y, 30, 0, 40, o.r)
     else if (o.k === 'text') {
-      put(0, 'TEXT', 8, o.layer, 10, o.x, 20, o.y, 30, 0, 40, o.height, 1, o.value)
+      put(0, 'TEXT', 8, o.layer, 10, o.x, 20, o.y, 30, 0, 40, o.height, 1, o.value.replace(/[^\x20-\x7e]/g, '?'))
       if (o.rotation) put(50, o.rotation)
       if (o.align === 'centre') put(72, '1', 11, o.x, 21, o.y, 31, 0)
     } else {

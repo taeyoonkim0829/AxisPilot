@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Combo } from '../cad/combo'
 import type { Drawing } from '../cad/drawings'
+import type { SheetLabels } from '../cad/dxf'
 import type { PartMesh } from '../cad/occt'
 import { stepText } from '../cad/stepText'
 import { useT } from '../i18n'
@@ -58,6 +59,33 @@ const drawingInput = (combo: Combo, meshes: PartMesh[], title: string[]) => ({
   cog: combo.cog,
   title,
   parts: combo.parts.map(({ role, name }) => ({ role, name })),
+})
+
+/** the PDF sheet's words in the app language (the DXF keeps the English defaults) */
+const sheetLabels = (t: ReturnType<typeof useT>): SheetLabels => ({
+  title: t('도명'),
+  dwgNo: t('도번'),
+  scale: t('척도'),
+  projection: t('투상법'),
+  unit: t('단위'),
+  date: t('작성일'),
+  drawn: t('작성'),
+  no: t('품번'),
+  part: t('품명'),
+  model: t('규격 · 형식'),
+  qty: t('수량'),
+  notes: t('주기'),
+  unitsNote: t('치수 단위는 mm, 투상법은 제3각법.'),
+  cogNote: t('COG: 부하의 무게 중심 (가는 2점 쇄선).'),
+  roles: {
+    axis: t('축'),
+    kit: t('연결키트'),
+    gearbox: t('감속기'),
+    motor: t('모터'),
+    shaft: t('연결축'),
+    adapter: t('조합 키트'),
+    guide: t('가이드'),
+  },
 })
 
 export const fileSafe = (s: string) => s.replace(/[\\/:*?"<>|\s]+/g, '_')
@@ -119,12 +147,16 @@ export function useComboPreview<C extends Combo>(key: string, ready: boolean, bu
       const { drawingDxf } = await import('../cad/dxf')
       download(`${fileSafe(name(combo))}.dxf`, drawingDxf(drawingInput(combo, meshes, title(combo))), 'application/dxf')
     })
-  const exportPdf = (name: (c: C) => string, title: (c: C) => string[]) =>
-    run(t('PDF 도면을 만드는 중…'), async () => {
+  const exportPdf = (name: (c: C) => string, title: (c: C) => string[]) => {
+    // the font first, within the click (the browser asks for the local font permission only then)
+    const pdf = import('../cad/drawingPdf')
+    const font = pdf.then((m) => m.loadKoreanFont())
+    return run(t('PDF 도면을 만드는 중…'), async () => {
       const { combo, meshes } = await meshesFor()
-      const { drawingPdf } = await import('../cad/drawingPdf')
-      download(`${fileSafe(name(combo))}.pdf`, drawingPdf(drawingInput(combo, meshes, title(combo))), 'application/pdf')
+      const { drawingPdf } = await pdf
+      download(`${fileSafe(name(combo))}.pdf`, drawingPdf({ ...drawingInput(combo, meshes, title(combo)), labels: sheetLabels(t) }, await font), 'application/pdf')
     })
+  }
 
   const stale = preview && ready && shown != null && shown.key !== key
   useEffect(() => {
