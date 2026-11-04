@@ -621,16 +621,18 @@ export function evaluateAxis(
     speedCheck(ordered, peakVelocity, builtStroke, support != null),
     check('가속도', fwd.peakAcceleration, axis.maxAcceleration, 'm/s²'),
     feedForceCheck(axis, peakForce, builtStroke),
-    belt && belt.noLoadTorque == null
-      ? {
-          ...check('구동 토크', peakShaftTorque, axis.maxDrivingTorque, 'Nm'),
-          note: '{belt} 벨트의 무부하 토크 데이터 없음 — 기본 벨트 값 사용',
-          noteArgs: { belt: belt.code ?? '' },
-        }
-      : support && support.noLoadTorque == null
-        ? { ...check('구동 토크', peakShaftTorque, axis.maxDrivingTorque, 'Nm'), note: '스핀들 서포트: 무부하 토크가 더 클 수 있음 (데이터시트 값 없음)' }
-        : check('구동 토크', peakShaftTorque, axis.maxDrivingTorque, 'Nm'),
   ]
+  // 구동 토크 only where the data sheet gives a max. driving torque (the ball screw axes give none: left out)
+  if (axis.maxDrivingTorque != null)
+    checks.push(
+      belt && belt.noLoadTorque == null
+        ? {
+            ...check('구동 토크', peakShaftTorque, axis.maxDrivingTorque, 'Nm'),
+            note: '{belt} 벨트의 무부하 토크 데이터 없음 — 기본 벨트 값 사용',
+            noteArgs: { belt: belt.code ?? '' },
+          }
+        : check('구동 토크', peakShaftTorque, axis.maxDrivingTorque, 'Nm'),
+    )
   // The motor-side axis passes the second axis's torque on through its drive shaft.
   if (shaft) {
     const c = check('구동 토크 (연결축 포함)', shaftTorque(samples), axis.maxDrivingTorque, 'Nm')
@@ -814,6 +816,9 @@ export function evaluateAxis(
       note: '{model}, 주문번호 {partNumber} (J0 + JL·LN)',
       noteArgs: { model: ksk.model, partNumber: ksk.shaft.partNumber },
     })
+  // the support's no-load torque (taken by the motor checks) is not in the data sheet
+  if (support && support.noLoadTorque == null)
+    info.push({ label: '스핀들 서포트', value: Number.NaN, unit: '', note: '스핀들 서포트: 무부하 토크가 더 클 수 있음 (데이터시트 값 없음)' })
   if (offered && !support)
     info.push({ label: '스핀들 서포트', value: Number.NaN, unit: '', note: '{min} mm 초과 스트로크에서만 주문 가능 — 미적용', noteArgs: { min: offered.minStroke ?? 0 } })
   if (shaft) info.push({ label: '모터 구동 이동 질량 (2축 합계)', value: req.payload + 2 * slide, unit: 'kg' })

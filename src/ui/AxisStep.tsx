@@ -129,6 +129,8 @@ export function AxisStep({ results, selectedId, onSelect, settings, onSettings }
   const th = { sort, onSort: toggle }
   const selected = results.find((r) => r.axis.id === selectedId)
   const guide = selected ? guideDetail(selected) : null
+  // the ball screw axes have no max. driving torque: the column only when a listed axis has the check
+  const torqueColumn = rows.some((e) => e.checks.some((c) => c.label === '구동 토크'))
 
   return (
     <section className="panel step" id="step-axis">
@@ -222,9 +224,11 @@ export function AxisStep({ results, selectedId, onSelect, settings, onSettings }
                 <SortTh id="force" {...th}>
                   {t('이송력')}
                 </SortTh>
-                <SortTh id="torque" {...th}>
-                  {t('구동 토크')}
-                </SortTh>
+                {torqueColumn && (
+                  <SortTh id="torque" {...th}>
+                    {t('구동 토크')}
+                  </SortTh>
+                )}
                 <SortTh id="fv" {...th}>
                   {t('가이드 fv')}
                 </SortTh>
@@ -254,9 +258,11 @@ export function AxisStep({ results, selectedId, onSelect, settings, onSettings }
                   <td>
                     <Ratio ratio={forceRatio(e)} />
                   </td>
-                  <td>
-                    <Ratio ratio={ratioOf(e, '구동 토크')} />
-                  </td>
+                  {torqueColumn && (
+                    <td>
+                      <Ratio ratio={ratioOf(e, '구동 토크')} />
+                    </td>
+                  )}
                   <td>
                     <Ratio ratio={guideRatio(e)} />
                   </td>

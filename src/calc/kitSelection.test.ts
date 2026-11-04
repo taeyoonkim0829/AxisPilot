@@ -65,7 +65,7 @@ describe('evaluateKit', () => {
     const torque = checkOf(result, '키트 전달 토크')
     expect(torque.limit).toBe(10)
     // the axis input torque plus the kit's own inertia
-    expect(torque.value).toBeGreaterThanOrEqual(ev.checks.find((c) => c.label === '구동 토크')!.value)
+    expect(torque.value).toBeGreaterThanOrEqual(Math.max(...ev.samples.map((s) => Math.abs(s.torque))))
     expect(checkOf(result, '키트 최대 회전수').value).toBeCloseTo(3000)
     expect(result.status).not.toBe('fail')
   })
