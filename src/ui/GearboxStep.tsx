@@ -16,9 +16,11 @@ export function GearboxChoice({ options, selected, onSelect }: Props) {
   const selectedId = selected.gearbox?.id ?? null
   return (
     <div className="detail" id="step-gearbox">
-      <h3>
-        <span className="step-no">3</span> {t('감속기 선정')} <span className="muted">{t('{model} 호환 {n}', { model: selected.motor.model, n: options.length })}</span>
-      </h3>
+      <header className="step-head">
+        <h2>
+          <span className="step-no">3</span> {t('감속기 선정')}
+        </h2>
+      </header>
       <p className="muted small-print">
         {t('추천 감속기(통과하는 가장 낮은 감속비)가 적용되어 있습니다. 다른 감속기를 누르면 바꿀 수 있습니다.')}
       </p>

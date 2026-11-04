@@ -9,7 +9,7 @@ import { statusRank, useSort } from './useSort'
 import { translateData, useLang, useT } from '../i18n'
 import { DrivePackage } from './DrivePackage'
 import { GearboxChoice } from './GearboxStep'
-import { fmt, statusLabel, supplyLabel } from './format'
+import { fmt, supplyLabel } from './format'
 
 interface Props {
   /** One row per motor: direct drive, or with its recommended gearbox when settings.useGearbox */
@@ -233,14 +233,6 @@ export function MotorStep({ results, selected, onSelect, settings, onSettings, l
           {detailOpen && (
             <>
               <CheckTable checks={selected.checks} />
-              <p className="muted small-print">
-                {selected.kit
-                  ? t('연결키트 {kit}: {status} — 판정에 포함 (연결키트 단계에서 세부 확인)', {
-                      kit: selected.kit.kit.product,
-                      status: t(statusLabel[selected.kit.status]),
-                    })
-                  : t('맞는 연결키트가 없어 주의로 판정합니다.')}
-              </p>
               {selected.controller && (
                 <DrivePackage
                   selection={selected.controller}

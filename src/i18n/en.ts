@@ -239,7 +239,6 @@ export const en: Record<string, string> = {
     'The recommended gearbox (the lowest passing ratio) is applied. Click another gearbox to change it.',
   '도면': 'Drawing',
   '감속기 선정': 'Gearbox selection',
-  '{model} 호환 {n}': '{n} compatible with {model}',
   '감속비': 'Ratio',
 
   // Step 4: mounting kit
@@ -332,8 +331,6 @@ export const en: Record<string, string> = {
   '수평 설치 전용 축입니다': 'This axis is released for horizontal mounting only',
   '수평 설치 전용 축입니다. 벽면(측면) 설치는 Festo에 확인하세요':
     'This axis is released for horizontal mounting only. Check side (wall) mounting with Festo',
-  '연결키트 {kit}: {status} — 판정에 포함 (연결키트 단계에서 세부 확인)': 'Mounting kit {kit}: {status} — included in the result (details in the mounting kit step)',
-  '맞는 연결키트가 없어 주의로 판정합니다.': 'No mounting kit fits, so the result is a warning.',
   '키트 최대 회전수': 'Kit max. speed',
   '모터 최대 토크 (키트 기준)': 'Motor peak torque (at the kit)',
   '드라이브 토크(전류) 제한을 키트 전달 토크 이하로 설정하세요':
