@@ -287,7 +287,7 @@ export function GantryDrawing({
           {missing.length > 0 && (
             <p className="muted small-print">{t('도면이 없는 부품이 있어 조합할 수 없습니다: {parts}. 관리자에게 문의하세요.',{ parts: missing.join(' · ') })}</p>
           )}
-          {kitless.length === 0 && <ComboPreviewPanel state={state} ready={ready} onStep={() => state.exportStep(name)} onDxf={() => state.exportDxf(name, title)} />}
+          {kitless.length === 0 && <ComboPreviewPanel state={state} ready={ready} onStep={() => state.exportStep(name)} onDxf={() => state.exportDxf(name, title)} onPdf={() => state.exportPdf(name, title)} />}
         </>
       )}
     </section>

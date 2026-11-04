@@ -6,17 +6,20 @@ import type { useComboPreview } from './useComboPreview'
 
 const ComboViewer = lazy(() => import('./ComboViewer'))
 
-/** 3D 미리보기 / STEP / DXF buttons, progress and errors, and the viewer of a `useComboPreview` build. */
+/** 3D 미리보기 / STEP / DXF / PDF buttons, progress and errors, and the viewer of a `useComboPreview` build. */
 export function ComboPreviewPanel<C extends Combo>({
   state,
   ready,
   onStep,
   onDxf,
+  onPdf,
 }: {
   state: ReturnType<typeof useComboPreview<C>>
   ready: boolean
   onStep: () => void
   onDxf: () => void
+  /** the same 2D drawing as a PDF */
+  onPdf: () => void
 }) {
   const t = useT()
   const { preview, busy, error, shown, shownRoles, stale, showPreview } = state
@@ -31,6 +34,9 @@ export function ComboPreviewPanel<C extends Combo>({
         </button>
         <button type="button" className="action-btn" onClick={onDxf} disabled={!ready || busy != null}>
           {t('DXF 내보내기')}
+        </button>
+        <button type="button" className="action-btn" onClick={onPdf} disabled={!ready || busy != null}>
+          {t('PDF 도면 내보내기')}
         </button>
         {(busy ?? (stale && t('3D 모델을 만드는 중…'))) && <span className="muted">{busy ?? t('3D 모델을 만드는 중…')}</span>}
       </div>

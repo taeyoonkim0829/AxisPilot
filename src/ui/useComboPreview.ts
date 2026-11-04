@@ -43,14 +43,22 @@ export const loadText = (d: Drawing) => {
 /** ms an input change must settle before the open preview is rebuilt (typing 1500 builds once, not four times) */
 const REBUILD_DELAY = 400
 
-export function download(name: string, text: string, type: string) {
-  const url = URL.createObjectURL(new Blob([text], { type }))
+export function download(name: string, content: string | Blob, type: string) {
+  const url = URL.createObjectURL(typeof content === 'string' ? new Blob([content], { type }) : content)
   const a = document.createElement('a')
   a.href = url
   a.download = name
   a.click()
   setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
+
+/** the 2D drawing's input (DXF and PDF): the meshes, COG, title and notes, and the parts list */
+const drawingInput = (combo: Combo, meshes: PartMesh[], title: string[]) => ({
+  meshes,
+  cog: combo.cog,
+  title,
+  parts: combo.parts.map(({ role, name }) => ({ role, name })),
+})
 
 export const fileSafe = (s: string) => s.replace(/[\\/:*?"<>|\s]+/g, '_')
 
@@ -109,7 +117,13 @@ export function useComboPreview<C extends Combo>(key: string, ready: boolean, bu
     run(t('DXF 도면을 만드는 중…'), async () => {
       const { combo, meshes } = await meshesFor()
       const { drawingDxf } = await import('../cad/dxf')
-      download(`${fileSafe(name(combo))}.dxf`, drawingDxf({ meshes, cog: combo.cog, title: title(combo), parts: combo.parts.map(({ role, name }) => ({ role, name })) }), 'application/dxf')
+      download(`${fileSafe(name(combo))}.dxf`, drawingDxf(drawingInput(combo, meshes, title(combo))), 'application/dxf')
+    })
+  const exportPdf = (name: (c: C) => string, title: (c: C) => string[]) =>
+    run(t('PDF 도면을 만드는 중…'), async () => {
+      const { combo, meshes } = await meshesFor()
+      const { drawingPdf } = await import('../cad/drawingPdf')
+      download(`${fileSafe(name(combo))}.pdf`, drawingPdf(drawingInput(combo, meshes, title(combo))), 'application/pdf')
     })
 
   const stale = preview && ready && shown != null && shown.key !== key
@@ -136,5 +150,5 @@ export function useComboPreview<C extends Combo>(key: string, ready: boolean, bu
 
   /** the combination and its meshes, built (and cached) without opening the preview: for checks on the geometry */
   const meshes = meshesFor
-  return { preview, busy, error, shown, shownRoles, stale, showPreview, exportStep, exportDxf, meshes }
+  return { preview, busy, error, shown, shownRoles, stale, showPreview, exportStep, exportDxf, exportPdf, meshes }
 }

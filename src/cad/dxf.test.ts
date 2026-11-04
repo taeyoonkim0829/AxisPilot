@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { drawingPdf } from './drawingPdf'
 import { drawingDxf, type DrawMesh } from './dxf'
 
 /** a box mesh, one B-rep face per side */
@@ -70,5 +71,16 @@ describe('KS drawing sheet', () => {
     expect(list.some((e) => e.type === 'POLYLINE' && e.codes.get('8')![0] === 'OUTLINE')).toBe(true)
     // centre of gravity lines in the two-dot chain line type
     expect(dxf).toMatch(/LAYER\n2\nCOG\n70\n0\n62\n1\n6\nPHANTOM/)
+  })
+
+  it('writes the same sheet as a PDF page of the sheet size (A3 landscape)', async () => {
+    const blob = drawingPdf({ meshes, cog: [500, 0, 50], title: ['Test'], date: '2026-11-04' })
+    const pdf = new TextDecoder('latin1').decode(await blob.arrayBuffer())
+    expect(pdf.startsWith('%PDF')).toBe(true)
+    // MediaBox in points: 420 × 297 mm
+    const [, w, h] = /MediaBox \[0 0 ([\d.]+) ([\d.]+)\]/.exec(pdf)!
+    expect(Number(w)).toBeCloseTo((420 * 72) / 25.4, 1)
+    expect(Number(h)).toBeCloseTo((297 * 72) / 25.4, 1)
+    expect(pdf).toContain('(1:5)')
   })
 })

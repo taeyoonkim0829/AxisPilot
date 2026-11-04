@@ -327,8 +327,8 @@ function wrap(line: string, width: number): string[] {
   return out
 }
 
-/** Lays out the three views (third-angle) on a KS sheet with border, title block, parts list and notes; DXF R12. */
-export function drawingDxf({ meshes, cog, title, parts = [], date }: DrawingInput): string {
+/** Lays out the three views (third-angle) on a KS sheet with border, title block, parts list and notes. */
+export function layoutSheet({ meshes, cog, title, parts = [], date }: DrawingInput): Sheet {
   const model = buildModel(meshes)
   const views = [VIEWS.front, VIEWS.top, VIEWS.side].map((v) => {
     const segs = projectView(model, v)
@@ -387,7 +387,7 @@ export function drawingDxf({ meshes, cog, title, parts = [], date }: DrawingInpu
   const inner = { x0: FILING, y0: sheet.c, x1: sheet.w - sheet.c, y1: sheet.h - sheet.c }
   const P = (v: number) => v * n
 
-  const dxf = new DxfWriter(n)
+  const dxf = new Sheet(n, sheet)
 
   // ---- border (윤곽선) and centring marks (중심 마크)
   dxf.rect('BORDER', P(inner.x0), P(inner.y0), P(inner.x1), P(inner.y1), P(BORDER))
@@ -512,11 +512,11 @@ export function drawingDxf({ meshes, cog, title, parts = [], date }: DrawingInpu
   }
   dxf.text('TEXT', P(bx0), P(y), P(TEXT_DIM), 'NOTES')
 
-  return dxf.toString()
+  return dxf
 }
 
 /** Third-angle projection symbol (KS A ISO 128 / 5456): the truncated cone, narrow end towards its end view on the right. */
-function projectionSymbol(dxf: DxfWriter, cx: number, cy: number, n: number) {
+function projectionSymbol(dxf: Sheet, cx: number, cy: number, n: number) {
   const P = (v: number) => v * n
   const [x0, x1] = [cx - P(10), cx - P(2)]
   dxf.line('TITLE', x0, cy - P(3), x0, cy + P(3))
@@ -549,40 +549,46 @@ const LAYERS: [string, number, string][] = [
   ['TITLE', 7, 'CONTINUOUS'],
 ]
 /** two-dot chain line pattern (paper mm; $LTSCALE takes the drawing scale): dash, gap, dot, gap, dot, gap */
-const PHANTOM = [12, -1.5, 0, -1.5, 0, -1.5]
+export const PHANTOM = [12, -1.5, 0, -1.5, 0, -1.5]
 
-class DxfWriter {
-  private out: string[] = []
+
+export type SheetOp =
+  | { k: 'line'; layer: string; x1: number; y1: number; x2: number; y2: number }
+  | { k: 'poly'; layer: string; points: [number, number][]; width: number; closed: boolean }
+  | { k: 'circle'; layer: string; x: number; y: number; r: number }
+  | { k: 'text'; layer: string; x: number; y: number; height: number; value: string; align: 'left' | 'centre'; rotation: number }
+  | { k: 'solid'; layer: string; points: [number, number][] }
+
+/** The laid out sheet: drawing primitives in model mm, written out as DXF (`toDxf`) or PDF (`drawingPdf`). */
+export class Sheet {
+  ops: SheetOp[] = []
   /** the drawing scale's denominator: paper mm × n = model mm */
-  private n: number
-  constructor(n: number) {
+  n: number
+  /** sheet name and size (paper mm, landscape) */
+  size: string
+  w: number
+  h: number
+  constructor(n: number, sheet: { name: string; w: number; h: number }) {
     this.n = n
-  }
-  private put(...pairs: (string | number)[]) {
-    for (let i = 0; i < pairs.length; i += 2) this.out.push(String(pairs[i]), typeof pairs[i + 1] === 'number' ? fix(pairs[i + 1] as number) : String(pairs[i + 1]))
+    this.size = sheet.name
+    this.w = sheet.w
+    this.h = sheet.h
   }
   line(layer: string, x1: number, y1: number, x2: number, y2: number) {
-    this.put(0, 'LINE', 8, layer, 10, x1, 20, y1, 30, 0, 11, x2, 21, y2, 31, 0)
+    this.ops.push({ k: 'line', layer, x1, y1, x2, y2 })
   }
   /** a line with a width (thick lines: R12 has no line weights, a wide polyline prints at its width) */
   thick(layer: string, x1: number, y1: number, x2: number, y2: number, width: number) {
-    this.polyline(layer, [[x1, y1], [x2, y2]], width, false)
+    this.ops.push({ k: 'poly', layer, points: [[x1, y1], [x2, y2]], width, closed: false })
   }
   rect(layer: string, x0: number, y0: number, x1: number, y1: number, width: number) {
-    this.polyline(layer, [[x0, y0], [x1, y0], [x1, y1], [x0, y1]], width, true)
-  }
-  private polyline(layer: string, points: [number, number][], width: number, closed: boolean) {
-    this.put(0, 'POLYLINE', 8, layer, 66, '1', 10, 0, 20, 0, 30, 0, 70, closed ? '1' : '0', 40, width, 41, width)
-    for (const [x, y] of points) this.put(0, 'VERTEX', 8, layer, 10, x, 20, y, 30, 0)
-    this.put(0, 'SEQEND', 8, layer)
+    this.ops.push({ k: 'poly', layer, points: [[x0, y0], [x1, y0], [x1, y1], [x0, y1]], width, closed: true })
   }
   circle(layer: string, x: number, y: number, r: number) {
-    this.put(0, 'CIRCLE', 8, layer, 10, x, 20, y, 30, 0, 40, r)
+    this.ops.push({ k: 'circle', layer, x, y, r })
   }
   text(layer: string, x: number, y: number, height: number, value: string, align: 'left' | 'centre' = 'left', rotation = 0) {
-    this.put(0, 'TEXT', 8, layer, 10, x, 20, y, 30, 0, 40, height, 1, value.replace(/[^\x20-\x7e]/g, '?'))
-    if (rotation) this.put(50, rotation)
-    if (align === 'centre') this.put(72, '1', 11, x, 21, y, 31, 0)
+    this.ops.push({ k: 'text', layer, x, y, height, value: value.replace(/[^\x20-\x7e]/g, '?'), align, rotation })
   }
   /** filled arrowhead (length 3, width 1 paper mm) at (x, y) pointing along (ux, uy) */
   private arrow(x: number, y: number, ux: number, uy: number) {
@@ -590,7 +596,7 @@ class DxfWriter {
     const w = 0.5 * this.n
     const bx = x - ux * l
     const by = y - uy * l
-    this.put(0, 'SOLID', 8, 'DIM', 10, x, 20, y, 30, 0, 11, bx - uy * w, 21, by + ux * w, 31, 0, 12, bx + uy * w, 22, by - ux * w, 32, 0, 13, bx + uy * w, 23, by - ux * w, 33, 0)
+    this.ops.push({ k: 'solid', layer: 'DIM', points: [[x, y], [bx - uy * w, by + ux * w], [bx + uy * w, by - ux * w]] })
   }
   /**
    * Linear dimension (KS B 0001): thin dimension line `offset` from the feature (below / left when negative) with
@@ -614,26 +620,51 @@ class DxfWriter {
       this.line('DIM', x, y1, x, y2)
       this.arrow(x, y1, 0, -1)
       this.arrow(x, y2, 0, 1)
-      this.put(0, 'TEXT', 8, 'DIM', 10, x - n, 20, (y1 + y2) / 2, 30, 0, 40, h, 1, dimValue(Math.abs(y2 - y1)), 50, 90, 72, '1', 11, x - n, 21, (y1 + y2) / 2, 31, 0)
+      this.text('DIM', x - n, (y1 + y2) / 2, h, dimValue(Math.abs(y2 - y1)), 'centre', 90)
     }
   }
-  toString() {
-    const head = ['0', 'SECTION', '2', 'HEADER', '9', '$ACADVER', '1', 'AC1009', '9', '$INSUNITS', '70', '4', '9', '$LTSCALE', '40', fix(this.n), '0', 'ENDSEC']
-    const total = PHANTOM.reduce((a, b) => a + Math.abs(b), 0)
-    const tables = [
-      '0', 'SECTION', '2', 'TABLES',
-      '0', 'TABLE', '2', 'LTYPE', '70', '2',
-      '0', 'LTYPE', '2', 'CONTINUOUS', '70', '0', '3', 'Solid line', '72', '65', '73', '0', '40', '0.0',
-      '0', 'LTYPE', '2', 'PHANTOM', '70', '0', '3', 'Two-dot chain ____ . . ____', '72', '65', '73', String(PHANTOM.length), '40', fix(total),
-      ...PHANTOM.flatMap((v) => ['49', fix(v)]),
-      '0', 'ENDTAB',
-      '0', 'TABLE', '2', 'LAYER', '70', String(LAYERS.length),
-      ...LAYERS.flatMap(([name, color, ltype]) => ['0', 'LAYER', '2', name, '70', '0', '62', String(color), '6', ltype]),
-      '0', 'ENDTAB',
-      '0', 'ENDSEC',
-    ]
-    return [...head, ...tables, '0', 'SECTION', '2', 'ENTITIES', ...this.out, '0', 'ENDSEC', '0', 'EOF', ''].join('\n')
-  }
 }
+
+/** The sheet as DXF R12 text (model space full size, `$LTSCALE` = the scale's denominator). */
+export function toDxf(sheet: Sheet): string {
+  const out: string[] = []
+  const put = (...pairs: (string | number)[]) => {
+    for (let i = 0; i < pairs.length; i += 2) out.push(String(pairs[i]), typeof pairs[i + 1] === 'number' ? fix(pairs[i + 1] as number) : String(pairs[i + 1]))
+  }
+  for (const o of sheet.ops) {
+    if (o.k === 'line') put(0, 'LINE', 8, o.layer, 10, o.x1, 20, o.y1, 30, 0, 11, o.x2, 21, o.y2, 31, 0)
+    else if (o.k === 'poly') {
+      put(0, 'POLYLINE', 8, o.layer, 66, '1', 10, 0, 20, 0, 30, 0, 70, o.closed ? '1' : '0', 40, o.width, 41, o.width)
+      for (const [x, y] of o.points) put(0, 'VERTEX', 8, o.layer, 10, x, 20, y, 30, 0)
+      put(0, 'SEQEND', 8, o.layer)
+    } else if (o.k === 'circle') put(0, 'CIRCLE', 8, o.layer, 10, o.x, 20, o.y, 30, 0, 40, o.r)
+    else if (o.k === 'text') {
+      put(0, 'TEXT', 8, o.layer, 10, o.x, 20, o.y, 30, 0, 40, o.height, 1, o.value)
+      if (o.rotation) put(50, o.rotation)
+      if (o.align === 'centre') put(72, '1', 11, o.x, 21, o.y, 31, 0)
+    } else {
+      const [a, b, c] = o.points
+      put(0, 'SOLID', 8, o.layer, 10, a[0], 20, a[1], 30, 0, 11, b[0], 21, b[1], 31, 0, 12, c[0], 22, c[1], 32, 0, 13, c[0], 23, c[1], 33, 0)
+    }
+  }
+  const head = ['0', 'SECTION', '2', 'HEADER', '9', '$ACADVER', '1', 'AC1009', '9', '$INSUNITS', '70', '4', '9', '$LTSCALE', '40', fix(sheet.n), '0', 'ENDSEC']
+  const total = PHANTOM.reduce((a, b) => a + Math.abs(b), 0)
+  const tables = [
+    '0', 'SECTION', '2', 'TABLES',
+    '0', 'TABLE', '2', 'LTYPE', '70', '2',
+    '0', 'LTYPE', '2', 'CONTINUOUS', '70', '0', '3', 'Solid line', '72', '65', '73', '0', '40', '0.0',
+    '0', 'LTYPE', '2', 'PHANTOM', '70', '0', '3', 'Two-dot chain', '72', '65', '73', String(PHANTOM.length), '40', fix(total),
+    ...PHANTOM.flatMap((v) => ['49', fix(v)]),
+    '0', 'ENDTAB',
+    '0', 'TABLE', '2', 'LAYER', '70', String(LAYERS.length),
+    ...LAYERS.flatMap(([name, color, ltype]) => ['0', 'LAYER', '2', name, '70', '0', '62', String(color), '6', ltype]),
+    '0', 'ENDTAB',
+    '0', 'ENDSEC',
+  ]
+  return [...head, ...tables, '0', 'SECTION', '2', 'ENTITIES', ...out, '0', 'ENDSEC', '0', 'EOF', ''].join('\n')
+}
+
+/** Lays out the drawing (`layoutSheet`) and writes it as DXF R12. */
+export const drawingDxf = (input: DrawingInput) => toDxf(layoutSheet(input))
 
 const fix = (v: number, digits = 4) => String(Number(v.toFixed(digits)))

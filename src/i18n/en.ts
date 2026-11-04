@@ -564,13 +564,15 @@ export const en: Record<string, string> = {
   '3D 모델을 만드는 중…': 'Building the 3D model…',
   'STEP 파일을 만드는 중…': 'Writing the STEP file…',
   'DXF 도면을 만드는 중…': 'Drawing the DXF…',
+  'PDF 도면을 만드는 중…': 'Drawing the PDF…',
+  'PDF 도면 내보내기': 'Export PDF drawing',
   '도면을 만들지 못했습니다: {error}': 'Could not make the drawing: {error}',
   '새 버전이 배포되었습니다. 페이지를 새로 고침해 주세요. 입력값은 초기화됩니다.':
     'A new version has been published. Please reload the page. Your inputs will be reset.',
   '새로 고침': 'Reload',
   '3D 뷰어를 불러오는 중…': 'Loading the 3D viewer…',
-  '제조사 CAD 데이터(STEP)를 그대로 조립합니다. 무게 중심(빨간 점)은 슬라이드 중심(시작 위치) 기준입니다. DXF는 KS 제도 기준(KS A 0005 · KS B 0001)의 정면·평면·우측면도(제3각법)로, 표준 척도와 용지에 윤곽선, 표제란, 부품란을 넣습니다.':
-    "The manufacturers' CAD data (STEP) is assembled as is. The centre of gravity (red dot) is relative to the slide centre at the start position. The DXF follows the KS drafting rules (KS A 0005, KS B 0001): front, top and right side views (third-angle projection) at a standard scale on a standard sheet with border, title block and parts list.",
+  '제조사 CAD 데이터(STEP)를 그대로 조립합니다. 무게 중심(빨간 점)은 슬라이드 중심(시작 위치) 기준입니다. DXF · PDF 도면은 KS 제도 기준(KS A 0005 · KS B 0001)의 정면·평면·우측면도(제3각법)로, 표준 척도와 용지에 윤곽선, 표제란, 부품란을 넣습니다.':
+    "The manufacturers' CAD data (STEP) is assembled as is. The centre of gravity (red dot) is relative to the slide centre at the start position. The DXF and PDF drawings follow the KS drafting rules (KS A 0005, KS B 0001): front, top and right side views (third-angle projection) at a standard scale on a standard sheet with border, title block and parts list.",
   '등각': 'Isometric',
   '정면': 'Front',
   '평면': 'Top',
