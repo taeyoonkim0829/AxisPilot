@@ -177,6 +177,7 @@ function Workspace({ req, settings, setReq, setSettings, lang, setLang, mode, se
           axis={selectedAxis}
           drive={selectedDrive}
           kit={selectedKitEval}
+          gearbox={settings.useGearbox}
           onExport={startExport}
           exporting={exporting}
           lang={lang}

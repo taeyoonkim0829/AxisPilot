@@ -332,7 +332,7 @@ export const en: Record<string, string> = {
   '수평 설치 전용 축입니다': 'This axis is released for horizontal mounting only',
   '수평 설치 전용 축입니다. 벽면(측면) 설치는 Festo에 확인하세요':
     'This axis is released for horizontal mounting only. Check side (wall) mounting with Festo',
-  '연결키트 {kit}: {status} — 판정에 포함 (4단계에서 세부 확인)': 'Mounting kit {kit}: {status} — included in the result (details in step 4)',
+  '연결키트 {kit}: {status} — 판정에 포함 (연결키트 단계에서 세부 확인)': 'Mounting kit {kit}: {status} — included in the result (details in the mounting kit step)',
   '맞는 연결키트가 없어 주의로 판정합니다.': 'No mounting kit fits, so the result is a warning.',
   '키트 최대 회전수': 'Kit max. speed',
   '모터 최대 토크 (키트 기준)': 'Motor peak torque (at the kit)',
@@ -490,8 +490,8 @@ export const en: Record<string, string> = {
   'X축 간격 (조합 키트에 맞춰 조정)': 'X axis spacing (set to fit the gantry kits)',
   'Y축 간격 (조합 키트에 맞춰 조정)': 'Y axis spacing (set to fit the gantry kits)',
   '함께 주문: {model} ({partNumber}) × {n}': 'Order with it: {model} ({partNumber}) × {n}',
-  '{config} 조합 · 각 축의 5단계 도면과 조합 키트로 조립합니다.':
-    '{config} gantry · assembled from each axis’s step 5 drawing and the gantry kits.',
+  '{config} 조합 · 각 축의 도면과 조합 키트로 조립합니다.':
+    '{config} gantry · assembled from each axis’s drawing and the gantry kits.',
   '모든 축의 축, 모터, 연결키트를 선택하면 조합축 도면을 만듭니다.':
     'Select the axis, motor and mounting kit of every axis to build the gantry drawing.',
   '결합': 'Joint',

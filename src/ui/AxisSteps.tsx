@@ -71,6 +71,7 @@ export function AxisSteps({ sel, req, calcSettings, settings, onSettings, picks,
         </section>
       )}
       <KitStep
+        no={calcSettings.useGearbox ? 4 : 3}
         match={sel.kitMatch}
         rows={sel.kitEvals}
         selectedId={sel.selectedKitEval?.kit.id ?? null}
@@ -78,6 +79,7 @@ export function AxisSteps({ sel, req, calcSettings, settings, onSettings, picks,
       />
       {drawing ?? (
         <DrawingStep
+          no={calcSettings.useGearbox ? 5 : 4}
           axis={selectedAxis}
           drive={selectedDrive}
           kit={sel.selectedKitEval?.kit ?? null}

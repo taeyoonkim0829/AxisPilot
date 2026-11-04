@@ -10,11 +10,13 @@ interface Props {
   rows: KitEvaluation[]
   selectedId: string | null
   onSelect: (id: string) => void
+  /** step number: 4 after the gearbox, else 3 */
+  no: number
 }
 
 const typeLabel: Record<KitType, string> = { axial: '직렬', parallel: '병렬' }
 
-export function KitStep({ match, rows, selectedId, onSelect }: Props) {
+export function KitStep({ match, rows, selectedId, onSelect, no }: Props) {
   const t = useT()
   const selectedEval = rows.find((e) => e.kit.id === selectedId)
 
@@ -22,7 +24,7 @@ export function KitStep({ match, rows, selectedId, onSelect }: Props) {
     <section className="panel step" id="step-kit">
       <header className="step-head">
         <h2>
-          <span className="step-no">4</span> {t('모터-축 연결키트')}
+          <span className="step-no">{no}</span> {t('모터-축 연결키트')}
         </h2>
         {match && (
           <span className="muted">

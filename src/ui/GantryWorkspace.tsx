@@ -88,12 +88,15 @@ export function GantryWorkspace({
       ariaLabel={t('조합 도면')}
     />
   )
+  // step number of the drawing: after the gearbox step of the axis open in the steps
+  const drawingNo = gantrySettings[drawingAxis ?? active].useGearbox ? 5 : 4
   const shownResult = drawingAxis ? results.find((r) => r.axis === drawingAxis) : null
   const drawingStep =
     drawingAxis == null ? (
-      <GantryDrawing gantry={deferredGantry} results={results} assemblies={assemblies} tabs={tabs} />
+      <GantryDrawing no={drawingNo} gantry={deferredGantry} results={results} assemblies={assemblies} tabs={tabs} />
     ) : shownResult?.req ? (
       <DrawingStep
+        no={drawingNo}
         axis={shownResult.sel?.selectedAxis ?? null}
         drive={shownResult.sel?.selectedDrive ?? null}
         kit={shownResult.sel?.selectedKitEval?.kit ?? null}
@@ -107,7 +110,7 @@ export function GantryWorkspace({
       <section className="panel step" id="step-drawing">
         <header className="step-head">
           <h2>
-            <span className="step-no">5</span> {t('도면')}
+            <span className="step-no">{drawingNo}</span> {t('도면')}
           </h2>
           {tabs}
         </header>
@@ -128,6 +131,7 @@ export function GantryWorkspace({
           axis={sel?.selectedAxis ?? null}
           drive={sel?.selectedDrive ?? null}
           kit={sel?.selectedKitEval ?? null}
+          gearbox={gantrySettings[active].useGearbox}
           onExport={startExport}
           exporting={exporting}
           lang={lang}

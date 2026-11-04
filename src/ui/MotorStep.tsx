@@ -235,7 +235,7 @@ export function MotorStep({ results, selected, onSelect, settings, onSettings, l
               <CheckTable checks={selected.checks} />
               <p className="muted small-print">
                 {selected.kit
-                  ? t('연결키트 {kit}: {status} — 판정에 포함 (4단계에서 세부 확인)', {
+                  ? t('연결키트 {kit}: {status} — 판정에 포함 (연결키트 단계에서 세부 확인)', {
                       kit: selected.kit.kit.product,
                       status: t(statusLabel[selected.kit.status]),
                     })

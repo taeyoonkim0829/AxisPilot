@@ -27,6 +27,8 @@ import { mountingLabel, sideLabel } from './format'
 import { loadText, useComboPreview } from './useComboPreview'
 
 interface Props {
+  /** step number: 5 after the gearbox, else 4 */
+  no: number
   axis: AxisEvaluation | null
   drive: DriveEvaluation | null
   kit: Kit | null
@@ -43,7 +45,7 @@ interface Props {
 const roleLabel: Record<PartRole, string> = { axis: '축', kit: '연결키트', gearbox: '감속기', motor: '모터', shaft: '연결축', adapter: '조합 키트', guide: '가이드' }
 
 /** Step 5: the manufacturers' CAD models of the selection, assembled — 3D preview, STEP and DXF export. */
-export function DrawingStep({ axis, drive, kit, req: input, sides, onSides, facingChoice = true, tabs }: Props) {
+export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, facingChoice = true, tabs }: Props) {
   const t = useT()
   const { selection, found, twin, req } = comboInputs(axis, drive, kit, input)
   const parallel = kit?.type === 'parallel'
@@ -229,7 +231,7 @@ export function DrawingStep({ axis, drive, kit, req: input, sides, onSides, faci
     <section className="panel step" id="step-drawing">
       <header className="step-head">
         <h2>
-          <span className="step-no">5</span> {t('도면')}
+          <span className="step-no">{no}</span> {t('도면')}
         </h2>
         {tabs}
         {selection && <span className="muted">{t('설치 방향: {mounting}', { mounting: t(mountingLabel[req.mounting]) })}</span>}

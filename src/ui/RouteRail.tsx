@@ -16,13 +16,15 @@ interface Props {
   exporting: boolean
   lang: Lang
   onLang: (lang: Lang) => void
+  /** 감속기 사용: the gearbox is step 3 and the kit 4; without it the kit is 3 */
+  gearbox?: boolean
   /** Gantry: the X/Y/Z axis row above the open axis's signs */
   axes?: ReactNode
   /** What has to be selected before the PDF can be made (default: this axis's axis, motor and kit) */
   missing?: string[]
 }
 
-const stepIds = ['step-axis', 'step-motor', 'step-gearbox', 'step-kit'] as const
+const stepIdsOf = (gearbox: boolean) => (gearbox ? ['step-axis', 'step-motor', 'step-gearbox', 'step-kit'] : ['step-axis', 'step-motor', 'step-kit'])
 
 /** The most heavily loaded check, the number that decides the margin. */
 function tightest(checks: Check[]): Check | null {
@@ -30,7 +32,7 @@ function tightest(checks: Check[]): Check | null {
 }
 
 /** Highlights the step section nearest the top of the viewport. */
-function useActiveStep(): number {
+function useActiveStep(stepIds: string[]): number {
   const [active, setActive] = useState(0)
   useEffect(() => {
     const els = stepIds.map((id) => document.getElementById(id)).filter((e): e is HTMLElement => !!e)
@@ -46,7 +48,7 @@ function useActiveStep(): number {
     )
     els.forEach((e) => io.observe(e))
     return () => io.disconnect()
-  }, [])
+  }, [stepIds.join()])
   return active
 }
 
@@ -64,6 +66,7 @@ function useScrolled(): boolean {
 
 function Sign({
   no,
+  id,
   name,
   value,
   status,
@@ -72,6 +75,8 @@ function Sign({
   active,
 }: {
   no: number
+  /** id of the step section it scrolls to */
+  id: string
   name: string
   value: string | null
   status?: Status
@@ -81,7 +86,7 @@ function Sign({
 }) {
   const t = useT()
   const go = () =>
-    (document.getElementById(stepIds[no - 1]) ?? document.getElementById('step-motor'))?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    (document.getElementById(id) ?? document.getElementById('step-motor'))?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   return (
     <li className={`sign${active ? ' sign-active' : ''}`}>
       <button type="button" className="sign-btn" onClick={go} aria-current={active ? 'step' : undefined}>
@@ -101,9 +106,10 @@ function Sign({
   )
 }
 
-export function RouteRail({ axis, drive, kit, onExport, exporting, lang, onLang, axes, missing: required }: Props) {
+export function RouteRail({ axis, drive, kit, gearbox = true, onExport, exporting, lang, onLang, axes, missing: required }: Props) {
   const t = useT()
-  const active = useActiveStep()
+  const stepIds = stepIdsOf(gearbox)
+  const active = useActiveStep(stepIds)
   const scrolled = useScrolled()
   const axisTight = axis && tightest(axis.checks)
   const driveTight = drive && tightest(drive.checks)
@@ -130,6 +136,7 @@ export function RouteRail({ axis, drive, kit, onExport, exporting, lang, onLang,
             <ol className="signs" aria-label={t('선정 경로')}>
               <Sign
                 no={1}
+                id="step-axis"
                 name={t('직교 축')}
                 value={axis?.order.model ?? null}
                 status={axis?.status}
@@ -138,6 +145,7 @@ export function RouteRail({ axis, drive, kit, onExport, exporting, lang, onLang,
               />
               <Sign
                 no={2}
+                id="step-motor"
                 name={t('모터')}
                 value={drive ? drive.motor.model : null}
                 status={drive?.status}
@@ -146,21 +154,25 @@ export function RouteRail({ axis, drive, kit, onExport, exporting, lang, onLang,
                 }
                 active={active === 1}
               />
+              {gearbox && (
+                <Sign
+                  no={3}
+                  id="step-gearbox"
+                  name={t('감속기')}
+                  value={drive ? (g ? g.model : t('감속기 미사용')) : null}
+                  detail={g ? `${g.maker} · ${g.ratio}:1` : undefined}
+                  active={active === 2}
+                />
+              )}
               <Sign
-                no={3}
-                name={t('감속기')}
-                value={drive ? (g ? g.model : t('감속기 미사용')) : null}
-                detail={g ? `${g.maker} · ${g.ratio}:1` : undefined}
-                active={active === 2}
-              />
-              <Sign
-                no={4}
+                no={gearbox ? 4 : 3}
+                id="step-kit"
                 name={t('연결키트')}
                 value={kit?.kit.product ?? null}
                 status={kit?.status}
                 empty={drive ? t('해당 키트 없음') : undefined}
                 detail={kit ? (kitTight ? `${t(kitTight.label)} ${pct(kitTight.ratio)}` : t('축 {axis} · {motor}', { axis: kit.kit.axisCode, motor: kit.kit.motorCode })) : undefined}
-                active={active === 3}
+                active={active === stepIds.length - 1}
               />
             </ol>
           </div>
