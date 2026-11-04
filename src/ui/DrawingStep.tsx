@@ -22,6 +22,7 @@ import type { Kit } from '../data/types'
 import { useT } from '../i18n'
 import { comboInputs, comboKey, shaftTooShort } from './comboInputs'
 import { ComboPreviewPanel } from './ComboPreviewPanel'
+import type { NoteTranslator } from './useComboPreview'
 import { RadioGroup } from './common'
 import { mountingLabel, sideLabel } from './format'
 import { loadText, useComboPreview } from './useComboPreview'
@@ -125,17 +126,31 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
     buildCombo(selection!, found!, req, loadText, { ...sides, twinDrive: twinPosition, twinFacing: facing }, twin),
   )
   const partsName = (c: { parts: { name: string }[] }) => c.parts.map((p) => p.name).join('_')
-  const dxfTitle = (c: { name: string }) => [
-    c.name,
-    `Stroke ${selection!.stroke} mm, mounting: ${req.mounting}, COG (x, y, z) = (${req.cog.x}, ${req.cog.y}, ${req.cog.z}) mm` +
-      (turnable && positionIndex > 0 ? `, drive ${drivePosition.otherEnd ? 'at the other end' : ''}${drivePosition.otherEnd && drivePosition.otherSide ? ', ' : ''}${drivePosition.otherSide ? 'on the other shaft end' : ''}` : '') +
-      (parallel ? `, parallel kit: motor ${sides.kitSide}` : '') +
-      `, motor connector ${connector}` +
-      (facing ? ', slides facing each other' : '') +
-      (twinMotor ? `; second axis: ${parallel ? `parallel kit: motor ${twinSides.kitSide}, ` : ''}motor connector ${twinConnector}` : '') +
-      ' (seen from the motor end)',
-    'Third-angle projection, units: mm. 3D models: manufacturer CAD data (see STEP header for licence).',
-  ]
+  // the drawing's title and notes (the PDF in the app language, the DXF in English)
+  const dxfTitle = (c: { name: string }, tr: NoteTranslator) => {
+    const where = [drivePosition.otherEnd && tr('축의 반대쪽 끝'), drivePosition.otherSide && tr('반대쪽 축 끝')].filter(Boolean).join(', ')
+    const kitMotor = (s: typeof sides) => tr('병렬 키트: 모터 {side}', { side: tr(sideLabel[s.kitSide]) })
+    const assembly = [
+      turnable && positionIndex > 0 && where && tr('구동부: {where}', { where }),
+      parallel && kitMotor(sides),
+      tr('모터 커넥터 {side}', { side: tr(sideLabel[connector]) }),
+      facing && tr('슬라이드 마주 보기'),
+    ].filter(Boolean)
+    const second = twinMotor ? [parallel && kitMotor(twinSides), tr('모터 커넥터 {side}', { side: tr(sideLabel[twinConnector]) })].filter(Boolean) : []
+    return [
+      c.name,
+      tr('스트로크 {stroke} mm, 설치: {mounting}, 무게 중심 (x, y, z) = ({x}, {y}, {z}) mm', {
+        stroke: selection!.stroke,
+        mounting: tr(mountingLabel[req.mounting]),
+        x: req.cog.x,
+        y: req.cog.y,
+        z: req.cog.z,
+      }),
+      tr('조립 방향 (모터 쪽에서 봄): {assembly}', { assembly: assembly.join(', ') }) +
+        (second.length ? `; ${tr('두 번째 축: {assembly}', { assembly: second.join(', ') })}` : ''),
+      tr('3D 모델: 제조사 CAD 데이터 (라이선스는 STEP 파일 헤더 참조).'),
+    ]
+  }
 
   const rows: { role: PartRole; model: string; drawing: Drawing | null; note: string | null; warn?: boolean }[] =
     selection && found

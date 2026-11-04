@@ -4,7 +4,7 @@ import type { Drawing } from '../cad/drawings'
 import type { SheetLabels } from '../cad/dxf'
 import type { PartMesh } from '../cad/occt'
 import { stepText } from '../cad/stepText'
-import { useT } from '../i18n'
+import { translate, useT, type Args } from '../i18n'
 import { isStaleBuild, STALE_BUILD_NOTICE } from './staleBuild'
 
 // Building, previewing and exporting an assembled combination (step 5 and the gantry drawing).
@@ -88,6 +88,10 @@ const sheetLabels = (t: ReturnType<typeof useT>): SheetLabels => ({
   },
 })
 
+/** translates the drawing's notes: the app language for the PDF, English for the DXF (ASCII) */
+export type NoteTranslator = (text: string, args?: Args) => string
+const english: NoteTranslator = (text, args) => translate('en', text, args)
+
 export const fileSafe = (s: string) => s.replace(/[\\/:*?"<>|\s]+/g, '_')
 
 /**
@@ -141,20 +145,20 @@ export function useComboPreview<C extends Combo>(key: string, ready: boolean, bu
       const combo = await entryFor().combo
       download(`${fileSafe(name(combo))}.step`, combo.step, 'application/step')
     })
-  const exportDxf = (name: (c: C) => string, title: (c: C) => string[]) =>
+  const exportDxf = (name: (c: C) => string, title: (c: C, tr: NoteTranslator) => string[]) =>
     run(t('DXF 도면을 만드는 중…'), async () => {
       const { combo, meshes } = await meshesFor()
       const { drawingDxf } = await import('../cad/dxf')
-      download(`${fileSafe(name(combo))}.dxf`, drawingDxf(drawingInput(combo, meshes, title(combo))), 'application/dxf')
+      download(`${fileSafe(name(combo))}.dxf`, drawingDxf(drawingInput(combo, meshes, title(combo, english))), 'application/dxf')
     })
-  const exportPdf = (name: (c: C) => string, title: (c: C) => string[]) => {
+  const exportPdf = (name: (c: C) => string, title: (c: C, tr: NoteTranslator) => string[]) => {
     // the font first, within the click (the browser asks for the local font permission only then)
     const pdf = import('../cad/drawingPdf')
     const font = pdf.then((m) => m.loadKoreanFont())
     return run(t('PDF 도면을 만드는 중…'), async () => {
       const { combo, meshes } = await meshesFor()
       const { drawingPdf } = await pdf
-      download(`${fileSafe(name(combo))}.pdf`, drawingPdf({ ...drawingInput(combo, meshes, title(combo)), labels: sheetLabels(t) }, await font), 'application/pdf')
+      download(`${fileSafe(name(combo))}.pdf`, drawingPdf({ ...drawingInput(combo, meshes, title(combo, t)), labels: sheetLabels(t) }, await font), 'application/pdf')
     })
   }
 

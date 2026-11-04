@@ -7,6 +7,7 @@ import { yEndClashes, type EndClash } from '../cad/clearance'
 import { adapterDrawingFor, bracketDrawingUrl, mountingDrawingFor, type BeamMeta, type Drawing } from '../cad/drawings'
 import { beamTooShort, buildGantry, type GantryAxisDrawing, type GantryJointDrawing } from '../cad/gantry'
 import { useT } from '../i18n'
+import type { NoteTranslator } from './useComboPreview'
 import type { GantryAxisResult } from '../selection'
 import { jointAccessories, type GantryJoint } from '../calc/gantryKits'
 import { adapters } from '../data'
@@ -116,10 +117,10 @@ export function GantryDrawing({
   const current = clearance?.key === key ? clearance.clashes : undefined
   const yStroke = inputs.find((i) => i.a === 'y')?.selection?.stroke
   const name = () => `Gantry_${gantry.config.toUpperCase()}_${inputs.map((i) => i.selection!.axisModel).join('_')}`
-  const title = (c: { name: string }) => [
+  const title = (c: { name: string }, tr: NoteTranslator) => [
     c.name,
-    `Gantry ${gantry.config.toUpperCase()}, axes at the start position, the Y slide at mid-travel; gantry kits from the axis data sheets.`,
-    'Third-angle projection, units: mm. 3D models: manufacturer CAD data (see STEP header for licence).',
+    tr('{config} 조합축: 각 축은 시작 위치, Y 슬라이드는 행정 가운데. 조합 키트는 축 데이터시트의 조합표 기준.', { config: gantry.config.toUpperCase() }),
+    tr('3D 모델: 제조사 CAD 데이터 (라이선스는 STEP 파일 헤더 참조).'),
   ]
   const missing = inputs.flatMap((i) => (i.found?.missing.length ? [`${i.a.toUpperCase()}: ${i.found.missing.map((m) => t(roleWords[m] ?? m)).join(', ')}`] : []))
   const unkitted = state.shown?.combo.unkitted ?? []
