@@ -10,6 +10,8 @@
 // - connector: the side across the shaft the body reaches out furthest to (the connector housing).
 // `flange.axis` points into the motor body, `flange.up` is the connector side (the default connector direction).
 // Prints what it found; files where the shaft or the connector is unclear are left out (check them by hand).
+// --shaft=+z: take only shaft candidates pointing that way (LS files: a round encoder cover at the back end also
+// reads as a shaft; their shafts all point +z).
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { join } from 'node:path'
@@ -18,6 +20,7 @@ import { root } from './parts.mjs'
 const args = process.argv.slice(2)
 const dryRun = args.includes('--dry-run')
 const force = args.includes('--force')
+const shaftArg = args.find((a) => a.startsWith('--shaft='))?.slice(8) ?? null
 const files = args.filter((a) => !a.startsWith('--'))
 
 const require = createRequire(import.meta.url)
@@ -127,6 +130,7 @@ function motorFrame(file) {
     }
   if (process.env.DEBUG)
     console.log(shafts.map((s) => `${s.sign > 0 ? '+' : '-'}${'xyz'[s.k]} d${fixed(s.d)} [${s.m.lo.map(fixed)}]-[${s.m.hi.map(fixed)}]`), lo.map(fixed), hi.map(fixed))
+  if (shaftArg) shafts.splice(0, shafts.length, ...shafts.filter((s) => `${s.sign > 0 ? '+' : '-'}${'xyz'[s.k]}` === shaftArg))
   if (shafts.length === 0) throw new Error('no shaft found')
   const { k, sign, d, c, flange } = shafts.reduce((a, b) => (b.d < a.d ? b : a))
   if (shafts.some((s) => s.k !== k || s.sign !== sign)) throw new Error(`shaft candidates on ${shafts.length} sides`)

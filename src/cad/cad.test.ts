@@ -205,6 +205,28 @@ describe('drawing files', () => {
     expect(motorDrawingFor(motors.find((m) => m.model === 'HG-JR3534')!, all)?.drawing.model).toBe('HG-JR3534')
   })
 
+  it('has an LS drawing per outline, the brake file for brake models', () => {
+    const all = allPaths.map((path) => ({ ...parseDrawingPath(path)!, url: path, meta: null }))
+    const ls = motors.filter((m) => m.maker === 'LS')
+    // the catalog's zips have no file for EA015A, the brake versions of EF75G / FF75G / FFP75G and the 48 V FBL03A
+    expect(ls.filter((m) => !motorDrawingFor(m, all)).map((m) => m.model)).toEqual([
+      'APM-EA015A',
+      'APM-EF75G (brake)',
+      'APM-FF75G (brake)',
+      'APM-FFP75G (brake)',
+      'APMC-FBL03A (48V)',
+      'APMC-FBL03A (48V) (brake)',
+    ])
+    const fe = (model: string) => motorDrawingFor(motors.find((m) => m.model === model)!, all)?.drawing.path.split('/').pop()
+    // one file per outline: FE06D is drawn as FE09A; with brake the _k2 file
+    expect([fe('APM-FE09A'), fe('APM-FE06D'), fe('APM-FE06D (brake)'), fe('APMC-FAL01A (48V)')]).toEqual([
+      'apm-fe09a_k.stp',
+      'apm-fe09a_k.stp',
+      'apm-fe09a_k2.stp',
+      'apmc-fal01a_k.stp',
+    ])
+  })
+
   it('matches HK motors without the voltage class in the model', () => {
     const all = allPaths.map((path) => ({ ...parseDrawingPath(path)!, url: path, meta: null }))
     const found = motors.filter((m) => /^HK-/.test(m.model) && motorDrawingFor(m, all))

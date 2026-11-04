@@ -187,6 +187,13 @@ export interface MotorDrawingMatch {
  */
 export function motorDrawingFor(motor: Motor, all = drawings): MotorDrawingMatch | null {
   const list = all.filter((d) => d.kind === 'motors' && d.maker === motor.maker) as Drawing<MotorMeta>[]
+  if (motor.maker === 'LS') {
+    // LS files: one per outline (`apm-fe09a_k.stp` stands for FE09A, FE06D, FE05G, FE03M: `sameOutline`), keyed shaft,
+    // `_k2` with brake; a 48 V motor takes its AC model's
+    const base = (motor.sameOutline ?? motor.model).replace(/\s*\((brake|48V)\)/g, '')
+    const file = list.find((d) => d.names.includes(base) && /_k2\.[^.]+$/i.test(d.path) === motor.brake)
+    return file ? { drawing: file, otherOptions: false, ...(motor.sameOutline ? { sameOutline: true } : {}) } : null
+  }
   const exact = list.find(
     (d) =>
       d.names.includes(motor.model) ||
