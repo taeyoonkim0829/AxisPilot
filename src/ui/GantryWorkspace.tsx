@@ -107,7 +107,7 @@ export function GantryWorkspace({
       <section className="panel step" id="step-drawing">
         <header className="step-head">
           <h2>
-            <span className="step-no">5</span> {t('조합 도면')}
+            <span className="step-no">5</span> {t('도면')}
           </h2>
           {tabs}
         </header>

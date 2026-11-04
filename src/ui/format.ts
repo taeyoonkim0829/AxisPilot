@@ -3,9 +3,21 @@ import type { AxisEvaluation } from '../calc/axisSelection'
 import type { CableChoice } from '../calc/controllerSelection'
 import type { Status, Supply, VerticalDirection } from '../calc/types'
 
+/** Checks and info items of the guide without drive (guide axes, EAGF), shown in their own detail table. */
+const isGuideItem = (axis: AxisEvaluation, label: string) =>
+  axis.guide != null && (label.startsWith('가이드 축') || label.startsWith('가이드 유닛') || label === '가이드 예상 수명 (가이드 축 · 유닛)')
+
 /** Axis checks for the detail tables: the stroke is the user's own input, shown only when it exceeds the axis. */
 export const axisDetailChecks = (axis: AxisEvaluation) =>
-  axis.checks.filter((c) => c.label !== '스트로크' || c.status !== 'ok')
+  axis.checks.filter((c) => (c.label !== '스트로크' || c.status !== 'ok') && !isGuideItem(axis, c.label))
+
+export const axisDetailInfo = (axis: AxisEvaluation) => axis.info.filter((i) => !isGuideItem(axis, i.label))
+
+/** The guide's own checks and info items, null without a guide */
+export const guideDetail = (axis: AxisEvaluation) =>
+  axis.guide
+    ? { model: axis.guide.model, checks: axis.checks.filter((c) => isGuideItem(axis, c.label)), info: axis.info.filter((i) => isGuideItem(axis, i.label)) }
+    : null
 
 export function fmt(value: number | null | undefined, digits = 2): string {
   if (value == null || !Number.isFinite(value)) return '—'

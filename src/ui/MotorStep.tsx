@@ -8,18 +8,22 @@ import { CheckTable, CollapseTitle, RadioGroup, Ratio, SortTh, StatusBadge, Togg
 import { statusRank, useSort } from './useSort'
 import { translateData, useLang, useT } from '../i18n'
 import { DrivePackage } from './DrivePackage'
+import { GearboxChoice } from './GearboxStep'
 import { fmt, statusLabel, supplyLabel } from './format'
 
 interface Props {
   /** One row per motor: direct drive, or with its recommended gearbox when settings.useGearbox */
   results: DriveEvaluation[]
-  /** The selected motor with the gearbox actually used (the recommendation unless changed in step 3) */
+  /** The selected motor with the gearbox actually used (the recommendation unless changed below the list) */
   selected: DriveEvaluation | null
   onSelect: (id: string) => void
   settings: Settings
   onSettings: (settings: Settings) => void
   /** Axis arrangement of the selected axis (motor count) */
   layout?: ParallelLayout
+  /** every compatible gearbox for the selected motor (감속기 사용) */
+  gearboxOptions: DriveEvaluation[]
+  onSelectGearbox: (gearboxId: string) => void
 }
 
 const makers: MotorMaker[] = ['Festo', 'Siemens', 'Mitsubishi']
@@ -30,7 +34,7 @@ const makerSupply: Record<MotorMaker, Supply> = { Festo: 'ac400', Siemens: 'ac40
 
 const ROW_LIMIT = 60
 
-export function MotorStep({ results, selected, onSelect, settings, onSettings, layout }: Props) {
+export function MotorStep({ results, selected, onSelect, settings, onSettings, layout, gearboxOptions, onSelectGearbox }: Props) {
   const t = useT()
   const lang = useLang()
   const selectedId = selected?.motor.id ?? null
@@ -216,6 +220,8 @@ export function MotorStep({ results, selected, onSelect, settings, onSettings, l
           {listed.length > ROW_LIMIT && <p className="muted small-print">{t('상위 {n}개만 표시합니다.', { n: ROW_LIMIT })}</p>}
         </div>
       )}
+
+      {selected && settings.useGearbox && <GearboxChoice options={gearboxOptions} selected={selected} onSelect={onSelectGearbox} />}
 
       {selected && (
         <div className="detail">

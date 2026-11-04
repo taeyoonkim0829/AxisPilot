@@ -118,6 +118,6 @@ describe('ball screw support', () => {
     expect(checkOf(run('EGC-80-...-BS-10P-KF-GK', { stroke: 1500 }).checks, '속도')!.limit).toBeLessThan(0.3)
     const short = run('EGC-80-...-BS-10P-KF-GK', { stroke: 700 }, { spindleSupport: true })
     expect(short.spindleSupport).toBe(false)
-    expect(infoOf(short, '볼스크류 서포트').noteArgs).toEqual({ min: 780 })
+    expect(infoOf(short, '스핀들 서포트').noteArgs).toEqual({ min: 780 })
   })
 })

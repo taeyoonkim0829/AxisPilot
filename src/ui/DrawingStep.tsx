@@ -229,7 +229,7 @@ export function DrawingStep({ axis, drive, kit, req: input, sides, onSides, faci
     <section className="panel step" id="step-drawing">
       <header className="step-head">
         <h2>
-          <span className="step-no">5</span> {t('조합 도면')}
+          <span className="step-no">5</span> {t('도면')}
         </h2>
         {tabs}
         {selection && <span className="muted">{t('설치 방향: {mounting}', { mounting: t(mountingLabel[req.mounting]) })}</span>}

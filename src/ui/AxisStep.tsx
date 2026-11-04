@@ -6,7 +6,7 @@ import type { AxisFamily, DriveKind } from '../data/types'
 import { CheckTable, CollapseTitle, NumberField, RadioGroup, Ratio, SortTh, StatusBadge, ToggleButton, ToggleGroup } from './common'
 import { statusRank, useSort } from './useSort'
 import { useT } from '../i18n'
-import { axisDetailChecks, driveLabel, fmt } from './format'
+import { axisDetailChecks, axisDetailInfo, driveLabel, fmt, guideDetail } from './format'
 
 interface Props {
   results: AxisEvaluation[]
@@ -108,6 +108,7 @@ export function AxisStep({ results, selectedId, onSelect, settings, onSettings }
   const t = useT()
   const [showFailed, setShowFailed] = useState(false)
   const [detailOpen, setDetailOpen] = useState(true)
+  const [guideOpen, setGuideOpen] = useState(true)
   const passing = results.filter((r) => r.status !== 'fail')
   const shownFamilies = settings.drives.includes('spindle') ? families : beltFamilies
   const {
@@ -127,6 +128,7 @@ export function AxisStep({ results, selectedId, onSelect, settings, onSettings }
   })
   const th = { sort, onSort: toggle }
   const selected = results.find((r) => r.axis.id === selectedId)
+  const guide = selected ? guideDetail(selected) : null
 
   return (
     <section className="panel step" id="step-axis">
@@ -273,21 +275,41 @@ export function AxisStep({ results, selectedId, onSelect, settings, onSettings }
           {detailOpen && (
             <>
               <CheckTable checks={axisDetailChecks(selected)} />
-              <dl className="info">
-                {selected.info.map((i) => (
-                  <div key={i.label}>
-                    <dt>{t(i.label)}</dt>
-                    <dd className={i.alert ? 'fail-text' : undefined}>
-                      {fmt(i.value, 3)} {i.unit}
-                      {i.note && <span className="muted"> ({t(i.note, i.noteArgs)})</span>}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
+              <InfoList items={axisDetailInfo(selected)} />
+            </>
+          )}
+        </div>
+      )}
+      {guide && (
+        <div className="detail">
+          <CollapseTitle open={guideOpen} onToggle={() => setGuideOpen(!guideOpen)}>
+            {t('{model} 세부사항', { model: guide.model })}
+          </CollapseTitle>
+          {guideOpen && (
+            <>
+              <CheckTable checks={guide.checks} />
+              <InfoList items={guide.info} />
             </>
           )}
         </div>
       )}
     </section>
+  )
+}
+
+function InfoList({ items }: { items: AxisEvaluation['info'] }) {
+  const t = useT()
+  return (
+    <dl className="info">
+      {items.map((i) => (
+        <div key={i.label}>
+          <dt>{t(i.label)}</dt>
+          <dd className={i.alert ? 'fail-text' : undefined}>
+            {fmt(i.value, 3)} {i.unit}
+            {i.note && <span className="muted"> ({t(i.note, i.noteArgs)})</span>}
+          </dd>
+        </div>
+      ))}
+    </dl>
   )
 }

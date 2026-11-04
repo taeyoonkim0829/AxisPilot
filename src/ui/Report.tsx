@@ -27,6 +27,8 @@ import { DrivePackage } from './DrivePackage'
 import { KitNotes } from './KitStep'
 import {
   axisDetailChecks,
+  axisDetailInfo,
+  guideDetail,
   driveLabel,
   fmt,
   kgf,
@@ -122,6 +124,11 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
   const t = useT()
   const lang = useLang()
   const a = axis.axis
+  const guide = guideDetail(axis)
+  const infoRow = (i: AxisEvaluation['info'][number]): Row => {
+    const text = `${q(i.value, i.unit)}${i.note ? ` (${t(i.note, i.noteArgs)})` : ''}`
+    return [i.label, i.alert ? <span key={i.label} className="fail-text">{text}</span> : text]
+  }
   const g = drive?.gearbox ?? null
   const vertical = verticalForward(req)
   // belt axes: where the drive head and motor sit, as chosen in step 5
@@ -307,15 +314,17 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
         />
         <h3>{t('검토 항목')}</h3>
         <CheckTable checks={axisDetailChecks(axis)} />
-        {axis.info.length > 0 && (
+        {axisDetailInfo(axis).length > 0 && (
           <>
             <h3>{t('참고값')}</h3>
-            <SpecTable
-              rows={axis.info.map((i): Row => {
-                const text = `${q(i.value, i.unit)}${i.note ? ` (${t(i.note, i.noteArgs)})` : ''}`
-                return [i.label, i.alert ? <span key={i.label} className="fail-text">{text}</span> : text]
-              })}
-            />
+            <SpecTable rows={axisDetailInfo(axis).map(infoRow)} />
+          </>
+        )}
+        {guide && (
+          <>
+            <h3>{t('{model} 세부사항', { model: guide.model })}</h3>
+            <CheckTable checks={guide.checks} />
+            {guide.info.length > 0 && <SpecTable rows={guide.info.map(infoRow)} />}
           </>
         )}
       </Chapter>

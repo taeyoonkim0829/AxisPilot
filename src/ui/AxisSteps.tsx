@@ -5,7 +5,6 @@ import { useT } from '../i18n'
 import type { Picks, Selection } from '../selection'
 import { AxisStep } from './AxisStep'
 import { DrawingStep } from './DrawingStep'
-import { GearboxStep } from './GearboxStep'
 import { KitStep } from './KitStep'
 import { MotionProfile } from './MotionProfile'
 import { MotorStep } from './MotorStep'
@@ -31,7 +30,7 @@ interface Props {
   drawing?: ReactNode
 }
 
-/** Motion profile and steps 1–5 of one axis: axis, motor, gearbox, kit, combination drawing. */
+/** Motion profile and steps of one axis: axis, motor (with its gearbox), kit, drawing. */
 export function AxisSteps({ sel, req, calcSettings, settings, onSettings, picks, onPicks, profileView, onProfileView, assembly, onAssembly, gantry = false, drawing }: Props) {
   const t = useT()
   const { selectedAxis, selectedDrive } = sel
@@ -63,18 +62,14 @@ export function AxisSteps({ sel, req, calcSettings, settings, onSettings, picks,
           settings={settings}
           onSettings={onSettings}
           layout={selectedAxis.layout}
+          gearboxOptions={sel.gearboxOptions}
+          onSelectGearbox={(id) => onPicks({ ...picks, gearboxId: id })}
         />
       ) : (
         <section className="panel step" id="step-motor">
           <p className="empty">{t('먼저 직교 축을 선택하세요.')}</p>
         </section>
       )}
-      <GearboxStep
-        options={sel.gearboxOptions}
-        selected={selectedDrive}
-        onSelect={(id) => onPicks({ ...picks, gearboxId: id })}
-        useGearbox={calcSettings.useGearbox}
-      />
       <KitStep
         match={sel.kitMatch}
         rows={sel.kitEvals}

@@ -149,10 +149,10 @@ export function GantryDrawing({
     <section className="panel step" id="step-drawing">
       <header className="step-head">
         <h2>
-          <span className="step-no">5</span> {t('조합 도면')}
+          <span className="step-no">5</span> {t('도면')}
         </h2>
         {tabs}
-        <span className="muted">{t('{config} 조합 · 각 축의 5단계 조합 도면과 조합 키트로 조립합니다.', { config: gantry.config.toUpperCase() })}</span>
+        <span className="muted">{t('{config} 조합 · 각 축의 5단계 도면과 조합 키트로 조립합니다.', { config: gantry.config.toUpperCase() })}</span>
       </header>
       {!complete ? (
         <p className="empty">{t('모든 축의 축, 모터, 연결키트를 선택하면 조합축 도면을 만듭니다.')}</p>

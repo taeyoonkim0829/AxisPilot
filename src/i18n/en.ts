@@ -179,10 +179,9 @@ export const en: Record<string, string> = {
   'ESBF 외부 가이드 사용': 'ESBF with external guide',
   '표준 스트로크': 'Standard stroke',
   '스핀들 서포트': 'Spindle support',
-  '볼스크류 서포트': 'Ball screw support',
-  '볼스크류 서포트 사용': 'With ball screw support',
-  '볼스크류 서포트 사용, 스트로크 {stroke} mm의 속도-스트로크 선도 기준 (최대 {max} m/s)': 'With ball screw support, speed-stroke curve at a stroke of {stroke} mm (max. {max} m/s)',
-  '볼스크류 서포트: 무부하 토크가 더 클 수 있음 (데이터시트 값 없음)': 'Ball screw support: the no-load torque may be higher (no data sheet value)',
+  '스핀들 서포트 사용': 'With spindle support',
+  '스핀들 서포트 사용, 스트로크 {stroke} mm의 속도-스트로크 선도 기준 (최대 {max} m/s)': 'With spindle support, speed-stroke curve at a stroke of {stroke} mm (max. {max} m/s)',
+  '스핀들 서포트: 무부하 토크가 더 클 수 있음 (데이터시트 값 없음)': 'Spindle support: the no-load torque may be higher (no data sheet value)',
   '{min} mm 초과 스트로크에서만 주문 가능 — 미적용': 'Only available above a stroke of {min} mm — not applied',
   '외형 치수가 같은 모터의 도면': 'Drawing of a motor with the same outline dimensions',
   '맞는 표준 스트로크가 없어 모듈러 제품으로 주문합니다': 'No standard stroke is long enough: ordered as a modular product',
@@ -194,7 +193,6 @@ export const en: Record<string, string> = {
   '지지 간격 {span} mm 기준': 'For a support spacing of {span} mm',
   '지지 간격 {span} mm 기준 — 중간 지지 추가 또는 지지 간격 입력 검토':
     'For a support spacing of {span} mm — consider an intermediate support or enter the support spacing',
-  '사이클 타임 (왕복)': 'Cycle time (round trip)',
   '이동 질량 (부하 + 슬라이드)': 'Moving mass (payload + slide)',
   '축 관성 모멘트 (구동축 기준)': 'Axis inertia (drive shaft)',
   '가이드 예상 수명': 'Expected guide life',
@@ -237,14 +235,11 @@ export const en: Record<string, string> = {
     'No motor meets the conditions. Only motors with gearbox data are checked. Try another axis or No gearbox.',
   '조건을 만족하는 모터가 없습니다. 감속기 사용을 선택하거나 다른 축을 선택해 보세요.':
     'No motor meets the conditions. Try With gearbox or another axis.',
-  '감속기 미사용(축-키트-모터)으로 검토합니다. 감속기가 필요하면 2단계에서 감속기 사용을 선택하세요.':
-    'Checked without a gearbox (axis-kit-motor). If a gearbox is needed, choose With gearbox in step 2.',
-  '2단계에서 추천한 감속기(통과하는 가장 낮은 감속비)가 적용되어 있습니다. 다른 감속기를 누르면 바꿀 수 있습니다.':
-    'The gearbox recommended in step 2 (the lowest passing ratio) is applied. Click another gearbox to change it.',
+  '추천 감속기(통과하는 가장 낮은 감속비)가 적용되어 있습니다. 다른 감속기를 누르면 바꿀 수 있습니다.':
+    'The recommended gearbox (the lowest passing ratio) is applied. Click another gearbox to change it.',
+  '도면': 'Drawing',
   '감속기 선정': 'Gearbox selection',
   '{model} 호환 {n}': '{n} compatible with {model}',
-  '모터를 선택하면 그 모터와 호환되는 감속기를 검토합니다.':
-    'Select a motor to check the gearboxes compatible with it.',
   '감속비': 'Ratio',
 
   // Step 4: mounting kit
@@ -495,7 +490,7 @@ export const en: Record<string, string> = {
   'X축 간격 (조합 키트에 맞춰 조정)': 'X axis spacing (set to fit the gantry kits)',
   'Y축 간격 (조합 키트에 맞춰 조정)': 'Y axis spacing (set to fit the gantry kits)',
   '함께 주문: {model} ({partNumber}) × {n}': 'Order with it: {model} ({partNumber}) × {n}',
-  '{config} 조합 · 각 축의 5단계 조합 도면과 조합 키트로 조립합니다.':
+  '{config} 조합 · 각 축의 5단계 도면과 조합 키트로 조립합니다.':
     '{config} gantry · assembled from each axis’s step 5 drawing and the gantry kits.',
   '모든 축의 축, 모터, 연결키트를 선택하면 조합축 도면을 만듭니다.':
     'Select the axis, motor and mounting kit of every axis to build the gantry drawing.',

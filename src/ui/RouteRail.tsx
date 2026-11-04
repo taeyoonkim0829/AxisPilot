@@ -80,7 +80,8 @@ function Sign({
   active: boolean
 }) {
   const t = useT()
-  const go = () => document.getElementById(stepIds[no - 1])?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  const go = () =>
+    (document.getElementById(stepIds[no - 1]) ?? document.getElementById('step-motor'))?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   return (
     <li className={`sign${active ? ' sign-active' : ''}`}>
       <button type="button" className="sign-btn" onClick={go} aria-current={active ? 'step' : undefined}>

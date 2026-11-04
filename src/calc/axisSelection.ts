@@ -255,10 +255,10 @@ export function screwLoadFactor(v: number): number {
 function speedCheck(axis: Axis, velocity: number, stroke: number, support = false): Check {
   if (!axis.speedCurve) return check('속도', velocity, axis.maxSpeed, 'm/s')
   const limit = Math.min(axis.maxSpeed, curveAt(axis.speedCurve, stroke))
-  if (limit >= axis.maxSpeed) return { ...check('속도', velocity, limit, 'm/s'), ...(support ? { note: '볼스크류 서포트 사용' } : {}) }
+  if (limit >= axis.maxSpeed) return { ...check('속도', velocity, limit, 'm/s'), ...(support ? { note: '스핀들 서포트 사용' } : {}) }
   return {
     ...check('속도', velocity, limit, 'm/s'),
-    note: support ? '볼스크류 서포트 사용, 스트로크 {stroke} mm의 속도-스트로크 선도 기준 (최대 {max} m/s)' : '스트로크 {stroke} mm의 속도-스트로크 선도 기준 (최대 {max} m/s)',
+    note: support ? '스핀들 서포트 사용, 스트로크 {stroke} mm의 속도-스트로크 선도 기준 (최대 {max} m/s)' : '스트로크 {stroke} mm의 속도-스트로크 선도 기준 (최대 {max} m/s)',
     noteArgs: { stroke: Math.round(stroke), max: axis.maxSpeed },
   }
 }
@@ -628,7 +628,7 @@ export function evaluateAxis(
           noteArgs: { belt: belt.code ?? '' },
         }
       : support && support.noLoadTorque == null
-        ? { ...check('구동 토크', peakShaftTorque, axis.maxDrivingTorque, 'Nm'), note: '볼스크류 서포트: 무부하 토크가 더 클 수 있음 (데이터시트 값 없음)' }
+        ? { ...check('구동 토크', peakShaftTorque, axis.maxDrivingTorque, 'Nm'), note: '스핀들 서포트: 무부하 토크가 더 클 수 있음 (데이터시트 값 없음)' }
         : check('구동 토크', peakShaftTorque, axis.maxDrivingTorque, 'Nm'),
   ]
   // The motor-side axis passes the second axis's torque on through its drive shaft.
@@ -768,7 +768,6 @@ export function evaluateAxis(
   }
 
   const info: InfoItem[] = [
-    { label: '사이클 타임 (왕복)', value: cycleTime, unit: 's' },
     {
       label: '이동 질량 (부하 + 슬라이드)',
       value: mass,
@@ -816,7 +815,7 @@ export function evaluateAxis(
       noteArgs: { model: ksk.model, partNumber: ksk.shaft.partNumber },
     })
   if (offered && !support)
-    info.push({ label: '볼스크류 서포트', value: Number.NaN, unit: '', note: '{min} mm 초과 스트로크에서만 주문 가능 — 미적용', noteArgs: { min: offered.minStroke ?? 0 } })
+    info.push({ label: '스핀들 서포트', value: Number.NaN, unit: '', note: '{min} mm 초과 스트로크에서만 주문 가능 — 미적용', noteArgs: { min: offered.minStroke ?? 0 } })
   if (shaft) info.push({ label: '모터 구동 이동 질량 (2축 합계)', value: req.payload + 2 * slide, unit: 'kg' })
   // LM guides: the largest load on one guide, for choosing the guide blocks
   const guideMembers = members.filter((_, i) => !layout.isAxis[i])
