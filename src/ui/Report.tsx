@@ -135,7 +135,7 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
       below ? (
         <span key={i.label}>
           {value}
-          <span className="muted info-below">{t(i.note!, i.noteArgs)}</span>
+          <span className="muted info-below">({t(i.note!, i.noteArgs)})</span>
         </span>
       ) : i.alert ? (
         <span key={i.label} className="fail-text">{text}</span>

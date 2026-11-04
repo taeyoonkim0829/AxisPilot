@@ -309,7 +309,7 @@ function InfoList({ items }: { items: AxisEvaluation['info'] }) {
             {i.note &&
               (i.unit === 'km' ? (
                 // life: the years on the line below the km
-                <span className="muted info-below">{t(i.note, i.noteArgs)}</span>
+                <span className="muted info-below">({t(i.note, i.noteArgs)})</span>
               ) : (
                 <span className="muted"> ({t(i.note, i.noteArgs)})</span>
               ))}
