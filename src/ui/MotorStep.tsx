@@ -4,7 +4,7 @@ import { motorSupply, type DriveEvaluation } from '../calc/motorSelection'
 import type { Settings, Supply } from '../calc/types'
 import { motorFamilies, motors } from '../data'
 import type { MotorMaker } from '../data/types'
-import { CheckTable, CollapseTitle, RadioGroup, Ratio, SortTh, StatusBadge, ToggleButton, ToggleGroup } from './common'
+import { CheckTable, CollapseTitle, RadioGroup, Ratio, SortTh, StatusBadge, ToggleButton } from './common'
 import { statusRank, useSort } from './useSort'
 import { translateData, useLang, useT } from '../i18n'
 import { DrivePackage } from './DrivePackage'
@@ -43,8 +43,6 @@ const supplyFor = (family: string, current: Supply) => {
   const offered = familySupplies.get(family) ?? []
   return offered.includes(current) || !offered.length ? current : offered[0]
 }
-/** Makers whose series are picked one at a time (each Festo series has its own drive range and supply) */
-const singleFamily = (maker: MotorMaker | undefined) => maker === 'Festo'
 
 const ROW_LIMIT = 60
 
@@ -76,7 +74,6 @@ export function MotorStep({ results, selected, onSelect, settings, onSettings, l
   const rows = listed.slice(0, ROW_LIMIT)
   const familyOptions = settings.makers.flatMap((m) => motorFamilies[m])
   const excluded = settings.excludedMotorFamilies
-  const single = singleFamily(settings.makers[0])
   const family = familyOptions.find((f) => !excluded.includes(f)) ?? familyOptions[0]
   /** one series of the listed ones: the others switched off, the supply following it */
   const onlyFamily = (options: string[], f: string, supply: Supply) => ({
@@ -86,19 +83,8 @@ export function MotorStep({ results, selected, onSelect, settings, onSettings, l
   const onMaker = (maker: MotorMaker) => {
     const v = [maker]
     const options = v.flatMap((m) => motorFamilies[m])
-    if (singleFamily(maker)) {
-      const f = options.find((x) => !excluded.includes(x)) ?? options[0]
-      onSettings({ ...settings, makers: v, ...onlyFamily(options, f, makerSupply[maker]) })
-      return
-    }
-    // Never leave every listed family switched off: re-enable the remaining makers' families.
-    const all = options.every((f) => excluded.includes(f))
-    onSettings({
-      ...settings,
-      makers: v,
-      supplies: [makerSupply[maker]],
-      excludedMotorFamilies: all ? excluded.filter((f) => !options.includes(f)) : excluded,
-    })
+    const f = options.find((x) => !excluded.includes(x)) ?? options[0]
+    onSettings({ ...settings, makers: v, ...onlyFamily(options, f, makerSupply[maker]) })
   }
 
   return (
@@ -122,9 +108,7 @@ export function MotorStep({ results, selected, onSelect, settings, onSettings, l
           value={settings.supplies[0] ?? 'ac400'}
           onChange={(v) => onSettings({ ...settings, supplies: [v] })}
           label={(v) => supplyLabel[v]}
-          disabled={
-            single ? (v) => ((familySupplies.get(family) ?? []).includes(v) ? null : t('이 모터 시리즈에는 이 전원이 없습니다')) : undefined
-          }
+          disabled={(v) => ((familySupplies.get(family) ?? []).includes(v) ? null : t('이 모터 시리즈에는 이 전원이 없습니다'))}
         />
         <RadioGroup
           options={['direct', 'gearbox'] as const}
@@ -139,27 +123,11 @@ export function MotorStep({ results, selected, onSelect, settings, onSettings, l
         />
       </div>
       <div className="step-filters">
-        {single ? (
-          <RadioGroup
-            options={familyOptions}
-            value={family}
-            onChange={(f) => onSettings({ ...settings, ...onlyFamily(familyOptions, f, settings.supplies[0] ?? 'ac400') })}
-          />
-        ) : (
-          <ToggleGroup
-            options={familyOptions}
-            selected={familyOptions.filter((f) => !excluded.includes(f))}
-            onChange={(v) =>
-              onSettings({
-                ...settings,
-                excludedMotorFamilies: [
-                  ...excluded.filter((f) => !familyOptions.includes(f)),
-                  ...familyOptions.filter((f) => !v.includes(f)),
-                ],
-              })
-            }
-          />
-        )}
+        <RadioGroup
+          options={familyOptions}
+          value={family}
+          onChange={(f) => onSettings({ ...settings, ...onlyFamily(familyOptions, f, settings.supplies[0] ?? 'ac400') })}
+        />
       </div>
 
       {rows.length === 0 ? (
