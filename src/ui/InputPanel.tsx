@@ -285,10 +285,10 @@ export function ParallelSection({
         <div className="field">
           <span className="field-label">{t('가이드 종류')}</span>
           <RadioGroup
-            options={['lm', 'axis'] as const}
+            options={['axis', 'lm'] as const}
             value={parallel.guideAxis ? 'axis' : 'lm'}
             onChange={(v) => setParallel('guideAxis', v === 'axis')}
-            label={(v) => t(v === 'axis' ? '가이드 축' : 'LM 가이드')}
+            label={(v) => (v === 'axis' ? 'Festo' : '3rd Party')}
           />
           {parallel.guideAxis && <p className="field-hint">{t('EGC에는 EGC-FA, ELGD에는 ELFD를 같은 크기로 적용 (다른 축은 LM 가이드로 계산)')}</p>}
         </div>

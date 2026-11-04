@@ -85,6 +85,7 @@ export const defaultParallel: ParallelConfig = {
   spacing: 300,
   guideCount: 1,
   guideAxisEdge: true,
+  guideAxis: true,
   guideMass: 0,
   shaftInertia: 0,
 }
