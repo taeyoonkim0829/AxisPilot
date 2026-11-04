@@ -19,11 +19,10 @@ import { CountField, NumberField, RadioGroup, ToggleButton } from './common'
 import { ModeSwitch, type AppMode } from './ModeSwitch'
 import { fmt, kgf, mountingLabel, parallelModeLabel, pressDirectionLabel } from './format'
 
-const parallelModeHint: Record<ParallelMode, string> = {
+const parallelModeHint: Partial<Record<ParallelMode, string>> = {
   single: '축 1개로 부하를 지지하고 구동',
   twinMotor: '평행한 축 2개를 모터 2개로 동기 제어. 모터·키트·드라이브는 축 1개 기준 (각 2개)',
   twinShaft: '평행한 축 2개를 모터 1개가 연결축으로 구동. 모터는 두 축 합계 기준',
-  guides: '축과 평행한 LM 가이드가 부하를 나눠 지지. 구동은 축 1개',
 }
 
 type AxisPlace = 'middle' | 'edge'
@@ -39,9 +38,11 @@ interface Props {
   onSettings: (settings: Settings) => void
   mode: AppMode
   onMode: (mode: AppMode) => void
+  /** family of the selected axis: an ELGT has no guide axis */
+  axisFamily?: string
 }
 
-export function InputPanel({ req, settings, onReq, onSettings, mode, onMode }: Props) {
+export function InputPanel({ req, settings, onReq, onSettings, mode, onMode, axisFamily }: Props) {
   const t = useT()
   const set = <K extends keyof Requirements>(key: K, value: Requirements[K]) => onReq({ ...req, [key]: value })
   const setCog = (axis: 'x' | 'y' | 'z', value: number) => onReq({ ...req, cog: { ...req.cog, [axis]: value } })
@@ -239,7 +240,7 @@ export function InputPanel({ req, settings, onReq, onSettings, mode, onMode }: P
         )}
       </section>
 
-      <ParallelSection parallel={parallel} onParallel={(p) => onReq({ ...req, parallel: p })} />
+      <ParallelSection parallel={parallel} onParallel={(p) => onReq({ ...req, parallel: p })} noGuideAxis={axisFamily === 'ELGT'} />
 
       <DetailSettings settings={settings} onSettings={onSettings} />
     </aside>
@@ -252,12 +253,15 @@ export function ParallelSection({
   onParallel,
   title = '축 구성',
   spacingNote,
+  noGuideAxis,
 }: {
   parallel: ParallelConfig
   onParallel: (p: ParallelConfig) => void
   title?: string
   /** shown under the spacing (translated), e.g. the gantry's spacing adjusted to its kits */
   spacingNote?: string
+  /** the selected axis has no Festo guide axis (ELGT) */
+  noGuideAxis?: boolean
 }) {
   const t = useT()
   const setParallel = <K extends keyof ParallelConfig>(key: K, value: ParallelConfig[K]) => onParallel({ ...parallel, [key]: value })
@@ -271,7 +275,7 @@ export function ParallelSection({
         onChange={(m) => setParallel('mode', m)}
         label={(m) => t(parallelModeLabel[m])}
       />
-      <p className="field-hint application-hint">{t(parallelModeHint[parallel.mode])}</p>
+      {parallelModeHint[parallel.mode] && <p className="field-hint application-hint">{t(parallelModeHint[parallel.mode]!)}</p>}
       {parallel.mode === 'guides' && (
         <CountField
           label={t('가이드 수')}
@@ -290,7 +294,7 @@ export function ParallelSection({
             onChange={(v) => setParallel('guideAxis', v === 'axis')}
             label={(v) => (v === 'axis' ? 'Festo' : '3rd Party')}
           />
-          {parallel.guideAxis && <p className="field-hint">{t('EGC에는 EGC-FA, ELGD에는 ELFD를 같은 크기로 적용 (다른 축은 LM 가이드로 계산)')}</p>}
+          {parallel.guideAxis && noGuideAxis && <p className="field-hint">{t('호환 가이드 축 없음')}</p>}
         </div>
       )}
       {parallel.mode === 'guides' && guidePositions(parallel).guides >= 2 && (

@@ -183,7 +183,15 @@ function Workspace({ req, settings, setReq, setSettings, lang, setLang, mode, se
           onLang={setLang}
         />
         <main className="layout">
-          <InputPanel req={req} settings={settings} onReq={setReq} onSettings={setSettings} mode={mode} onMode={setMode} />
+          <InputPanel
+            req={req}
+            settings={settings}
+            onReq={setReq}
+            onSettings={setSettings}
+            mode={mode}
+            onMode={setMode}
+            axisFamily={selectedAxis?.axis.family}
+          />
           <div className="results">
             <AxisSteps
               sel={sel}

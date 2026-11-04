@@ -177,6 +177,11 @@ export function AxisStep({ results, selectedId, onSelect, settings, onSettings }
             onChange={(v) => onSettings({ ...settings, externalGuide: v })}
           />
         )}
+        <ToggleButton
+          label={t('표준 스트로크')}
+          checked={settings.standardStroke}
+          onChange={(v) => onSettings({ ...settings, standardStroke: v })}
+        />
         {settings.drives.includes('spindle') && settings.families.some((f) => f === 'ELGD' || f === 'EGC') && (
           <ToggleButton
             label={t('스핀들 서포트')}
@@ -184,11 +189,6 @@ export function AxisStep({ results, selectedId, onSelect, settings, onSettings }
             onChange={(v) => onSettings({ ...settings, spindleSupport: v })}
           />
         )}
-        <ToggleButton
-          label={t('표준 스트로크')}
-          checked={settings.standardStroke}
-          onChange={(v) => onSettings({ ...settings, standardStroke: v })}
-        />
       </div>
       <AxisOptionFilters settings={settings} onSettings={onSettings} selected={selected ?? null} />
 
