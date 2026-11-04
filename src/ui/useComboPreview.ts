@@ -54,11 +54,13 @@ export function download(name: string, content: string | Blob, type: string) {
 }
 
 /** the 2D drawing's input (DXF and PDF): the meshes, COG, title and notes, and the parts list */
-const drawingInput = (combo: Combo, meshes: PartMesh[], title: string[]) => ({
+const drawingInput = (combo: Combo, meshes: PartMesh[], title: string[], specs?: [string, string][]) => ({
+  specs,
   meshes,
   cog: combo.cog,
   title,
   parts: combo.parts.map(({ role, name }) => ({ role, name })),
+  stroke: combo.stroke,
 })
 
 /** the PDF sheet's words in the app language (the DXF keeps the English defaults) */
@@ -75,7 +77,8 @@ const sheetLabels = (t: ReturnType<typeof useT>): SheetLabels => ({
   model: t('규격 · 형식'),
   qty: t('수량'),
   notes: t('주기'),
-  unitsNote: t('치수 단위는 mm, 투상법은 제3각법.'),
+  specs: t('사양'),
+  stroke: t('스트로크'),
   cogNote: t('COG: 부하의 무게 중심 (가는 2점 쇄선).'),
   roles: {
     axis: t('축'),
@@ -145,20 +148,20 @@ export function useComboPreview<C extends Combo>(key: string, ready: boolean, bu
       const combo = await entryFor().combo
       download(`${fileSafe(name(combo))}.step`, combo.step, 'application/step')
     })
-  const exportDxf = (name: (c: C) => string, title: (c: C, tr: NoteTranslator) => string[]) =>
+  const exportDxf = (name: (c: C) => string, title: (c: C, tr: NoteTranslator) => string[], specs?: (tr: NoteTranslator) => [string, string][]) =>
     run(t('DXF 도면을 만드는 중…'), async () => {
       const { combo, meshes } = await meshesFor()
       const { drawingDxf } = await import('../cad/dxf')
-      download(`${fileSafe(name(combo))}.dxf`, drawingDxf(drawingInput(combo, meshes, title(combo, english))), 'application/dxf')
+      download(`${fileSafe(name(combo))}.dxf`, drawingDxf(drawingInput(combo, meshes, title(combo, english), specs?.(english))), 'application/dxf')
     })
-  const exportPdf = (name: (c: C) => string, title: (c: C, tr: NoteTranslator) => string[]) => {
+  const exportPdf = (name: (c: C) => string, title: (c: C, tr: NoteTranslator) => string[], specs?: (tr: NoteTranslator) => [string, string][]) => {
     // the font first, within the click (the browser asks for the local font permission only then)
     const pdf = import('../cad/drawingPdf')
     const font = pdf.then((m) => m.loadKoreanFont())
     return run(t('PDF 도면을 만드는 중…'), async () => {
       const { combo, meshes } = await meshesFor()
       const { drawingPdf } = await pdf
-      download(`${fileSafe(name(combo))}.pdf`, drawingPdf({ ...drawingInput(combo, meshes, title(combo, t)), labels: sheetLabels(t) }, await font), 'application/pdf')
+      download(`${fileSafe(name(combo))}.pdf`, drawingPdf({ ...drawingInput(combo, meshes, title(combo, t), specs?.(t)), labels: sheetLabels(t) }, await font), 'application/pdf')
     })
   }
 

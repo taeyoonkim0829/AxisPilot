@@ -464,6 +464,8 @@ export interface Combo {
   /** axis file stroke and the length change applied to reach the ordered stroke */
   axisStroke: number
   stretch: number
+  /** the slide centre at the start and the end of the ordered stroke (world mm; single axis drawings) */
+  stroke?: { from: Vec3; to: Vec3; length: number }
 }
 
 /** Second, parallel axis: `spacing` mm beside the first along the slide's lateral (+y) direction */
@@ -499,6 +501,7 @@ export async function buildCombo(
     slideCentre: [0, 0, 0],
     axisStroke: c.axisStroke,
     stretch: c.stretch,
+    stroke: { from: c.slide.origin, to: add(c.slide.origin, scale(c.slide.up, sel.stroke)), length: sel.stroke },
   }
 }
 

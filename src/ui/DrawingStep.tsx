@@ -152,6 +152,27 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
     ]
   }
 
+  // the drawing's specification table: the axis data and the operating conditions
+  const specs = (tr: NoteTranslator): [string, string][] => {
+    const e = axis!
+    const a = e.axis
+    const speed = e.checks.find((c) => c.label === '속도')?.limit ?? a.maxSpeed
+    const r1 = (v: number) => String(Math.round(v * 10) / 10)
+    return [
+      [tr('스트로크'), `${selection!.stroke} mm`],
+      [tr('제품 중량'), `${r1(e.axisMass)} kg`],
+      [tr('가반하중 (부하 질량)'), `${req.payload} kg`],
+      a.drive === 'spindle'
+        ? [tr('볼스크류 리드 / 직경'), `${a.spindlePitch ?? '—'} / ${a.spindleDiameter ?? '—'} mm`]
+        : [tr('풀리 직경 / 회전당 이송량'), `${a.pulleyDiameter ?? '—'} mm / ${r1(e.feed)} mm`],
+      [tr('최대 속도'), `${speed} m/s`],
+      [tr('최대 허용 가속도'), `${a.maxAcceleration} m/s²`],
+      [tr('최대 이송력'), `${a.maxFeedForce} N`],
+      ...(a.repeatability != null ? [[tr('반복 정밀도'), `±${a.repeatability} mm`] as [string, string]] : []),
+      [tr('운전 조건 (속도 / 가속도)'), `${req.velocity} m/s / ${req.acceleration} m/s²`],
+    ]
+  }
+
   const rows: { role: PartRole; model: string; drawing: Drawing | null; note: string | null; warn?: boolean }[] =
     selection && found
       ? [
@@ -394,8 +415,8 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
             state={state}
             ready={ready}
             onStep={() => state.exportStep(partsName)}
-            onDxf={() => state.exportDxf(partsName, dxfTitle)}
-            onPdf={() => state.exportPdf(partsName, dxfTitle)}
+            onDxf={() => state.exportDxf(partsName, dxfTitle, specs)}
+            onPdf={() => state.exportPdf(partsName, dxfTitle, specs)}
           />
           <p className="muted small-print">
             {t('제조사 CAD 데이터(STEP)를 그대로 조립합니다. 무게 중심(빨간 점)은 슬라이드 중심(시작 위치) 기준입니다. DXF · PDF 도면은 KS 제도 기준(KS A 0005 · KS B 0001)의 정면·평면·우측면도(제3각법)로, 표준 척도와 용지에 윤곽선, 표제란, 부품란을 넣습니다.')}

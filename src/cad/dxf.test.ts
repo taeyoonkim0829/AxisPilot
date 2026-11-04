@@ -43,6 +43,8 @@ describe('KS drawing sheet', () => {
       { role: 'motor', name: 'EMMT-AS-60-S-HS-B' },
     ],
     date: '2026-11-04',
+    stroke: { from: [0, 0, 0], to: [500, 0, 0], length: 500 },
+    specs: [['Product mass', '8.7 kg'], ['Max. permissible acceleration', '50 m/s²']],
   })
   const list = entities(dxf)
   const texts = list.filter((e) => e.type === 'TEXT').map((e) => e.codes.get('1')![0])
@@ -59,14 +61,16 @@ describe('KS drawing sheet', () => {
   })
 
   it('has the title block, parts list, projection and the overall dimensions once each', () => {
+    // the stroke above the front view, the specification table (DXF: ASCII spelling of the symbols)
+    for (const t of ['STROKE 500', 'SPECIFICATIONS', 'Product mass', '50 m/s^2']) expect(texts).toContain(t)
     for (const t of ['TITLE', 'SCALE', 'PROJ.', 'UNIT', 'mm', 'DWG. NO.', 'AP-20261104', 'NO.', 'QTY', 'ELGT-BS-90-500-20P', 'MOTOR'])
       expect(texts).toContain(t)
     // length 1150, height 80, depth 100 — each once
     expect(texts.filter((t) => t === '1150')).toHaveLength(1)
     expect(texts.filter((t) => t === '80')).toHaveLength(1)
     expect(texts.filter((t) => t === '100')).toHaveLength(1)
-    // filled arrowheads on the dimension lines, wide polylines for the outlines and the border
-    expect(list.filter((e) => e.type === 'SOLID')).toHaveLength(6)
+    // filled arrowheads on the four dimension lines (three overall, the stroke), wide polylines for the outlines and the border
+    expect(list.filter((e) => e.type === 'SOLID')).toHaveLength(8)
     expect(list.some((e) => e.type === 'POLYLINE' && e.codes.get('8')![0] === 'BORDER' && Number(e.codes.get('40')![0]) === 0.7 * 5)).toBe(true)
     expect(list.some((e) => e.type === 'POLYLINE' && e.codes.get('8')![0] === 'OUTLINE')).toBe(true)
     // centre of gravity lines in the two-dot chain line type

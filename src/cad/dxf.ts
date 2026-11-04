@@ -21,10 +21,12 @@ export interface ViewDef {
   toViewer: Vec3
 }
 
-export const VIEWS: Record<'front' | 'top' | 'side', ViewDef> = {
+export const VIEWS: Record<'front' | 'top' | 'side' | 'bottom', ViewDef> = {
   front: { name: 'FRONT', right: [1, 0, 0], up: [0, 0, 1], toViewer: [0, -1, 0] },
   top: { name: 'TOP', right: [1, 0, 0], up: [0, 1, 0], toViewer: [0, 0, 1] },
   side: { name: 'RIGHT', right: [0, 1, 0], up: [0, 0, 1], toViewer: [1, 0, 0] },
+  // seen from below (the axis's mounting holes on a floor mounting), its front edge towards the front view above it
+  bottom: { name: 'BOTTOM', right: [1, 0, 0], up: [0, -1, 0], toViewer: [0, 0, -1] },
 }
 
 type Seg = [number, number, number, number]
@@ -284,7 +286,8 @@ export interface SheetLabels {
   model: string
   qty: string
   notes: string
-  unitsNote: string
+  specs: string
+  stroke: string
   cogNote: string
   /** part roles as named in the parts list (default: the role in capitals) */
   roles: Record<string, string>
@@ -303,7 +306,8 @@ export const DEFAULT_LABELS: SheetLabels = {
   model: 'MODEL / TYPE',
   qty: 'QTY',
   notes: 'NOTES',
-  unitsNote: 'Dimensions in mm. Third angle projection.',
+  specs: 'SPECIFICATIONS',
+  stroke: 'STROKE',
   cogNote: 'COG: payload centre of gravity (thin two-dot chain lines).',
   roles: {},
 }
@@ -318,6 +322,10 @@ export interface DrawingInput {
   /** date for the title block, YYYY-MM-DD (default today) */
   date?: string
   labels?: SheetLabels
+  /** the slide centre at the start and the end of the stroke (world mm), dimensioned on the front view */
+  stroke?: { from: Vec3; to: Vec3; length: number }
+  /** specification table rows: label, value */
+  specs?: [string, string][]
 }
 
 /** A-series sheets, landscape (paper mm) and their border margin (KS A 0106: 20 mm on A0 / A1, 10 mm below); the
@@ -373,19 +381,19 @@ function wrap(line: string, width: number): string[] {
 }
 
 /** Lays out the three views (third-angle) on a KS sheet with border, title block, parts list and notes. */
-export function layoutSheet({ meshes, cog, title, parts = [], date, labels: L = DEFAULT_LABELS }: DrawingInput): Sheet {
+export function layoutSheet({ meshes, cog, title, parts = [], date, labels: L = DEFAULT_LABELS, stroke, specs = [] }: DrawingInput): Sheet {
   const model = buildModel(meshes)
-  const views = [VIEWS.front, VIEWS.top, VIEWS.side].map((v) => {
+  const views = [VIEWS.front, VIEWS.top, VIEWS.side, VIEWS.bottom].map((v) => {
     const segs = projectView(model, v)
     return { v, segs, box: bbox(segs) }
   })
-  const [front, top, side] = views.map((v) => v.box)
+  const [front, top, side, bottom] = views.map((v) => v.box)
   const wOf = (b: ReturnType<typeof bbox>) => b.x1 - b.x0
   const hOf = (b: ReturnType<typeof bbox>) => b.y1 - b.y0
   // views and their dimensions at scale 1/n (paper mm)
   const content = (n: number) => ({
     w: DIM_ROOM + (wOf(front) + wOf(side)) / n + VIEW_GAP,
-    h: DIM_ROOM + (hOf(front) + hOf(top)) / n + VIEW_GAP,
+    h: DIM_ROOM + (hOf(bottom) + hOf(front) + hOf(top)) / n + 2 * VIEW_GAP,
   })
 
   // parts list rows: equal names counted together, in assembly order
@@ -397,14 +405,14 @@ export function layoutSheet({ meshes, cog, title, parts = [], date, labels: L = 
   }
   const [name = 'Assembly', ...given] = title
   const notes = [
-    L.unitsNote,
     ...(cog ? [L.cogNote] : []),
     ...given,
   ].flatMap((line, i) => wrap(`${i + 1}. ${line}`, NOTE_CHARS))
   const titleH = TITLE_ROWS.reduce((a, b) => a + b, 0)
   const partsH = rows.length ? PART_ROW * (rows.length + 1) : 0
+  const specsH = specs.length ? PART_ROW * (specs.length + 1) : 0
   const notesH = NOTE_PITCH * (notes.length + 1) + 3
-  const blockH = titleH + partsH + notesH
+  const blockH = titleH + partsH + specsH + notesH
 
   // the smallest sheet on which the views fit at 1:10 or larger, else the largest scale on A0; the views go above
   // the title block column or to its left, whichever fits
@@ -447,24 +455,35 @@ export function layoutSheet({ meshes, cog, title, parts = [], date, labels: L = 
   dxf.thick('BORDER', 0, P(my), P(inner.x0 + 5), P(my), P(THICK))
   dxf.thick('BORDER', P(sheet.w), P(my), P(inner.x1 - 5), P(my), P(THICK))
 
-  // ---- views: front at the lower left, top above it, right side to its right, centred in the region
+  // ---- views (third angle): bottom view at the lower left, the front view above it, the top view above that, the
+  // right side view right of the front view; centred in the region
   const ox = region.x0 + PAD + (region.x1 - region.x0 - 2 * PAD - c.w) / 2 + DIM_ROOM
   const oy = region.y0 + PAD + (region.y1 - region.y0 - 2 * PAD - c.h) / 2 + DIM_ROOM
+  const fy = P(oy + VIEW_GAP) + hOf(bottom)
   const at: [number, number][] = [
-    [P(ox) - front.x0, P(oy) - front.y0],
-    [P(ox) - top.x0, P(oy + VIEW_GAP) + hOf(front) - top.y0],
-    [P(ox + VIEW_GAP) + wOf(front) - side.x0, P(oy) - side.y0],
+    [P(ox) - front.x0, fy - front.y0],
+    [P(ox) - top.x0, fy + P(VIEW_GAP) + hOf(front) - top.y0],
+    [P(ox + VIEW_GAP) + wOf(front) - side.x0, fy - side.y0],
+    [P(ox) - bottom.x0, P(oy) - bottom.y0],
   ]
   views.forEach(({ v, segs, box }, i) => {
     const [dx, dy] = at[i]
     for (const s of segs) dxf.thick('OUTLINE', s[0] + dx, s[1] + dy, s[2] + dx, s[3] + dy, P(THICK))
     const b = { x0: box.x0 + dx, y0: box.y0 + dy, x1: box.x1 + dx, y1: box.y1 + dy }
-    // overall dimensions, each once: length and height on the front view, depth on the top view
+    // overall dimensions, each once: height on the front view, depth on the top view, length below the bottom view
     if (i === 0) {
-      dxf.dimension(b.x0, b.y0, b.x1, b.y0, -P(DIM_OFFSET), 'h')
       dxf.dimension(b.x0, b.y0, b.x0, b.y1, -P(DIM_OFFSET), 'v')
+      if (stroke) {
+        // the stroke: between the slide centre at its start and its end, above the front view (or right of it
+        // when the travel is vertical)
+        const [x1, y1, x2, y2] = [dot(stroke.from, v.right) + dx, dot(stroke.from, v.up) + dy, dot(stroke.to, v.right) + dx, dot(stroke.to, v.up) + dy]
+        const label = `${L.stroke} ${dimValue(stroke.length)}`
+        if (Math.abs(x2 - x1) >= Math.abs(y2 - y1)) dxf.dimension(Math.min(x1, x2), b.y1, Math.max(x1, x2), b.y1, P(DIM_OFFSET), 'h', label)
+        else dxf.dimension(b.x1, Math.min(y1, y2), b.x1, Math.max(y1, y2), P(DIM_OFFSET), 'v', label)
+      }
     }
     if (i === 1) dxf.dimension(b.x0, b.y0, b.x0, b.y1, -P(DIM_OFFSET), 'v')
+    if (i === 3) dxf.dimension(b.x0, b.y0, b.x1, b.y0, -P(DIM_OFFSET), 'h')
     if (cog) {
       // centre of gravity: two-dot chain lines (무게 중심선) across the view and a small circle
       const x = dot(cog, v.right) + dx
@@ -547,6 +566,26 @@ export function layoutSheet({ meshes, cog, title, parts = [], date, labels: L = 
     line(cols.map(([, h]) => h))
     rows.forEach((r, i) => line([String(i + 1), L.roles[r.role] ?? r.role.toUpperCase(), r.name, String(r.qty)]))
     dxf.rect('TITLE', P(bx0), P(partsY0), P(inner.x1), P(y), P(THICK))
+  }
+
+  // ---- specification table (사양) above it
+  if (specs.length) {
+    const specsY0 = y
+    const cols = [60, 110]
+    const line = (values: [string, string], header = false) => {
+      let x = bx0
+      cols.forEach((w) => {
+        if (!header) cell(x, y, x + w, y + PART_ROW)
+        x += w
+      })
+      if (header) cell(bx0, y, bx0 + BLOCK_W, y + PART_ROW)
+      put(bx0, bx0 + cols[0], y, PART_ROW, values[0])
+      if (!header) put(bx0 + cols[0], bx0 + BLOCK_W, y, PART_ROW, values[1])
+      y += PART_ROW
+    }
+    for (const r of [...specs].reverse()) line(r)
+    line([L.specs, ''], true)
+    dxf.rect('TITLE', P(bx0), P(specsY0), P(inner.x1), P(y), P(THICK))
   }
 
   // ---- notes (주기) above the parts list
@@ -648,7 +687,7 @@ export class Sheet {
    * filled arrows, extension lines from a 1 mm gap to 2 mm beyond it, the value in mm above the line (vertical:
    * turned to read from the right, on its left).
    */
-  dimension(x1: number, y1: number, x2: number, y2: number, offset: number, dir: 'h' | 'v') {
+  dimension(x1: number, y1: number, x2: number, y2: number, offset: number, dir: 'h' | 'v', label?: string) {
     const n = this.n
     const s = Math.sign(offset)
     const h = TEXT_DIM * n
@@ -658,14 +697,15 @@ export class Sheet {
       this.line('DIM', x1, y, x2, y)
       this.arrow(x1, y, -1, 0)
       this.arrow(x2, y, 1, 0)
-      this.text('DIM', (x1 + x2) / 2, y + n, h, dimValue(Math.abs(x2 - x1)), 'centre')
+      this.text('DIM', (x1 + x2) / 2, y + n, h, label ?? dimValue(Math.abs(x2 - x1)), 'centre')
     } else {
       const x = x1 + offset
       for (const yy of [y1, y2]) this.line('DIM', x1 + s * n, yy, x + s * 2 * n, yy)
       this.line('DIM', x, y1, x, y2)
       this.arrow(x, y1, 0, -1)
       this.arrow(x, y2, 0, 1)
-      this.text('DIM', x - n, (y1 + y2) / 2, h, dimValue(Math.abs(y2 - y1)), 'centre', 90)
+      // the value on the line's far side from the feature, turned to read from the right
+      this.text('DIM', s < 0 ? x - n : x + n + h, (y1 + y2) / 2, h, label ?? dimValue(Math.abs(y2 - y1)), 'centre', 90)
     }
   }
 }
@@ -684,7 +724,7 @@ export function toDxf(sheet: Sheet): string {
       put(0, 'SEQEND', 8, o.layer)
     } else if (o.k === 'circle') put(0, 'CIRCLE', 8, o.layer, 10, o.x, 20, o.y, 30, 0, 40, o.r)
     else if (o.k === 'text') {
-      put(0, 'TEXT', 8, o.layer, 10, o.x, 20, o.y, 30, 0, 40, o.height, 1, o.value.replace(/[^\x20-\x7e]/g, '?'))
+      put(0, 'TEXT', 8, o.layer, 10, o.x, 20, o.y, 30, 0, 40, o.height, 1, ascii(o.value))
       if (o.rotation) put(50, o.rotation)
       if (o.align === 'centre') put(72, '1', 11, o.x, 21, o.y, 31, 0)
     } else {
@@ -711,5 +751,14 @@ export function toDxf(sheet: Sheet): string {
 
 /** Lays out the drawing (`layoutSheet`) and writes it as DXF R12. */
 export const drawingDxf = (input: DrawingInput) => toDxf(layoutSheet(input))
+
+/** the DXF (R12, no code page) takes ASCII: common symbols spelled out, anything else '?' */
+const ascii = (s: string) =>
+  s
+    .replace(/²/g, '^2')
+    .replace(/±/g, '+/-')
+    .replace(/[·•]/g, '.')
+    .replace(/[–—−]/g, '-')
+    .replace(/[^\x20-\x7e]/g, '?')
 
 const fix = (v: number, digits = 4) => String(Number(v.toFixed(digits)))
