@@ -47,8 +47,6 @@ describe('selectController', () => {
     expect(motorCable('EMMT-ST-57-M', 6)).toMatchObject({ type: 'NEBM-M17G12-EH-6-Q7N-LE12', partNumber: '8181663', order: 'modular', module: 'NEBM-LX/M17' })
     expect(motorCable('EMMT-ST-57-M', 6.2).type).toBe('NEBM-M17G12-EH-6.5-Q7N-LE12')
     expect(motorCable('EMMB-ST-57-M', 12).type).toBe('NEBM-L10G14-EH-12-Q9N-LE12')
-    // Sub-D: variable length 1 ... 25 m
-    expect(motorCable('EMMS-ST-57-M', 6)).toMatchObject({ type: 'NEBM-S1G9-E-6-Q5-LE6', partNumber: '1450373' })
     // EMMB-AS cables come in standard lengths only: the next longer one
     const emmb = run('ELGD-BS-KF-60-…10P', 'EMMB-AS-60-04', {}, { cableLength: 6 }).selection.cables
     expect(emmb.find((c) => c.role === 'motor')).toMatchObject({ type: 'NEBM-H6G4-E-7.5-Q13N-LE4', partNumber: '5219199', order: 'rounded' })
@@ -205,8 +203,5 @@ describe('stepper torque-speed curve', () => {
       run('ELGD-BS-KF-60-…10P', 'EMMT-ST-57-M', { velocity }).drive.checks.find((c) => c.label === '토크-회전수 선도')!
     expect(curve(0.2).status).toBe('ok')
     expect(curve(0.5).status).toBe('fail')
-    // open loop: the curve is divided by a safety factor
-    const open = run('ELGD-BS-KF-60-…10P', 'EMMS-ST-57-M', { velocity: 0.1 }).drive.checks.find((c) => c.label === '토크-회전수 선도')!
-    expect(open.limit).toBeCloseTo(1.4 / 1.5, 2)
   })
 })

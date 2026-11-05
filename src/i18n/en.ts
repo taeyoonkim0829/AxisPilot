@@ -352,8 +352,6 @@ export const en: Record<string, string> = {
   '관성 모멘트': 'Mass moment of inertia',
   '무부하 토크': 'No-load torque',
   '드라이브 정격 전류': 'Drive nominal current',
-  '모터 정격 전류를 낼 수 없어 토크가 선도보다 줄어듭니다': 'The drive cannot supply the motor nominal current, so the torque falls below the curve',
-  '오픈루프: 모터 정격 전류로 구동': 'Open loop: driven at the motor nominal current',
   '드라이브 최대 전류': 'Drive peak current',
   '최대 전류 지속 시간': 'Peak current duration',
   '모터 토크 상수가 없어 전류를 계산하지 못했습니다': 'No motor torque constant, so the current could not be calculated',
@@ -391,8 +389,6 @@ export const en: Record<string, string> = {
   '회생 계산은 모터·드라이브 손실과 DC 링크 흡수를 빼지 않은 보수적인 값입니다':
     'The regeneration figures are conservative: motor and drive losses and DC link absorption are not deducted',
   '토크-회전수 선도': 'Torque-speed curve',
-  '{rpm} rpm, 48 V 선도 ÷ 안전율 {sf} (오픈루프: 탈조 방지, 선도 공차 ±20%)':
-    '{rpm} rpm, 48 V curve ÷ safety factor {sf} (open loop: against lost steps, curve tolerance ±20%)',
   '{rpm} rpm, 48 V 선도 (최대 토크)': '{rpm} rpm, 48 V curve (peak torque)',
   '모터 케이블': 'Motor cable',
   '엔코더 케이블': 'Encoder cable',

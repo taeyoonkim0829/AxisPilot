@@ -53,9 +53,6 @@ export function gearboxStatus(drive: DriveEvaluation): Status | null {
   return drive.gearbox ? worstStatus(gearboxChecks(drive)) : null
 }
 
-/** Open-loop steppers (no encoder) lose steps when overloaded: the curve is divided by this safety factor. */
-export const OPEN_LOOP_SAFETY = 1.5
-
 export function evaluateDrive(
   axisEval: AxisEvaluation,
   motor: Motor,
@@ -85,7 +82,7 @@ export function evaluateDrive(
     peak = Math.max(peak, Math.abs(torque))
     if (curve) {
       const rpm = (Math.abs(s.omega) * ratio * 60) / (2 * Math.PI)
-      const limit = curveAt(curve, rpm) / (motor.openLoop ? OPEN_LOOP_SAFETY : 1)
+      const limit = curveAt(curve, rpm)
       const r = limit > 0 ? Math.abs(torque) / limit : Infinity
       if (r > curveRatio) {
         curveRatio = r
@@ -131,10 +128,8 @@ export function evaluateDrive(
   if (curve) {
     checks.push({
       ...check('토크-회전수 선도', curveAt_[0], curveAt_[1], 'Nm'),
-      note: motor.openLoop
-        ? '{rpm} rpm, 48 V 선도 ÷ 안전율 {sf} (오픈루프: 탈조 방지, 선도 공차 ±20%)'
-        : '{rpm} rpm, 48 V 선도 (최대 토크)',
-      noteArgs: { rpm: Math.round(curveAt_[2]), sf: OPEN_LOOP_SAFETY },
+      note: '{rpm} rpm, 48 V 선도 (최대 토크)',
+      noteArgs: { rpm: Math.round(curveAt_[2]) },
     })
   }
 

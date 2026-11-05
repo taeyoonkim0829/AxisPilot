@@ -184,7 +184,7 @@ export const defaultSettings: Settings = {
   makers: ['Festo'],
   supplies: ['ac400'],
   // EMMT-AS only
-  excludedMotorFamilies: ['EMMT-ST', 'EMMT-EC', 'EMMB-AS', 'EMMB-ST', 'EMMS-ST', 'EMMH-AS'],
+  excludedMotorFamilies: ['EMMT-ST', 'EMMT-EC', 'EMMB-AS', 'EMMB-ST', 'EMMH-AS'],
   requireBrake: false,
   useGearbox: false,
   conservative: false,

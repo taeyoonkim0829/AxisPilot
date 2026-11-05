@@ -153,8 +153,6 @@ export interface Motor {
   preferredController?: string | null
   /** stepper motor: torque limited by `torqueCurve` */
   stepper?: boolean
-  /** open-loop stepper (EMMS-ST): no encoder, runs at nominal current */
-  openLoop?: boolean
   /** [rpm, Nm] max. torque at 48 V DC (steppers) */
   torqueCurve?: [number, number][] | null
   /** Festo: order type of the base configuration (smooth shaft, single-turn encoder …) and its part number */

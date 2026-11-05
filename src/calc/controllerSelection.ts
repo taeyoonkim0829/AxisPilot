@@ -79,14 +79,12 @@ export function selectController(
     .toSorted((a, b) => a.nominalCurrent - b.nominalCurrent)
   const family = candidates[0]?.family ?? motor.controller
 
-  // Motor current from the torque: an open-loop stepper always runs at its nominal current
+  // Motor current from the torque
   const kt = motor.torqueConstant ?? (motor.nominalCurrent ? motor.ratedTorque / motor.nominalCurrent : null)
   const motorTorque = motorTorqueFn(axisEval, motor, gearbox, settings)
   const ratio = gearbox?.ratio ?? 1
-  const currents = axisEval.samples.map((s) =>
-    motor.openLoop ? (motor.nominalCurrent ?? 0) : kt ? Math.abs(motorTorque(s)) / kt : 0,
-  )
-  const rmsCurrent = motor.openLoop ? (motor.nominalCurrent ?? 0) : kt ? drive.rmsTorque / kt : 0
+  const currents = axisEval.samples.map((s) => (kt ? Math.abs(motorTorque(s)) / kt : 0))
+  const rmsCurrent = kt ? drive.rmsTorque / kt : 0
   const peakCurrent = Math.max(0, ...currents)
   // Longest stretch above the drive's nominal current (peak current is allowed for peakDuration). The cycle repeats,
   // so a stretch at its end runs on into the next cycle's start: two cycles are scanned.
@@ -102,11 +100,9 @@ export function selectController(
     return longest
   }
   const fits = (c: Controller) =>
-    motor.openLoop
-      ? c.nominalCurrent >= (motor.nominalCurrent ?? 0)
-      : c.nominalCurrent >= rmsCurrent &&
-        (c.peakCurrent == null || c.peakCurrent >= peakCurrent) &&
-        (c.peakDuration == null || overTime(c) <= c.peakDuration)
+    c.nominalCurrent >= rmsCurrent &&
+    (c.peakCurrent == null || c.peakCurrent >= peakCurrent) &&
+    (c.peakDuration == null || overTime(c) <= c.peakDuration)
   const controller = candidates.find(fits) ?? candidates.at(-1) ?? null
   const preferredItem = data.controllers.find((c) => c.model === motor.preferredController) ?? null
   const preferred = preferredItem && preferredItem.id !== controller?.id ? preferredItem : null
@@ -114,21 +110,12 @@ export function selectController(
   const checks: Check[] = []
   const notes: ControllerSelection['notes'] = []
   if (controller) {
-    if (motor.openLoop) {
-      const c = check('드라이브 정격 전류', motor.nominalCurrent ?? 0, controller.nominalCurrent, 'A')
-      checks.push(
-        c.status === 'fail'
-          ? { ...c, status: 'warn', note: '모터 정격 전류를 낼 수 없어 토크가 선도보다 줄어듭니다' }
-          : { ...c, note: '오픈루프: 모터 정격 전류로 구동' },
-      )
-    } else {
-      checks.push(
-        check('드라이브 정격 전류', rmsCurrent, controller.nominalCurrent, 'A'),
-        check('드라이브 최대 전류', peakCurrent, controller.peakCurrent, 'A'),
-        check('최대 전류 지속 시간', overTime(controller), controller.peakDuration, 's'),
-      )
-    }
-    if (!kt && !motor.openLoop) notes.push({ text: '모터 토크 상수가 없어 전류를 계산하지 못했습니다' })
+    checks.push(
+      check('드라이브 정격 전류', rmsCurrent, controller.nominalCurrent, 'A'),
+      check('드라이브 최대 전류', peakCurrent, controller.peakCurrent, 'A'),
+      check('최대 전류 지속 시간', overTime(controller), controller.peakDuration, 's'),
+    )
+    if (!kt) notes.push({ text: '모터 토크 상수가 없어 전류를 계산하지 못했습니다' })
   } else {
     notes.push({ text: '이 모터에 맞는 드라이브 데이터가 없습니다' })
   }

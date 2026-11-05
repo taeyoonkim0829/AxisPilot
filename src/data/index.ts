@@ -39,7 +39,7 @@ export const guides = items<GuideUnit>(guideFiles)
 
 /** Families of each maker present in the data, sorted by name. */
 /** Festo series in the order the motor step lists them; others (and the other makers) alphabetically after */
-const familyOrder = ['EMMT-AS', 'EMMT-ST', 'EMMT-EC', 'EMMB-AS', 'EMMB-ST', 'EMMS-ST', 'EMMH-AS']
+const familyOrder = ['EMMT-AS', 'EMMT-ST', 'EMMT-EC', 'EMMB-AS', 'EMMB-ST', 'EMMH-AS']
 const familyRank = (f: string) => (familyOrder.includes(f) ? familyOrder.indexOf(f) : familyOrder.length)
 
 export const motorFamilies = Object.fromEntries(

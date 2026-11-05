@@ -117,7 +117,8 @@ describe('attachKit', () => {
   })
 
   it('warns when no kit fits and sorts motors by the combined verdict', () => {
-    const noCode = motors.find((m) => m.interfaceCode === null && m.maker === 'Festo')!
+    // a Festo motor without an interface code (every one in the data has one)
+    const noCode = { ...motors.find((m) => m.maker === 'Festo')!, id: 'no-code', interfaceCode: null }
     const results = selectMotors(ev, [motor('HG-KR43'), noCode], settings, (d) => attachKit(ev, d, kits, settings))
     const bare = results.find((r) => r.motor.id === noCode.id)!
     expect(bare.kit).toBeNull()
