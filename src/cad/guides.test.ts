@@ -44,7 +44,7 @@ function inputs(axisId: string, kitProduct: string, motorModel: string, r: Requi
 
 describe('guides in the combination drawing', () => {
   it('puts the EAGF on the ESBF front flange, the payload on its yoke plate', async () => {
-    const { selection, found, twin, req: r } = inputs('ESBF-BS-32-…-5P', 'EAMM-A-D32-42A', 'EMMB-ST-42-S', req, { ...settings, externalGuide: true })
+    const { selection, found, twin, req: r } = inputs('ESBF-BS-32-…-5P', 'EAMM-A-D32-42A', 'EMMB-ST-42-S', { ...req, parallel: { ...defaultParallel, mode: 'guides' as const, guideAxis: true } }, settings)
     expect(selection!.guide?.model).toBe('EAGF-V2-KF-32-300')
     expect(found!.guide?.model).toBe('EAGF-V2-KF-32-400')
     const combo = await buildCombo(selection!, found!, r, load, undefined, twin)

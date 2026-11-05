@@ -199,7 +199,7 @@ The slide offset curves (figures 15–18) are not used. Drawings: `shafts/Festo/
 
 ## Guides without drive (`guides/Festo/EAGF.json`, `EGC-FA.json`, `ELFD.json`)
 
-`kind: 'cylinder'`: the guide unit EAGF-V2-KF on an ESBF of the same size (applied with ESBF 외부 가이드 (EAGF), `Settings.externalGuide`), from the EAGF catalog (2026/03, "EAGF-V2-KF with ESBF" p.10–12, ordering data p.22) and its calculation example (EAGF_ADD, 2024/04). `kind: 'axis'`: the guide axes EGC-FA (catalog 2026/05, p.7–11, module numbers p.35) beside an EGC and ELFD (catalog 2026/08, p.5, 7–8, 11, 26) beside an ELGD, of the same size, in place of LM guides (가이드 축 with 가이드 종류 = 가이드 축, `ParallelConfig.guideAxis`).
+`kind: 'cylinder'`: the guide unit EAGF-V2-KF on an ESBF of the same size (applied with 축 구성 가이드 축, 가이드 종류 Festo), from the EAGF catalog (2026/03, "EAGF-V2-KF with ESBF" p.10–12, ordering data p.22) and its calculation example (EAGF_ADD, 2024/04). `kind: 'axis'`: the guide axes EGC-FA (catalog 2026/05, p.7–11, module numbers p.35) beside an EGC and ELFD (catalog 2026/08, p.5, 7–8, 11, 26) beside an ELGD, of the same size, in place of LM guides (가이드 축 with 가이드 종류 = 가이드 축, `ParallelConfig.guideAxis`).
 
 | Field | Meaning |
 |---|---|

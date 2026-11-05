@@ -92,7 +92,7 @@ export interface AxisEvaluation {
   noLoadTorque: number
   /** twinShaft: the Festo KSK connecting shaft fitted between the axes; null without one */
   shaft: ShaftFit | null
-  /** the guide without drive: EAGF on an ESBF with 외부 가이드 사용, or the guide axes (EGC-FA / ELFD) in place of
+  /** the guide without drive: EAGF on an ESBF with the Festo guide (축 구성 가이드 축), or the guide axes (EGC-FA / ELFD) in place of
    *  the LM guides; null without one */
   guide: GuideFit | null
 }
@@ -305,6 +305,9 @@ export interface ParallelLayout {
   guideMass: number
   /** kg·cm², connecting shaft at the axis drive shaft (one motor driving two axes), as entered; a fitted KSK replaces it */
   shaftInertia: number
+  /** m, lateral position of a drive that only pushes (ESBF between LM guides): `positions` are then the guides alone,
+   *  which take every load, the travel forces' yaw about this line included */
+  pushY?: number
 }
 
 const SINGLE: ParallelLayout = {
@@ -354,9 +357,8 @@ export function parallelLayout(req: Requirements): ParallelLayout {
 }
 
 /** Payload COG relative to the (first) axis slide centre, as the drawing places it (only that axis is drawn). */
-export function axisCog(req: Requirements): Requirements['cog'] {
-  const layout = parallelLayout(req)
-  const axisY = layout.positions[layout.isAxis.indexOf(true)] * 1000
+export function axisCog(req: Requirements, layout = parallelLayout(req)): Requirements['cog'] {
+  const axisY = (layout.pushY ?? layout.positions[layout.isAxis.indexOf(true)]) * 1000
   return { ...req.cog, y: req.cog.y - axisY }
 }
 
@@ -389,15 +391,21 @@ function slideForces(req: Requirements, mass: number, accel: number) {
  */
 export function memberLoads(req: Requirements, mass: number, accel: number, layout: ParallelLayout): GuideLoads[] {
   const n = layout.positions.length
-  if (n === 1) return [guideLoads(req, mass, accel)]
   const x = Math.abs(req.cog.x) / 1000
   const y = req.cog.y / 1000
   const z = Math.abs(req.cog.z) / 1000
+  if (n === 1) {
+    // the member at its position; a pushing drive beside it leaves it the yaw of the travel forces about the drive
+    const one = guideLoads({ ...req, cog: { ...req.cog, y: req.cog.y - layout.positions[0] * 1000 } }, mass, accel)
+    if (layout.pushY == null) return [one]
+    const f = slideForces(req, mass, accel)
+    return [{ ...one, Mz: x * f.lateral + Math.abs(y - layout.pushY) * f.travel }]
+  }
   const f = slideForces(req, mass, accel)
   const mean = layout.positions.reduce((a, b) => a + b, 0) / n
   const spread = layout.positions.reduce((sum, p) => sum + (p - mean) ** 2, 0)
   // Arm of the travel-direction forces about the single driving axis
-  const yaw = layout.axes > 1 ? 0 : Math.abs(y - layout.positions[layout.isAxis.indexOf(true)])
+  const yaw = layout.axes > 1 ? 0 : Math.abs(y - (layout.pushY ?? layout.positions[layout.isAxis.indexOf(true)]))
   return layout.positions.map((p) => {
     const d = p - mean
     return {
@@ -546,12 +554,26 @@ export function evaluateAxis(
   const noLoad = options?.belt?.noLoadTorque ?? support?.noLoadTorque ?? axis.noLoadTorque
   // Parallel arrangement: with two axes each carries its share of the payload (the more loaded one is checked);
   // LM guides add their moving mass to the axis drive.
-  const arrangement = parallelLayout(req)
+  const arranged = parallelLayout(req)
+  const cylinder = axis.rodLateralForceCurve != null
+  const festoGuide = arranged.mode === 'guides' && !!req.parallel?.guideAxis
   // Guides without drive: the guide axes of the axis's profile in place of the LM guides (their slides add to the
-  // entered mass per guide), the EAGF on an electric cylinder with an external guide; both add their displacement force.
-  const guideAxis =
-    arrangement.mode === 'guides' && req.parallel?.guideAxis ? guideAxisFor(axis, builtStroke, arrangement.guides, guides) : null
-  const cylinderGuide = settings.externalGuide && axis.rodLateralForceCurve ? cylinderGuideFor(axis, builtStroke, guides) : null
+  // entered mass per guide), the EAGF on an electric cylinder (Festo guide: one, on its front flange, so the
+  // arrangement is a single axis); both add their displacement force.
+  const guideAxis = festoGuide && !cylinder ? guideAxisFor(axis, builtStroke, arranged.guides, guides) : null
+  const cylinderGuide = festoGuide && cylinder ? cylinderGuideFor(axis, builtStroke, guides) : null
+  // An electric cylinder between LM guides (3rd Party) only pushes: the guides take the loads.
+  const pushOnly = cylinder && arranged.mode === 'guides' && !festoGuide
+  const arrangement: ParallelLayout = festoGuide && cylinder
+    ? SINGLE
+    : pushOnly
+      ? {
+          ...arranged,
+          positions: arranged.positions.filter((_, i) => !arranged.isAxis[i]),
+          isAxis: arranged.positions.filter((_, i) => !arranged.isAxis[i]).map(() => false),
+          pushY: arranged.positions[arranged.isAxis.indexOf(true)],
+        }
+      : arranged
   const layout = guideAxis ? { ...arrangement, guideMass: arrangement.guideMass + guideAxis.count * guideAxis.movingMass } : arrangement
   const guideDrag = cylinderGuide
     ? (cylinderGuide.guide.displacementForce ?? 0)
@@ -711,19 +733,22 @@ export function evaluateAxis(
   const mean = offsets.reduce((a, b) => a + b, 0) / offsets.length
   const slidePositions = slideCount && !req.mainSlide ? offsets.map((x) => x - mean) : [0]
   const axisLoads = members.filter((_, i) => layout.isAxis[i]).map((l) => slideGroupLoads(l, slidePositions))
-  const loads = axisLoads.reduce((a, b) => (guideComparisonValue(b, axis).fv > guideComparisonValue(a, axis).fv ? b : a))
+  // (none on a cylinder that only pushes)
+  const loads = axisLoads.length
+    ? axisLoads.reduce((a, b) => (guideComparisonValue(b, axis).fv > guideComparisonValue(a, axis).fv ? b : a))
+    : { Fy: 0, Fz: 0, Mx: 0, My: 0, Mz: 0 }
   let fv = 0
   // fv of the guide without drive (EAGF, or the most loaded guide axis)
   let guideUnitFv = 0
   if (axis.rodLateralForceCurve) {
     // Electric cylinder: without an external guide the payload hangs on the piston rod.
-    const lateral = Math.max(...axisLoads.map((l) => Math.hypot(l.Fy, l.Fz)))
+    const lateral = Math.max(0, ...axisLoads.map((l) => Math.hypot(l.Fy, l.Fz)))
     checks.push(
       cylinderGuide
         ? { ...check('로드 횡하중 Fq', lateral, null, 'N', '{model}이 부하를 받음 — 검토 생략'), noteArgs: { model: cylinderGuide.model } }
-        : settings.externalGuide
-        ? check('로드 횡하중 Fq', lateral, null, 'N', '외부 가이드 사용 — 검토 생략')
-        : { ...check('로드 횡하중 Fq', lateral, curveAt(axis.rodLateralForceCurve, req.stroke), 'N'), note: '무게 중심 오프셋에 의한 모멘트는 포함하지 않음' },
+        : pushOnly
+          ? check('로드 횡하중 Fq', lateral, null, 'N', 'LM 가이드가 부하를 받음 — 검토 생략, 로드는 플로팅 조인트로 연결')
+          : { ...check('로드 횡하중 Fq', lateral, curveAt(axis.rodLateralForceCurve, req.stroke), 'N'), note: '무게 중심 오프셋에 의한 모멘트는 포함하지 않음' },
     )
     // The EAGF carries the payload and its own moving mass at the rod fully extended
     if (cylinderGuide) {
@@ -833,7 +858,9 @@ export function evaluateAxis(
       note: '{model}, 주문번호 {partNumber}, 1개 {mass} kg (이동 질량 {moving} kg)',
       noteArgs: { model: guideFit.model, partNumber: guideFit.partNumber, mass: round1(guideFit.mass), moving: round1(guideFit.movingMass) },
     })
-  else if (layout.mode === 'guides' && req.parallel?.guideAxis)
+  else if (festoGuide && cylinder)
+    info.push({ label: '가이드 유닛', value: Number.NaN, unit: '', note: '이 실린더에 맞는 EAGF가 없어 로드가 부하를 받는 것으로 계산' })
+  else if (festoGuide)
     info.push({ label: '가이드 축', value: Number.NaN, unit: '', note: '이 축에 맞는 가이드 축(EGC-FA / ELFD)이 없어 LM 가이드로 계산' })
   if (guideUnitFv > 0) {
     const km = GUIDE_REFERENCE_LIFE_KM / guideUnitFv ** 3

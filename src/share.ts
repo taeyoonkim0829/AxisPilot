@@ -94,9 +94,15 @@ function withDefaults(s: Partial<Shared> & { mode?: string }): Shared | null {
   if (s.mode === 'single') {
     const v = s as Partial<SingleShare>
     if (!v.req) return null
+    // links from before the EAGF moved to 축 구성: 외부 가이드 on → the Festo guide
+    const eagf = (v.settings as { externalGuide?: boolean } | undefined)?.externalGuide && (v.req.parallel?.mode ?? 'single') === 'single'
     return {
       mode: 'single',
-      req: { ...v.req, press: { ...defaultPress, ...v.req.press } },
+      req: {
+        ...v.req,
+        press: { ...defaultPress, ...v.req.press },
+        ...(eagf ? { parallel: { ...defaultParallel, ...v.req.parallel, mode: 'guides' as const, guideAxis: true } } : {}),
+      },
       settings: { ...defaultSettings, ...v.settings },
       picks: { ...noPicks, ...v.picks },
       profileView: v.profileView ?? 'cycle',

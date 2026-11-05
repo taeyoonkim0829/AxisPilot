@@ -204,6 +204,7 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
               : []),
             ['무게 중심 X / Y / Z', `${fmt(req.cog.x)} / ${fmt(req.cog.y)} / ${fmt(req.cog.z)} mm`],
             ['축 구성', t(parallelModeLabel[layout.mode])],
+            ...(axis.guide?.guide.kind === 'cylinder' ? ([['가이드 유닛', axis.guide.model]] as Row[]) : []),
             ...(layout.mode !== 'single'
               ? ([
                   [layout.guides ? '축–가이드 간격' : '축 간격', q(req.parallel!.spacing, 'mm')],
@@ -211,7 +212,7 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
                     ? ([
                         [axis.guide ? '가이드 축' : '가이드 수', axis.guide ? `${axis.guide.model} × ${layout.guides}` : String(layout.guides)],
                         ...(layout.guides >= 2
-                          ? ([['축 위치', t(layout.isAxis[0] ? '가장자리' : '가운데')]] as Row[])
+                          ? ([['축 위치', t(req.parallel!.guideAxisEdge ? '가장자리' : '가운데')]] as Row[])
                           : []),
                         [axis.guide ? '가이드 1개 추가 질량' : '가이드 1개 이동 질량', q(req.parallel!.guideMass, 'kg')],
                       ] as Row[])
@@ -245,9 +246,6 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
             ['감속기', settings.useGearbox ? t('감속기 사용') : t('감속기 미사용')],
             ['표준 스트로크', settings.standardStroke ? t('사용') : t('미사용')],
             ...(axis.axis.spindleSupport ? ([['스핀들 서포트', axis.spindleSupport ? t('사용') : t('미사용')]] as Row[]) : []),
-            ...(axis.axis.family === 'ESBF'
-              ? ([['ESBF 외부 가이드', settings.externalGuide ? (axis.guide ? axis.guide.model : t('사용 (로드 횡하중 검토 생략)')) : t('미사용')]] as Row[])
-              : []),
           ]}
         />
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { axes, gearboxes, kits, motors, shafts } from '../data'
+import { axes, gearboxes, guides, kits, motors, shafts } from '../data'
 import type { Axis, Gearbox, Motor } from '../data/types'
 import { axisOrder, curveAt, evaluateAxis, guideLoads, memberLoads, parallelLayout, selectAxes, G } from './axisSelection'
 import { evaluateDrive, gearboxOptionsFor, gearboxStatus, selectMotors } from './motorSelection'
@@ -319,7 +319,7 @@ describe('selection on real data', () => {
     for (const a of esbf) expect(kits.some((k) => k.axisCode === a.interfaceCode), a.id).toBe(true)
     expect(esbf.every((a) => a.baseMass < 20)).toBe(true)
     expect(esbf.every((a) => (a.screwDynamicLoadRating ?? 0) > 0)).toBe(true)
-    expect(selectAxes(esbf, baseReq, { ...defaultSettings, externalGuide: true }).some((r) => r.status !== 'fail')).toBe(true)
+    expect(selectAxes(esbf, { ...baseReq, parallel: { ...defaultParallel, mode: 'guides' as const, guideAxis: true } }, defaultSettings, [], guides).some((r) => r.status !== 'fail')).toBe(true)
     // The piston rod grows with the stroke: moving mass mb = mb0 + mb10 · stroke / 10.
     const esbf63 = esbf.find((a) => a.id === 'ESBF-BS-63-…-10P')!
     expect(evaluateAxis(esbf63, baseReq, defaultSettings)!.movingMass).toBeCloseTo(10 + 1.831 + 0.052 * 50)
@@ -338,7 +338,7 @@ describe('selection on real data', () => {
     const lateral = checkOf(500).find((c) => c.label === '로드 횡하중 Fq')!
     expect(lateral.value).toBeCloseTo((10 + 1.831 + 0.052 * 50) * G)
     expect(lateral.status).toBe('fail')
-    const guided = evaluateAxis(esbf63, baseReq, { ...defaultSettings, externalGuide: true })!
+    const guided = evaluateAxis(esbf63, { ...baseReq, parallel: { ...defaultParallel, mode: 'guides' as const, guideAxis: true } }, defaultSettings, [], guides)!
     expect(guided.checks.find((c) => c.label === '로드 횡하중 Fq')!.status).toBe('ok')
     expect(guided.status).not.toBe('fail')
     expect(checkOf(500).some((c) => c.label === '가이드 하중 비교값 fv')).toBe(false)

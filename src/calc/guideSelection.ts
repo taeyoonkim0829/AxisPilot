@@ -1,4 +1,4 @@
-// Guides without drive (data/guides): the EAGF guide unit on an electric cylinder (ESBF with 외부 가이드 사용) and
+// Guides without drive (data/guides): the EAGF guide unit on an electric cylinder (ESBF with the Festo guide (축 구성 가이드 축)) and
 // the guide axes EGC-FA / ELFD beside an EGC / ELGD in place of LM guides. Order code, masses and the load checks.
 import type { Axis, GuideUnit } from '../data/types'
 import type { GuideLoads } from './axisSelection'

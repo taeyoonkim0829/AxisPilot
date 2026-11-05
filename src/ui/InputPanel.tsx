@@ -68,22 +68,29 @@ export function InputPanel({ req, settings, onReq, onSettings, mode, onMode, axi
   }
   const minTime = minAccelTime(req.velocity, req.jerk)
 
+  // Pressing on the floor or a wall: the EAGF (축 구성 가이드 축, Festo) carries the payload by default; vertical: none.
+  const pressGuide = (mounting: Mounting): ParallelConfig =>
+    mounting === 'vertical' ? { ...parallel, mode: 'single' } : { ...parallel, mode: 'guides', guideAxis: true }
+
   const setMounting = (mounting: Mounting) => {
-    onReq({ ...req, mounting })
+    onReq({ ...req, mounting, ...(press.enabled ? { parallel: pressGuide(mounting) } : {}) })
     // A vertical axis must not drop the load on power loss.
-    const next = { ...settings, requireBrake: mounting === 'vertical' }
-    // Pressing on the floor or a wall: an external guide carries the payload by default; vertical: none.
-    if (press.enabled) next.externalGuide = mounting !== 'vertical'
-    onSettings(next)
+    onSettings({ ...settings, requireBrake: mounting === 'vertical' })
   }
 
-  // Pressing defaults to ball screw axes and ESBF (external guide unless vertical); 일반 restores every axis.
+  // Pressing defaults to ball screw axes and ESBF (with the EAGF unless vertical); 일반 restores every axis and
+  // takes the EAGF off.
   const setApplication = (pressing: boolean) => {
-    setPress('enabled', pressing)
+    const eagf = parallel.mode === 'guides' && parallel.guideAxis
+    onReq({
+      ...req,
+      press: { ...press, enabled: pressing },
+      parallel: pressing ? pressGuide(req.mounting) : eagf ? { ...parallel, mode: 'single' } : parallel,
+    })
     onSettings(
       pressing
-        ? { ...settings, drives: ['spindle'], families: ['ESBF'], externalGuide: req.mounting !== 'vertical' }
-        : { ...settings, drives: defaultSettings.drives, families: defaultSettings.families, externalGuide: defaultSettings.externalGuide },
+        ? { ...settings, drives: ['spindle'], families: ['ESBF'] }
+        : { ...settings, drives: defaultSettings.drives, families: defaultSettings.families },
     )
   }
 
@@ -240,7 +247,12 @@ export function InputPanel({ req, settings, onReq, onSettings, mode, onMode, axi
         )}
       </section>
 
-      <ParallelSection parallel={parallel} onParallel={(p) => onReq({ ...req, parallel: p })} noGuideAxis={axisFamily === 'ELGT'} />
+      <ParallelSection
+        parallel={parallel}
+        onParallel={(p) => onReq({ ...req, parallel: p })}
+        noGuideAxis={axisFamily === 'ELGT'}
+        cylinder={axisFamily === 'ESBF'}
+      />
 
       <DetailSettings settings={settings} onSettings={onSettings} />
     </aside>
@@ -254,6 +266,7 @@ export function ParallelSection({
   title = '축 구성',
   spacingNote,
   noGuideAxis,
+  cylinder,
 }: {
   parallel: ParallelConfig
   onParallel: (p: ParallelConfig) => void
@@ -262,9 +275,15 @@ export function ParallelSection({
   spacingNote?: string
   /** the selected axis has no Festo guide axis (ELGT) */
   noGuideAxis?: boolean
+  /** the selected axis is an electric cylinder (ESBF): its Festo guide is one EAGF on the front flange, and between
+   *  LM guides it only pushes */
+  cylinder?: boolean
 }) {
   const t = useT()
   const setParallel = <K extends keyof ParallelConfig>(key: K, value: ParallelConfig[K]) => onParallel({ ...parallel, [key]: value })
+  const guides = parallel.mode === 'guides'
+  // the EAGF: one unit on the cylinder, no count, spacing or mass to enter
+  const eagf = guides && parallel.guideAxis && cylinder
   return (
     <section className="panel application">
       <h2>{t(title)}</h2>
@@ -276,7 +295,7 @@ export function ParallelSection({
         label={(m) => t(parallelModeLabel[m])}
       />
       {parallelModeHint[parallel.mode] && <p className="field-hint application-hint">{t(parallelModeHint[parallel.mode]!)}</p>}
-      {parallel.mode === 'guides' && (
+      {guides && !eagf && (
         <CountField
           label={t('가이드 수')}
           value={guidePositions(parallel).guides}
@@ -295,9 +314,14 @@ export function ParallelSection({
             label={(v) => (v === 'axis' ? 'Festo' : '3rd Party')}
           />
           {parallel.guideAxis && noGuideAxis && <p className="field-hint">{t('호환 가이드 축 없음')}</p>}
+          {guides && cylinder && (
+            <p className="field-hint">
+              {t(eagf ? 'ESBF: 앞 플랜지의 EAGF 1개가 부하를 받음' : 'ESBF: LM 가이드가 부하를 받고 ESBF는 이송력만 제공 (플로팅 조인트로 연결)')}
+            </p>
+          )}
         </div>
       )}
-      {parallel.mode === 'guides' && guidePositions(parallel).guides >= 2 && (
+      {guides && !eagf && guidePositions(parallel).guides >= 2 && (
         <div className="field">
           <span className="field-label">{t('축 위치')}</span>
           <RadioGroup
@@ -308,7 +332,7 @@ export function ParallelSection({
           />
         </div>
       )}
-      {parallel.mode !== 'single' && (
+      {parallel.mode !== 'single' && !eagf && (
         <div className="grid-2">
           <NumberField
             label={t(parallel.mode === 'guides' ? '축–가이드 간격' : '축 간격')}

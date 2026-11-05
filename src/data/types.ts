@@ -486,7 +486,7 @@ export interface AxisAdapter {
 
 /**
  * A guide without drive (data/guides): `cylinder` = guide unit on an electric cylinder (EAGF on ESBF, the yoke
- * plate on the piston rod, used with 외부 가이드 사용); `axis` = guide axis beside a drive axis of the same profile
+ * plate on the piston rod, used with the Festo guide (축 구성 가이드 축)); `axis` = guide axis beside a drive axis of the same profile
  * (EGC-FA beside EGC, ELFD beside ELGD), in place of an LM guide of a parallel arrangement.
  */
 export interface GuideUnit {

@@ -25,18 +25,35 @@ describe('EAGF guide unit', () => {
     expect(cylinderGuideFor(esbf, 250, guides)!.partNumber).toBe('3038083')
   })
 
-  it('checks the EAGF instead of the rod lateral force when the external guide is on', () => {
-    const ev = evaluateAxis(esbf, req, { ...settings, externalGuide: true }, [], guides)!
+  const eagf = { ...req, parallel: { ...defaultParallel, mode: 'guides' as const, guideAxis: true } }
+
+  it('checks the EAGF instead of the rod lateral force when the Festo guide is chosen', () => {
+    const ev = evaluateAxis(esbf, eagf, settings, [], guides)!
     expect(ev.guide?.guide.family).toBe('EAGF')
     expect(ev.checks.find((c) => c.label === '가이드 유닛 하중 비교값 fv')!.status).toBe('ok')
     expect(ev.checks.find((c) => c.label === '로드 횡하중 Fq')!.limit).toBeNull()
     // its moving mass moves with the rod, its displacement force adds to the resistance
-    const plain = evaluateAxis(esbf, req, { ...settings, externalGuide: false }, [], guides)!
+    const plain = evaluateAxis(esbf, req, settings, [], guides)!
     expect(plain.guide).toBeNull()
     expect(ev.movingMass - plain.movingMass).toBeCloseTo(ev.guide!.movingMass)
     // beyond its 500 mm stroke the EAGF fails
-    const long = evaluateAxis(esbf, { ...req, stroke: 600 }, { ...settings, externalGuide: true }, [], guides)!
+    const long = evaluateAxis(esbf, { ...eagf, stroke: 600 }, settings, [], guides)!
     expect(long.checks.find((c) => c.label === '가이드 유닛 스트로크')!.status).toBe('fail')
+    // one EAGF on the flange: the arrangement is a single axis, whatever count and spacing were entered
+    expect(ev.layout.mode).toBe('single')
+  })
+
+  it('lets an ESBF between LM guides only push: the guides take the loads', () => {
+    const lm = { ...req, cog: { x: 15, y: 50, z: 0 }, parallel: { ...defaultParallel, mode: 'guides' as const, guideAxis: false, guideCount: 2, guideAxisEdge: false, spacing: 200, guideMass: 0.5 } }
+    const ev = evaluateAxis(esbf, lm, settings, [], guides)!
+    expect(ev.guide).toBeNull()
+    const rod = ev.checks.find((c) => c.label === '로드 횡하중 Fq')!
+    expect(rod.limit).toBeNull()
+    expect(rod.value).toBe(0)
+    // the guides at ∓200 mm (the cylinder between them) share the weight by the lever rule: 50 mm towards the + guide
+    expect(ev.info.find((i) => i.label === 'LM 가이드 하중 Fz')!.value).toBeCloseTo((0.5 + (0.05 * 0.2) / 0.08) * ev.movingMass * G)
+    // the feed force still covers the guides' moving mass
+    expect(ev.movingMass).toBeCloseTo(evaluateAxis(esbf, req, settings, [], guides)!.movingMass + 1)
   })
 })
 

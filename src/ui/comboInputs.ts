@@ -17,7 +17,7 @@ export function comboInputs(
   input: Requirements,
 ): { selection: ComboSelection | null; found: ComboDrawings | null; twin: TwinAxis | undefined; req: Requirements } {
   // The drawing is built from the first axis: the COG is placed relative to its slide centre.
-  const req = { ...input, cog: axisCog(input) }
+  const req = { ...input, cog: axisCog(input, axis?.layout) }
   const selection: ComboSelection | null =
     axis && drive && kit
       ? {
