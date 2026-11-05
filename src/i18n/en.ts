@@ -681,6 +681,8 @@ export const en: Record<string, string> = {
   '가이드 축 표준 슬라이드 하중값 기준 (긴 슬라이드 값 없음)': "standard slide's load values of the guide axis (none given for the extended slide)",
   'LM 가이드가 부하를 받음 — 검토 생략, 로드는 플로팅 조인트로 연결': 'The LM guides carry the load; not checked. Connect the rod with a floating joint',
   '이 실린더에 맞는 EAGF가 없어 로드가 부하를 받는 것으로 계산': 'No EAGF fits this cylinder: calculated with the rod carrying the load',
+  'ESBF 수평 설치: 로드는 횡하중에 약하므로 가이드 축 추가를 권장합니다 (Festo = EAGF, 3rd Party = LM 가이드)':
+    'ESBF mounted horizontally: the piston rod takes little lateral load, adding a guide axis is recommended (Festo = EAGF, 3rd Party = LM guides)',
   'ESBF: 앞 플랜지의 EAGF 1개가 부하를 받음': 'ESBF: one EAGF on the front flange carries the load',
   'ESBF: LM 가이드가 부하를 받고 ESBF는 이송력만 제공 (플로팅 조인트로 연결)': 'ESBF: the LM guides carry the load, the ESBF only provides the feed force (connected by a floating joint)',
   '가이드': 'Guide',
