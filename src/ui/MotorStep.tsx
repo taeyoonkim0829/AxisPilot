@@ -44,6 +44,9 @@ const supplyFor = (family: string, current: Supply) => {
   return offered.includes(current) || !offered.length ? current : offered[0]
 }
 
+/** Festo motor names with their length code as its rank, so each size sorts S, M, L, H (EMMT-AS-60-S before -M) */
+const lengthOrdered = (model: string) => model.replace(/^(EM[A-Z]+-[A-Z]+-\d+-)([SMLH])(?=-|$)/, (_, head: string, l: string) => head + 'SMLH'.indexOf(l))
+
 const ROW_LIMIT = 60
 
 export function MotorStep({ results, selected, onSelect, settings, onSettings, layout, gearboxOptions, onSelectGearbox }: Props) {
@@ -60,7 +63,7 @@ export function MotorStep({ results, selected, onSelect, settings, onSettings, l
   } = useSort(showFailed ? results : passing, {
     status: (d) => statusRank[d.status],
     maker: (d) => d.motor.maker,
-    model: (d) => d.motor.model,
+    model: (d) => lengthOrdered(d.motor.model),
     power: (d) => d.motor.ratedPower,
     gearbox: (d) => d.gearbox?.ratio ?? 1,
     peak: (d) => d.peakTorque / d.motor.peakTorque,
