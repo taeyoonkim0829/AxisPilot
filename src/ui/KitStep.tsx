@@ -1,7 +1,7 @@
 import { orderKits, type KitEvaluation, type KitMatch, type KitNote, type KitType } from '../calc/kitSelection'
 import type { Kit } from '../data/types'
 import { useT } from '../i18n'
-import { CheckTable, Ratio, StatusBadge } from './common'
+import { CheckTable, InfoTable, Ratio, StatusBadge } from './common'
 
 interface Props {
   /** null until a motor is selected */
@@ -139,17 +139,16 @@ function KitDetail({ evaluation }: { evaluation: KitEvaluation }) {
 }
 
 export function KitSpecs({ kit }: { kit: Kit }) {
-  const t = useT()
   const fmtOr = (v: number | null | undefined, unit: string) => (v == null ? '—' : `${v} ${unit}`)
   return (
-    <p className="muted small-print">
-      {t('전달 토크 {torque} · 관성 {inertia} · 최대 회전수 {speed}', {
-        torque: fmtOr(kit.transmissibleTorque, 'Nm'),
-        inertia: fmtOr(kit.inertia, 'kg·cm²'),
-        speed: fmtOr(kit.maxSpeed, 'rpm'),
-      })}
-      {kit.noLoadTorque != null && ` · ${t('무부하 토크 {torque}', { torque: `${kit.noLoadTorque} Nm` })}`}
-    </p>
+    <InfoTable
+      rows={[
+        { label: '전달 토크', value: fmtOr(kit.transmissibleTorque, 'Nm') },
+        { label: '관성', value: fmtOr(kit.inertia, 'kg·cm²') },
+        { label: '최대 회전수', value: fmtOr(kit.maxSpeed, 'rpm') },
+        ...(kit.noLoadTorque != null ? [{ label: '무부하 토크', value: `${kit.noLoadTorque} Nm` }] : []),
+      ]}
+    />
   )
 }
 

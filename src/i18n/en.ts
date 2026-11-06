@@ -347,8 +347,8 @@ export const en: Record<string, string> = {
   '타사 모터: 키트 매뉴얼의 타사 모터 인터페이스 표에서 축 지름·축 길이·플랜지가 맞는지 확인하세요.':
     "Third-party motor: check shaft diameter, shaft length and flange against the kit manual's third-party motor interface table.",
   '전달 토크': 'Transferable torque',
-  '전달 토크 {torque} · 관성 {inertia} · 최대 회전수 {speed}': 'Transferable torque {torque} · inertia {inertia} · max. speed {speed}',
-  '무부하 토크 {torque}': 'No-load torque {torque}',
+  '관성': 'Inertia',
+  '값': 'Value',
   '추가 검토사항': 'Further checks',
   '관성 모멘트': 'Mass moment of inertia',
   '무부하 토크': 'No-load torque',

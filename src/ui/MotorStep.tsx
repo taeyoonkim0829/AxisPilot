@@ -4,7 +4,7 @@ import { motorSupply, type DriveEvaluation } from '../calc/motorSelection'
 import type { Settings, Supply } from '../calc/types'
 import { motorFamilies, motors } from '../data'
 import type { MotorMaker } from '../data/types'
-import { CheckTable, CollapseTitle, RadioGroup, Ratio, SortTh, StatusBadge, ToggleButton } from './common'
+import { CheckTable, CollapseTitle, InfoTable, RadioGroup, Ratio, SortTh, StatusBadge, ToggleButton } from './common'
 import { statusRank, useSort } from './useSort'
 import { translateData, useLang, useT } from '../i18n'
 import { DrivePackage } from './DrivePackage'
@@ -248,36 +248,17 @@ export function MotorStep({ results, selected, onSelect, settings, onSettings, l
                   onCableLength={(cableLength) => onSettings({ ...settings, cableLength })}
                 />
               )}
-              <dl className="info">
-                {selected.motor.orderCode && (
-                  <div>
-                    <dt>{t('주문 형식 / 주문번호')}</dt>
-                    <dd>
-                      {selected.motor.orderCode} / {selected.motor.partNumber ?? '—'}
-                    </dd>
-                  </div>
-                )}
-                <div>
-                  <dt>{t('시리즈')}</dt>
-                  <dd>{translateData(lang, [selected.motor.series, selected.motor.description].filter(Boolean).join(' · ')) || '—'}</dd>
-                </div>
-                <div>
-                  <dt>{t('정격 / 최대 토크')}</dt>
-                  <dd>
-                    {fmt(selected.motor.ratedTorque, 3)} / {fmt(selected.motor.peakTorque, 3)} Nm
-                  </dd>
-                </div>
-                <div>
-                  <dt>{t('로터 관성')}</dt>
-                  <dd>{fmt(selected.motor.inertia, 4)} kg·cm²</dd>
-                </div>
-                {selected.motor.amplifier && (
-                  <div>
-                    <dt>{t('드라이브')}</dt>
-                    <dd>{selected.motor.amplifier}</dd>
-                  </div>
-                )}
-              </dl>
+              <InfoTable
+                rows={[
+                  ...(selected.motor.orderCode
+                    ? [{ label: '주문 형식 / 주문번호', value: `${selected.motor.orderCode} / ${selected.motor.partNumber ?? '—'}` }]
+                    : []),
+                  { label: '시리즈', value: translateData(lang, [selected.motor.series, selected.motor.description].filter(Boolean).join(' · ')) || '—' },
+                  { label: '정격 / 최대 토크', value: `${fmt(selected.motor.ratedTorque, 3)} / ${fmt(selected.motor.peakTorque, 3)} Nm` },
+                  { label: '로터 관성', value: `${fmt(selected.motor.inertia, 4)} kg·cm²` },
+                  ...(selected.motor.amplifier ? [{ label: '드라이브', value: selected.motor.amplifier }] : []),
+                ]}
+              />
             </>
           )}
         </div>

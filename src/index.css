@@ -1420,26 +1420,27 @@ th.num {
   overflow-x: auto;
 }
 
+.info-table {
+  margin-top: 16px;
+}
+
 .check-table td:first-child {
   font-weight: 500;
 }
 
-.profile,
-.info {
+.profile {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 10px 20px;
   margin: 16px 0 0;
 }
 
-.profile dt,
-.info dt {
+.profile dt {
   font-size: 12px;
   color: var(--muted);
 }
 
-.profile dd,
-.info dd {
+.profile dd {
   margin: 0;
   font-family: var(--din);
   font-size: 16px;

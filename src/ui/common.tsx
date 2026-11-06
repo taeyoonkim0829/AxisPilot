@@ -67,6 +67,42 @@ export function CheckTable({ checks }: { checks: Check[] }) {
   )
 }
 
+export interface InfoRow {
+  /** translated here */
+  label: string
+  value: ReactNode
+  /** translated */
+  note?: string
+  /** value in red */
+  alert?: boolean
+}
+
+/** The values listed under a 세부사항 heading; the 비고 column only when a row has a note. */
+export function InfoTable({ rows }: { rows: InfoRow[] }) {
+  const t = useT()
+  const notes = rows.some((r) => r.note)
+  return (
+    <table className="check-table info-table">
+      <thead>
+        <tr>
+          <th>{t('항목')}</th>
+          <th>{t('값')}</th>
+          {notes && <th>{t('비고')}</th>}
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((r) => (
+          <tr key={r.label}>
+            <td>{t(r.label)}</td>
+            <td className={r.alert ? 'fail-text' : undefined}>{r.value}</td>
+            {notes && <td className="muted">{r.note}</td>}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )
+}
+
 interface NumberFieldProps {
   label: string
   unit?: string

@@ -3,7 +3,7 @@ import { minSlidePitch, slideAxes, type AxisEvaluation } from '../calc/axisSelec
 import { axes } from '../data'
 import type { AdditionalSlideSide, Settings } from '../calc/types'
 import type { AxisFamily, DriveKind } from '../data/types'
-import { CheckTable, CollapseTitle, NumberField, RadioGroup, Ratio, SortTh, StatusBadge, ToggleButton, ToggleGroup } from './common'
+import { CheckTable, CollapseTitle, InfoTable, NumberField, RadioGroup, Ratio, SortTh, StatusBadge, ToggleButton, ToggleGroup } from './common'
 import { statusRank, useSort } from './useSort'
 import { useT } from '../i18n'
 import { axisDetailChecks, axisDetailInfo, driveLabel, fmt, guideDetail } from './format'
@@ -298,23 +298,15 @@ export function AxisStep({ results, selectedId, onSelect, settings, onSettings }
 
 function InfoList({ items }: { items: AxisEvaluation['info'] }) {
   const t = useT()
+  if (items.length === 0) return null
   return (
-    <dl className="info">
-      {items.map((i) => (
-        <div key={i.label}>
-          <dt>{t(i.label)}</dt>
-          <dd className={i.alert ? 'fail-text' : undefined}>
-            {fmt(i.value, 3)} {i.unit}
-            {i.note &&
-              (i.unit === 'km' ? (
-                // life: the years on the line below the km
-                <span className="muted info-below">({t(i.note, i.noteArgs)})</span>
-              ) : (
-                <span className="muted"> ({t(i.note, i.noteArgs)})</span>
-              ))}
-          </dd>
-        </div>
-      ))}
-    </dl>
+    <InfoTable
+      rows={items.map((i) => ({
+        label: i.label,
+        value: `${fmt(i.value, 3)} ${i.unit}`,
+        note: i.note && t(i.note, i.noteArgs),
+        alert: i.alert,
+      }))}
+    />
   )
 }
