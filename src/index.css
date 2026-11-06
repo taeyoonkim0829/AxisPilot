@@ -508,7 +508,7 @@ h3 {
   width: min(760px, calc(100vw - 32px));
 }
 
-/* 축 구성 help: one card per arrangement, the current one marked */
+/* 축 구성 help: one card per arrangement, the current one marked; picking one sets the arrangement */
 .config-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -522,8 +522,17 @@ h3 {
   padding: 8px;
   border: 1px solid var(--line);
   border-radius: 8px;
+  background: none;
+  font: inherit;
   font-size: 12px;
   color: var(--muted);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 150ms ease-out;
+}
+
+.config-card:hover {
+  border-color: var(--line-strong);
 }
 
 .config-card.active {

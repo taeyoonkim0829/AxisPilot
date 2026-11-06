@@ -308,13 +308,20 @@ export function ParallelSection({
       <h2>
         {t(title)}
         <HelpTip title={t(title)}>
-          <div className="config-grid">
+          <div className="config-grid" role="radiogroup" aria-label={t(title)}>
             {(Object.keys(parallelModeLabel) as ParallelMode[]).map((m) => (
-              <div key={m} className={`config-card${m === parallel.mode ? ' active' : ''}`}>
+              <button
+                key={m}
+                type="button"
+                role="radio"
+                aria-checked={m === parallel.mode}
+                className={`config-card${m === parallel.mode ? ' active' : ''}`}
+                onClick={() => m !== parallel.mode && setParallel('mode', m)}
+              >
                 <img src={parallelModeImage[m]} alt="" />
                 <strong>{t(parallelModeLabel[m])}</strong>
                 <span>{t(parallelModeHint[m])}</span>
-              </div>
+              </button>
             ))}
           </div>
         </HelpTip>
