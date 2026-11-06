@@ -23,7 +23,7 @@ import { useT } from '../i18n'
 import { comboInputs, comboKey, shaftTooShort } from './comboInputs'
 import { ComboPreviewPanel } from './ComboPreviewPanel'
 import type { NoteTranslator } from './useComboPreview'
-import { RadioGroup } from './common'
+import { HelpTip, RadioGroup } from './common'
 import { mountingLabel, sideLabel } from './format'
 import { loadText, useComboPreview } from './useComboPreview'
 
@@ -263,11 +263,18 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
         ]
       : []
 
+  const warnings = [...new Set([...assemblyWarnings(sides, parallel), ...(twinMotor ? assemblyWarnings(twinSides, parallel) : [])])]
+
   return (
     <section className="panel step" id="step-drawing">
       <header className="step-head">
         <h2>
           <span className="step-no">{no}</span> {t('도면')}
+          <HelpTip title={t('도면')}>
+            {t('제조사 CAD 데이터(STEP)를 그대로 조립합니다. 무게 중심(빨간 점)은 슬라이드 중심(시작 위치) 기준입니다. DXF · PDF 도면은 KS 제도 기준(KS A 0005 · KS B 0001)의 정면·평면·우측면도(제3각법)로, 표준 척도와 용지에 윤곽선, 표제란, 부품란을 넣습니다.')}
+            <br />
+            {t('모터 쪽 축 끝에서 축을 바라볼 때 기준이며, 슬라이드 면이 상입니다.')}
+          </HelpTip>
         </h2>
         {tabs}
         {selection && <span className="muted">{t('설치 방향: {mounting}', { mounting: t(mountingLabel[req.mounting]) })}</span>}
@@ -401,15 +408,16 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
                 />
               </>
             )}
-            <p className="muted small-print">
-              {t('모터 쪽 축 끝에서 축을 바라볼 때 기준이며, 슬라이드 면이 상입니다.')}
-              {[...new Set([...assemblyWarnings(sides, parallel), ...(twinMotor ? assemblyWarnings(twinSides, parallel) : [])])].map((w) => (
-                <span key={w} className="warn-text">
-                  {' '}
-                  {t(w)}
-                </span>
-              ))}
-            </p>
+            {warnings.length > 0 && (
+              <p className="muted small-print">
+                {warnings.map((w) => (
+                  <span key={w} className="warn-text">
+                    {' '}
+                    {t(w)}
+                  </span>
+                ))}
+              </p>
+            )}
           </div>
           <ComboPreviewPanel
             state={state}
@@ -418,9 +426,6 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
             onDxf={() => state.exportDxf(partsName, dxfTitle, specs)}
             onPdf={() => state.exportPdf(partsName, dxfTitle, specs)}
           />
-          <p className="muted small-print">
-            {t('제조사 CAD 데이터(STEP)를 그대로 조립합니다. 무게 중심(빨간 점)은 슬라이드 중심(시작 위치) 기준입니다. DXF · PDF 도면은 KS 제도 기준(KS A 0005 · KS B 0001)의 정면·평면·우측면도(제3각법)로, 표준 척도와 용지에 윤곽선, 표제란, 부품란을 넣습니다.')}
-          </p>
         </>
       )}
     </section>

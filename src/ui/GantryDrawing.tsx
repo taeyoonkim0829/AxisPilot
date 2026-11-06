@@ -13,7 +13,7 @@ import { jointAccessories, type GantryJoint } from '../calc/gantryKits'
 import { adapters } from '../data'
 import { comboInputs, comboKey, shaftTooShort } from './comboInputs'
 import { ComboPreviewPanel } from './ComboPreviewPanel'
-import { StatusBadge } from './common'
+import { HelpTip, StatusBadge } from './common'
 import { fmt } from './format'
 import { loadText, useComboPreview } from './useComboPreview'
 
@@ -154,6 +154,7 @@ export function GantryDrawing({
       <header className="step-head">
         <h2>
           <span className="step-no">{no}</span> {t('도면')}
+          <HelpTip title={t('도면')}>{t('조합 키트는 ELGT-BS, ELGD 데이터시트의 조합표 기준입니다. EGC는 Festo 키트가 없어 주문 제작 브래킷(앵글 브래킷, 어댑터 플레이트)을 씁니다. 축은 시작 위치에, Y축 슬라이드는 행정 가운데에 그리며, 위쪽 축은 조립 설명서대로 키트가 잡는 위치(핀과 볼트 구멍)에 붙이고, 그 데이터가 없는 키트는 입력한 장착 오프셋을 따릅니다. 키트가 없는 결합은 입력한 장착 위치에 축만 배치합니다. 키트에 축을 고정하는 프로파일 마운팅(EAHF)과 슬롯 너트는 도면에 없습니다.')}</HelpTip>
         </h2>
         {tabs}
         <span className="muted">{t('{config} 조합 · 각 축의 도면과 조합 키트로 조립합니다.', { config: gantry.config.toUpperCase() })}</span>
@@ -242,14 +243,11 @@ export function GantryDrawing({
               </tbody>
             </table>
           </div>
-          <p className="muted small-print">
-            {t(
-              '조합 키트는 ELGT-BS, ELGD 데이터시트의 조합표 기준입니다. EGC는 Festo 키트가 없어 주문 제작 브래킷(앵글 브래킷, 어댑터 플레이트)을 씁니다. 축은 시작 위치에, Y축 슬라이드는 행정 가운데에 그리며, 위쪽 축은 조립 설명서대로 키트가 잡는 위치(핀과 볼트 구멍)에 붙이고, 그 데이터가 없는 키트는 입력한 장착 오프셋을 따릅니다. 키트가 없는 결합은 입력한 장착 위치에 축만 배치합니다. 키트에 축을 고정하는 프로파일 마운팅(EAHF)과 슬롯 너트는 도면에 없습니다.',
-            )}
-            {unkitted.length > 0 && (
-              <span className="warn-text"> {t('키트 없이 배치한 결합: {pairs}', { pairs: unkitted.join(', ') })}</span>
-            )}
-          </p>
+          {unkitted.length > 0 && (
+            <p className="muted small-print">
+              <span className="warn-text">{t('키트 없이 배치한 결합: {pairs}', { pairs: unkitted.join(', ') })}</span>
+            </p>
+          )}
           {shortened.map((w) => (
             <p key={w} className="warn-text small-print">
               {w}

@@ -369,7 +369,7 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
                 ['로터 관성', q(drive.motor.inertia, 'kg·cm²', 4)],
                 ['허용 관성비', q(drive.motor.allowableInertiaRatio, times)],
                 ['허용 회생 전력', q(drive.motor.regenPower, 'W')],
-                ['앰프', drive.motor.amplifier ?? '—'],
+                ['드라이브', drive.motor.amplifier ?? '—'],
                 ['인터페이스 코드', drive.motor.interfaceCode ?? '—'],
               ]}
             />

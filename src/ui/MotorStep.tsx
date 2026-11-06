@@ -273,7 +273,7 @@ export function MotorStep({ results, selected, onSelect, settings, onSettings, l
                 </div>
                 {selected.motor.amplifier && (
                   <div>
-                    <dt>{t('앰프')}</dt>
+                    <dt>{t('드라이브')}</dt>
                     <dd>{selected.motor.amplifier}</dd>
                   </div>
                 )}

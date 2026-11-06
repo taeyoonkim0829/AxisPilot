@@ -108,7 +108,7 @@ Restrained workspace on a dark ground lit in three colours. The app is dark only
 
 ### Primary
 - **Accent** (#38bdf8): input focus, links, the motion profile trace. Only the filled PDF로 내보내기 action takes the **prism** fill (`--prism`: #e0f2fe → #7dd3fc → #38bdf8 → #a78bfa at 120°, dark ink #04111c, a white top highlight, a cyan glow). The logo's teal is not a UI colour: green tones are reserved for verdicts.
-- **Sign Blue** (#0a5a8a): solid marks that need white text (notice dialog head, its OK button). Deep variant (#08486f) for hover.
+- **Sign Blue** (#0a5a8a): solid marks that need white text (notice dialog head, its OK button; guidance sits behind a `?` beside its title, `HelpTip`, in the same dialog, live values stay under the field). Deep variant (#08486f) for hover.
 
 ### Secondary
 - **Signal Yellow** (#f2b705): the active route box on the rail, step number boxes, the selected row outline, selection highlight, focus ring. Soft variant (yellow at 12%) fills the selected row.

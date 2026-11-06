@@ -1,4 +1,5 @@
-import { useState, type ReactNode } from 'react'
+import { useId, useRef, useState, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import type { Check, Status } from '../calc/types'
 import { useT } from '../i18n'
 import { fmt, pct, statusLabel } from './format'
@@ -73,13 +74,17 @@ interface NumberFieldProps {
   onChange: (value: number) => void
   min?: number
   step?: number
+  /** live value under the field */
   hint?: string
+  /** guidance, behind the ? beside the label */
+  help?: string
   /** accepted, but below what will be used (light red fill) */
   low?: boolean
 }
 
 /** Number input that keeps the raw text while typing and reports only valid numbers. */
-export function NumberField({ label, unit, value, onChange, min = 0, step, hint, low }: NumberFieldProps) {
+export function NumberField({ label, unit, value, onChange, min = 0, step, hint, help, low }: NumberFieldProps) {
+  const id = useId()
   const [text, setText] = useState(String(value))
   const [prev, setPrev] = useState(value)
   if (value !== prev) {
@@ -88,10 +93,15 @@ export function NumberField({ label, unit, value, onChange, min = 0, step, hint,
   }
   const invalid = text.trim() === '' || !Number.isFinite(Number(text)) || Number(text) < min
   return (
-    <label className={`field${invalid ? ' field-invalid' : low ? ' field-low' : ''}`}>
-      <span className="field-label">{label}</span>
+    // htmlFor: a label without it would take the help button, its first labelable descendant, as its control
+    <label htmlFor={id} className={`field${invalid ? ' field-invalid' : low ? ' field-low' : ''}`}>
+      <span className="field-label">
+        {label}
+        {help && <HelpTip title={label}>{help}</HelpTip>}
+      </span>
       <span className="field-input">
         <input
+          id={id}
           type="number"
           inputMode="decimal"
           value={text}
@@ -107,6 +117,43 @@ export function NumberField({ label, unit, value, onChange, min = 0, step, hint,
       </span>
       {hint && <span className="field-hint">{hint}</span>}
     </label>
+  )
+}
+
+/** The ? beside a title: opens its help as a popup. In a portal, since a dialog cannot sit in a label, summary or heading. */
+export function HelpTip({ title, children }: { title: string; children: ReactNode }) {
+  const t = useT()
+  const id = useId()
+  const dialog = useRef<HTMLDialogElement>(null)
+  const name = t('{title} 도움말', { title })
+  return (
+    <>
+      <button
+        type="button"
+        className="help-btn"
+        aria-label={name}
+        title={name}
+        onClick={(e) => {
+          e.preventDefault() // inside a summary: must not fold it
+          dialog.current?.showModal()
+        }}
+      >
+        ?
+      </button>
+      {createPortal(
+        // the dialog itself only takes clicks on its backdrop: its content covers the box
+        <dialog ref={dialog} className="notice" aria-labelledby={id} onClick={(e) => e.target === dialog.current && dialog.current.close()}>
+          <h2 id={id}>{title}</h2>
+          <p>{children}</p>
+          <form method="dialog">
+            <button type="submit" className="notice-ok" autoFocus>
+              {t('확인')}
+            </button>
+          </form>
+        </dialog>,
+        document.body,
+      )}
+    </>
   )
 }
 

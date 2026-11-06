@@ -17,6 +17,7 @@ export const en: Record<string, string> = {
   '{items} 선정되지 않았습니다.': 'Not selected yet: {items}.',
   '직교 축, 모터, 연결키트를 먼저 선정하세요.': 'Select the linear axis, motor and mounting kit first.',
   '확인': 'OK',
+  '{title} 도움말': '{title} help',
   'PDF를 만들지 못했습니다.': 'Could not create the PDF.',
   '축선정_{model}_{date}': 'AxisPilot_{model}_{date}',
   '먼저 직교 축을 선택하세요.': 'Select a linear axis first.',
@@ -211,7 +212,6 @@ export const en: Record<string, string> = {
   '시리즈': 'Series',
   '정격 / 최대 토크': 'Rated / peak torque',
   '로터 관성': 'Rotor inertia',
-  '앰프': 'Amplifier',
   '등속 구간 토크': 'Constant-velocity torque',
   '정격 회전수': 'Rated speed',
   '정격 회전수 초과 구간에서는 토크가 감소합니다. 모터 토크-속도 선도를 확인하세요.':

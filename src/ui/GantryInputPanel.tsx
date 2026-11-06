@@ -1,7 +1,7 @@
 import { gantryAxes, gantryBase, gantryChain, type AxisMotion, type GantryAxis, type GantryConfig, type GantryInputs, type GantrySettings, type Vec, type ZMode } from '../calc/gantry'
 import type { Settings } from '../calc/types'
 import { useT } from '../i18n'
-import { NumberField, RadioGroup } from './common'
+import { HelpTip, NumberField, RadioGroup } from './common'
 import { ModeSwitch, type AppMode } from './ModeSwitch'
 import { fmt, mountingLabel } from './format'
 import { DetailSettings, ParallelSection } from './InputPanel'
@@ -72,9 +72,11 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
       <ModeSwitch mode={mode} onMode={onMode} />
       <div className="panel inputs-main">
         <section>
-          <h2>{t('조합축 구성')}</h2>
+          <h2>
+            {t('조합축 구성')}
+            <HelpTip title={t('조합축 구성')}>{t(configHint[gantry.config])}</HelpTip>
+          </h2>
           <RadioGroup options={['xyz', 'yz', 'xy'] as const} value={gantry.config} onChange={(v) => set('config', v)} label={(v) => v.toUpperCase()} />
-          <p className="field-hint application-hint">{t(configHint[gantry.config])}</p>
         </section>
 
         <section>
@@ -84,9 +86,9 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
           </div>
           <h2 className="subhead">
             {t('부하 무게 중심')} <span className="heading-unit">(mm)</span>
+            <HelpTip title={t('부하 무게 중심')}>{t('{ref}, 장비 좌표 X / Y / Z (+Z = 아래쪽)', { ref: toolRef })}</HelpTip>
           </h2>
           <VecFields value={gantry.cog} onChange={(v) => set('cog', v)} />
-          <p className="field-hint">{t('{ref}, 장비 좌표 X / Y / Z (+Z = 아래쪽)', { ref: toolRef })}</p>
         </section>
 
         <section>
@@ -126,7 +128,7 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
               unit="s"
               value={shared.dwellTime}
               onChange={(v) => setShared({ ...shared, dwellTime: v })}
-              hint={t('축마다 왕복 후 1회')}
+              help={t('축마다 왕복 후 1회')}
             />
           </div>
         </section>
@@ -141,15 +143,19 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
           </div>
         )}
         <div className="field">
-          <span className="field-label">{t('Y축 설치 방향')}</span>
+          <span className="field-label">
+            {t('Y축 설치 방향')}
+            <HelpTip title={t('Y축 설치 방향')}>{t(gantry.yMounting === 'floor' ? '슬라이드 면이 위쪽' : '슬라이드 면이 X 방향 (측면 설치)')}</HelpTip>
+          </span>
           <RadioGroup options={['floor', 'wall'] as const} value={gantry.yMounting} onChange={(v) => set('yMounting', v)} label={(v) => t(mountingLabel[v])} />
-          <span className="field-hint">{t(gantry.yMounting === 'floor' ? '슬라이드 면이 위쪽' : '슬라이드 면이 X 방향 (측면 설치)')}</span>
         </div>
         {chain.includes('z') && (
           <div className="field">
-            <span className="field-label">{t('Z축 이동 방식')}</span>
+            <span className="field-label">
+              {t('Z축 이동 방식')}
+              <HelpTip title={t('Z축 이동 방식')}>{t(zModeHint[gantry.zMode])}</HelpTip>
+            </span>
             <RadioGroup options={['slide', 'profile'] as const} value={gantry.zMode} onChange={(v) => set('zMode', v)} label={(v) => t(zModeLabel[v])} />
-            <span className="field-hint">{t(zModeHint[gantry.zMode])}</span>
           </div>
         )}
       </section>
@@ -170,10 +176,14 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
       />
 
       <details className="panel settings">
-        <summary>{t('질량 · 장착 위치')}</summary>
-        <p className="field-hint gantry-note">
-          {t('상위 축 하중에 들어가는 값입니다. 모터 질량은 모터 데이터에 질량이 없을 때 사용합니다 (Festo · Siemens).')}
-        </p>
+        <summary>
+          {t('질량 · 장착 위치')}
+          <HelpTip title={t('질량 · 장착 위치')}>
+            {t('상위 축 하중에 들어가는 값입니다. 모터 질량은 모터 데이터에 질량이 없을 때 사용합니다 (Festo · Siemens).')}
+            <br />
+            {t('하위 축의 이동부는 하중이 가장 불리한 끝 위치(Z 하강 끝, Y 모터 쪽 끝)에 있다고 봅니다.')}
+          </HelpTip>
+        </summary>
         <div className="grid-2">
           {axes.map((a) => (
             <NumberField
@@ -189,45 +199,42 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
           <>
             <h3 className="subhead">
               {t('Z축 장착 위치')} <span className="heading-unit">(mm)</span>
+              <HelpTip title={t('Z축 장착 위치')}>
+                {t(
+                  base === 'y' && twinBase
+                    ? gantry.zMode === 'profile'
+                      ? 'Y축 구성 중심에서 고정된 Z 슬라이드 중심까지'
+                      : 'Y축 구성 중심에서 Z축 본체 중심까지'
+                    : gantry.zMode === 'profile'
+                      ? 'Y 슬라이드 중심에서 고정된 Z 슬라이드 중심까지'
+                      : 'Y 슬라이드 중심에서 Z축 본체 중심까지',
+                )}
+                {gantry.zMode !== 'profile' && gantry.yMounting === 'wall'
+                  ? ` ${t('어댑터 플레이트(EHAM-MA)를 쓰면 Z축은 모터 쪽 끝이 핀 구멍에 맞춰 플레이트에 고정되고, Z 값은 쓰지 않습니다.')}`
+                  : ''}
+              </HelpTip>
             </h3>
             <VecFields value={gantry.offsets.yz} onChange={(v) => set('offsets', { ...gantry.offsets, yz: v })} />
-            <p className="field-hint">
-              {t(
-                base === 'y' && twinBase
-                  ? gantry.zMode === 'profile'
-                    ? 'Y축 구성 중심에서 고정된 Z 슬라이드 중심까지'
-                    : 'Y축 구성 중심에서 Z축 본체 중심까지'
-                  : gantry.zMode === 'profile'
-                    ? 'Y 슬라이드 중심에서 고정된 Z 슬라이드 중심까지'
-                    : 'Y 슬라이드 중심에서 Z축 본체 중심까지',
-              )}
-              {gantry.zMode !== 'profile' && gantry.yMounting === 'wall'
-                ? ` ${t('어댑터 플레이트(EHAM-MA)를 쓰면 Z축은 모터 쪽 끝이 핀 구멍에 맞춰 플레이트에 고정되고, Z 값은 쓰지 않습니다.')}`
-                : ''}
-            </p>
           </>
         )}
         {gantry.config === 'xyz' || gantry.config === 'xy' ? (
           <>
             <h3 className="subhead">
               {t('Y축 장착 위치')} <span className="heading-unit">(mm)</span>
+              <HelpTip title={t('Y축 장착 위치')}>
+                {t('X축 구성 중심에서 Y축 본체 중심까지')}
+                {gantry.yMounting === 'wall' && gantry.xMounting === 'floor'
+                  ? ` ${t(
+                      gantry.parallel.x.mode === 'twinMotor' || gantry.parallel.x.mode === 'twinShaft'
+                        ? '앵글 키트(EHAM-AK)를 쓰면 Y축은 첫 번째 X축의 키트가 잡는 위치(조립 설명서)에 놓이고, Y 값은 쓰지 않습니다.'
+                        : '앵글 키트(EHAM-AK)를 쓰면 Y축은 키트가 잡는 위치(조립 설명서)에 놓이고, Y 값은 놓이는 쪽(+/−)만 정합니다.',
+                    )}`
+                  : ''}
+              </HelpTip>
             </h3>
             <VecFields value={gantry.offsets.xy} onChange={(v) => set('offsets', { ...gantry.offsets, xy: v })} />
-            <p className="field-hint">
-              {t('X축 구성 중심에서 Y축 본체 중심까지')}
-              {gantry.yMounting === 'wall' && gantry.xMounting === 'floor'
-                ? ` ${t(
-                    gantry.parallel.x.mode === 'twinMotor' || gantry.parallel.x.mode === 'twinShaft'
-                      ? '앵글 키트(EHAM-AK)를 쓰면 Y축은 첫 번째 X축의 키트가 잡는 위치(조립 설명서)에 놓이고, Y 값은 쓰지 않습니다.'
-                      : '앵글 키트(EHAM-AK)를 쓰면 Y축은 키트가 잡는 위치(조립 설명서)에 놓이고, Y 값은 놓이는 쪽(+/−)만 정합니다.',
-                  )}`
-                : ''}
-            </p>
           </>
         ) : null}
-        <p className="field-hint gantry-note">
-          {t('하위 축의 이동부는 하중이 가장 불리한 끝 위치(Z 하강 끝, Y 모터 쪽 끝)에 있다고 봅니다.')}
-        </p>
       </details>
 
       <DetailSettings settings={shared} onSettings={setShared} />

@@ -499,6 +499,10 @@ h3 {
   line-height: 1.6;
 }
 
+.notice:has(img) {
+  width: min(560px, calc(100vw - 32px));
+}
+
 .notice form {
   display: flex;
   justify-content: flex-end;
@@ -519,6 +523,41 @@ h3 {
 
 .notice-ok:hover {
   background: var(--sign-deep);
+}
+
+/* the ? beside a title: opens its help as a notice */
+.help-btn {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  margin-left: 6px;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background: none;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  vertical-align: 1px;
+  cursor: pointer;
+  transition:
+    color 150ms ease-out,
+    border-color 150ms ease-out;
+}
+
+.help-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* a larger touch target than the mark */
+.help-btn::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
 }
 
 @media (max-width: 1280px) {
@@ -688,12 +727,6 @@ h3 {
   color: var(--muted);
   font-size: 12px;
   font-weight: 400;
-}
-
-.help {
-  margin: -4px 0 10px;
-  color: var(--muted);
-  font-size: 12px;
 }
 
 .grid-2,
@@ -977,26 +1010,13 @@ details summary:hover {
   color: var(--accent);
 }
 
-.cog-details {
-  margin-top: 12px;
-}
-
-.cog-details summary {
-  margin-bottom: 0;
-  font-size: 13px;
-}
-
 .cog-image {
   display: block;
   width: 100%;
-  margin-top: 10px;
+  margin-bottom: 10px;
   border-radius: 6px;
   border: 1px solid var(--line);
   background: #fff;
-}
-
-.cog-help {
-  margin: 8px 0 0;
 }
 
 /* ---------- steps ---------- */
@@ -1915,11 +1935,6 @@ th.num {
   font-size: 15px;
 }
 
-.gantry-note {
-  display: block;
-  margin: 10px 0;
-}
-
 /* 탑재 조건: what the open axis carries, as passed to its checks */
 .gantry-load-list {
   display: grid;
@@ -2283,7 +2298,7 @@ body {
   background: var(--surface-solid);
 }
 
-.app .notice {
+.notice {
   background: var(--surface-solid);
   -webkit-backdrop-filter: blur(var(--glass-blur));
   backdrop-filter: blur(var(--glass-blur));

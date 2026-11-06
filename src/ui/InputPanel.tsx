@@ -15,7 +15,7 @@ import {
 } from '../calc/types'
 import { useT } from '../i18n'
 import cogImage from '../../images/center_of_gravity.png'
-import { CountField, NumberField, RadioGroup, ToggleButton } from './common'
+import { CountField, HelpTip, NumberField, RadioGroup, ToggleButton } from './common'
 import { ModeSwitch, type AppMode } from './ModeSwitch'
 import { fmt, kgf, mountingLabel, parallelModeLabel, pressDirectionLabel } from './format'
 
@@ -173,19 +173,8 @@ export function InputPanel({ req, settings, onReq, onSettings, mode, onMode, axi
           {/* Three fields in a row are too narrow for a unit inside each: the unit sits in the heading */}
           <h2>
             {t('부하 무게 중심')} <span className="heading-unit">(mm)</span>
-          </h2>
-          <div className="grid-3">
-            <NumberField label="X" value={req.cog.x} min={-1e6} onChange={(v) => setCog('x', v)} />
-            <NumberField label="Y" value={req.cog.y} min={-1e6} onChange={(v) => setCog('y', v)} />
-            <NumberField label="Z" value={req.cog.z} min={-1e6} onChange={(v) => setCog('z', v)} />
-          </div>
-          {parallel.mode !== 'single' && (
-            <p className="field-hint">{t('Y: 축 구성 중심 기준, +Y = 두 번째 축/가이드 쪽')}</p>
-          )}
-          <details className="cog-details">
-            <summary>{t('무게 중심 입력 가이드')}</summary>
-            <img className="cog-image" src={cogImage} alt={t('축 형태별 X, Y, Z 좌표 방향')} />
-            <p className="help cog-help">
+            <HelpTip title={t('무게 중심 입력 가이드')}>
+              <img className="cog-image" src={cogImage} alt={t('축 형태별 X, Y, Z 좌표 방향')} />
               {t('슬라이드 중심 기준 거리')}
               <br />
               {t('X = 이동 방향')}
@@ -193,13 +182,27 @@ export function InputPanel({ req, settings, onReq, onSettings, mode, onMode, axi
               {t('Y = 슬라이드 면의 측면 방향')}
               <br />
               {t('Z = 슬라이드 면에서 위쪽')}
-            </p>
-          </details>
+              {parallel.mode !== 'single' && (
+                <>
+                  <br />
+                  {t('Y: 축 구성 중심 기준, +Y = 두 번째 축/가이드 쪽')}
+                </>
+              )}
+            </HelpTip>
+          </h2>
+          <div className="grid-3">
+            <NumberField label="X" value={req.cog.x} min={-1e6} onChange={(v) => setCog('x', v)} />
+            <NumberField label="Y" value={req.cog.y} min={-1e6} onChange={(v) => setCog('y', v)} />
+            <NumberField label="Z" value={req.cog.z} min={-1e6} onChange={(v) => setCog('z', v)} />
+          </div>
         </section>
       </div>
 
       <section className="panel application">
-        <h2>{t('어플리케이션 선택')}</h2>
+        <h2>
+          {t('어플리케이션 선택')}
+          {!press.enabled && <HelpTip title={t('어플리케이션 선택')}>{t('스트로크를 왕복 이송')}</HelpTip>}
+        </h2>
         <RadioGroup
           className=""
           options={['general', 'press'] as const}
@@ -207,7 +210,6 @@ export function InputPanel({ req, settings, onReq, onSettings, mode, onMode, axi
           onChange={(a) => setApplication(a === 'press')}
           label={(a) => t(a === 'press' ? '프레싱' : '일반')}
         />
-        {!press.enabled && <p className="field-hint application-hint">{t('스트로크를 왕복 이송')}</p>}
         {press.enabled && req.mounting === 'vertical' && (
           <div className="field">
             <span className="field-label">{t('압착 방향')}</span>
@@ -291,7 +293,10 @@ export function ParallelSection({
   const eagf = guides && parallel.guideAxis && cylinder
   return (
     <section className="panel application">
-      <h2>{t(title)}</h2>
+      <h2>
+        {t(title)}
+        {parallelModeHint[parallel.mode] && <HelpTip title={t(title)}>{t(parallelModeHint[parallel.mode]!)}</HelpTip>}
+      </h2>
       <RadioGroup
         className="segmented-grid"
         options={Object.keys(parallelModeLabel) as ParallelMode[]}
@@ -299,7 +304,6 @@ export function ParallelSection({
         onChange={(m) => setParallel('mode', m)}
         label={(m) => t(parallelModeLabel[m])}
       />
-      {parallelModeHint[parallel.mode] && <p className="field-hint application-hint">{t(parallelModeHint[parallel.mode]!)}</p>}
       {suggestGuide && !guides && (
         <p className="field-hint application-hint">{t('ESBF 수평 설치: 로드는 횡하중에 약하므로 가이드 축 추가를 권장합니다 (Festo = EAGF, 3rd Party = LM 가이드)')}</p>
       )}
@@ -314,7 +318,14 @@ export function ParallelSection({
       )}
       {parallel.mode === 'guides' && (
         <div className="field">
-          <span className="field-label">{t('가이드 종류')}</span>
+          <span className="field-label">
+            {t('가이드 종류')}
+            {cylinder && (
+              <HelpTip title={t('가이드 종류')}>
+                {t(eagf ? 'ESBF: 앞 플랜지의 EAGF 1개가 부하를 받음' : 'ESBF: LM 가이드가 부하를 받고 ESBF는 이송력만 제공 (플로팅 조인트로 연결)')}
+              </HelpTip>
+            )}
+          </span>
           <RadioGroup
             options={['axis', 'lm'] as const}
             value={parallel.guideAxis ? 'axis' : 'lm'}
@@ -322,11 +333,6 @@ export function ParallelSection({
             label={(v) => (v === 'axis' ? 'Festo' : '3rd Party')}
           />
           {parallel.guideAxis && noGuideAxis && <p className="field-hint">{t('호환 가이드 축 없음')}</p>}
-          {guides && cylinder && (
-            <p className="field-hint">
-              {t(eagf ? 'ESBF: 앞 플랜지의 EAGF 1개가 부하를 받음' : 'ESBF: LM 가이드가 부하를 받고 ESBF는 이송력만 제공 (플로팅 조인트로 연결)')}
-            </p>
-          )}
         </div>
       )}
       {guides && !eagf && guidePositions(parallel).guides >= 2 && (
@@ -355,7 +361,7 @@ export function ParallelSection({
               unit="kg"
               value={parallel.guideMass}
               onChange={(v) => setParallel('guideMass', v)}
-              hint={t(parallel.guideAxis ? '브래킷 등, 가이드 축 슬라이드 질량은 자동 포함' : '블록 + 브래킷')}
+              help={t(parallel.guideAxis ? '브래킷 등, 가이드 축 슬라이드 질량은 자동 포함' : '블록 + 브래킷')}
             />
           )}
           {parallel.mode === 'twinShaft' && (
@@ -364,7 +370,7 @@ export function ParallelSection({
               unit="kg·cm²"
               value={parallel.shaftInertia}
               onChange={(v) => setParallel('shaftInertia', v)}
-              hint={t('KSK가 없는 축에만 사용 (KSK는 자동 계산)')}
+              help={t('KSK가 없는 축에만 사용 (KSK는 자동 계산)')}
             />
           )}
         </div>
@@ -428,14 +434,14 @@ export function DetailSettings({ settings, onSettings }: { settings: Settings; o
           value={settings.defaultInertiaRatio}
           min={0.1}
           onChange={(v) => setS('defaultInertiaRatio', v)}
-          hint={t('모터 데이터에 없을 때')}
+          help={t('모터 데이터에 없을 때')}
         />
         <NumberField
           label={t('지지 간격')}
           unit="mm"
           value={settings.supportSpan}
           onChange={(v) => setS('supportSpan', v)}
-          hint={t('0 = 양 끝만 지지')}
+          help={t('0 = 양 끝만 지지')}
         />
         <NumberField
           label={t('일 가동 시간')}
@@ -446,13 +452,15 @@ export function DetailSettings({ settings, onSettings }: { settings: Settings; o
         />
       </div>
       <div className="field">
-        <span className="field-label">{t('보수적 판정')}</span>
+        <span className="field-label">
+          {t('보수적 판정')}
+          <HelpTip title={t('보수적 판정')}>{t('켜면 등속 구간 토크가 정격 토크를 넘을 때 주의 대신 부적합')}</HelpTip>
+        </span>
         <ToggleButton
           label={settings.conservative ? t('켜짐') : t('꺼짐')}
           checked={settings.conservative}
           onChange={(v) => setS('conservative', v)}
         />
-        <span className="field-hint">{t('켜면 등속 구간 토크가 정격 토크를 넘을 때 주의 대신 부적합')}</span>
       </div>
     </details>
   )
