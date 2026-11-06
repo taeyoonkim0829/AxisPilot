@@ -493,7 +493,8 @@ h3 {
   font-size: 15px;
 }
 
-.notice p {
+.notice p,
+.notice-text {
   margin: 0;
   padding: 16px 18px 4px;
   line-height: 1.6;
@@ -501,6 +502,45 @@ h3 {
 
 .notice:has(img) {
   width: min(560px, calc(100vw - 32px));
+}
+
+.notice:has(.config-grid) {
+  width: min(760px, calc(100vw - 32px));
+}
+
+/* 축 구성 help: one card per arrangement, the current one marked */
+.config-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.config-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.config-card.active {
+  border-color: var(--accent);
+}
+
+.config-card strong {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.config-card img {
+  display: block;
+  width: 100%;
+  border-radius: 5px;
+  background: #fff;
 }
 
 .notice form {

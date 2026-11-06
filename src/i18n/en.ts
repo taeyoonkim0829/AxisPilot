@@ -18,6 +18,7 @@ export const en: Record<string, string> = {
   '직교 축, 모터, 연결키트를 먼저 선정하세요.': 'Select the linear axis, motor and mounting kit first.',
   '확인': 'OK',
   '{title} 도움말': '{title} help',
+  '축 1개가 구동하고 가이드가 부하를 함께 지지': 'One axis drives; the guides share the load',
   'PDF를 만들지 못했습니다.': 'Could not create the PDF.',
   '축선정_{model}_{date}': 'AxisPilot_{model}_{date}',
   '먼저 직교 축을 선택하세요.': 'Select a linear axis first.',

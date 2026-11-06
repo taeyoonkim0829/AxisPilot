@@ -15,14 +15,26 @@ import {
 } from '../calc/types'
 import { useT } from '../i18n'
 import cogImage from '../../images/center_of_gravity.png'
+import guidesImage from '../../images/parallel_guides.webp'
+import singleImage from '../../images/parallel_single.webp'
+import twinMotorImage from '../../images/parallel_twinMotor.webp'
+import twinShaftImage from '../../images/parallel_twinShaft.webp'
 import { CountField, HelpTip, NumberField, RadioGroup, ToggleButton } from './common'
 import { ModeSwitch, type AppMode } from './ModeSwitch'
 import { fmt, kgf, mountingLabel, parallelModeLabel, pressDirectionLabel } from './format'
 
-const parallelModeHint: Partial<Record<ParallelMode, string>> = {
+const parallelModeHint: Record<ParallelMode, string> = {
   single: '축 1개로 부하를 지지하고 구동',
   twinMotor: '평행한 축 2개를 모터 2개로 동기 제어. 모터·키트·드라이브는 축 1개 기준 (각 2개)',
   twinShaft: '평행한 축 2개를 모터 1개가 연결축으로 구동. 모터는 두 축 합계 기준',
+  guides: '축 1개가 구동하고 가이드가 부하를 함께 지지',
+}
+/** EGC-80 belt axes with a Festo motor, rendered in the step 5 3D view */
+const parallelModeImage: Record<ParallelMode, string> = {
+  single: singleImage,
+  twinMotor: twinMotorImage,
+  twinShaft: twinShaftImage,
+  guides: guidesImage,
 }
 
 type AxisPlace = 'middle' | 'edge'
@@ -295,7 +307,17 @@ export function ParallelSection({
     <section className="panel application">
       <h2>
         {t(title)}
-        {parallelModeHint[parallel.mode] && <HelpTip title={t(title)}>{t(parallelModeHint[parallel.mode]!)}</HelpTip>}
+        <HelpTip title={t(title)}>
+          <div className="config-grid">
+            {(Object.keys(parallelModeLabel) as ParallelMode[]).map((m) => (
+              <div key={m} className={`config-card${m === parallel.mode ? ' active' : ''}`}>
+                <img src={parallelModeImage[m]} alt="" />
+                <strong>{t(parallelModeLabel[m])}</strong>
+                <span>{t(parallelModeHint[m])}</span>
+              </div>
+            ))}
+          </div>
+        </HelpTip>
       </h2>
       <RadioGroup
         className="segmented-grid"

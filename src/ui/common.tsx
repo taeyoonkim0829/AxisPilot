@@ -144,7 +144,7 @@ export function HelpTip({ title, children }: { title: string; children: ReactNod
         // the dialog itself only takes clicks on its backdrop: its content covers the box
         <dialog ref={dialog} className="notice" aria-labelledby={id} onClick={(e) => e.target === dialog.current && dialog.current.close()}>
           <h2 id={id}>{title}</h2>
-          <p>{children}</p>
+          <div className="notice-text">{children}</div>
           <form method="dialog">
             <button type="submit" className="notice-ok" autoFocus>
               {t('확인')}
