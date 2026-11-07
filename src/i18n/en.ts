@@ -739,8 +739,8 @@ export const en: Record<string, string> = {
   'X축 구성': 'X axis arrangement',
   'Y축 구성': 'Y axis arrangement',
   '질량 · 장착 위치': 'Masses · mounting positions',
-  '상위 축 하중에 들어가는 값입니다. 모터 질량은 모터 데이터에 질량이 없을 때 사용합니다 (Festo · Siemens).':
-    'Used for the loads on the axes below. The motor mass is used when the motor data has none (Festo · Siemens).',
+  '상위 축 하중에 들어가는 값입니다. 모터 질량은 모터 데이터에 질량이 없을 때 사용합니다.':
+    'Used for the loads on the axes below. The motor mass is used when the motor data has none.',
   'Z축 장착 위치': 'Z axis mounting position',
   'Y축 장착 위치': 'Y axis mounting position',
   'Y 슬라이드 중심에서 Z축 본체 중심까지': 'From the Y slide centre to the Z axis body centre',

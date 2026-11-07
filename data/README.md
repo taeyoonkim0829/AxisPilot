@@ -65,7 +65,7 @@ ESBF (`ESBF.json`, electric cylinder with piston rod and plain-bearing guide): b
 | `inertia` | kg·cm², **including the brake** for brake models |
 | `inertiaWithoutBrake`, `brakeInertia` | kg·cm² |
 | `shaftRadialLoad`, `shaftAxialLoad` | N |
-| `mass` | kg; so far Mitsubishi HK-* and Siemens 1FK2 / 1FL6 (brake models: weight with brake). The gantry adds it to the load of the axis carrying the motor (an input value stands in when it is missing) |
+| `mass` | kg; Festo (the data sheets' "Weight" tables: EMMT 2026/09 p.19–20, EMMH-AS 2026/09 p.8–9, EMMT-ST 2026/09 p.8, EMMB-ST 2025/11 p.8, EMMB-AS 2026/09 p.5; the tables do not split by winding, and EMMB-ST has one value per brake option for all encoders), Siemens 1FK2 / 1FL6, Mitsubishi except HF-KP / HF-SP, LS where its catalog gives one (brake models: weight with brake). The gantry adds it to the load of the axis carrying the motor (an input value stands in when it is missing) |
 | `allowableInertiaRatio` | load/rotor inertia ratio |
 | `capacitorEnergy` / `regenPower` | J / W |
 | `interfaceCode` | mounting kit code, e.g. `60PA`. Brake and non-brake models share it |

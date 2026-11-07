@@ -179,7 +179,7 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
         <summary>
           {t('질량 · 장착 위치')}
           <HelpTip title={t('질량 · 장착 위치')}>
-            {t('상위 축 하중에 들어가는 값입니다. 모터 질량은 모터 데이터에 질량이 없을 때 사용합니다 (Festo · Siemens).')}
+            {t('상위 축 하중에 들어가는 값입니다. 모터 질량은 모터 데이터에 질량이 없을 때 사용합니다.')}
             <br />
             {t('하위 축의 이동부는 하중이 가장 불리한 끝 위치(Z 하강 끝, Y 모터 쪽 끝)에 있다고 봅니다.')}
           </HelpTip>
