@@ -80,11 +80,6 @@ export const en: Record<string, string> = {
   '지지 간격': 'Support spacing',
   '0 = 양 끝만 지지': '0 = ends only',
   '일 가동 시간': 'Hours per day',
-  '보수적 판정': 'Conservative check',
-  '켜짐': 'On',
-  '꺼짐': 'Off',
-  '켜면 등속 구간 토크가 정격 토크를 넘을 때 주의 대신 부적합':
-    'When on, constant-velocity torque above the rated torque fails instead of giving a caution',
 
   // Motion profile
   '모션 프로파일': 'Motion profile',
@@ -223,7 +218,6 @@ export const en: Record<string, string> = {
   '외부 회생 저항 검토 필요': 'Consider an external braking resistor',
   '감속기 최대 토크': 'Gearbox max. torque',
   '감속기 최대 입력 회전수': 'Gearbox max. input speed',
-  '정격 토크 초과 {time} s / 사이클': 'Above rated torque {time} s / cycle',
   '정격 토크 초과 {time} s / 사이클 — 열시정수 대비 길면 모터 과열 우려':
     'Above rated torque {time} s / cycle — the motor may overheat if this is long compared with its thermal time constant',
 
@@ -272,7 +266,6 @@ export const en: Record<string, string> = {
   '미사용': 'Not used',
   '사용': 'Used',
   '선택': 'Optional',
-  '켜짐 (등속 구간 정격 토크 초과 시 부적합)': 'On (fails when constant-velocity torque exceeds the rated torque)',
   '선정 모델': 'Selected models',
   '구분': 'Part',
   '주문번호': 'Part no.',

@@ -113,7 +113,7 @@ interface NumberFieldProps {
   /** live value under the field */
   hint?: string
   /** guidance, behind the ? beside the label */
-  help?: string
+  help?: ReactNode
   /** accepted, but below what will be used (light red fill) */
   low?: boolean
 }
@@ -199,6 +199,44 @@ export function HelpTip({ title, children }: { title: string; children: ReactNod
         document.body,
       )}
     </>
+  )
+}
+
+/** The cards of a help popup: one per option with its picture, the current one marked; picking one sets it. */
+export function ConfigCards<T extends string>({
+  title,
+  options,
+  value,
+  onPick,
+  label,
+  hint,
+  media,
+}: {
+  title: string
+  options: T[]
+  value: T
+  onPick: (option: T) => void
+  label: (option: T) => string
+  hint: (option: T) => string
+  media: (option: T) => ReactNode
+}) {
+  return (
+    <div className="config-grid" role="radiogroup" aria-label={title}>
+      {options.map((o) => (
+        <button
+          key={o}
+          type="button"
+          role="radio"
+          aria-checked={o === value}
+          className={`config-card${o === value ? ' active' : ''}`}
+          onClick={() => o !== value && onPick(o)}
+        >
+          {media(o)}
+          <strong>{label(o)}</strong>
+          <span>{hint(o)}</span>
+        </button>
+      ))}
+    </div>
   )
 }
 

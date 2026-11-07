@@ -110,9 +110,9 @@ export function evaluateDrive(
   const checks: Check[] = [
     check('최대 토크', peak, motor.peakTorque, 'Nm'),
     check('실효 토크', rms, motor.ratedTorque, 'Nm'),
-    constantTorqueCheck('등속 구간 토크', constantPeak, constantOverTime, motor.ratedTorque, settings.conservative),
+    constantTorqueCheck('등속 구간 토크', constantPeak, constantOverTime, motor.ratedTorque),
     ...(pressing
-      ? [constantTorqueCheck('가압 구간 토크', pressPeak, pressOverTime, motor.ratedTorque, settings.conservative)]
+      ? [constantTorqueCheck('가압 구간 토크', pressPeak, pressOverTime, motor.ratedTorque)]
       : []),
     // Exceeding the rated speed only warns (torque drops above it).
     maxMotorSpeed > motor.ratedSpeed
@@ -173,15 +173,15 @@ export function evaluateDrive(
 
 /**
  * Constant-velocity travel (or pressing) torque vs the rated torque. A long dwell can hide a long, overloaded segment
- * in the RMS torque, so this warns (fails in conservative mode) whenever that segment exceeds the rated torque.
+ * in the RMS torque, so this warns whenever that segment exceeds the rated torque.
  */
-function constantTorqueCheck(label: string, value: number, overTime: number, rated: number, conservative: boolean): Check {
+function constantTorqueCheck(label: string, value: number, overTime: number, rated: number): Check {
   const c = check(label, value, rated, 'Nm')
   if (c.status !== 'fail') return c
   return {
     ...c,
-    status: conservative ? 'fail' : 'warn',
-    note: conservative ? '정격 토크 초과 {time} s / 사이클' : '정격 토크 초과 {time} s / 사이클 — 열시정수 대비 길면 모터 과열 우려',
+    status: 'warn',
+    note: '정격 토크 초과 {time} s / 사이클 — 열시정수 대비 길면 모터 과열 우려',
     noteArgs: { time: overTime.toFixed(2) },
   }
 }

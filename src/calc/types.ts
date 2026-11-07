@@ -150,8 +150,6 @@ export interface Settings {
   requireBrake: boolean
   /** false = motors are checked in direct drive only; true = with a compatible gearbox only */
   useGearbox: boolean
-  /** Constant-velocity torque above the rated torque fails instead of warning */
-  conservative: boolean
   /** Additional slide on axes that offer one (`Axis.additionalSlide`); 'both' only where both sides can be ordered */
   additionalSlide: AdditionalSlideSide
   /** mm, centre-to-centre spacing of the main and the additional slide (KL of both); below the axis minimum (half of
@@ -187,7 +185,6 @@ export const defaultSettings: Settings = {
   excludedMotorFamilies: ['EMMT-ST', 'EMMT-EC', 'EMMB-AS', 'EMMB-ST', 'EMMH-AS'],
   requireBrake: false,
   useGearbox: false,
-  conservative: false,
   cableLength: 5,
   additionalSlide: 'none',
   slidePitch: 0,

@@ -1,4 +1,5 @@
 import type { DriveEvaluation } from '../calc/motorSelection'
+import gearboxImage from '../../images/help_combo_gearbox.webp'
 import { HelpTip, Ratio, StatusBadge } from './common'
 import { SpeedRatio } from './MotorStep'
 import { useT } from '../i18n'
@@ -19,7 +20,10 @@ export function GearboxChoice({ options, selected, onSelect }: Props) {
       <header className="step-head">
         <h2>
           <span className="step-no">3</span> {t('감속기 선정')}
-          <HelpTip title={t('감속기 선정')}>{t('추천 감속기(통과하는 가장 낮은 감속비)가 적용되어 있습니다. 다른 감속기를 누르면 바꿀 수 있습니다.')}</HelpTip>
+          <HelpTip title={t('감속기 선정')}>
+            <img className="help-image" src={gearboxImage} alt="" />
+            {t('추천 감속기(통과하는 가장 낮은 감속비)가 적용되어 있습니다. 다른 감속기를 누르면 바꿀 수 있습니다.')}
+          </HelpTip>
         </h2>
       </header>
       <div className="table-wrap">

@@ -548,6 +548,8 @@ h3 {
 .config-card img {
   display: block;
   width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
   border-radius: 5px;
   background: #fff;
 }
@@ -1067,7 +1069,7 @@ details summary:hover {
   color: var(--accent);
 }
 
-.cog-image {
+.help-image {
   display: block;
   width: 100%;
   margin-bottom: 10px;

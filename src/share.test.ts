@@ -8,7 +8,7 @@ import { decodeShare, encodeShare, MAX_SHARED_BYTES, type Shared } from './share
 const single: Shared = {
   mode: 'single',
   req: { stroke: 800, velocity: 1.2, acceleration: 8, jerk: 0, payload: 25, cog: { x: 10, y: -20, z: 60 }, mounting: 'wall', press: defaultPress },
-  settings: { ...defaultSettings, conservative: true },
+  settings: { ...defaultSettings, hoursPerDay: 12 },
   picks: { ...noPicks, axisId: 'EGC-80-...-TB-KF-GK', kitId: 'kit-1' },
   profileView: 'forward',
   assembly: { ...defaultComboOptions, kitSide: 'left', twinMotorConnector: 'up' },

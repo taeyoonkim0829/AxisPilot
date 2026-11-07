@@ -238,22 +238,20 @@ describe('torque calculation', () => {
     expect(drive.maxMotorSpeed).toBeCloseTo((0.5 * 60000) / axis.spindlePitch!)
   })
 
-  it('warns on constant-velocity torque above rated, fails in conservative mode', () => {
+  it('warns on constant-velocity torque above rated', () => {
     // Process force keeps the constant segment loaded; a long dwell keeps the RMS torque low.
     const settings = { ...defaultSettings, externalForce: 300, dwellTime: 30 }
     const ev = evaluateAxis(spindle, baseReq, settings)!
     const constantTorque = (300 * spindle.spindlePitch!) / 1000 / (2 * Math.PI) / 0.9
     const motor = { ...motors[0], ratedTorque: constantTorque * 0.8, peakTorque: 100 } as Motor
-    const constantCheck = (conservative: boolean) =>
-      evaluateDrive(ev, motor, null, { ...settings, conservative }).checks.find((c) => c.label === '등속 구간 토크')!
+    const constantCheck = evaluateDrive(ev, motor, null, settings).checks.find((c) => c.label === '등속 구간 토크')!
 
-    expect(constantCheck(false).status).toBe('warn')
-    expect(constantCheck(false).value).toBeGreaterThan(constantTorque)
-    expect(constantCheck(true).status).toBe('fail')
+    expect(constantCheck.status).toBe('warn')
+    expect(constantCheck.value).toBeGreaterThan(constantTorque)
     expect(evaluateDrive(ev, motor, null, settings).checks.find((c) => c.label === '실효 토크')!.status).toBe('ok')
 
     const strong = { ...motor, ratedTorque: constantTorque * 2 } as Motor
-    expect(evaluateDrive(ev, strong, null, { ...settings, conservative: true }).checks.find((c) => c.label === '등속 구간 토크')!.status).toBe('ok')
+    expect(evaluateDrive(ev, strong, null, settings).checks.find((c) => c.label === '등속 구간 토크')!.status).toBe('ok')
   })
 
   it('fails when the motor speed exceeds the gearbox max input speed', () => {

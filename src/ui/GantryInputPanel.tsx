@@ -1,7 +1,18 @@
 import { gantryAxes, gantryBase, gantryChain, type AxisMotion, type GantryAxis, type GantryConfig, type GantryInputs, type GantrySettings, type Vec, type ZMode } from '../calc/gantry'
 import type { Settings } from '../calc/types'
 import { useT } from '../i18n'
-import { HelpTip, NumberField, RadioGroup } from './common'
+import cogImage from '../../images/help_gantry_cog.svg'
+import dwellImage from '../../images/help_dwell.svg'
+import floorImage from '../../images/help_gantry_y_floor.webp'
+import mountYImage from '../../images/help_mount_y.svg'
+import mountZImage from '../../images/help_mount_z.svg'
+import worstImage from '../../images/help_gantry_worst.svg'
+import xyImage from '../../images/help_gantry_xy.webp'
+import xyzImage from '../../images/help_gantry_xyz.webp'
+import yzImage from '../../images/help_gantry_yz.webp'
+import zProfileImage from '../../images/help_zmode_profile.svg'
+import zSlideImage from '../../images/help_zmode_slide.svg'
+import { ConfigCards, HelpTip, NumberField, RadioGroup } from './common'
 import { ModeSwitch, type AppMode } from './ModeSwitch'
 import { fmt, mountingLabel } from './format'
 import { DetailSettings, ParallelSection } from './InputPanel'
@@ -12,6 +23,10 @@ const configHint: Record<GantryConfig, string> = {
   yz: 'Y축 슬라이드에 수직 Z축 (라인 겐트리)',
   xy: 'X축(바닥) 위에 Y축 (평면 겐트리), 부하는 Y축 슬라이드에',
 }
+const configImage: Record<GantryConfig, string> = { xyz: xyzImage, yz: yzImage, xy: xyImage }
+const yMountingImage = { floor: floorImage, wall: xyzImage }
+const yMountingHint = { floor: '슬라이드 면이 위쪽', wall: '슬라이드 면이 X 방향 (측면 설치)' }
+const zModeImage: Record<ZMode, string> = { slide: zSlideImage, profile: zProfileImage }
 const zModeLabel: Record<ZMode, string> = { slide: '슬라이드 이동', profile: '프로파일 이동' }
 const zModeHint: Record<ZMode, string> = {
   slide: 'Z축 본체를 Y 슬라이드에 고정하고 Z 슬라이드가 움직임',
@@ -29,7 +44,6 @@ const sharedKeys = [
   'defaultInertiaRatio',
   'supportSpan',
   'hoursPerDay',
-  'conservative',
 ] as const satisfies (keyof Settings)[]
 
 interface Props {
@@ -74,7 +88,17 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
         <section>
           <h2>
             {t('조합축 구성')}
-            <HelpTip title={t('조합축 구성')}>{t(configHint[gantry.config])}</HelpTip>
+            <HelpTip title={t('조합축 구성')}>
+              <ConfigCards
+                title={t('조합축 구성')}
+                options={['xyz', 'yz', 'xy'] as const}
+                value={gantry.config}
+                onPick={(v) => set('config', v)}
+                label={(v) => v.toUpperCase()}
+                hint={(v) => t(configHint[v])}
+                media={(v) => <img src={configImage[v]} alt="" />}
+              />
+            </HelpTip>
           </h2>
           <RadioGroup options={['xyz', 'yz', 'xy'] as const} value={gantry.config} onChange={(v) => set('config', v)} label={(v) => v.toUpperCase()} />
         </section>
@@ -86,7 +110,10 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
           </div>
           <h2 className="subhead">
             {t('부하 무게 중심')} <span className="heading-unit">(mm)</span>
-            <HelpTip title={t('부하 무게 중심')}>{t('{ref}, 장비 좌표 X / Y / Z (+Z = 아래쪽)', { ref: toolRef })}</HelpTip>
+            <HelpTip title={t('부하 무게 중심')}>
+              <img className="help-image" src={cogImage} alt="" />
+              {t('{ref}, 장비 좌표 X / Y / Z (+Z = 아래쪽)', { ref: toolRef })}
+            </HelpTip>
           </h2>
           <VecFields value={gantry.cog} onChange={(v) => set('cog', v)} />
         </section>
@@ -128,7 +155,12 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
               unit="s"
               value={shared.dwellTime}
               onChange={(v) => setShared({ ...shared, dwellTime: v })}
-              help={t('축마다 왕복 후 1회')}
+              help={
+                <>
+                  <img className="help-image" src={dwellImage} alt="" />
+                  {t('축마다 왕복 후 1회')}
+                </>
+              }
             />
           </div>
         </section>
@@ -145,7 +177,17 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
         <div className="field">
           <span className="field-label">
             {t('Y축 설치 방향')}
-            <HelpTip title={t('Y축 설치 방향')}>{t(gantry.yMounting === 'floor' ? '슬라이드 면이 위쪽' : '슬라이드 면이 X 방향 (측면 설치)')}</HelpTip>
+            <HelpTip title={t('Y축 설치 방향')}>
+              <ConfigCards
+                title={t('Y축 설치 방향')}
+                options={['floor', 'wall'] as const}
+                value={gantry.yMounting}
+                onPick={(v) => set('yMounting', v)}
+                label={(v) => t(mountingLabel[v])}
+                hint={(v) => t(yMountingHint[v])}
+                media={(v) => <img src={yMountingImage[v]} alt="" />}
+              />
+            </HelpTip>
           </span>
           <RadioGroup options={['floor', 'wall'] as const} value={gantry.yMounting} onChange={(v) => set('yMounting', v)} label={(v) => t(mountingLabel[v])} />
         </div>
@@ -153,7 +195,17 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
           <div className="field">
             <span className="field-label">
               {t('Z축 이동 방식')}
-              <HelpTip title={t('Z축 이동 방식')}>{t(zModeHint[gantry.zMode])}</HelpTip>
+              <HelpTip title={t('Z축 이동 방식')}>
+                <ConfigCards
+                  title={t('Z축 이동 방식')}
+                  options={['slide', 'profile'] as const}
+                  value={gantry.zMode}
+                  onPick={(v) => set('zMode', v)}
+                  label={(v) => t(zModeLabel[v])}
+                  hint={(v) => t(zModeHint[v])}
+                  media={(v) => <img src={zModeImage[v]} alt="" />}
+                />
+              </HelpTip>
             </span>
             <RadioGroup options={['slide', 'profile'] as const} value={gantry.zMode} onChange={(v) => set('zMode', v)} label={(v) => t(zModeLabel[v])} />
           </div>
@@ -178,13 +230,17 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
       <details className="panel settings">
         <summary>
           {t('장착 위치')}
-          <HelpTip title={t('장착 위치')}>{t('하위 축의 이동부는 하중이 가장 불리한 끝 위치(Z 하강 끝, Y 모터 쪽 끝)에 있다고 봅니다.')}</HelpTip>
+          <HelpTip title={t('장착 위치')}>
+            <img className="help-image" src={worstImage} alt="" />
+            {t('하위 축의 이동부는 하중이 가장 불리한 끝 위치(Z 하강 끝, Y 모터 쪽 끝)에 있다고 봅니다.')}
+          </HelpTip>
         </summary>
         {chain.includes('z') && (
           <>
             <h3 className="subhead">
               {t('Z축 장착 위치')} <span className="heading-unit">(mm)</span>
               <HelpTip title={t('Z축 장착 위치')}>
+                <img className="help-image" src={mountZImage} alt="" />
                 {t(
                   base === 'y' && twinBase
                     ? gantry.zMode === 'profile'
@@ -207,6 +263,7 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
             <h3 className="subhead">
               {t('Y축 장착 위치')} <span className="heading-unit">(mm)</span>
               <HelpTip title={t('Y축 장착 위치')}>
+                <img className="help-image" src={mountYImage} alt="" />
                 {t('X축 구성 중심에서 Y축 본체 중심까지')}
                 {gantry.yMounting === 'wall' && gantry.xMounting === 'floor'
                   ? ` ${t(

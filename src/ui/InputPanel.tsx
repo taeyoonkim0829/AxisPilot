@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useState } from 'react'
 import { accelerationForTime, accelTimeFor, minAccelTime, sCurveShare } from '../calc/motionProfile'
 import {
   MAX_GUIDES,
@@ -15,11 +15,15 @@ import {
 } from '../calc/types'
 import { useT } from '../i18n'
 import cogImage from '../../images/center_of_gravity.png'
+import eagfImage from '../../images/help_guide_eagf.webp'
+import inertiaImage from '../../images/help_inertia_ratio.svg'
+import lmImage from '../../images/help_guide_lm.svg'
+import spanImage from '../../images/help_support_span.svg'
 import guidesImage from '../../images/parallel_guides.webp'
 import singleImage from '../../images/parallel_single.webp'
 import twinMotorImage from '../../images/parallel_twinMotor.webp'
 import twinShaftImage from '../../images/parallel_twinShaft.webp'
-import { CountField, HelpTip, NumberField, RadioGroup, ToggleButton } from './common'
+import { ConfigCards, CountField, HelpTip, NumberField, RadioGroup } from './common'
 import { ModeSwitch, type AppMode } from './ModeSwitch'
 import { fmt, kgf, mountingLabel, parallelModeLabel, pressDirectionLabel } from './format'
 
@@ -200,7 +204,7 @@ export function InputPanel({ req, settings, onReq, onSettings, mode, onMode, axi
           <h2>
             {t('부하 무게 중심')} <span className="heading-unit">(mm)</span>
             <HelpTip title={t('무게 중심 입력 가이드')}>
-              <img className="cog-image" src={cogImage} alt={t('축 형태별 X, Y, Z 좌표 방향')} />
+              <img className="help-image" src={cogImage} alt={t('축 형태별 X, Y, Z 좌표 방향')} />
               {t('슬라이드 중심 기준 거리')}
               <br />
               {t('X = 이동 방향')}
@@ -309,44 +313,6 @@ export function InputPanel({ req, settings, onReq, onSettings, mode, onMode, axi
   )
 }
 
-/** The cards of a help popup: one per option with its picture, the current one marked; picking one sets it. */
-function ConfigCards<T extends string>({
-  title,
-  options,
-  value,
-  onPick,
-  label,
-  hint,
-  media,
-}: {
-  title: string
-  options: T[]
-  value: T
-  onPick: (option: T) => void
-  label: (option: T) => string
-  hint: (option: T) => string
-  media: (option: T) => ReactNode
-}) {
-  return (
-    <div className="config-grid" role="radiogroup" aria-label={title}>
-      {options.map((o) => (
-        <button
-          key={o}
-          type="button"
-          role="radio"
-          aria-checked={o === value}
-          className={`config-card${o === value ? ' active' : ''}`}
-          onClick={() => o !== value && onPick(o)}
-        >
-          {media(o)}
-          <strong>{label(o)}</strong>
-          <span>{hint(o)}</span>
-        </button>
-      ))}
-    </div>
-  )
-}
-
 /** 축 구성: single axis, two axes or LM guides, with spacing and the mode's own inputs. */
 export function ParallelSection({
   parallel,
@@ -416,7 +382,15 @@ export function ParallelSection({
             {t('가이드 종류')}
             {cylinder && (
               <HelpTip title={t('가이드 종류')}>
-                {t(eagf ? 'ESBF: 앞 플랜지의 EAGF 1개가 부하를 받음' : 'ESBF: LM 가이드가 부하를 받고 ESBF는 이송력만 제공 (플로팅 조인트로 연결)')}
+                <ConfigCards
+                  title={t('가이드 종류')}
+                  options={['axis', 'lm'] as const}
+                  value={parallel.guideAxis ? 'axis' : 'lm'}
+                  onPick={(v) => setParallel('guideAxis', v === 'axis')}
+                  label={(v) => (v === 'axis' ? 'Festo' : '3rd Party')}
+                  hint={(v) => t(v === 'axis' ? 'ESBF: 앞 플랜지의 EAGF 1개가 부하를 받음' : 'ESBF: LM 가이드가 부하를 받고 ESBF는 이송력만 제공 (플로팅 조인트로 연결)')}
+                  media={(v) => <img src={v === 'axis' ? eagfImage : lmImage} alt="" />}
+                />
               </HelpTip>
             )}
           </span>
@@ -455,7 +429,12 @@ export function ParallelSection({
               unit="kg"
               value={parallel.guideMass}
               onChange={(v) => setParallel('guideMass', v)}
-              help={t(parallel.guideAxis ? '브래킷 등, 가이드 축 슬라이드 질량은 자동 포함' : '블록 + 브래킷')}
+              help={
+                <>
+                  <img className="help-image" src={parallel.guideAxis ? guidesImage : lmImage} alt="" />
+                  {t(parallel.guideAxis ? '브래킷 등, 가이드 축 슬라이드 질량은 자동 포함' : '블록 + 브래킷')}
+                </>
+              }
             />
           )}
           {parallel.mode === 'twinShaft' && (
@@ -464,7 +443,12 @@ export function ParallelSection({
               unit="kg·cm²"
               value={parallel.shaftInertia}
               onChange={(v) => setParallel('shaftInertia', v)}
-              help={t('KSK가 없는 축에만 사용 (KSK는 자동 계산)')}
+              help={
+                <>
+                  <img className="help-image" src={twinShaftImage} alt="" />
+                  {t('KSK가 없는 축에만 사용 (KSK는 자동 계산)')}
+                </>
+              }
             />
           )}
         </div>
@@ -528,14 +512,24 @@ export function DetailSettings({ settings, onSettings }: { settings: Settings; o
           value={settings.defaultInertiaRatio}
           min={0.1}
           onChange={(v) => setS('defaultInertiaRatio', v)}
-          help={t('모터 데이터에 없을 때')}
+          help={
+            <>
+              <img className="help-image" src={inertiaImage} alt="" />
+              {t('모터 데이터에 없을 때')}
+            </>
+          }
         />
         <NumberField
           label={t('지지 간격')}
           unit="mm"
           value={settings.supportSpan}
           onChange={(v) => setS('supportSpan', v)}
-          help={t('0 = 양 끝만 지지')}
+          help={
+            <>
+              <img className="help-image" src={spanImage} alt="" />
+              {t('0 = 양 끝만 지지')}
+            </>
+          }
         />
         <NumberField
           label={t('일 가동 시간')}
@@ -543,17 +537,6 @@ export function DetailSettings({ settings, onSettings }: { settings: Settings; o
           value={settings.hoursPerDay}
           min={0.1}
           onChange={(v) => setS('hoursPerDay', v)}
-        />
-      </div>
-      <div className="field">
-        <span className="field-label">
-          {t('보수적 판정')}
-          <HelpTip title={t('보수적 판정')}>{t('켜면 등속 구간 토크가 정격 토크를 넘을 때 주의 대신 부적합')}</HelpTip>
-        </span>
-        <ToggleButton
-          label={settings.conservative ? t('켜짐') : t('꺼짐')}
-          checked={settings.conservative}
-          onChange={(v) => setS('conservative', v)}
         />
       </div>
     </details>
