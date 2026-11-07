@@ -6258,7 +6258,7 @@
       "inertia": 291.36,
       "inertiaWithoutBrake": 291.36,
       "brakeHoldingTorque": 74,
-      "mass": null,
+      "mass": 82.6,
       "allowableInertiaRatio": 5.0,
       "reverseEfficiency": null,
       "capacitorEnergy": null,
