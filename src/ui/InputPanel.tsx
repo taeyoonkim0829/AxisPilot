@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { accelerationForTime, accelTimeFor, minAccelTime, sCurveShare } from '../calc/motionProfile'
 import {
   MAX_GUIDES,
@@ -37,6 +37,19 @@ const parallelModeImage: Record<ParallelMode, string> = {
   guides: guidesImage,
 }
 
+type Application = 'general' | 'press'
+const applicationLabel: Record<Application, string> = { general: '일반', press: '프레싱' }
+const applicationHint: Record<Application, string> = {
+  general: '스트로크를 왕복 이송',
+  press: '접근 후 압착 구간을 압착력으로 가압하고 유지한 뒤 복귀',
+}
+const festoApplications = 'https://www.festo.com/eac/ko_kr/ElectricMotionSizing/img/entrypages/systems/linear_drive_train/applications'
+/** Festo's own clips, streamed from their site: festo.com refuses scripted downloads, so they are not bundled */
+const applicationVideo: Record<Application, string> = {
+  general: `${festoApplications}/user_specific_application.mp4`,
+  press: `${festoApplications}/pressing_application.mp4`,
+}
+
 type AxisPlace = 'middle' | 'edge'
 const axisPlaceLabel: Record<AxisPlace, string> = { middle: '가운데', edge: '가장자리' }
 
@@ -62,6 +75,7 @@ export function InputPanel({ req, settings, onReq, onSettings, mode, onMode, axi
   const press = req.press ?? defaultPress
   const setPress = <K extends keyof PressConditions>(key: K, value: PressConditions[K]) =>
     onReq({ ...req, press: { ...press, [key]: value } })
+  const application: Application = press.enabled ? 'press' : 'general'
   const parallel = req.parallel ?? defaultParallel
 
   // Acceleration can be entered directly or as the time to reach the velocity; the calculation always uses
@@ -213,14 +227,34 @@ export function InputPanel({ req, settings, onReq, onSettings, mode, onMode, axi
       <section className="panel application">
         <h2>
           {t('어플리케이션 선택')}
-          {!press.enabled && <HelpTip title={t('어플리케이션 선택')}>{t('스트로크를 왕복 이송')}</HelpTip>}
+          <HelpTip title={t('어플리케이션 선택')}>
+            <ConfigCards
+              title={t('어플리케이션 선택')}
+              options={Object.keys(applicationLabel) as Application[]}
+              value={application}
+              onPick={(a) => setApplication(a === 'press')}
+              label={(a) => t(applicationLabel[a])}
+              hint={(a) => t(applicationHint[a])}
+              media={(a) => (
+                <video
+                  src={applicationVideo[a]}
+                  autoPlay={!window.matchMedia('(prefers-reduced-motion: reduce)').matches}
+                  muted
+                  loop
+                  playsInline
+                  // the card still reads without the clip
+                  onError={(e) => (e.currentTarget.hidden = true)}
+                />
+              )}
+            />
+          </HelpTip>
         </h2>
         <RadioGroup
           className=""
-          options={['general', 'press'] as const}
-          value={press.enabled ? 'press' : 'general'}
+          options={Object.keys(applicationLabel) as Application[]}
+          value={application}
           onChange={(a) => setApplication(a === 'press')}
-          label={(a) => t(a === 'press' ? '프레싱' : '일반')}
+          label={(a) => t(applicationLabel[a])}
         />
         {press.enabled && req.mounting === 'vertical' && (
           <div className="field">
@@ -275,6 +309,44 @@ export function InputPanel({ req, settings, onReq, onSettings, mode, onMode, axi
   )
 }
 
+/** The cards of a help popup: one per option with its picture, the current one marked; picking one sets it. */
+function ConfigCards<T extends string>({
+  title,
+  options,
+  value,
+  onPick,
+  label,
+  hint,
+  media,
+}: {
+  title: string
+  options: T[]
+  value: T
+  onPick: (option: T) => void
+  label: (option: T) => string
+  hint: (option: T) => string
+  media: (option: T) => ReactNode
+}) {
+  return (
+    <div className="config-grid" role="radiogroup" aria-label={title}>
+      {options.map((o) => (
+        <button
+          key={o}
+          type="button"
+          role="radio"
+          aria-checked={o === value}
+          className={`config-card${o === value ? ' active' : ''}`}
+          onClick={() => o !== value && onPick(o)}
+        >
+          {media(o)}
+          <strong>{label(o)}</strong>
+          <span>{hint(o)}</span>
+        </button>
+      ))}
+    </div>
+  )
+}
+
 /** 축 구성: single axis, two axes or LM guides, with spacing and the mode's own inputs. */
 export function ParallelSection({
   parallel,
@@ -308,22 +380,15 @@ export function ParallelSection({
       <h2>
         {t(title)}
         <HelpTip title={t(title)}>
-          <div className="config-grid" role="radiogroup" aria-label={t(title)}>
-            {(Object.keys(parallelModeLabel) as ParallelMode[]).map((m) => (
-              <button
-                key={m}
-                type="button"
-                role="radio"
-                aria-checked={m === parallel.mode}
-                className={`config-card${m === parallel.mode ? ' active' : ''}`}
-                onClick={() => m !== parallel.mode && setParallel('mode', m)}
-              >
-                <img src={parallelModeImage[m]} alt="" />
-                <strong>{t(parallelModeLabel[m])}</strong>
-                <span>{t(parallelModeHint[m])}</span>
-              </button>
-            ))}
-          </div>
+          <ConfigCards
+            title={t(title)}
+            options={Object.keys(parallelModeLabel) as ParallelMode[]}
+            value={parallel.mode}
+            onPick={(m) => setParallel('mode', m)}
+            label={(m) => t(parallelModeLabel[m])}
+            hint={(m) => t(parallelModeHint[m])}
+            media={(m) => <img src={parallelModeImage[m]} alt="" />}
+          />
         </HelpTip>
       </h2>
       <RadioGroup

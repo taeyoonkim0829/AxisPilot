@@ -161,6 +161,8 @@ export function HelpTip({ title, children }: { title: string; children: ReactNod
   const t = useT()
   const id = useId()
   const dialog = useRef<HTMLDialogElement>(null)
+  // the content mounts with the popup: a video in it must not load with the page or play behind it
+  const [open, setOpen] = useState(false)
   const name = t('{title} 도움말', { title })
   return (
     <>
@@ -171,6 +173,7 @@ export function HelpTip({ title, children }: { title: string; children: ReactNod
         title={name}
         onClick={(e) => {
           e.preventDefault() // inside a summary: must not fold it
+          setOpen(true)
           dialog.current?.showModal()
         }}
       >
@@ -178,9 +181,15 @@ export function HelpTip({ title, children }: { title: string; children: ReactNod
       </button>
       {createPortal(
         // the dialog itself only takes clicks on its backdrop: its content covers the box
-        <dialog ref={dialog} className="notice" aria-labelledby={id} onClick={(e) => e.target === dialog.current && dialog.current.close()}>
+        <dialog
+          ref={dialog}
+          className="notice"
+          aria-labelledby={id}
+          onClose={() => setOpen(false)}
+          onClick={(e) => e.target === dialog.current && dialog.current.close()}
+        >
           <h2 id={id}>{title}</h2>
-          <div className="notice-text">{children}</div>
+          <div className="notice-text">{open && children}</div>
           <form method="dialog">
             <button type="submit" className="notice-ok" autoFocus>
               {t('확인')}

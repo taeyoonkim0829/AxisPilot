@@ -508,7 +508,7 @@ h3 {
   width: min(760px, calc(100vw - 32px));
 }
 
-/* 축 구성 help: one card per arrangement, the current one marked; picking one sets the arrangement */
+/* 축 구성 / 어플리케이션 선택 help: one card per option, the current one marked; picking one sets it */
 .config-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -548,6 +548,14 @@ h3 {
 .config-card img {
   display: block;
   width: 100%;
+  border-radius: 5px;
+  background: #fff;
+}
+
+.config-card video {
+  width: 100%;
+  aspect-ratio: 768 / 493;
+  object-fit: contain;
   border-radius: 5px;
   background: #fff;
 }

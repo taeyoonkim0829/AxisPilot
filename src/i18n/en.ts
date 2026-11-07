@@ -167,6 +167,7 @@ export const en: Record<string, string> = {
   '일반': 'General',
   '프레싱': 'Pressing',
   '스트로크를 왕복 이송': 'Moves back and forth over the stroke',
+  '접근 후 압착 구간을 압착력으로 가압하고 유지한 뒤 복귀': 'Approaches, presses over the press distance with the press force, holds, then returns',
   '볼스크류 수명': 'Ball screw life',
   '예상 수명 {min} km 미만': 'Expected life under {min} km',
   '연결 방식': 'Connection',
