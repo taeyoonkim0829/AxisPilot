@@ -122,8 +122,8 @@ export function InputPanel({ req, settings, onReq, onSettings, mode, onMode, axi
 
   return (
     <aside className="inputs">
-      <ModeSwitch mode={mode} onMode={onMode} />
       <div className="panel inputs-main">
+        <ModeSwitch mode={mode} onMode={onMode} />
         <section>
           <h2>{t('사용 조건')}</h2>
           <div className="field">

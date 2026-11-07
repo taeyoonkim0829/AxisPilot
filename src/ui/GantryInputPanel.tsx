@@ -69,8 +69,8 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
 
   return (
     <aside className="inputs">
-      <ModeSwitch mode={mode} onMode={onMode} />
       <div className="panel inputs-main">
+        <ModeSwitch mode={mode} onMode={onMode} />
         <section>
           <h2>
             {t('조합축 구성')}

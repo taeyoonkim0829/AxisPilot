@@ -937,7 +937,7 @@ h3 {
   font-weight: 600;
 }
 
-/* Screen switch (단축 / 조합축 선정) at the top of the input column */
+/* Screen switch (단축 / 조합축 선정) at the top of the first input box */
 .inputs .mode-switch {
   flex-shrink: 0;
 }
