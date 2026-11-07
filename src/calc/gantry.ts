@@ -46,9 +46,10 @@ export interface GantryInputs {
    *  arrangement),
    *  world mm: yz = Z on Y (profile centre, or the clamped Z slide), xy = Y profile centre on X */
   offsets: { yz: Vec; xy: Vec }
-  /** kg, motor mass when the motor data has none */
-  motorMass: Record<GantryAxis, number>
 }
+
+/** kg, each axis's motor until one is picked: the axes carrying it must not read as if its drive weighed nothing */
+export const provisionalMotorMass: Record<GantryAxis, number> = { x: 3, y: 2, z: 1.5 }
 
 export const defaultGantry: GantryInputs = {
   config: 'xyz',
@@ -64,7 +65,6 @@ export const defaultGantry: GantryInputs = {
   xMounting: 'floor',
   parallel: { x: { ...defaultParallel, mode: 'twinMotor', spacing: 600 }, y: { ...defaultParallel, spacing: 600 } },
   offsets: { yz: { x: 0, y: 0, z: 0 }, xy: { x: 0, y: 0, z: 0 } },
-  motorMass: { x: 3, y: 2, z: 1.5 },
 }
 
 /** Settings per axis: the step filters differ, the 상세 설정 values are shared. */
@@ -249,7 +249,7 @@ export function gantryRequirements(
     mounting,
     parallel: a === gantryBase(g.config) ? baseParallel(g) : undefined,
     cross: crossAccel,
-    movingProfile: a === 'z' && g.zMode === 'profile' ? { driveMass: g.motorMass.z } : undefined,
+    movingProfile: a === 'z' && g.zMode === 'profile' ? { driveMass: provisionalMotorMass.z } : undefined,
     // the next axis's kit is bolted to the main slide
     ...(carried ? { mainSlide: true } : {}),
   }

@@ -177,24 +177,9 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
 
       <details className="panel settings">
         <summary>
-          {t('질량 · 장착 위치')}
-          <HelpTip title={t('질량 · 장착 위치')}>
-            {t('상위 축 하중에 들어가는 값입니다. 모터 질량은 모터 데이터에 질량이 없을 때 사용합니다.')}
-            <br />
-            {t('하위 축의 이동부는 하중이 가장 불리한 끝 위치(Z 하강 끝, Y 모터 쪽 끝)에 있다고 봅니다.')}
-          </HelpTip>
+          {t('장착 위치')}
+          <HelpTip title={t('장착 위치')}>{t('하위 축의 이동부는 하중이 가장 불리한 끝 위치(Z 하강 끝, Y 모터 쪽 끝)에 있다고 봅니다.')}</HelpTip>
         </summary>
-        <div className="grid-2">
-          {axes.map((a) => (
-            <NumberField
-              key={a}
-              label={t('{axis}축 모터 질량', { axis: a.toUpperCase() })}
-              unit="kg"
-              value={gantry.motorMass[a]}
-              onChange={(v) => set('motorMass', { ...gantry.motorMass, [a]: v })}
-            />
-          ))}
-        </div>
         {chain.includes('z') && (
           <>
             <h3 className="subhead">

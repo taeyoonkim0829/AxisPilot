@@ -723,7 +723,6 @@ export const en: Record<string, string> = {
   '축별 운전 조건': 'Motion per axis',
   '{axis}축': '{axis} axis',
   '{axis}축 구동부': '{axis} drive',
-  '{axis}축 모터 질량': '{axis} motor mass',
   '{axis}축 하중 조건': '{axis} axis load',
   '축마다 왕복 후 1회': 'Once per axis, after the return',
   '축 설치': 'Axis mounting',
@@ -738,9 +737,7 @@ export const en: Record<string, string> = {
   '슬라이드 면이 X 방향 (측면 설치)': 'Slide surface facing X (side mounting)',
   'X축 구성': 'X axis arrangement',
   'Y축 구성': 'Y axis arrangement',
-  '질량 · 장착 위치': 'Masses · mounting positions',
-  '상위 축 하중에 들어가는 값입니다. 모터 질량은 모터 데이터에 질량이 없을 때 사용합니다.':
-    'Used for the loads on the axes below. The motor mass is used when the motor data has none.',
+  '장착 위치': 'Mounting positions',
   'Z축 장착 위치': 'Z axis mounting position',
   'Y축 장착 위치': 'Y axis mounting position',
   'Y 슬라이드 중심에서 Z축 본체 중심까지': 'From the Y slide centre to the Z axis body centre',
@@ -768,8 +765,6 @@ export const en: Record<string, string> = {
   '측면 Y / 수직 Z · 다른 축의 가속을 동시에 가정': 'Lateral Y / normal Z · other axes taken as accelerating at the same time',
   '함께 움직이는 구동부': 'Drive moving with it',
   '모터 + 감속기 + 키트': 'Motor + gearbox + kit',
-  '모터 데이터에 질량이 없어 입력값 {mass} kg을 상위 축 하중에 사용합니다.':
-    'The motor data has no mass: {mass} kg (input) is used for the axis carrying this one.',
   '교차 가속도 (측면 / 수직)': 'Cross acceleration (lateral / normal)',
   '프로파일 이동: 축 프로파일 {profile} kg + 구동부 {drive} kg': 'Moving profile: profile {profile} kg + drive {drive} kg',
 }

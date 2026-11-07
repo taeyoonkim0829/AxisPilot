@@ -4,7 +4,7 @@ import { selectAxes, type AxisEvaluation } from './calc/axisSelection'
 import { attachController } from './calc/controllerSelection'
 import { attachKit, findKits, type KitEvaluation, type KitMatch } from './calc/kitSelection'
 import { evaluateDrive, gearboxOptionsFor, selectMotors, type DriveEvaluation } from './calc/motorSelection'
-import { baseParallel, gantryBase, gantryChain, gantryRequirements, stageOf, withBaseSpacing, type GantryAxis, type GantryInputs, type Stage } from './calc/gantry'
+import { baseParallel, gantryBase, gantryChain, gantryRequirements, provisionalMotorMass, stageOf, withBaseSpacing, type GantryAxis, type GantryInputs, type Stage } from './calc/gantry'
 import type { Requirements, Settings } from './calc/types'
 import { gantryJoint, jointMass, kitList, type GantryJoint } from './calc/gantryKits'
 import { adapters, axes, brakingResistors, cables, controllers, guides, kits, motors, shafts } from './data'
@@ -65,17 +65,11 @@ export function computeSelection(req: Requirements, settings: Settings, picks: P
   return { axisResults, selectedAxis, motorResults, gearboxOptions, selectedDrive, kitMatch, kitEvals, selectedKitEval }
 }
 
-/**
- * kg of the drive on the axis: motor (the fallback when its data has no mass), gearbox and kit. `motorKnown` is
- * false when the fallback was used.
- */
-export function driveMassOf(selection: Selection, motorFallback: number): { mass: number; motorKnown: boolean } {
+/** kg of the drive on the axis: motor, gearbox and kit; a provisional motor mass until a motor is picked. */
+export function driveMassOf(selection: Selection, axis: GantryAxis): { mass: number } {
   const drive = selection.selectedDrive
-  if (!drive) return { mass: motorFallback, motorKnown: false }
-  const motor = drive.motor.mass
-  const motorKnown = motor != null && motor > 0
-  const mass = (motorKnown ? motor : motorFallback) + (drive.gearbox?.mass ?? 0) + (selection.selectedKitEval?.kit.mass ?? 0)
-  return { mass, motorKnown }
+  if (!drive) return { mass: provisionalMotorMass[axis] }
+  return { mass: (drive.motor.mass ?? provisionalMotorMass[axis]) + (drive.gearbox?.mass ?? 0) + (selection.selectedKitEval?.kit.mass ?? 0) }
 }
 
 /** One axis of the gantry: its derived requirements and selection, and what it hands to the axis carrying it. */
@@ -86,8 +80,8 @@ export interface GantryAxisResult {
   sel: Selection | null
   /** the selected axis with everything it carries; null without a selection */
   stage: Stage | null
-  /** kg of the drive on this axis (motor fallback when its data has no mass) */
-  drive: { mass: number; motorKnown: boolean } | null
+  /** kg of the drive on this axis (provisional until a motor is picked) */
+  drive: { mass: number } | null
   /** what this axis carries, kg each: payload, then each axis below it and its drive (labels with `{axis}`) */
   carried: { label: string; axis?: string; model?: string; mass: number }[]
   /** the gantry kit joining the axis below (the one this axis carries) to this axis's slide */
@@ -120,11 +114,11 @@ export function computeGantry(g: GantryInputs, settings: Record<GantryAxis, Sett
     const evaluate = (g: GantryInputs) => {
       let req = gantryRequirements(g, a, below?.stage ?? null, stages)
       let sel = computeSelection(req, settings[a], picks[a])
-      let drive = driveMassOf(sel, g.motorMass[a])
+      let drive = driveMassOf(sel, a)
       if (req.movingProfile) {
         req = { ...req, movingProfile: { driveMass: drive.mass } }
         sel = computeSelection(req, settings[a], picks[a])
-        drive = driveMassOf(sel, g.motorMass[a])
+        drive = driveMassOf(sel, a)
       }
       // The kit joining the axis below to this one depends on both; its mass moves with this axis: evaluated again
       const jointFor = (s: Selection) =>
@@ -141,7 +135,7 @@ export function computeGantry(g: GantryInputs, settings: Record<GantryAxis, Sett
         req = gantryRequirements(g, a, below!.stage, stages, { mass: jointMass(joint), offset: joint.offset, at: joint.kitAt })
         if (req.movingProfile) req = { ...req, movingProfile: { driveMass: drive.mass } }
         sel = computeSelection(req, settings[a], picks[a])
-        drive = driveMassOf(sel, g.motorMass[a])
+        drive = driveMassOf(sel, a)
         joint = jointFor(sel)
       }
       return { req, sel, drive, joint }

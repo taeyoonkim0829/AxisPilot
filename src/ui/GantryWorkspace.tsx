@@ -160,7 +160,7 @@ export function GantryWorkspace({
             baseSpacing={results.find((r) => r.spacing)?.spacing}
           />
           <div className="results">
-            <CarriedLoad result={current} gantry={deferredGantry} />
+            <CarriedLoad result={current} />
             {current.req && sel ? (
               <AxisSteps
                 sel={sel}
@@ -272,7 +272,7 @@ function worst(s: NonNullable<GantryAxisResult['sel']>) {
 }
 
 /** What the active axis carries and the accelerations across it, as passed to its checks. */
-function CarriedLoad({ result, gantry }: { result: GantryAxisResult; gantry: GantryInputs }) {
+function CarriedLoad({ result }: { result: GantryAxisResult }) {
   const t = useT()
   const req = result.req
   if (!req) return null
@@ -328,11 +328,6 @@ function CarriedLoad({ result, gantry }: { result: GantryAxisResult; gantry: Gan
           </div>
         )}
       </dl>
-      {result.drive && !result.drive.motorKnown && result.sel?.selectedDrive && (
-        <p className="muted small-print">
-          {t('모터 데이터에 질량이 없어 입력값 {mass} kg을 상위 축 하중에 사용합니다.', { mass: fmt(gantry.motorMass[result.axis], 2) })}
-        </p>
-      )}
     </section>
   )
 }
