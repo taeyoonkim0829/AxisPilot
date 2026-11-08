@@ -103,7 +103,7 @@ It is an operating tool, so the world contributes only type, palette, density an
 
 ## Colors
 
-Restrained workspace on a dark ground lit in three colours. The app is dark only; the PDF report keeps the light tokens (below).
+Restrained workspace on a ground lit in three colours, dark or light: the app starts on the system's setting and the switch under the language button overrides it. The light theme (`:root[data-theme='light']`, frost: ground #e4edf5, text #12202e, accent #0277b5, white glass) takes darker verdict colours for contrast. The PDF report keeps its own light tokens in both (below).
 
 ### Primary
 - **Accent** (#38bdf8): input focus, links, the motion profile trace. No button is filled: PDF로 내보내기 is clear glass like the language switch below it. The logo's teal is not a UI colour: green tones are reserved for verdicts.

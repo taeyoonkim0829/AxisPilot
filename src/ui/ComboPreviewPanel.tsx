@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import type { Combo } from '../cad/combo'
 import { useT } from '../i18n'
+import { useTheme } from './theme'
 import { STALE_BUILD_NOTICE } from './staleBuild'
 import type { useComboPreview } from './useComboPreview'
 
@@ -22,6 +23,7 @@ export function ComboPreviewPanel<C extends Combo>({
   onPdf: () => void
 }) {
   const t = useT()
+  const [theme] = useTheme()
   const { preview, busy, error, shown, shownRoles, stale, showPreview } = state
   return (
     <>
@@ -52,7 +54,8 @@ export function ComboPreviewPanel<C extends Combo>({
       )}
       {preview && shown && (
         <Suspense fallback={<p className="muted small-print">{t('3D 뷰어를 불러오는 중…')}</p>}>
-          <ComboViewer meshes={shown.meshes} roles={shownRoles} cog={shown.combo.cog} />
+          {/* key: the edge colour comes from the theme when the viewer is built */}
+          <ComboViewer key={theme} meshes={shown.meshes} roles={shownRoles} cog={shown.combo.cog} />
         </Suspense>
       )}
     </>

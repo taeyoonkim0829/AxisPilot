@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { axes } from '../data'
 import { computeGantry, noPicks } from '../selection'
 import { evaluateAxis, G, guideLoads } from './axisSelection'
-import { defaultGantry as appGantry, gantryRequirements, initialGantrySettings as appGantrySettings, slideFrame, stageOf, type GantryInputs } from './gantry'
+import { defaultGantry as appGantry, gantryRequirements, initialGantrySettings as appGantrySettings, slideFrame, stageOf, withLayout, type GantryInputs } from './gantry'
 import { jointMass } from './gantryKits'
 import { defaultSettings as appDefaults, type Requirements } from './types'
 
@@ -153,5 +153,20 @@ describe('computeGantry', () => {
     const [z, y] = computeGantry(g, initialGantrySettings, picks)
     expect(z.req!.movingProfile!.driveMass).toBeCloseTo(z.drive!.mass)
     expect(y.req!.payload).toBeCloseTo(z.stage!.mass)
+  })
+})
+
+describe('withLayout', () => {
+  it('moves an untouched COG Z above the slide on a floor-mounted Y of XY, and back', () => {
+    const xy = withLayout(appGantry, { config: 'xy' })
+    expect(xy.cog.z).toBe(50) // Y on the wall by default
+    const floor = withLayout(xy, { yMounting: 'floor' })
+    expect(floor.cog.z).toBe(-50)
+    expect(withLayout(floor, { config: 'xyz' }).cog.z).toBe(50)
+  })
+
+  it('keeps an entered COG Z', () => {
+    const entered = { ...appGantry, cog: { x: 0, y: 0, z: 120 } }
+    expect(withLayout(withLayout(entered, { config: 'xy' }), { yMounting: 'floor' }).cog.z).toBe(120)
   })
 })

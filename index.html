@@ -2,6 +2,13 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      // before the first paint: the saved choice, else the system setting (src/ui/theme.ts)
+      try {
+        document.documentElement.dataset.theme = localStorage.getItem('axispilot-theme') || ''
+      } catch {}
+      document.documentElement.dataset.theme ||= matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
+    </script>
     <link rel="icon" type="image/svg+xml" href="/axispilot-icon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/axispilot-icon-32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />

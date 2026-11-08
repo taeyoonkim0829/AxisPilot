@@ -51,6 +51,15 @@ export interface GantryInputs {
 /** kg, each axis's motor until one is picked: the axes carrying it must not read as if its drive weighed nothing */
 export const provisionalMotorMass: Record<GantryAxis, number> = { x: 3, y: 2, z: 1.5 }
 
+/** Default COG Z (+Z = down): below the tool slide, but above a floor-mounted Y axis's slide, which faces up in XY */
+const defaultCogZ = (g: GantryInputs) => (g.config === 'xy' && g.yMounting === 'floor' ? -50 : 50)
+
+/** Another configuration or Y mounting: an untouched COG Z follows to that layout's default, an entered one stays */
+export function withLayout(g: GantryInputs, patch: Partial<Pick<GantryInputs, 'config' | 'yMounting'>>): GantryInputs {
+  const next = { ...g, ...patch }
+  return g.cog.z === defaultCogZ(g) ? { ...next, cog: { ...next.cog, z: defaultCogZ(next) } } : next
+}
+
 export const defaultGantry: GantryInputs = {
   config: 'xyz',
   payload: 5,

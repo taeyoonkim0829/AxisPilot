@@ -4,6 +4,7 @@ import type { DriveEvaluation } from '../calc/motorSelection'
 import type { Check, Status } from '../calc/types'
 import { MOTOR_MAX_LABEL, type KitEvaluation } from '../calc/kitSelection'
 import { koSubjectParticle, langSwitchLabel, useT, type Lang } from '../i18n'
+import { useTheme } from './theme'
 import { pct, statusLabel } from './format'
 
 interface Props {
@@ -109,6 +110,7 @@ function Sign({
 
 export function RouteRail({ axis, drive, kit, gearbox = true, onExport, exporting, lang, onLang, axes, missing: required }: Props) {
   const t = useT()
+  const [theme, toggleTheme] = useTheme()
   const stepIds = stepIdsOf(gearbox)
   const active = useActiveStep(stepIds.join())
   const scrolled = useScrolled()
@@ -126,10 +128,9 @@ export function RouteRail({ axis, drive, kit, gearbox = true, onExport, exportin
   return (
     <>
       <div className={`rail-veil${scrolled ? ' on' : ''}`} aria-hidden />
-      {/* the page is dark in both themes, so the logo's dark-background version is used in both */}
       {/* home = the top of the single axis screen, an empty hash (App's useMode); the inputs stay */}
       <a className="page-brand" href="#" title={t('홈으로')}>
-        <img src={`${import.meta.env.BASE_URL}axispilot-logo-dark.svg`} alt="AxisPilot" width={171} height={32} />
+        <img src={`${import.meta.env.BASE_URL}${theme === 'light' ? 'axispilot-logo.svg' : 'axispilot-logo-dark.svg'}`} alt="AxisPilot" width={171} height={32} />
       </a>
       <header className={`rail${scrolled ? ' over' : ''}`}>
         <div className="rail-inner">
@@ -189,6 +190,9 @@ export function RouteRail({ axis, drive, kit, gearbox = true, onExport, exportin
               onClick={() => onLang(lang === 'ko' ? 'en' : 'ko')}
             >
               {langSwitchLabel[lang]}
+            </button>
+            <button type="button" className="rail-action" onClick={toggleTheme}>
+              {t(theme === 'light' ? '다크 모드' : '라이트 모드')}
             </button>
           </div>
           <dialog ref={dialog} className="notice" aria-labelledby="notice-title">

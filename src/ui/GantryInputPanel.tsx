@@ -1,4 +1,4 @@
-import { gantryAxes, gantryBase, gantryChain, type AxisMotion, type GantryAxis, type GantryConfig, type GantryInputs, type GantrySettings, type Vec, type ZMode } from '../calc/gantry'
+import { gantryAxes, gantryBase, gantryChain, withLayout, type AxisMotion, type GantryAxis, type GantryConfig, type GantryInputs, type GantrySettings, type Vec, type ZMode } from '../calc/gantry'
 import type { Settings } from '../calc/types'
 import { useT } from '../i18n'
 import cogImage from '../../images/help_gantry_cog.svg'
@@ -95,14 +95,14 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
                 title={t('조합축 구성')}
                 options={['xyz', 'yz', 'xy'] as const}
                 value={gantry.config}
-                onPick={(v) => set('config', v)}
+                onPick={(v) => onGantry(withLayout(gantry, { config: v }))}
                 label={(v) => v.toUpperCase()}
                 hint={(v) => t(configHint[v])}
                 media={(v) => <img src={configImage[v]} alt="" />}
               />
             </HelpTip>
           </h2>
-          <RadioGroup options={['xyz', 'yz', 'xy'] as const} value={gantry.config} onChange={(v) => set('config', v)} label={(v) => v.toUpperCase()} />
+          <RadioGroup options={['xyz', 'yz', 'xy'] as const} value={gantry.config} onChange={(v) => onGantry(withLayout(gantry, { config: v }))} label={(v) => v.toUpperCase()} />
         </section>
 
         <section>
@@ -191,14 +191,14 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
                 title={t('Y축 설치 방향')}
                 options={['floor', 'wall'] as const}
                 value={gantry.yMounting}
-                onPick={(v) => set('yMounting', v)}
+                onPick={(v) => onGantry(withLayout(gantry, { yMounting: v }))}
                 label={(v) => t(mountingLabel[v])}
                 hint={(v) => t(yMountingHint[v])}
                 media={(v) => <img src={yMountingImage[v]} alt="" />}
               />
             </HelpTip>
           </span>
-          <RadioGroup options={['floor', 'wall'] as const} value={gantry.yMounting} onChange={(v) => set('yMounting', v)} label={(v) => t(mountingLabel[v])} />
+          <RadioGroup options={['floor', 'wall'] as const} value={gantry.yMounting} onChange={(v) => onGantry(withLayout(gantry, { yMounting: v }))} label={(v) => t(mountingLabel[v])} />
         </div>
         {chain.includes('z') && (
           <div className="field">
