@@ -3,7 +3,7 @@ import { minSlidePitch, slideAxes, type AxisEvaluation } from '../calc/axisSelec
 import { axes } from '../data'
 import type { AdditionalSlideSide, Settings } from '../calc/types'
 import type { AxisFamily, AxisMounting, DriveKind } from '../data/types'
-import { CheckTable, CollapseTitle, HelpTip, InfoTable, NumberField, RadioGroup, Ratio, SortTh, StatusBadge, ToggleButton, ToggleGroup } from './common'
+import { CheckTable, CollapseTitle, HelpTip, InfoTable, NumberField, RadioGroup, Ratio, SortTh, StatusBadge, ToggleButton } from './common'
 import mountingImage from '../../images/help_axis_mounting.svg'
 import { statusRank, useSort } from './useSort'
 import { useT } from '../i18n'
@@ -181,22 +181,21 @@ export function AxisStep({ results, selectedId, onSelect, settings, onSettings }
             onSettings({
               ...settings,
               drives: [v],
-              // belt, with ESBF the only family on: the belt families come on
-              ...(v === 'belt' && settings.families.every((f) => f === 'ESBF')
-                ? { families: [...beltFamilies, ...settings.families] }
-                : {}),
+              // ESBF has no belt version: the first family that does comes on
+              ...(v === 'belt' && settings.families.includes('ESBF') ? { families: [beltFamilies[0]] } : {}),
             })
           }
         />
-        <ToggleGroup
+        <RadioGroup
           options={shownFamilies}
-          selected={settings.families.filter((f) => shownFamilies.includes(f))}
-          // a hidden ESBF keeps its setting; both additional slides exist on EGC only
+          value={settings.families.find((f) => shownFamilies.includes(f)) ?? shownFamilies[0]}
+          label={(f) => f}
+          // both additional slides exist on EGC only
           onChange={(v) =>
             onSettings({
               ...settings,
-              families: [...v, ...settings.families.filter((f) => !shownFamilies.includes(f))],
-              ...(!v.includes('EGC') && settings.additionalSlide === 'both' ? { additionalSlide: 'none' } : {}),
+              families: [v],
+              ...(v !== 'EGC' && settings.additionalSlide === 'both' ? { additionalSlide: 'none' } : {}),
             })
           }
         />
