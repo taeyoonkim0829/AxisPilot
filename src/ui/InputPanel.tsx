@@ -75,6 +75,14 @@ export function InputPanel({ req, settings, onReq, onSettings, mode, onMode, axi
   const t = useT()
   const set = <K extends keyof Requirements>(key: K, value: Requirements[K]) => onReq({ ...req, [key]: value })
   const setCog = (axis: 'x' | 'y' | 'z', value: number) => onReq({ ...req, cog: { ...req.cog, [axis]: value } })
+  // in the panel and in its help, beside the picture of the directions
+  const cogFields = (
+    <div className="grid-3">
+      <NumberField label="X" value={req.cog.x} min={-1e6} onChange={(v) => setCog('x', v)} />
+      <NumberField label="Y" value={req.cog.y} min={-1e6} onChange={(v) => setCog('y', v)} />
+      <NumberField label="Z" value={req.cog.z} min={-1e6} onChange={(v) => setCog('z', v)} />
+    </div>
+  )
   const setS = <K extends keyof Settings>(key: K, value: Settings[K]) => onSettings({ ...settings, [key]: value })
   const press = req.press ?? defaultPress
   const setPress = <K extends keyof PressConditions>(key: K, value: PressConditions[K]) =>
@@ -218,13 +226,10 @@ export function InputPanel({ req, settings, onReq, onSettings, mode, onMode, axi
                   {t('Y: 축 구성 중심 기준, +Y = 두 번째 축/가이드 쪽')}
                 </>
               )}
+              {cogFields}
             </HelpTip>
           </h2>
-          <div className="grid-3">
-            <NumberField label="X" value={req.cog.x} min={-1e6} onChange={(v) => setCog('x', v)} />
-            <NumberField label="Y" value={req.cog.y} min={-1e6} onChange={(v) => setCog('y', v)} />
-            <NumberField label="Z" value={req.cog.z} min={-1e6} onChange={(v) => setCog('z', v)} />
-          </div>
+          {cogFields}
         </section>
       </div>
 

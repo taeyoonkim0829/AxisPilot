@@ -113,6 +113,7 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
             <HelpTip title={t('부하 무게 중심')}>
               <img className="help-image" src={cogImage} alt="" />
               {t('{ref}, 장비 좌표 X / Y / Z (+Z = 아래쪽)', { ref: toolRef })}
+              <VecFields value={gantry.cog} onChange={(v) => set('cog', v)} />
             </HelpTip>
           </h2>
           <VecFields value={gantry.cog} onChange={(v) => set('cog', v)} />

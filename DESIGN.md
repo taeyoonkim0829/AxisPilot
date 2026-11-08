@@ -18,7 +18,6 @@ colors:
   text: "#e6edf5"
   muted: "#a3b1c2"
   accent: "#38bdf8"
-  accent-ink: "#04111c"
   accent-soft: "rgb(56 189 248 / 0.16)"
   ok: "#4ade80"
   warn: "#fb923c"
@@ -107,7 +106,7 @@ It is an operating tool, so the world contributes only type, palette, density an
 Restrained workspace on a dark ground lit in three colours. The app is dark only; the PDF report keeps the light tokens (below).
 
 ### Primary
-- **Accent** (#38bdf8): input focus, links, the motion profile trace. Only the filled PDF로 내보내기 action takes the **prism** fill (`--prism`: #e0f2fe → #7dd3fc → #38bdf8 → #a78bfa at 120°, dark ink #04111c, a white top highlight, a cyan glow). The logo's teal is not a UI colour: green tones are reserved for verdicts.
+- **Accent** (#38bdf8): input focus, links, the motion profile trace. No button is filled: PDF로 내보내기 is clear glass like the language switch below it. The logo's teal is not a UI colour: green tones are reserved for verdicts.
 - **Sign Blue** (#0a5a8a): solid marks that need white text (notice dialog head, its OK button; guidance sits behind a `?` beside its title, `HelpTip`, in the same dialog, live values stay under the field). Deep variant (#08486f) for hover.
 
 ### Secondary

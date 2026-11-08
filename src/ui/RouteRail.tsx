@@ -127,9 +127,10 @@ export function RouteRail({ axis, drive, kit, gearbox = true, onExport, exportin
     <>
       <div className={`rail-veil${scrolled ? ' on' : ''}`} aria-hidden />
       {/* the page is dark in both themes, so the logo's dark-background version is used in both */}
-      <div className="page-brand">
+      {/* home = the top of the single axis screen, an empty hash (App's useMode); the inputs stay */}
+      <a className="page-brand" href="#" title={t('홈으로')}>
         <img src={`${import.meta.env.BASE_URL}axispilot-logo-dark.svg`} alt="AxisPilot" width={171} height={32} />
-      </div>
+      </a>
       <header className={`rail${scrolled ? ' over' : ''}`}>
         <div className="rail-inner">
           <div className="rail-main">

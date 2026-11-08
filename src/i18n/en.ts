@@ -138,6 +138,7 @@ export const en: Record<string, string> = {
   '주문 스트로크': 'Ordered stroke',
   '모듈러 제품, 모듈 번호로 주문': 'modular product, ordered by module number',
   // Axis order options (additional slide, belt material)
+  '홈으로': 'Home',
   'ELGD 취부': 'ELGD mounting',
   '표준': 'Standard',
   '직접 체결 M': 'Direct mounting M',
