@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300"><rect width="900" height="300" fill="#fff"/>
+<!-- standard: end view, clamping jaws in the profile's side slots, screws into the base -->
+<g>
+<rect x="30" y="238" width="240" height="14" fill="#8f979f"/>
+<rect x="85" y="100" width="130" height="120" rx="4" fill="#c3c9cf"/>
+<rect x="110" y="72" width="80" height="28" fill="#8f979f"/>
+<rect x="85" y="172" width="14" height="22" fill="#fff"/><rect x="201" y="172" width="14" height="22" fill="#fff"/>
+<path d="M60 238V170H99V194H78V238Z" fill="#0091dc"/><path d="M240 238V170H201V194H222V238Z" fill="#0091dc"/>
+<rect x="64" y="205" width="10" height="46" fill="#00588a"/><rect x="226" y="205" width="10" height="46" fill="#00588a"/>
+</g>
+<!-- M: end view, no jaws, screws from the base into the profile's underside -->
+<g>
+<rect x="330" y="238" width="240" height="14" fill="#8f979f"/>
+<rect x="385" y="118" width="130" height="120" rx="4" fill="#c3c9cf"/>
+<rect x="410" y="90" width="80" height="28" fill="#8f979f"/>
+<rect x="405" y="214" width="10" height="44" fill="#0091dc"/><rect x="485" y="214" width="10" height="44" fill="#0091dc"/>
+<rect x="398" y="252" width="24" height="10" fill="#00588a"/><rect x="478" y="252" width="24" height="10" fill="#00588a"/>
+</g>
+<!-- M7: side view, the angle kit under the end away from the motor, attachment on its front -->
+<g>
+<rect x="640" y="130" width="190" height="62" rx="4" fill="#c3c9cf"/>
+<rect x="660" y="108" width="70" height="22" fill="#8f979f"/>
+<rect x="610" y="140" width="30" height="42" fill="#8f979f"/>
+<path d="M785 192H860V262H840V212H785Z" fill="#0091dc"/>
+<rect x="800" y="184" width="10" height="24" fill="#00588a"/>
+<rect x="860" y="222" width="22" height="60" fill="#d9dde1"/>
+<rect x="845" y="232" width="24" height="10" fill="#00588a"/><rect x="845" y="256" width="24" height="10" fill="#00588a"/>
+</g>
+<g font-family="Arial,Helvetica,sans-serif" font-size="30" font-weight="600" fill="#0091dc" text-anchor="middle">
+<text x="150" y="40">EAHF</text><text x="450" y="40">M</text><text x="740" y="40">M7</text>
+</g>
+</svg>

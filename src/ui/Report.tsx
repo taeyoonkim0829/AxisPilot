@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react'
-import type { AxisEvaluation } from '../calc/axisSelection'
+import { maxStrokeOf, type AxisEvaluation } from '../calc/axisSelection'
 import type { KitMatch } from '../calc/kitSelection'
 import { accelTimeFor } from '../calc/motionProfile'
 import { gearboxChecks, type DriveEvaluation } from '../calc/motorSelection'
@@ -308,9 +308,12 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
                 ] as Row[])
               : []),
             ...(axis.options?.belt ? ([['벨트 재질', axis.options.belt.code ?? t('클로로프렌')]] as Row[]) : []),
+            ...(axis.options?.mounting
+              ? ([['취부 방식', t(axis.options.mounting === 'M' ? '직접 체결 M' : '전면 사용 M7')]] as Row[])
+              : []),
             ['제품군', [a.family, a.variant].filter(Boolean).join('-')],
             ['구동 방식', t(driveLabel[a.drive])],
-            ['최대 스트로크', q(a.maxStroke, 'mm')],
+            ['최대 스트로크', q(maxStrokeOf(a, axis.options), 'mm')],
             ['최대 속도', q(a.maxSpeed, 'm/s')],
             ['최대 가속도', q(a.maxAcceleration, 'm/s²')],
             ['최대 이송력', q(a.maxFeedForce, 'N')],

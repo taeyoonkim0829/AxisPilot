@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { axes, gearboxes, guides, kits, motors, shafts } from '../data'
-import type { Axis, Gearbox, Motor } from '../data/types'
+import type { Axis, AxisFamily, DriveKind, Gearbox, Motor } from '../data/types'
 import { axisOrder, curveAt, evaluateAxis, guideLoads, memberLoads, parallelLayout, selectAxes, G } from './axisSelection'
 import { evaluateDrive, gearboxOptionsFor, gearboxStatus, selectMotors } from './motorSelection'
 import { moveProfile } from './motionProfile'
@@ -143,6 +143,28 @@ describe('axis order options', () => {
     expect(e.order.model).toBe('ELGD-TB-KF-80-1000-0H-PU2')
     expect(e.order.modular).toBe(false)
     expect(e.noLoadTorque).toBe(1.2)
+  })
+
+  it('adds the mounting type to the type code, orders by module number and takes its stroke limit', () => {
+    const settings = { ...defaultSettings, axisMounting: 'M' as const }
+    const e = evaluateAxis(elgd, req, settings)!
+    expect(e.order).toEqual({ model: 'ELGD-TB-KF-80-1000-0H-M-PU2', partNumber: elgd.moduleNumber, stroke: 1000, modular: true })
+    const strokeCheck = (stroke: number, s: typeof defaultSettings = settings) => evaluateAxis(elgd, { ...req, stroke }, s)!.checks.find((c) => c.label === '스트로크')!
+    expect(strokeCheck(1500).status).toBe('fail')
+    expect(strokeCheck(1500, defaultSettings).status).toBe('ok')
+    const screw = axes.find((a) => a.id === 'ELGD-BS-KF-80-…5P')!
+    expect(evaluateAxis(screw, { ...req, velocity: 0.2 }, { ...defaultSettings, axisMounting: 'M7' })!.order!.model).toBe('ELGD-BS-KF-80-1000-0H-5P-M7')
+  })
+
+  it('takes ELGD axes without the chosen mounting type off the list, keeping other families', () => {
+    const open = { ...defaultSettings, families: ['ELGD', 'EGC'] as AxisFamily[], drives: ['spindle'] as DriveKind[], axisMounting: 'M7' as const }
+    const listed = selectAxes(axes, { ...req, velocity: 0.2 }, open).map((e) => e.axis)
+    expect(listed.some((a) => a.family === 'EGC')).toBe(true)
+    expect(listed.filter((a) => a.family === 'ELGD').length).toBeGreaterThan(0)
+    expect(listed.filter((a) => a.family === 'ELGD').every((a) => a.mountings?.M7)).toBe(true)
+    // no belt axis offers M7: the choice is off, every belt axis stays
+    const belt = selectAxes(axes, req, { ...open, drives: ['belt'] }).map((e) => e.axis)
+    expect(belt.some((a) => a.family === 'ELGD')).toBe(true)
   })
 
   it('adds an additional slide and the belt to the type code, lengthening the ordered stroke', () => {

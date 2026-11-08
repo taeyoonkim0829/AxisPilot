@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { minSlidePitch, slideAxes, type AxisEvaluation } from '../calc/axisSelection'
 import { axes } from '../data'
 import type { AdditionalSlideSide, Settings } from '../calc/types'
-import type { AxisFamily, DriveKind } from '../data/types'
-import { CheckTable, CollapseTitle, InfoTable, NumberField, RadioGroup, Ratio, SortTh, StatusBadge, ToggleButton, ToggleGroup } from './common'
+import type { AxisFamily, AxisMounting, DriveKind } from '../data/types'
+import { CheckTable, CollapseTitle, HelpTip, InfoTable, NumberField, RadioGroup, Ratio, SortTh, StatusBadge, ToggleButton, ToggleGroup } from './common'
+import mountingImage from '../../images/help_axis_mounting.svg'
 import { statusRank, useSort } from './useSort'
 import { useT } from '../i18n'
 import { axisDetailChecks, axisDetailInfo, driveLabel, fmt, guideDetail } from './format'
@@ -34,10 +35,11 @@ const slideLabel: Record<AdditionalSlideSide, string> = { none: '없음', left: 
 /** Belt materials offered per family (`Axis.beltMaterials`; CR = EGC chloroprene rubber, no type code) */
 const beltOptions = { ELGD: ['PU2', 'PU1'], EGC: ['CR', 'PU2'] } as const
 const beltLabel: Record<string, string> = { PU2: 'PU2', PU1: 'PU1 FDA', CR: '클로로프렌' }
+const mountingLabel: Record<'standard' | AxisMounting, string> = { standard: '표준', M: '직접 체결 M', M7: '전면 사용 M7' }
 
 /**
  * Order options of the axes that offer them (additional slide: ELGT-BS, ELGD-TB ZL/ZR, EGC-TB-KF KL/KR; belt: ELGD-TB
- * PU1/PU2, EGC-TB-KF chloroprene/PU2), shown while such axes are in the list.
+ * PU1/PU2, EGC-TB-KF chloroprene/PU2; mounting type: ELGD), shown while such axes are in the list.
  */
 function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'settings' | 'onSettings'> & { selected: AxisEvaluation | null }) {
   const t = useT()
@@ -49,7 +51,11 @@ function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'sett
   const low = (pitch: number) => min != null && pitch > 0 && pitch < min
   const choices = slideAxes(axes, settings)
   const shown = settings.drives.includes('belt') ? (['ELGD', 'EGC'] as const).filter((f) => settings.families.includes(f)) : []
-  if (choices.length === 0 && shown.length === 0) return null
+  const elgd = settings.families.includes('ELGD')
+  // M7 exists on ball screw axes only
+  const mountings: ('standard' | AxisMounting)[] = settings.drives.includes('spindle') ? ['standard', 'M', 'M7'] : ['standard', 'M']
+  if (choices.length === 0 && shown.length === 0 && !elgd) return null
+  const mounting = settings.axisMounting && mountings.includes(settings.axisMounting) ? settings.axisMounting : 'standard'
   const sides: AdditionalSlideSide[] = choices.some((a) => a.additionalSlide!.both) ? ['none', 'left', 'right', 'both'] : ['none', 'left', 'right']
   return (
     <div className="step-filters axis-options">
@@ -100,6 +106,26 @@ function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'sett
           />
         </div>
       ))}
+      {elgd && (
+        <div className="filter-group">
+          <span className="field-label">
+            {t('ELGD 취부')}
+            <HelpTip title={t('ELGD 취부')}>
+              <img className="help-image" src={mountingImage} alt="" />
+              <p>{t('표준: 프로파일 슬롯에 클램핑 조(프로파일 마운팅 EAHF)로 고정합니다.')}</p>
+              <p>{t('직접 체결 M: 프로파일 아랫면의 나사와 센터링 구멍으로 바로 고정합니다. 프로파일 마운팅이 필요 없어 공간을 줄이지만, 최대 스트로크가 1000–1400 mm로 줄어듭니다.')}</p>
+              <p>{t('전면 사용 M7: 모터 반대쪽 프로파일 아랫면의 나사와 앵글 키트 EAHM-E24-AK로 축 앞쪽에 부착물을 답니다. ELGD-BS 60, 80과 ELGD-BS-WD 100만 해당합니다.')}</p>
+              <p>{t('ELGT, EGC에는 취부 방식 옵션이 없습니다. 3D 도면은 표준 프로파일 모델로 그려집니다.')}</p>
+            </HelpTip>
+          </span>
+          <RadioGroup
+            options={mountings}
+            value={mounting}
+            label={(v) => t(mountingLabel[v])}
+            onChange={(v) => onSettings({ ...settings, axisMounting: v === 'standard' ? null : v })}
+          />
+        </div>
+      )}
     </div>
   )
 }

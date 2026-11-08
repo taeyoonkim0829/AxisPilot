@@ -82,7 +82,12 @@ export interface Axis {
   additionalSlide?: AdditionalSlide | null
   /** Toothed belt materials to choose from, the one in `typeCode` first */
   beltMaterials?: BeltMaterial[] | null
+  /** ELGD: mounting types beyond the standard profile slots with clamping jaws, each with its mm max. working stroke */
+  mountings?: Partial<Record<AxisMounting, number>> | null
 }
+
+/** ELGD type code: M = direct mounting (threads in the profile's underside), M7 = for front end use */
+export type AxisMounting = 'M' | 'M7'
 
 export interface AdditionalSlide {
   /** type code of a slide on the left / right (ELGT-BS, ELGD ZL/ZR, EGC KL/KR) */

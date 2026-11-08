@@ -2,6 +2,7 @@
   "items": [
     {
       "id": "ELGD-BS-KF-60-…5P",
+      "mountings": {"M": 1000, "M7": 1000},
       "family": "ELGD",
       "variant": "",
       "size": 60,
@@ -118,6 +119,7 @@
     },
     {
       "id": "ELGD-BS-KF-60-…10P",
+      "mountings": {"M": 1000, "M7": 1000},
       "family": "ELGD",
       "variant": "",
       "size": 60,
@@ -234,6 +236,7 @@
     },
     {
       "id": "ELGD-BS-KF-80-…5P",
+      "mountings": {"M": 1400, "M7": 1400},
       "family": "ELGD",
       "variant": "",
       "size": 80,
@@ -360,6 +363,7 @@
     },
     {
       "id": "ELGD-BS-KF-80-…10P",
+      "mountings": {"M": 1400, "M7": 1400},
       "family": "ELGD",
       "variant": "",
       "size": 80,
@@ -484,6 +488,7 @@
     },
     {
       "id": "ELGD-BS-KF-80-…20P",
+      "mountings": {"M": 1400, "M7": 1400},
       "family": "ELGD",
       "variant": "",
       "size": 80,
@@ -608,6 +613,7 @@
     },
     {
       "id": "ELGD-BS-KF-120-…5P",
+      "mountings": {"M": 1400},
       "family": "ELGD",
       "variant": "",
       "size": 120,
@@ -723,6 +729,7 @@
     },
     {
       "id": "ELGD-BS-KF-120-…10P",
+      "mountings": {"M": 1400},
       "family": "ELGD",
       "variant": "",
       "size": 120,
@@ -838,6 +845,7 @@
     },
     {
       "id": "ELGD-BS-KF-120-…30P",
+      "mountings": {"M": 1400},
       "family": "ELGD",
       "variant": "",
       "size": 120,
@@ -953,6 +961,7 @@
     },
     {
       "id": "ELGD-BS-KF-60-…5P-L",
+      "mountings": {"M": 1000, "M7": 1000},
       "family": "ELGD",
       "variant": "",
       "size": 60,
@@ -1053,6 +1062,7 @@
     },
     {
       "id": "ELGD-BS-KF-60-…10P-L",
+      "mountings": {"M": 1000, "M7": 1000},
       "family": "ELGD",
       "variant": "",
       "size": 60,
@@ -1153,6 +1163,7 @@
     },
     {
       "id": "ELGD-BS-KF-80-…5P-L",
+      "mountings": {"M": 1400, "M7": 1400},
       "family": "ELGD",
       "variant": "",
       "size": 80,
@@ -1262,6 +1273,7 @@
     },
     {
       "id": "ELGD-BS-KF-80-…10P-L",
+      "mountings": {"M": 1400, "M7": 1400},
       "family": "ELGD",
       "variant": "",
       "size": 80,
@@ -1369,6 +1381,7 @@
     },
     {
       "id": "ELGD-BS-KF-80-…20P-L",
+      "mountings": {"M": 1400, "M7": 1400},
       "family": "ELGD",
       "variant": "",
       "size": 80,
@@ -1476,6 +1489,7 @@
     },
     {
       "id": "ELGD-BS-KF-120-…5P-L",
+      "mountings": {"M": 1370},
       "family": "ELGD",
       "variant": "",
       "size": 120,
@@ -1574,6 +1588,7 @@
     },
     {
       "id": "ELGD-BS-KF-120-…10P-L",
+      "mountings": {"M": 1370},
       "family": "ELGD",
       "variant": "",
       "size": 120,
@@ -1672,6 +1687,7 @@
     },
     {
       "id": "ELGD-BS-KF-120-…30P-L",
+      "mountings": {"M": 1370},
       "family": "ELGD",
       "variant": "",
       "size": 120,
@@ -1770,6 +1786,7 @@
     },
     {
       "id": "ELGD-TB-KF-60",
+      "mountings": {"M": 1400},
       "family": "ELGD",
       "variant": "",
       "size": 60,
@@ -1856,6 +1873,7 @@
     },
     {
       "id": "ELGD-TB-KF-80",
+      "mountings": {"M": 1400},
       "family": "ELGD",
       "variant": "",
       "size": 80,
@@ -1942,6 +1960,7 @@
     },
     {
       "id": "ELGD-TB-KF-120",
+      "mountings": {"M": 1400},
       "family": "ELGD",
       "variant": "",
       "size": 120,
@@ -2028,6 +2047,7 @@
     },
     {
       "id": "ELGD-TB-KF-60-…-L",
+      "mountings": {"M": 1400},
       "family": "ELGD",
       "variant": "",
       "size": 60,
@@ -2092,6 +2112,7 @@
     },
     {
       "id": "ELGD-TB-KF-80-…-L",
+      "mountings": {"M": 1400},
       "family": "ELGD",
       "variant": "",
       "size": 80,
@@ -2156,6 +2177,7 @@
     },
     {
       "id": "ELGD-TB-KF-120-…-L",
+      "mountings": {"M": 1370},
       "family": "ELGD",
       "variant": "",
       "size": 120,
@@ -2220,6 +2242,7 @@
     },
     {
       "id": "ELGD-BS-KF-WD-100-…5P-L",
+      "mountings": {"M": 1000, "M7": 1000},
       "family": "ELGD",
       "variant": "WD",
       "size": 100,
@@ -2344,6 +2367,7 @@
     },
     {
       "id": "ELGD-BS-KF-WD-100-…10P-L",
+      "mountings": {"M": 1000, "M7": 1000},
       "family": "ELGD",
       "variant": "WD",
       "size": 100,
@@ -2467,6 +2491,7 @@
     },
     {
       "id": "ELGD-BS-KF-WD-120-…5P-L",
+      "mountings": {"M": 1370},
       "family": "ELGD",
       "variant": "WD",
       "size": 120,
@@ -2596,6 +2621,7 @@
     },
     {
       "id": "ELGD-BS-KF-WD-120-…10P-L",
+      "mountings": {"M": 1370},
       "family": "ELGD",
       "variant": "WD",
       "size": 120,
@@ -2726,6 +2752,7 @@
     },
     {
       "id": "ELGD-TB-KF-WD-100-…-L",
+      "mountings": {"M": 1400},
       "family": "ELGD",
       "variant": "WD",
       "size": 100,
@@ -2812,6 +2839,7 @@
     },
     {
       "id": "ELGD-TB-KF-WD-120-…-L",
+      "mountings": {"M": 1370},
       "family": "ELGD",
       "variant": "WD",
       "size": 120,

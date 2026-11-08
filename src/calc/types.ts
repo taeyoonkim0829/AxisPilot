@@ -1,4 +1,4 @@
-import type { AxisFamily, DriveKind, MotorMaker } from '../data/types'
+import type { AxisFamily, AxisMounting, DriveKind, MotorMaker } from '../data/types'
 
 export type Mounting = 'floor' | 'wall' | 'vertical'
 
@@ -159,6 +159,8 @@ export interface Settings {
   slidePitchRight: number
   /** Toothed belt material by family (`BeltMaterial.code`; null = EGC chloroprene rubber) */
   beltMaterial: Partial<Record<AxisFamily, string | null>>
+  /** ELGD mounting type (`Axis.mountings`); null = the standard profile slots with clamping jaws */
+  axisMounting: AxisMounting | null
   /** m, motor cable length for the cable selection (Festo drives) */
   cableLength: number
   /** Order the axis at the next standard stroke (standard part number) instead of the modular product system's */
@@ -190,6 +192,7 @@ export const defaultSettings: Settings = {
   slidePitch: 0,
   slidePitchRight: 0,
   beltMaterial: { ELGD: 'PU2', EGC: null },
+  axisMounting: null,
   standardStroke: false,
   spindleSupport: false,
 }

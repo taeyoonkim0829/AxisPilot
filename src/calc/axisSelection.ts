@@ -1,6 +1,6 @@
 // Axis sizing: motion profile, required force/torque at the axis drive shaft,
 // guide load comparison value, deflection and life. Motor-independent.
-import type { AdditionalSlide, Axis, BeltMaterial, ConnectingShaft, GuideUnit } from '../data/types'
+import type { AdditionalSlide, Axis, AxisMounting, BeltMaterial, ConnectingShaft, GuideUnit } from '../data/types'
 import { curveAt } from './curve'
 import { dwellPhase, moveProfile, samplePhases, type MoveProfile, type Phase } from './motionProfile'
 import { cylinderGuideFor, eagfLoads, guideAxisFor, guideChecks, guideFv, type GuideFit } from './guideSelection'
@@ -110,7 +110,23 @@ export interface AxisOptions {
   pitches: number[]
   /** the chosen belt material; null when the axis has no choice */
   belt: BeltMaterial | null
+  /** the chosen mounting type; null = the standard profile slots with clamping jaws */
+  mounting: AxisMounting | null
 }
+
+/**
+ * Whether an axis can be ordered with the chosen mounting type: only ELGD has one, so other families stay; ELGD axes
+ * without it leave the list, unless none of the listed axes offers it (the choice hidden: it shows 표준 and nothing changes).
+ */
+export function offersMounting(axis: Axis, settings: Settings, listed: Axis[]): boolean {
+  const code = settings.axisMounting
+  if (!code || axis.family !== 'ELGD' || !listed.some((a) => a.mountings?.[code] != null)) return true
+  return axis.mountings?.[code] != null
+}
+
+/** mm, the working stroke the axis takes with its options */
+export const maxStrokeOf = (axis: Axis, options: AxisOptions | null) =>
+  (options?.mounting && axis.mountings?.[options.mounting]) || axis.maxStroke
 
 /** Axes of the chosen families and drive that offer an additional slide: the choice is shown (and applies) when any do */
 export const slideAxes = (all: Axis[], settings: Settings) =>
@@ -137,7 +153,7 @@ export const minSlidePitch = (axis: Axis): number | null => (axis.additionalSlid
 export function axisOptions(axis: Axis, settings: Settings): AxisOptions | null {
   const extra = axis.additionalSlide
   const materials = axis.beltMaterials
-  if (!extra && !materials?.length) return null
+  if (!extra && !materials?.length && !axis.mountings) return null
   const side = settings.additionalSlide
   const slides =
     !extra || side === 'none' ? [] : side === 'both' ? (extra.both ? [extra.left, extra.right] : []) : [side === 'left' ? extra.left : extra.right]
@@ -151,21 +167,22 @@ export function axisOptions(axis: Axis, settings: Settings): AxisOptions | null 
     gaps,
     pitches: gaps.map((gap) => (half + gap) / 1000),
     belt: materials?.length ? (materials.find((m) => m.code === chosen) ?? materials[0]) : null,
+    mounting: settings.axisMounting && axis.mountings?.[settings.axisMounting] != null ? settings.axisMounting : null,
   }
 }
 
-/** Type code with the options: additional slides, then the belt material (its last position) */
+/** Type code with the options: additional slides, the mounting type, then the belt material (its last position) */
 function optionCode(axis: Axis, template: string, options: AxisOptions | null): string {
   if (!options) return template
   const standard = axis.beltMaterials?.[0]?.code
   const base = standard && template.endsWith(`-${standard}`) ? template.slice(0, -standard.length - 1) : template
   const belt = options.belt ? options.belt.code : standard
-  return [base, ...options.slides, ...(belt ? [belt] : [])].join('-')
+  return [base, ...options.slides, ...(options.mounting ? [options.mounting] : []), ...(belt ? [belt] : [])].join('-')
 }
 
-/** Options that leave the standard product (no additional slide, the type code's belt) */
+/** Options that leave the standard product (no additional slide, the type code's belt, standard mounting) */
 const customised = (axis: Axis, options: AxisOptions | null) =>
-  !!options && (options.slides.length > 0 || (options.belt != null && options.belt !== axis.beltMaterials?.[0]))
+  !!options && (options.slides.length > 0 || options.mounting != null || (options.belt != null && options.belt !== axis.beltMaterials?.[0]))
 
 /**
  * Loads on the most loaded of several slides on one guide carrying the payload as a rigid plate: slides at
@@ -635,11 +652,13 @@ export function evaluateAxis(
   const checks: Check[] = [
     extra
       ? {
-          ...check('스트로크', req.stroke + options!.extension, axis.maxStroke, 'mm'),
+          ...check('스트로크', req.stroke + options!.extension, maxStrokeOf(axis, options), 'mm'),
           note: '추가 슬라이드 {codes}: 슬라이드 길이 + 간격 {extension} mm 포함',
           noteArgs: { codes: options!.slides.join(' + '), extension: options!.extension },
         }
-      : check('스트로크', req.stroke, axis.maxStroke, 'mm'),
+      : options?.mounting
+        ? { ...check('스트로크', req.stroke, maxStrokeOf(axis, options), 'mm'), note: '취부 방식 {code}의 최대 스트로크', noteArgs: { code: options.mounting } }
+        : check('스트로크', req.stroke, axis.maxStroke, 'mm'),
     speedCheck(ordered, peakVelocity, builtStroke, support != null),
     check('가속도', fwd.peakAcceleration, axis.maxAcceleration, 'm/s²'),
     feedForceCheck(axis, peakForce, builtStroke),
@@ -957,8 +976,9 @@ export function selectAxes(
   guides: GuideUnit[] = [],
 ): AxisEvaluation[] {
   const choices = slideAxes(all, settings)
-  return all
-    .filter((a) => settings.families.includes(a.family) && settings.drives.includes(a.drive) && offersSlides(a, settings, choices))
+  const listed = all.filter((a) => settings.families.includes(a.family) && settings.drives.includes(a.drive))
+  return listed
+    .filter((a) => offersSlides(a, settings, choices) && offersMounting(a, settings, listed))
     .map((a) => evaluateAxis(a, req, settings, shafts, guides))
     .filter((e): e is AxisEvaluation => e !== null)
     .sort((a, b) => statusOrder[a.status] - statusOrder[b.status] || a.axisMass - b.axisMass)
