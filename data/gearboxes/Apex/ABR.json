@@ -1799,7 +1799,7 @@
       "mass": 6.4,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-4",
@@ -1878,7 +1878,7 @@
       "mass": 6.4,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-5",
@@ -1957,7 +1957,7 @@
       "mass": 6.4,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-6",
@@ -2036,7 +2036,7 @@
       "mass": 6.4,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-7",
@@ -2115,7 +2115,7 @@
       "mass": 6.4,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-8",
@@ -2194,7 +2194,7 @@
       "mass": 6.4,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-9",
@@ -2275,7 +2275,7 @@
       "mass": 6.4,
       "operatingTemperature": "-10 ... 90",
       "driveCode": "80PA",
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-10",
@@ -2354,7 +2354,7 @@
       "mass": 6.4,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-14",
@@ -2433,7 +2433,7 @@
       "mass": 6.4,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-20",
@@ -2512,7 +2512,7 @@
       "mass": 6.4,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-25",
@@ -2591,7 +2591,7 @@
       "mass": 7.8,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-30",
@@ -2670,7 +2670,7 @@
       "mass": 7.8,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-35",
@@ -2749,7 +2749,7 @@
       "mass": 7.8,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-40",
@@ -2828,7 +2828,7 @@
       "mass": 7.8,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-45",
@@ -2907,7 +2907,7 @@
       "mass": 7.8,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-50",
@@ -2986,7 +2986,7 @@
       "mass": 7.8,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-60",
@@ -3065,7 +3065,7 @@
       "mass": 7.8,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-70",
@@ -3144,7 +3144,7 @@
       "mass": 7.8,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-80",
@@ -3223,7 +3223,7 @@
       "mass": 7.8,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-90",
@@ -3302,7 +3302,7 @@
       "mass": 7.8,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-100",
@@ -3381,7 +3381,7 @@
       "mass": 7.8,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-120",
@@ -3460,7 +3460,7 @@
       "mass": 7.8,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-140",
@@ -3539,7 +3539,7 @@
       "mass": 7.8,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-160",
@@ -3618,7 +3618,7 @@
       "mass": 7.8,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-180",
@@ -3697,7 +3697,7 @@
       "mass": 7.8,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR090-200",
@@ -3776,7 +3776,7 @@
       "mass": 7.8,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "90G0"
     },
     {
       "id": "ABR115-3",
@@ -3846,7 +3846,7 @@
       "mass": 13,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-4",
@@ -3916,7 +3916,7 @@
       "mass": 13,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-5",
@@ -3986,7 +3986,7 @@
       "mass": 13,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-6",
@@ -4056,7 +4056,7 @@
       "mass": 13,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-7",
@@ -4126,7 +4126,7 @@
       "mass": 13,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-8",
@@ -4196,7 +4196,7 @@
       "mass": 13,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-9",
@@ -4266,7 +4266,7 @@
       "mass": 13,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-10",
@@ -4336,7 +4336,7 @@
       "mass": 13,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-14",
@@ -4412,7 +4412,7 @@
       "mass": 13,
       "operatingTemperature": "-10 ... 90",
       "driveCode": "130M1",
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-20",
@@ -4482,7 +4482,7 @@
       "mass": 13,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-25",
@@ -4552,7 +4552,7 @@
       "mass": 14.2,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-30",
@@ -4622,7 +4622,7 @@
       "mass": 14.2,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-35",
@@ -4692,7 +4692,7 @@
       "mass": 14.2,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-40",
@@ -4762,7 +4762,7 @@
       "mass": 14.2,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-45",
@@ -4832,7 +4832,7 @@
       "mass": 14.2,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-50",
@@ -4902,7 +4902,7 @@
       "mass": 14.2,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-60",
@@ -4972,7 +4972,7 @@
       "mass": 14.2,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-70",
@@ -5042,7 +5042,7 @@
       "mass": 14.2,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-80",
@@ -5112,7 +5112,7 @@
       "mass": 14.2,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-90",
@@ -5182,7 +5182,7 @@
       "mass": 14.2,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-100",
@@ -5252,7 +5252,7 @@
       "mass": 14.2,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-120",
@@ -5322,7 +5322,7 @@
       "mass": 14.2,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-140",
@@ -5392,7 +5392,7 @@
       "mass": 14.2,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-160",
@@ -5462,7 +5462,7 @@
       "mass": 14.2,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-180",
@@ -5532,7 +5532,7 @@
       "mass": 14.2,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR115-200",
@@ -5602,7 +5602,7 @@
       "mass": 14.2,
       "operatingTemperature": "-10 ... 90",
       "driveCode": null,
-      "interfaceCode": null
+      "interfaceCode": "115G0"
     },
     {
       "id": "ABR142-3",

@@ -957,7 +957,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "controller": "L7NH-200V"
     },
     {
@@ -985,7 +985,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "controller": "L7NH-200V"
     },
     {
@@ -1299,7 +1299,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "sameOutline": "APM-FE30A",
       "controller": "L7NH-200V"
     },
@@ -1328,7 +1328,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "sameOutline": "APM-FE30A",
       "controller": "L7NH-200V"
     },
@@ -2039,7 +2039,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "sameOutline": "APM-FE30A",
       "controller": "L7NH-200V"
     },
@@ -2068,7 +2068,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "sameOutline": "APM-FE30A",
       "controller": "L7NH-200V"
     },
@@ -2961,7 +2961,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "sameOutline": "APM-FE30A",
       "controller": "L7NH-200V"
     },
@@ -2990,7 +2990,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "sameOutline": "APM-FE30A",
       "controller": "L7NH-200V"
     },
@@ -3709,7 +3709,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "controller": "L7NH-400V"
     },
     {
@@ -3737,7 +3737,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "controller": "L7NH-400V"
     },
     {
@@ -4051,7 +4051,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "sameOutline": "APM-FEP30A",
       "controller": "L7NH-400V"
     },
@@ -4080,7 +4080,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "sameOutline": "APM-FEP30A",
       "controller": "L7NH-400V"
     },
@@ -4791,7 +4791,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "sameOutline": "APM-FEP30A",
       "controller": "L7NH-400V"
     },
@@ -4820,7 +4820,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "sameOutline": "APM-FEP30A",
       "controller": "L7NH-400V"
     },
@@ -5713,7 +5713,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "sameOutline": "APM-FEP30A",
       "controller": "L7NH-400V"
     },
@@ -5742,7 +5742,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "sameOutline": "APM-FEP30A",
       "controller": "L7NH-400V"
     },

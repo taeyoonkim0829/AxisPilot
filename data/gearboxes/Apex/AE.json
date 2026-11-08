@@ -30,7 +30,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "40R",
-      "interfaceCode": null
+      "interfaceCode": "50GA"
     },
     {
       "id": "AE050-4",
@@ -62,7 +62,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "40R",
-      "interfaceCode": null
+      "interfaceCode": "50GA"
     },
     {
       "id": "AE050-5",
@@ -94,7 +94,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "40R",
-      "interfaceCode": null
+      "interfaceCode": "50GA"
     },
     {
       "id": "AE050-6",
@@ -126,7 +126,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "40R",
-      "interfaceCode": null
+      "interfaceCode": "50GA"
     },
     {
       "id": "AE050-7",
@@ -158,7 +158,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "40R",
-      "interfaceCode": null
+      "interfaceCode": "50GA"
     },
     {
       "id": "AE050-8",
@@ -190,7 +190,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "40R",
-      "interfaceCode": null
+      "interfaceCode": "50GA"
     },
     {
       "id": "AE050-9",
@@ -222,7 +222,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "40R",
-      "interfaceCode": null
+      "interfaceCode": "50GA"
     },
     {
       "id": "AE050-10",
@@ -254,7 +254,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "40R",
-      "interfaceCode": null
+      "interfaceCode": "50GA"
     },
     {
       "id": "AE050-15",
@@ -286,7 +286,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "40R",
-      "interfaceCode": null
+      "interfaceCode": "50GA"
     },
     {
       "id": "AE050-20",
@@ -318,7 +318,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "40R",
-      "interfaceCode": null
+      "interfaceCode": "50GA"
     },
     {
       "id": "AE050-25",
@@ -350,7 +350,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "40R",
-      "interfaceCode": null
+      "interfaceCode": "50GA"
     },
     {
       "id": "AE050-30",
@@ -382,7 +382,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "40R",
-      "interfaceCode": null
+      "interfaceCode": "50GA"
     },
     {
       "id": "AE050-35",
@@ -414,7 +414,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "40R",
-      "interfaceCode": null
+      "interfaceCode": "50GA"
     },
     {
       "id": "AE050-40",
@@ -446,7 +446,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "40R",
-      "interfaceCode": null
+      "interfaceCode": "50GA"
     },
     {
       "id": "AE050-45",
@@ -478,7 +478,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "40R",
-      "interfaceCode": null
+      "interfaceCode": "50GA"
     },
     {
       "id": "AE050-50",
@@ -510,7 +510,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "40R",
-      "interfaceCode": null
+      "interfaceCode": "50GA"
     },
     {
       "id": "AE050-60",
@@ -542,7 +542,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "40R",
-      "interfaceCode": null
+      "interfaceCode": "50GA"
     },
     {
       "id": "AE050-70",
@@ -574,7 +574,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "40R",
-      "interfaceCode": null
+      "interfaceCode": "50GA"
     },
     {
       "id": "AE050-80",
@@ -606,7 +606,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "40R",
-      "interfaceCode": null
+      "interfaceCode": "50GA"
     },
     {
       "id": "AE050-90",
@@ -638,7 +638,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "40R",
-      "interfaceCode": null
+      "interfaceCode": "50GA"
     },
     {
       "id": "AE050-100",
@@ -670,7 +670,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "40R",
-      "interfaceCode": null
+      "interfaceCode": "50GA"
     },
     {
       "id": "AE070-3",
@@ -706,7 +706,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "60PA",
-      "interfaceCode": null
+      "interfaceCode": "70GA"
     },
     {
       "id": "AE070-4",
@@ -742,7 +742,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "60PA",
-      "interfaceCode": null
+      "interfaceCode": "70GA"
     },
     {
       "id": "AE070-5",
@@ -778,7 +778,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "60PA",
-      "interfaceCode": null
+      "interfaceCode": "70GA"
     },
     {
       "id": "AE070-6",
@@ -814,7 +814,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "60PA",
-      "interfaceCode": null
+      "interfaceCode": "70GA"
     },
     {
       "id": "AE070-7",
@@ -850,7 +850,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "60PA",
-      "interfaceCode": null
+      "interfaceCode": "70GA"
     },
     {
       "id": "AE070-8",
@@ -886,7 +886,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "60PA",
-      "interfaceCode": null
+      "interfaceCode": "70GA"
     },
     {
       "id": "AE070-9",
@@ -922,7 +922,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "60PA",
-      "interfaceCode": null
+      "interfaceCode": "70GA"
     },
     {
       "id": "AE070-10",
@@ -958,7 +958,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "60PA",
-      "interfaceCode": null
+      "interfaceCode": "70GA"
     },
     {
       "id": "AE070-15",
@@ -994,7 +994,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "60PA",
-      "interfaceCode": null
+      "interfaceCode": "70GA"
     },
     {
       "id": "AE070-20",
@@ -1030,7 +1030,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "60PA",
-      "interfaceCode": null
+      "interfaceCode": "70GA"
     },
     {
       "id": "AE070-25",
@@ -1066,7 +1066,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "60PA",
-      "interfaceCode": null
+      "interfaceCode": "70GA"
     },
     {
       "id": "AE070-30",
@@ -1102,7 +1102,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "60PA",
-      "interfaceCode": null
+      "interfaceCode": "70GA"
     },
     {
       "id": "AE070-35",
@@ -1138,7 +1138,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "60PA",
-      "interfaceCode": null
+      "interfaceCode": "70GA"
     },
     {
       "id": "AE070-40",
@@ -1174,7 +1174,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "60PA",
-      "interfaceCode": null
+      "interfaceCode": "70GA"
     },
     {
       "id": "AE070-45",
@@ -1210,7 +1210,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "60PA",
-      "interfaceCode": null
+      "interfaceCode": "70GA"
     },
     {
       "id": "AE070-50",
@@ -1246,7 +1246,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "60PA",
-      "interfaceCode": null
+      "interfaceCode": "70GA"
     },
     {
       "id": "AE070-60",
@@ -1282,7 +1282,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "60PA",
-      "interfaceCode": null
+      "interfaceCode": "70GA"
     },
     {
       "id": "AE070-70",
@@ -1318,7 +1318,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "60PA",
-      "interfaceCode": null
+      "interfaceCode": "70GA"
     },
     {
       "id": "AE070-80",
@@ -1354,7 +1354,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "60PA",
-      "interfaceCode": null
+      "interfaceCode": "70GA"
     },
     {
       "id": "AE070-90",
@@ -1390,7 +1390,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "60PA",
-      "interfaceCode": null
+      "interfaceCode": "70GA"
     },
     {
       "id": "AE070-100",
@@ -1426,7 +1426,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "60PA",
-      "interfaceCode": null
+      "interfaceCode": "70GA"
     },
     {
       "id": "AE090-3",
@@ -1496,7 +1496,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "80PA",
-      "interfaceCode": null
+      "interfaceCode": "90GA"
     },
     {
       "id": "AE090-4",
@@ -1566,7 +1566,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "80PA",
-      "interfaceCode": null
+      "interfaceCode": "90GA"
     },
     {
       "id": "AE090-5",
@@ -1636,7 +1636,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "80PA",
-      "interfaceCode": null
+      "interfaceCode": "90GA"
     },
     {
       "id": "AE090-6",
@@ -1706,7 +1706,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "80PA",
-      "interfaceCode": null
+      "interfaceCode": "90GA"
     },
     {
       "id": "AE090-7",
@@ -1776,7 +1776,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "80PA",
-      "interfaceCode": null
+      "interfaceCode": "90GA"
     },
     {
       "id": "AE090-8",
@@ -1846,7 +1846,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "80PA",
-      "interfaceCode": null
+      "interfaceCode": "90GA"
     },
     {
       "id": "AE090-10",
@@ -1916,7 +1916,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "80PA",
-      "interfaceCode": null
+      "interfaceCode": "90GA"
     },
     {
       "id": "AE090-15",
@@ -1986,7 +1986,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "80PA",
-      "interfaceCode": null
+      "interfaceCode": "90GA"
     },
     {
       "id": "AE090-20",
@@ -2056,7 +2056,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "80PA",
-      "interfaceCode": null
+      "interfaceCode": "90GA"
     },
     {
       "id": "AE090-25",
@@ -2126,7 +2126,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "80PA",
-      "interfaceCode": null
+      "interfaceCode": "90GA"
     },
     {
       "id": "AE090-30",
@@ -2196,7 +2196,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "80PA",
-      "interfaceCode": null
+      "interfaceCode": "90GA"
     },
     {
       "id": "AE090-35",
@@ -2266,7 +2266,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "80PA",
-      "interfaceCode": null
+      "interfaceCode": "90GA"
     },
     {
       "id": "AE090-40",
@@ -2336,7 +2336,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "80PA",
-      "interfaceCode": null
+      "interfaceCode": "90GA"
     },
     {
       "id": "AE090-45",
@@ -2406,7 +2406,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "80PA",
-      "interfaceCode": null
+      "interfaceCode": "90GA"
     },
     {
       "id": "AE090-50",
@@ -2476,7 +2476,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "80PA",
-      "interfaceCode": null
+      "interfaceCode": "90GA"
     },
     {
       "id": "AE090-60",
@@ -2546,7 +2546,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "80PA",
-      "interfaceCode": null
+      "interfaceCode": "90GA"
     },
     {
       "id": "AE090-70",
@@ -2616,7 +2616,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "80PA",
-      "interfaceCode": null
+      "interfaceCode": "90GA"
     },
     {
       "id": "AE090-80",
@@ -2686,7 +2686,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "80PA",
-      "interfaceCode": null
+      "interfaceCode": "90GA"
     },
     {
       "id": "AE090-90",
@@ -2756,7 +2756,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "80PA",
-      "interfaceCode": null
+      "interfaceCode": "90GA"
     },
     {
       "id": "AE090-100",
@@ -2826,7 +2826,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "80PA",
-      "interfaceCode": null
+      "interfaceCode": "90GA"
     },
     {
       "id": "AE120-3",
@@ -2891,7 +2891,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "130M1",
-      "interfaceCode": null
+      "interfaceCode": "120GC"
     },
     {
       "id": "AE120-4",
@@ -2956,7 +2956,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "130M1",
-      "interfaceCode": null
+      "interfaceCode": "120GC"
     },
     {
       "id": "AE120-5",
@@ -3021,7 +3021,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "130M1",
-      "interfaceCode": null
+      "interfaceCode": "120GC"
     },
     {
       "id": "AE120-6",
@@ -3086,7 +3086,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "130M1",
-      "interfaceCode": null
+      "interfaceCode": "120GC"
     },
     {
       "id": "AE120-7",
@@ -3151,7 +3151,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "130M1",
-      "interfaceCode": null
+      "interfaceCode": "120GC"
     },
     {
       "id": "AE120-8",
@@ -3216,7 +3216,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "130M1",
-      "interfaceCode": null
+      "interfaceCode": "120GC"
     },
     {
       "id": "AE120-9",
@@ -3281,7 +3281,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "130M1",
-      "interfaceCode": null
+      "interfaceCode": "120GC"
     },
     {
       "id": "AE120-10",
@@ -3346,7 +3346,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "130M1",
-      "interfaceCode": null
+      "interfaceCode": "120GC"
     },
     {
       "id": "AE120-15",
@@ -3411,7 +3411,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "130M1",
-      "interfaceCode": null
+      "interfaceCode": "120GC"
     },
     {
       "id": "AE120-20",
@@ -3476,7 +3476,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "130M1",
-      "interfaceCode": null
+      "interfaceCode": "120GC"
     },
     {
       "id": "AE120-25",
@@ -3541,7 +3541,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "130M1",
-      "interfaceCode": null
+      "interfaceCode": "120GC"
     },
     {
       "id": "AE120-30",
@@ -3606,7 +3606,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "130M1",
-      "interfaceCode": null
+      "interfaceCode": "120GC"
     },
     {
       "id": "AE120-35",
@@ -3671,7 +3671,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "130M1",
-      "interfaceCode": null
+      "interfaceCode": "120GC"
     },
     {
       "id": "AE120-40",
@@ -3736,7 +3736,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "130M1",
-      "interfaceCode": null
+      "interfaceCode": "120GC"
     },
     {
       "id": "AE120-45",
@@ -3801,7 +3801,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "130M1",
-      "interfaceCode": null
+      "interfaceCode": "120GC"
     },
     {
       "id": "AE120-50",
@@ -3866,7 +3866,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "130M1",
-      "interfaceCode": null
+      "interfaceCode": "120GC"
     },
     {
       "id": "AE120-60",
@@ -3931,7 +3931,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "130M1",
-      "interfaceCode": null
+      "interfaceCode": "120GC"
     },
     {
       "id": "AE120-70",
@@ -3996,7 +3996,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "130M1",
-      "interfaceCode": null
+      "interfaceCode": "120GC"
     },
     {
       "id": "AE120-80",
@@ -4061,7 +4061,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "130M1",
-      "interfaceCode": null
+      "interfaceCode": "120GC"
     },
     {
       "id": "AE120-90",
@@ -4126,7 +4126,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "130M1",
-      "interfaceCode": null
+      "interfaceCode": "120GC"
     },
     {
       "id": "AE120-100",
@@ -4191,7 +4191,7 @@
       "efficiency": null,
       "operatingTemperature": null,
       "driveCode": "130M1",
-      "interfaceCode": null
+      "interfaceCode": "120GC"
     },
     {
       "id": "AE155-3",

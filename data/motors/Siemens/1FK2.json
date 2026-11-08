@@ -738,7 +738,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "126AA"
     },
     {
       "id": "1FK2106-3AF0 (230V)",
@@ -773,7 +773,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "126AA"
     },
     {
       "id": "1FK2106-4AF0",
@@ -808,7 +808,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "126AA"
     },
     {
       "id": "1FK2106-4AF0 (230V)",
@@ -843,7 +843,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "126AA"
     },
     {
       "id": "1FK2106-6AF0",
@@ -878,7 +878,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "126AA"
     },
     {
       "id": "1FK2106-6AF0 (230V)",
@@ -913,7 +913,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "126AA"
     },
     {
       "id": "1FK2203-2AG0",
@@ -1304,7 +1304,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "84AA"
     },
     {
       "id": "1FK2205-2AF0 (230V)",
@@ -1339,7 +1339,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "84AA"
     },
     {
       "id": "1FK2205-4AF0",
@@ -1374,7 +1374,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "84AA"
     },
     {
       "id": "1FK2205-4AF0 (230V)",
@@ -1409,7 +1409,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "84AA"
     },
     {
       "id": "1FK2206-2AF0",
@@ -2778,7 +2778,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "126AA"
     },
     {
       "id": "1FK2106-3AF1 (230V)",
@@ -2813,7 +2813,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "126AA"
     },
     {
       "id": "1FK2106-4AF1",
@@ -2848,7 +2848,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "126AA",
       "sameOutline": "1FK2206-4AF10-0MA0"
     },
     {
@@ -2884,7 +2884,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null,
+      "interfaceCode": "126AA",
       "sameOutline": "1FK2206-4AF10-0MA0"
     },
     {
@@ -2920,7 +2920,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "126AA"
     },
     {
       "id": "1FK2106-6AF1 (230V)",
@@ -2955,7 +2955,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "126AA"
     },
     {
       "id": "1FK2203-2AG1",
@@ -3345,7 +3345,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "84AA"
     },
     {
       "id": "1FK2205-2AF1 (230V)",
@@ -3380,7 +3380,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "84AA"
     },
     {
       "id": "1FK2205-4AF1",
@@ -3415,7 +3415,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "84AA"
     },
     {
       "id": "1FK2205-4AF1 (230V)",
@@ -3450,7 +3450,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "84AA"
     },
     {
       "id": "1FK2206-2AF1",

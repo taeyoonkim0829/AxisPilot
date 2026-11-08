@@ -32,7 +32,7 @@
       "capacitorEnergy": 11,
       "regenPower": 10,
       "amplifier": "MR-J4-60A/B",
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "controller": "MR-J4-200V"
     },
     {
@@ -67,7 +67,7 @@
       "capacitorEnergy": 18,
       "regenPower": 20,
       "amplifier": "MR-J4-100A/B",
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "controller": "MR-J4-200V"
     },
     {
@@ -102,7 +102,7 @@
       "capacitorEnergy": 36,
       "regenPower": 100,
       "amplifier": "MR-J4-200A/B",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-200V"
     },
     {
@@ -137,7 +137,7 @@
       "capacitorEnergy": 36,
       "regenPower": 100,
       "amplifier": "MR-J4-200A/B",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-200V"
     },
     {
@@ -172,7 +172,7 @@
       "capacitorEnergy": 40,
       "regenPower": 100,
       "amplifier": "MR-J4-350A/B",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-200V"
     },
     {
@@ -207,7 +207,7 @@
       "capacitorEnergy": 45,
       "regenPower": 130,
       "amplifier": "MR-J4-500A/B",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-200V"
     },
     {
@@ -242,7 +242,7 @@
       "capacitorEnergy": 11,
       "regenPower": 10,
       "amplifier": "MR-J4-60A/B",
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "controller": "MR-J4-200V"
     },
     {
@@ -277,7 +277,7 @@
       "capacitorEnergy": 18,
       "regenPower": 20,
       "amplifier": "MR-J4-100A/B",
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "controller": "MR-J4-200V"
     },
     {
@@ -312,7 +312,7 @@
       "capacitorEnergy": 36,
       "regenPower": 100,
       "amplifier": "MR-J4-200A/B",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-200V"
     },
     {
@@ -347,7 +347,7 @@
       "capacitorEnergy": 36,
       "regenPower": 100,
       "amplifier": "MR-J4-200A/B",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-200V"
     },
     {
@@ -382,7 +382,7 @@
       "capacitorEnergy": 40,
       "regenPower": 100,
       "amplifier": "MR-J4-350A/B",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-200V"
     },
     {
@@ -417,7 +417,7 @@
       "capacitorEnergy": 45,
       "regenPower": 130,
       "amplifier": "MR-J4-500A/B",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-200V"
     },
     {
@@ -942,7 +942,7 @@
       "capacitorEnergy": 12,
       "regenPower": 15,
       "amplifier": "MR-J4-60A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-SR52"
     },
@@ -978,7 +978,7 @@
       "capacitorEnergy": 12,
       "regenPower": 15,
       "amplifier": "MR-J4-100A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-SR102"
     },
@@ -1014,7 +1014,7 @@
       "capacitorEnergy": 25,
       "regenPower": 100,
       "amplifier": "MR-J4-200A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-SR152"
     },
@@ -1050,7 +1050,7 @@
       "capacitorEnergy": 25,
       "regenPower": 100,
       "amplifier": "MR-J4-200A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-SR202"
     },
@@ -1086,7 +1086,7 @@
       "capacitorEnergy": 43,
       "regenPower": 100,
       "amplifier": "MR-J4-350A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-SR352"
     },
@@ -1122,7 +1122,7 @@
       "capacitorEnergy": 45,
       "regenPower": 130,
       "amplifier": "MR-J4-500A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-SR502"
     },
@@ -1158,7 +1158,7 @@
       "capacitorEnergy": 70,
       "regenPower": 170,
       "amplifier": "MR-J4-700A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-SR702"
     },
@@ -1194,7 +1194,7 @@
       "capacitorEnergy": 12,
       "regenPower": 15,
       "amplifier": "MR-J4-60A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-SR52B"
     },
@@ -1230,7 +1230,7 @@
       "capacitorEnergy": 12,
       "regenPower": 15,
       "amplifier": "MR-J4-100A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-SR102B"
     },
@@ -1266,7 +1266,7 @@
       "capacitorEnergy": 25,
       "regenPower": 100,
       "amplifier": "MR-J4-200A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "130M1",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-SR152B"
     },
@@ -1302,7 +1302,7 @@
       "capacitorEnergy": 25,
       "regenPower": 100,
       "amplifier": "MR-J4-200A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-SR202B"
     },
@@ -1338,7 +1338,7 @@
       "capacitorEnergy": 43,
       "regenPower": 100,
       "amplifier": "MR-J4-350A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-SR352B"
     },
@@ -1374,7 +1374,7 @@
       "capacitorEnergy": 45,
       "regenPower": 130,
       "amplifier": "MR-J4-500A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-SR502B"
     },
@@ -1410,7 +1410,7 @@
       "capacitorEnergy": 70,
       "regenPower": 170,
       "amplifier": "MR-J4-700A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-SR702B"
     }

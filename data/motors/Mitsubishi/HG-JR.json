@@ -32,7 +32,7 @@
       "capacitorEnergy": 18,
       "regenPower": 20,
       "amplifier": "MR-J4-100A/B",
-      "interfaceCode": null,
+      "interfaceCode": "92RA",
       "controller": "MR-J4-200V"
     },
     {
@@ -67,7 +67,7 @@
       "capacitorEnergy": 36,
       "regenPower": 100,
       "amplifier": "MR-J4-200A/B",
-      "interfaceCode": null,
+      "interfaceCode": "92RA",
       "controller": "MR-J4-200V"
     },
     {
@@ -102,7 +102,7 @@
       "capacitorEnergy": 36,
       "regenPower": 100,
       "amplifier": "MR-J4-200A/B",
-      "interfaceCode": null,
+      "interfaceCode": "92RA",
       "controller": "MR-J4-200V"
     },
     {
@@ -207,7 +207,7 @@
       "capacitorEnergy": 70,
       "regenPower": 170,
       "amplifier": "MR-J4-700A/B",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-200V"
     },
     {
@@ -242,7 +242,7 @@
       "capacitorEnergy": 120,
       "regenPower": 500,
       "amplifier": "MR-J4-11KA/B",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-200V"
     },
     {
@@ -277,7 +277,7 @@
       "capacitorEnergy": 18,
       "regenPower": 20,
       "amplifier": "MR-J4-100A/B",
-      "interfaceCode": null,
+      "interfaceCode": "92RA",
       "controller": "MR-J4-200V"
     },
     {
@@ -312,7 +312,7 @@
       "capacitorEnergy": 36,
       "regenPower": 100,
       "amplifier": "MR-J4-200A/B",
-      "interfaceCode": null,
+      "interfaceCode": "92RA",
       "controller": "MR-J4-200V"
     },
     {
@@ -347,7 +347,7 @@
       "capacitorEnergy": 36,
       "regenPower": 100,
       "amplifier": "MR-J4-200A/B",
-      "interfaceCode": null,
+      "interfaceCode": "92RA",
       "controller": "MR-J4-200V"
     },
     {
@@ -452,7 +452,7 @@
       "capacitorEnergy": 70,
       "regenPower": 170,
       "amplifier": "MR-J4-700A/B",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-200V"
     },
     {
@@ -487,7 +487,7 @@
       "capacitorEnergy": 120,
       "regenPower": 500,
       "amplifier": "MR-J4-11KA/B",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-200V"
     },
     {
@@ -522,7 +522,7 @@
       "capacitorEnergy": 11,
       "regenPower": 10,
       "amplifier": "MR-J4-60A/B",
-      "interfaceCode": null,
+      "interfaceCode": "92RA",
       "controller": "MR-J4-200V"
     },
     {
@@ -557,7 +557,7 @@
       "capacitorEnergy": 18,
       "regenPower": 20,
       "amplifier": "MR-J4-70A/B",
-      "interfaceCode": null,
+      "interfaceCode": "92RA",
       "controller": "MR-J4-200V"
     },
     {
@@ -592,7 +592,7 @@
       "capacitorEnergy": 12,
       "regenPower": 15,
       "amplifier": "MR-J4-60A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "92RA",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-JR53"
     },
@@ -628,7 +628,7 @@
       "capacitorEnergy": 12,
       "regenPower": 15,
       "amplifier": "MR-J4-100A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "92RA",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-JR73"
     },
@@ -664,7 +664,7 @@
       "capacitorEnergy": 12,
       "regenPower": 15,
       "amplifier": "MR-J4-100A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "92RA",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-JR103"
     },
@@ -700,7 +700,7 @@
       "capacitorEnergy": 25,
       "regenPower": 100,
       "amplifier": "MR-J4-200A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "92RA",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-JR153"
     },
@@ -736,7 +736,7 @@
       "capacitorEnergy": 25,
       "regenPower": 100,
       "amplifier": "MR-J4-200A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "92RA",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-JR203"
     },
@@ -842,7 +842,7 @@
       "capacitorEnergy": 70,
       "regenPower": 170,
       "amplifier": "MR-J4-700A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-JR703"
     },
@@ -878,7 +878,7 @@
       "capacitorEnergy": 120,
       "regenPower": 500,
       "amplifier": "MR-J4-11KA4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-JR903"
     },
@@ -914,7 +914,7 @@
       "capacitorEnergy": 11,
       "regenPower": 10,
       "amplifier": "MR-J4-60A/B",
-      "interfaceCode": null,
+      "interfaceCode": "92RA",
       "controller": "MR-J4-200V"
     },
     {
@@ -949,7 +949,7 @@
       "capacitorEnergy": 18,
       "regenPower": 20,
       "amplifier": "MR-J4-70A/B",
-      "interfaceCode": null,
+      "interfaceCode": "92RA",
       "controller": "MR-J4-200V"
     },
     {
@@ -984,7 +984,7 @@
       "capacitorEnergy": 12,
       "regenPower": 15,
       "amplifier": "MR-J4-60A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "92RA",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-JR53B"
     },
@@ -1020,7 +1020,7 @@
       "capacitorEnergy": 12,
       "regenPower": 15,
       "amplifier": "MR-J4-100A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "92RA",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-JR73B"
     },
@@ -1056,7 +1056,7 @@
       "capacitorEnergy": 12,
       "regenPower": 15,
       "amplifier": "MR-J4-100A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "92RA",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-JR103B"
     },
@@ -1092,7 +1092,7 @@
       "capacitorEnergy": 25,
       "regenPower": 100,
       "amplifier": "MR-J4-200A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "92RA",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-JR153B"
     },
@@ -1128,7 +1128,7 @@
       "capacitorEnergy": 25,
       "regenPower": 100,
       "amplifier": "MR-J4-200A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "92RA",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-JR203B"
     },
@@ -1234,7 +1234,7 @@
       "capacitorEnergy": 70,
       "regenPower": 170,
       "amplifier": "MR-J4-700A4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-JR703B"
     },
@@ -1270,7 +1270,7 @@
       "capacitorEnergy": 120,
       "regenPower": 500,
       "amplifier": "MR-J4-11KA4/B4",
-      "interfaceCode": null,
+      "interfaceCode": "176M1",
       "controller": "MR-J4-400V",
       "sameOutline": "HG-JR903B"
     }

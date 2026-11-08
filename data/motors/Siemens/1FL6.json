@@ -558,7 +558,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "176M1"
     },
     {
       "id": "1FL6092-1AC61-2LG1",
@@ -593,7 +593,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "176M1"
     },
     {
       "id": "1FL6094-1AC61-2LG1",
@@ -628,7 +628,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "176M1"
     },
     {
       "id": "1FL6096-1AC61-2LG1",
@@ -663,7 +663,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "176M1"
     },
     {
       "id": "1FL6022-2AF21-1LH1",
@@ -1223,7 +1223,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "176M1"
     },
     {
       "id": "1FL6092-1AC61-2LH1",
@@ -1258,7 +1258,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "176M1"
     },
     {
       "id": "1FL6094-1AC61-2LH1",
@@ -1293,7 +1293,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "176M1"
     },
     {
       "id": "1FL6096-1AC61-2LH1",
@@ -1328,7 +1328,7 @@
       "capacitorEnergy": null,
       "regenPower": null,
       "amplifier": null,
-      "interfaceCode": null
+      "interfaceCode": "176M1"
     }
   ]
 }
