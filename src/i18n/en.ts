@@ -139,6 +139,7 @@ export const en: Record<string, string> = {
   '모듈러 제품, 모듈 번호로 주문': 'modular product, ordered by module number',
   // Axis order options (additional slide, belt material)
   '홈으로': 'Home',
+  '슬라이드가 위를 향하므로 슬라이드 위의 부하는 Z를 음수로 입력합니다.': 'The slide faces up, so a load above it takes a negative Z.',
   'ELGD 취부': 'ELGD mounting',
   '표준': 'Standard',
   '직접 체결 M': 'Direct mounting M',

@@ -2,6 +2,8 @@ import { gantryAxes, gantryBase, gantryChain, type AxisMotion, type GantryAxis, 
 import type { Settings } from '../calc/types'
 import { useT } from '../i18n'
 import cogImage from '../../images/help_gantry_cog.svg'
+import cogXyFloorImage from '../../images/help_gantry_cog_xy_floor.svg'
+import cogXyWallImage from '../../images/help_gantry_cog_xy_wall.svg'
 import dwellImage from '../../images/help_dwell.svg'
 import floorImage from '../../images/help_gantry_y_floor.webp'
 import mountYImage from '../../images/help_mount_y.svg'
@@ -111,8 +113,14 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
           <h2 className="subhead">
             {t('부하 무게 중심')} <span className="heading-unit">(mm)</span>
             <HelpTip title={t('부하 무게 중심')}>
-              <img className="help-image" src={cogImage} alt="" />
+              <img className="help-image" src={gantry.config !== 'xy' ? cogImage : gantry.yMounting === 'floor' ? cogXyFloorImage : cogXyWallImage} alt="" />
               {t('{ref}, 장비 좌표 X / Y / Z (+Z = 아래쪽)', { ref: toolRef })}
+              {gantry.config === 'xy' && gantry.yMounting === 'floor' && (
+                <>
+                  <br />
+                  {t('슬라이드가 위를 향하므로 슬라이드 위의 부하는 Z를 음수로 입력합니다.')}
+                </>
+              )}
               <VecFields value={gantry.cog} onChange={(v) => set('cog', v)} />
             </HelpTip>
           </h2>
