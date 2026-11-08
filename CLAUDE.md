@@ -88,6 +88,8 @@ node scripts/festo-cad/couplings.mjs [--write]  # couplings entering the axis in
 AXISPILOT_EXPORT=tmp/interference npx vitest run scripts/interference/export.test.ts   # gantry drawings as the app selects them
 uvx --no-config --managed-python --python 3.13 --from cadgen==0.7.21 python scripts/interference/gantry.py tmp/interference/<scenario>   # exact overlap over 27 poses (text-to-cad)
 uvx … python scripts/interference/couplings.py   # exact coupling/kit overlap with every axis type (second check of couplings.mjs)
+AXISPILOT_DECK=tmp/formula-deck npx vitest run scripts/formula-deck/values.test.ts   # the app's numbers for the formula deck's worked example
+uvx --no-config --with python-pptx python scripts/formula-deck/build.py [out.pptx]   # rebuilds docs/AxisPilot-선정수식.pptx's slides 16-25 from base.pptx, stops if a number differs from the app's (writes to tmp/: PowerPoint edits to docs/ are not in base.pptx)
 ```
 
 ## Architecture
