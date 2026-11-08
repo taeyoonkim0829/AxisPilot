@@ -170,14 +170,26 @@ export default function ComboViewer({ meshes, roles, cog }: { meshes: PartMesh[]
     // the face, edge or corner under the pointer: a blue patch over that region
     const hoverGeometry = new THREE.BoxGeometry(1, 1, 1)
     geometries.push(cubeGeometry, cubeEdges, hoverGeometry)
-    const faceMaterials = CUBE_FACES.map(() => new THREE.MeshBasicMaterial({ color: '#ffffff' }))
-    const cubeLine = new THREE.LineBasicMaterial({ color: '#5b6573' })
-    const hoverMaterial = new THREE.MeshBasicMaterial({ color: '#3d7fd9', transparent: true, opacity: 0.55, depthWrite: false })
-    materials.push(...faceMaterials, cubeLine, hoverMaterial)
+    const style = getComputedStyle(el)
+    const faceMaterials = CUBE_FACES.map(() => new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true }))
+    const backMaterial = new THREE.MeshBasicMaterial({ color: edgeColor, transparent: true, opacity: 0.07, side: THREE.BackSide, depthWrite: false })
+    const backLine = new THREE.LineBasicMaterial({ color: edgeColor, transparent: true, opacity: 0.18, depthWrite: false })
+    const cubeLine = new THREE.LineBasicMaterial({ color: edgeColor, transparent: true, opacity: 0.6 })
+    const hoverMaterial = new THREE.MeshBasicMaterial({ color: style.getPropertyValue('--accent').trim(), transparent: true, opacity: 0.55, depthWrite: false })
+    materials.push(...faceMaterials, backMaterial, backLine, cubeLine, hoverMaterial)
     const cube = new THREE.Mesh(cubeGeometry, faceMaterials)
     cube.rotation.x = Math.PI / 2
-    cube.add(new THREE.LineSegments(cubeEdges, cubeLine))
+    // glass: the far side shows through the near faces, so it is drawn first (the near faces then hide its lines' overlap)
+    const back = new THREE.Mesh(cubeGeometry, backMaterial)
+    const backEdges = new THREE.LineSegments(cubeEdges, backLine)
+    const nearEdges = new THREE.LineSegments(cubeEdges, cubeLine)
+    back.renderOrder = 0
+    backEdges.renderOrder = 1
+    cube.renderOrder = 2
+    nearEdges.renderOrder = 3
+    cube.add(back, backEdges, nearEdges)
     const hover = new THREE.Mesh(hoverGeometry, hoverMaterial)
+    hover.renderOrder = 4
     hover.visible = false
     cubeScene.add(cube, hover)
 
@@ -198,9 +210,22 @@ export default function ComboViewer({ meshes, roles, cog }: { meshes: PartMesh[]
         const c = document.createElement('canvas')
         c.width = c.height = 128
         const g = c.getContext('2d')!
-        g.fillStyle = '#e8ecf1'
+        // a pane of the app's glass: tinted corner to corner, a diagonal sheen, a bright inner rim
+        const fill = g.createLinearGradient(0, 0, 128, 128)
+        fill.addColorStop(0, style.getPropertyValue('--cube-face-hi').trim())
+        fill.addColorStop(1, style.getPropertyValue('--cube-face-lo').trim())
+        g.fillStyle = fill
         g.fillRect(0, 0, 128, 128)
-        g.fillStyle = '#1f2630'
+        const sheen = g.createLinearGradient(0, 0, 128, 128)
+        sheen.addColorStop(0.2, 'rgb(255 255 255 / 0)')
+        sheen.addColorStop(0.32, 'rgb(255 255 255 / 0.2)')
+        sheen.addColorStop(0.44, 'rgb(255 255 255 / 0)')
+        g.fillStyle = sheen
+        g.fillRect(0, 0, 128, 128)
+        g.strokeStyle = 'rgb(255 255 255 / 0.45)'
+        g.lineWidth = 4
+        g.strokeRect(3, 3, 122, 122)
+        g.fillStyle = edgeColor
         g.font = `600 ${name.length > 4 ? 24 : 30}px Pretendard, sans-serif`
         g.textAlign = 'center'
         g.textBaseline = 'middle'

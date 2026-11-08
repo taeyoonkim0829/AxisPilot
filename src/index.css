@@ -39,6 +39,8 @@
   --glass-rail: linear-gradient(140deg, rgb(255 255 255 / 0.12) 0%, rgb(8 14 24 / 0.55) 40%, rgb(8 14 24 / 0.6) 100%);
   --glass-rim: linear-gradient(135deg, rgb(255 255 255 / 0.8), rgb(255 255 255 / 0.12) 28%, rgb(255 255 255 / 0.02) 55%, rgb(125 211 252 / 0.5) 100%);
   --glass-sheen: linear-gradient(112deg, transparent 0 20%, rgb(255 255 255 / 0.06) 25%, transparent 33%, transparent 72%, rgb(255 255 255 / 0.04) 76%, transparent 82%);
+  --cube-face-hi: rgb(255 255 255 / 0.3);
+  --cube-face-lo: rgb(255 255 255 / 0.08);
   --panel-radius: 20px;
   --glow-1: rgb(56 189 248 / 0.3);
   --glow-2: rgb(45 212 191 / 0.14);
@@ -88,6 +90,8 @@
   --glass-rail: linear-gradient(140deg, rgb(255 255 255 / 0.92), rgb(255 255 255 / 0.66));
   --glass-rim: linear-gradient(135deg, #fff, rgb(255 255 255 / 0.5) 30%, rgb(18 40 66 / 0.08) 60%, rgb(2 119 181 / 0.4));
   --glass-sheen: linear-gradient(112deg, transparent 0 20%, rgb(255 255 255 / 0.3) 25%, transparent 33%);
+  --cube-face-hi: rgb(2 119 181 / 0.08);
+  --cube-face-lo: rgb(2 119 181 / 0.26);
   --glow-1: rgb(56 189 248 / 0.42);
   --glow-2: rgb(45 212 191 / 0.26);
   --glow-3: rgb(129 140 248 / 0.34);
@@ -1704,8 +1708,21 @@ th.num {
   right: 8px;
   width: 104px;
   height: 104px;
+  border-radius: 50%;
   cursor: grab;
   touch-action: none;
+}
+
+/* the panels' glass, smaller: the disc behind the cube keeps its labels readable over the model */
+.view-cube,
+.view-home {
+  background: var(--glass-fill);
+  box-shadow:
+    0 10px 24px -12px rgb(var(--shade) / calc(0.6 * var(--shade-k))),
+    inset 0 1px 0 rgb(255 255 255 / 0.4),
+    inset 0 -1px 0 rgb(var(--ov) / 0.08);
+  -webkit-backdrop-filter: blur(10px) saturate(170%);
+  backdrop-filter: blur(10px) saturate(170%);
 }
 
 .view-home {
@@ -1715,9 +1732,8 @@ th.num {
   width: 26px;
   height: 26px;
   padding: 0;
-  border: 1px solid var(--line-strong);
+  border: 0;
   border-radius: 6px;
-  background: var(--surface-2);
   color: var(--text);
   font-size: 15px;
   line-height: 1;
@@ -2109,7 +2125,9 @@ body {
 }
 
 .app .panel::before,
-.app .rail::before {
+.app .rail::before,
+.app .view-cube::before,
+.app .view-home::before {
   content: '';
   position: absolute;
   inset: 0;

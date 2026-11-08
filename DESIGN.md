@@ -127,7 +127,7 @@ The calculation report (`.report-stage`) is white paper and keeps the light toke
 ### Named Rules
 **The Reserved Yellow Rule.** Signal yellow marks the selected route only. Never use it for warnings, decoration or emphasis; amber-orange (#c25e00) is the warning colour.
 
-**The Glass Over Ground Rule.** Only the shell and the panels are glass (`.app .panel`, `.app .rail`: `--glass-fill`, `backdrop-filter: blur(24px) saturate(170%)`, the rim `--glass-rim` as a 1px masked border in `::before`, the sheen `--glass-sheen` in `::after`); anything content scrolls under (table heads, dialogs) is nearly opaque so text never sits on text.
+**The Glass Over Ground Rule.** Only the shell and the panels are glass (`.app .panel`, `.app .rail`: `--glass-fill`, `backdrop-filter: blur(24px) saturate(170%)`, the rim `--glass-rim` as a 1px masked border in `::before`, the sheen `--glass-sheen` in `::after`); anything content scrolls under (table heads, dialogs) is nearly opaque so text never sits on text. The 3D view's controls float over the model and take the same glass, smaller: `.view-cube` (a disc behind the cube, which keeps its labels readable) and `.view-home`; the cube itself is drawn as glass panes (`--cube-face-hi` / `--cube-face-lo`, a sheen and an inner rim on each face, the far side showing through).
 
 ## Typography
 
