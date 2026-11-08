@@ -551,6 +551,12 @@ h3 {
   width: min(560px, calc(100vw - 32px));
 }
 
+/* a second set of choices in the same help (XY: where the Y axis mounts) */
+.help-subhead {
+  margin: 16px 0 8px;
+  font-size: 14px;
+}
+
 .notice:has(.config-grid) {
   width: min(760px, calc(100vw - 32px));
 }
@@ -793,27 +799,24 @@ h3 {
   gap: 22px;
 }
 
-/* 어플리케이션 선택: 일반 / 프레싱, the press inputs below the switch */
-.application-hint {
-  margin: 6px 0 12px;
+/* Spacing by level: boxes 16 (.inputs), sections in a box 22 (.inputs-main), sub-blocks in a section 16 (.subhead,
+   .gantry-motion), a heading to its content and rows of one block 12, here */
+.inputs section > * + *,
+.inputs details > * + * {
+  margin-top: 12px;
 }
 
-.application-hint:last-child {
+.inputs section > h2,
+.inputs section > .field {
   margin-bottom: 0;
 }
 
-.application .grid-2 + .field,
-.application .field + .grid-2 {
-  margin-top: 0;
+.application-hint {
+  margin-bottom: 0;
 }
 
 .settings summary {
   font-size: 15px;
-  margin-bottom: 0;
-}
-
-.settings[open] summary {
-  margin-bottom: 14px;
 }
 
 @media (max-width: 1000px) {
@@ -2026,8 +2029,12 @@ th.num {
 
 /* Second heading inside an input section (무게 중심 under 부하, mounting positions) */
 .inputs .subhead {
-  margin: 14px 0 8px;
+  margin: 16px 0 0;
   font-size: 14px;
+}
+
+.inputs summary + .subhead {
+  margin-top: 12px;
 }
 
 .gantry-motion + .gantry-motion,
@@ -2048,7 +2055,7 @@ th.num {
   font-size: 15px;
   font-weight: 700;
   color: var(--text);
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .gantry-motion h3 .step-no {

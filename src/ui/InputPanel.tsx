@@ -458,7 +458,7 @@ export function ParallelSection({
           )}
         </div>
       )}
-      {parallel.mode !== 'single' && spacingNote && <p className="field-hint">{spacingNote}</p>}
+      {parallel.mode !== 'single' && spacingNote && <p className="field-hint application-hint">{spacingNote}</p>}
     </section>
   )
 }

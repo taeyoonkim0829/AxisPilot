@@ -10,6 +10,7 @@ import mountYImage from '../../images/help_mount_y.svg'
 import mountZImage from '../../images/help_mount_z.svg'
 import worstImage from '../../images/help_gantry_worst.svg'
 import xyImage from '../../images/help_gantry_xy.webp'
+import xyFloorImage from '../../images/help_gantry_xy_floor.webp'
 import xyzImage from '../../images/help_gantry_xyz.webp'
 import yzImage from '../../images/help_gantry_yz.webp'
 import zProfileImage from '../../images/help_zmode_profile.svg'
@@ -23,10 +24,15 @@ import { accelTimeFor, sCurveShare } from '../calc/motionProfile'
 const configHint: Record<GantryConfig, string> = {
   xyz: 'X축(바닥) 위에 Y축, Y축 슬라이드에 수직 Z축',
   yz: 'Y축 슬라이드에 수직 Z축 (라인 겐트리)',
-  xy: 'X축(바닥) 위에 Y축 (평면 겐트리), 부하는 Y축 슬라이드에',
+  xy: 'X축(바닥) 위에 Y축 (평면 겐트리), 부하는 Y축 슬라이드에. Y축은 벽면 또는 바닥에 설치',
 }
 const configImage: Record<GantryConfig, string> = { xyz: xyzImage, yz: yzImage, xy: xyImage }
 const yMountingImage = { floor: floorImage, wall: xyzImage }
+const xyMountingImage = { floor: xyFloorImage, wall: xyImage }
+const xyMountingHint = {
+  floor: '슬라이드 면이 위쪽. Y축을 X 슬라이드 위에 눕혀 플레이트로 결합하고, 부하는 슬라이드 위에 놓이므로 무게 중심 Z를 음수로 입력합니다 (기본 −50).',
+  wall: '슬라이드 면이 X 방향 (측면 설치). Y축을 앵글로 X 슬라이드에 세워 결합하고, 부하는 슬라이드 앞쪽에 놓입니다 (무게 중심 Z 기본 50, 아래쪽이 +).',
+}
 const yMountingHint = { floor: '슬라이드 면이 위쪽', wall: '슬라이드 면이 X 방향 (측면 설치)' }
 const zModeImage: Record<ZMode, string> = { slide: zSlideImage, profile: zProfileImage }
 const zModeLabel: Record<ZMode, string> = { slide: '슬라이드 이동', profile: '프로파일 이동' }
@@ -98,8 +104,22 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
                 onPick={(v) => onGantry(withLayout(gantry, { config: v }))}
                 label={(v) => v.toUpperCase()}
                 hint={(v) => t(configHint[v])}
-                media={(v) => <img src={configImage[v]} alt="" />}
+                media={(v) => <img src={v === 'xy' ? xyMountingImage[gantry.yMounting] : configImage[v]} alt="" />}
               />
+              {gantry.config === 'xy' && (
+                <>
+                  <h3 className="help-subhead">{t('Y축 설치 방향')}</h3>
+                  <ConfigCards
+                    title={t('Y축 설치 방향')}
+                    options={['floor', 'wall'] as const}
+                    value={gantry.yMounting}
+                    onPick={(v) => onGantry(withLayout(gantry, { yMounting: v }))}
+                    label={(v) => t(mountingLabel[v])}
+                    hint={(v) => t(xyMountingHint[v])}
+                    media={(v) => <img src={xyMountingImage[v]} alt="" />}
+                  />
+                </>
+              )}
             </HelpTip>
           </h2>
           <RadioGroup options={['xyz', 'yz', 'xy'] as const} value={gantry.config} onChange={(v) => onGantry(withLayout(gantry, { config: v }))} label={(v) => v.toUpperCase()} />
@@ -193,8 +213,8 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
                 value={gantry.yMounting}
                 onPick={(v) => onGantry(withLayout(gantry, { yMounting: v }))}
                 label={(v) => t(mountingLabel[v])}
-                hint={(v) => t(yMountingHint[v])}
-                media={(v) => <img src={yMountingImage[v]} alt="" />}
+                hint={(v) => t(gantry.config === 'xy' ? xyMountingHint[v] : yMountingHint[v])}
+                media={(v) => <img src={gantry.config === 'xy' ? xyMountingImage[v] : yMountingImage[v]} alt="" />}
               />
             </HelpTip>
           </span>

@@ -178,6 +178,7 @@ Rounded glass: panels and the rail 20px (`--panel-radius`), inputs and buttons 1
 - **Error panel**: replaces the results column when the calculation fails; fail-soft fill, fail border and title, the error text on a white block, an outlined fail-colour 다시 시도 button. The inputs stay usable.
 - **Step filter rows** (`.step-filters .segmented`): wrap onto more lines when they do not fit (Festo motor series on a phone), never run off the screen.
 - **Segmented grid** (`.segmented-grid`, 축 구성 in the inputs): four choices two per row in a grid instead of one overflowing row; pieces 3px apart like the other segments.
+- **Input column spacing, by level**: boxes 16px, sections in a box 22px, sub-blocks in a section 16px (`.subhead`, `.gantry-motion`), a heading to its content and the rows of one block 12px (`.inputs section > * + *`, `.inputs details > * + *`), a label to its control 4px.
 - **Heading unit** (`.heading-unit`, 부하 무게 중심 (mm)): a muted 12px regular unit after the heading when a row of fields is too narrow for a unit inside each.
 - **Screen switch**: 단축 선정 / 조합축 선정 as a full-width segmented control at the top of the input column, above the first input box (사용 조건 / 조합축 구성): a segment track, the active screen in the segment glass, labels 600.
 - **Gantry axis inputs** (`.gantry-motion`, 축별 운전 조건): per axis a 24px axis-letter box alone (the axis name only as its aria-label), axes split by a 1px line.
