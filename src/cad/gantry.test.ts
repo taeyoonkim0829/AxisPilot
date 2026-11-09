@@ -304,40 +304,52 @@ describe('gantry drawing', () => {
     expect(xy.bolted).toBe(true)
     expect(xy.mountings).toBeUndefined()
     const combo = await buildGantry(g, [{ ...axisDrawing('x', x, 800, g), twin: { spacing: 1006, drive: true } }, yd], [jointDrawing(xy)], load)
+    // the assembly read once: a read takes many seconds
+    const parts = await boxes(combo.step, /./)
+    const named = (re: RegExp) => parts.filter((b) => re.test(b.name))
+    const atY = (re: RegExp) => named(re).map((b) => Math.round(b.lo[1] + b.hi[1]) / 2).sort((p, q) => p - q)
     // the second kit's screws (foot at +503, 153 … 353 mm back) on the rows from the flange at −503 + 71.5
     const rows = [0, 1, 2, 3, 4, 5, 6, 7].map((n) => -503 + 71.5 + 81.5 + 100 * n)
-    const screws = await pinsAt(combo.step, /ISO-4762/)
     expect(rows).toEqual(expect.arrayContaining([150, 250, 350]))
-    expect(screws).toEqual(expect.arrayContaining([150, 250, 350]))
+    expect(atY(/ISO-4762/)).toEqual(expect.arrayContaining([150, 250, 350]))
     // the grease nipples go with the Y slide centred on its travel
-    const [slide] = await boxes(combo.step, /ELGT-BS-120---\(high_0_s\)/)
-    const nipples = (await boxes(combo.step, /ELGT-M6X0,75/)).filter((b) => b.lo[1] >= slide.lo[1] && b.hi[1] <= slide.hi[1] && b.lo[0] >= slide.lo[0] - 15 && b.hi[0] <= slide.hi[0] + 15)
+    const [slide] = named(/ELGT-BS-120---\(high_0_s\)/)
+    const nipples = named(/ELGT-M6X0,75/).filter((b) => b.lo[1] >= slide.lo[1] && b.hi[1] <= slide.hi[1] && b.lo[0] >= slide.lo[0] - 15 && b.hi[0] <= slide.hi[0] + 15)
     expect(nipples).toHaveLength(3)
     // the profile fixings: both kits' screws, only the first kit's pins
-    const fixings = async (step: string) => ({ screws: (await boxes(step, /ISO-4762 M6x12/)).length, pins: (await boxes(step, /6H7x14/)).filter((b) => b.hi[0] - b.lo[0] > 10).length })
-    expect(await fixings(combo.step)).toEqual({ screws: 12, pins: 2 })
-    expect(await boxes(combo.step, /EAHF-L2-45-P/)).toHaveLength(0)
-    // off the rows: the second kit clamped with EAHF, without its screws
-    const off: GantryInputs = { ...g, parallel: { ...g.parallel, x: { ...g.parallel.x, spacing: 1000 } } }
-    const clamped = gantryJoint(off, 'x', 'y', x, y, 1000, adapters, yd.sel.stroke + y.baseLength!)
+    expect(named(/ISO-4762 M6x12/)).toHaveLength(12)
+    expect(named(/6H7x14/).filter((b) => b.hi[0] - b.lo[0] > 10)).toHaveLength(2)
+    expect(named(/EAHF-L2-45-P/)).toHaveLength(0)
+    const found = named(/EHAM-AK/)
+    // the first kit's pins in the Y pin bores (foot at −503)
+    expect(atY(/6H7x14/).filter((p) => p < 0)).toEqual([-503 + 203, -503 + 303])
+    expect(found.map((b) => b.name.replace(/^\d+ /, '').replace(/---.*$/, '')).sort()).toEqual(['EHAM-AK-L9-160-L9-120-ML', 'EHAM-AK-L9-160-L9-120-MR'])
+    // each wall (470 mm, foot at one end over its X axis at ∓503) lies mostly between the X axes
+    for (const b of found) expect(Math.abs((b.lo[1] + b.hi[1]) / 2)).toBeLessThan(450)
+  }, 120000)
+
+  it('draws EAHF jaws in place of the second angle kit screws when the spacing is off the threaded rows', async () => {
+    const g: GantryInputs = { ...defaultGantry, config: 'xy', yMounting: 'wall', parallel: { ...defaultGantry.parallel, x: { ...defaultGantry.parallel.x, mode: 'twinMotor', spacing: 1000 } } }
+    const elgt = (size: number) => axes.find((x) => x.family === 'ELGT' && x.drive === 'spindle' && x.size === size)!
+    const [x, y] = [elgt(160), elgt(120)]
+    const yd = axisDrawing('y', y, 1000, g)
+    const clamped = gantryJoint(g, 'x', 'y', x, y, 1000, adapters, yd.sel.stroke + y.baseLength!)
     expect(clamped.mountings).toBeDefined()
-    const free = await buildGantry(off, [{ ...axisDrawing('x', x, 800, off), twin: { spacing: 1000, drive: true } }, axisDrawing('y', y, 1000, off)], [jointDrawing(clamped)], load)
-    expect(await fixings(free.step)).toEqual({ screws: 6, pins: 2 })
+    const free = await buildGantry(g, [{ ...axisDrawing('x', x, 800, g), twin: { spacing: 1000, drive: true } }, yd], [jointDrawing(clamped)], load)
+    const parts = await boxes(free.step, /./)
+    const named = (re: RegExp) => parts.filter((b) => re.test(b.name))
+    expect(named(/ISO-4762 M6x12/)).toHaveLength(6)
+    expect(named(/6H7x14/).filter((b) => b.hi[0] - b.lo[0] > 10)).toHaveLength(2)
     // six jaws on the second kit's wall (foot at +500), three either side of the Y profile
-    const jaws = await boxes(free.step, /EAHF-L2-45-P/)
+    const jaws = named(/EAHF-L2-45-P/)
     expect(jaws).toHaveLength(6)
     for (const b of jaws) {
       expect(b.lo[1]).toBeGreaterThan(0)
       expect(b.hi[1]).toBeLessThan(500)
       expect(b.hi[0] - b.lo[0]).toBeCloseTo(12.2, 1)
     }
-    const found = (await boxes(combo.step, /EHAM-AK/)).filter((b) => /EHAM-AK/.test(b.name))
-    // the first kit's pins in the Y pin bores (foot at −503)
-    expect((await pinsAt(combo.step, /6H7x14/)).filter((p) => p < 0)).toEqual([-503 + 203, -503 + 303])
-    expect(found.map((b) => b.name.replace(/^\d+ /, '').replace(/---.*$/, '')).sort()).toEqual(['EHAM-AK-L9-160-L9-120-ML', 'EHAM-AK-L9-160-L9-120-MR'])
-    // each wall (470 mm, foot at one end over its X axis at ∓503) lies mostly between the X axes
-    for (const b of found) expect(Math.abs((b.lo[1] + b.hi[1]) / 2)).toBeLessThan(450)
   }, 120000)
+
   it('clamps the ELGD Y profile on each EHAM-AK-E24 with the EAHF-E24-60-P-B4 jaws on the wall threads', async () => {
     const g: GantryInputs = { ...defaultGantry, config: 'xy', yMounting: 'wall', parallel: { ...defaultGantry.parallel, x: { ...defaultGantry.parallel.x, mode: 'twinMotor', spacing: 600 } } }
     const elgd = (size: number, longSlide = false) =>
