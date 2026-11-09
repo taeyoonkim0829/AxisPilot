@@ -733,9 +733,7 @@ describe('Siemens motor drawings', () => {
     // the 230 V rating of a dual-rated motor names the same motor
     expect(siemensVariant('1FK2104-4AF0 (230V)', '1FK2104-4AF00-0MA0')).toBe(true)
     expect(siemensVariant('1FK2104-4AF1 (230V)', '1FK2104-4AF00-0MA0')).toBe(false)
-    // 1FL6: plain shaft G/H takes the featherkey file A/B of the same brake option
-    expect(siemensVariant('1FL6064-1AC61-2LH1', '1FL6064-1AC61-2LB1')).toBe(true)
-    expect(siemensVariant('1FL6064-1AC61-2LG1', '1FL6064-1AC61-2LB1')).toBe(false)
-    expect(siemensVariant('1FL6032-2AF21-1LG1', '1FL6032-2AF21-1LA1')).toBe(true)
+    // 1FL6 models have their own files: no other order number stands in
+    expect(siemensVariant('1FL6064-1AC61-2LH1', '1FL6064-1AC61-2LB1')).toBe(false)
   })
 })
