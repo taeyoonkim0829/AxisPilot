@@ -87,6 +87,7 @@ const jointDrawing = (j: ReturnType<typeof gantryJoint>) => ({
   offset: j.offset,
   flange: j.flange,
   driveSign: j.driveSign,
+  secondKit: j.bolted ? ('bolted' as const) : j.mountings ? ('clamped' as const) : undefined,
   beam: j.beam && {
     bracket: j.beam.bracket,
     drawing: kitDrawing(j.beam.bracket) as Drawing<BeamMeta> | null,
@@ -308,6 +309,19 @@ describe('gantry drawing', () => {
     const screws = await pinsAt(combo.step, /ISO-4762/)
     expect(rows).toEqual(expect.arrayContaining([150, 250, 350]))
     expect(screws).toEqual(expect.arrayContaining([150, 250, 350]))
+    // the grease nipples go with the Y slide centred on its travel
+    const [slide] = await boxes(combo.step, /ELGT-BS-120---\(high_0_s\)/)
+    const nipples = (await boxes(combo.step, /ELGT-M6X0,75/)).filter((b) => b.lo[1] >= slide.lo[1] && b.hi[1] <= slide.hi[1] && b.lo[0] >= slide.lo[0] - 15 && b.hi[0] <= slide.hi[0] + 15)
+    expect(nipples).toHaveLength(3)
+    // the profile fixings: both kits' screws, only the first kit's pins
+    const fixings = async (step: string) => ({ screws: (await boxes(step, /ISO-4762 M6x12/)).length, pins: (await boxes(step, /6H7x14/)).filter((b) => b.hi[0] - b.lo[0] > 10).length })
+    expect(await fixings(combo.step)).toEqual({ screws: 12, pins: 2 })
+    // off the rows: the second kit clamped with EAHF, without its screws
+    const off: GantryInputs = { ...g, parallel: { ...g.parallel, x: { ...g.parallel.x, spacing: 1000 } } }
+    const clamped = gantryJoint(off, 'x', 'y', x, y, 1000, adapters, yd.sel.stroke + y.baseLength!)
+    expect(clamped.mountings).toBeDefined()
+    const free = await buildGantry(off, [{ ...axisDrawing('x', x, 800, off), twin: { spacing: 1000, drive: true } }, axisDrawing('y', y, 1000, off)], [jointDrawing(clamped)], load)
+    expect(await fixings(free.step)).toEqual({ screws: 6, pins: 2 })
     const found = (await boxes(combo.step, /EHAM-AK/)).filter((b) => /EHAM-AK/.test(b.name))
     // the first kit's pins in the Y pin bores (foot at −503)
     expect((await pinsAt(combo.step, /6H7x14/)).filter((p) => p < 0)).toEqual([-503 + 203, -503 + 303])

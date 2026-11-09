@@ -2,11 +2,12 @@ import { axisFrame, gantryChain, type GantryAxis, type GantryInputs } from '../c
 import type { Requirements } from '../calc/types'
 import type { AxisAdapter } from '../data/types'
 import { assemble, sourceNotice, type AssemblyPart } from './assemble'
-import { comboParts, type Combo, type ComboDrawings, type ComboOptions, type ComboSelection, type PartRole, type TwinAxis } from './combo'
+import { comboParts, withoutInstances, type Combo, type ComboDrawings, type ComboOptions, type ComboSelection, type PartRole, type TwinAxis } from './combo'
 import type { AdapterMeta, BeamMeta, Drawing } from './drawings'
 import { add, apply, compose, cross, dot, identity, mate, rotate, scale, sub, type Frame, type Transform } from './geometry'
-import { parseStep, refs, typeOf, writeStep, type StepFile, type Vec3 } from './step'
+import { args, parseStep, pointOf, refs, typeOf, writeStep, type StepFile, type Vec3 } from './step'
 import { stretchPart, withoutPcurves } from './stretch'
+import { definitionByName, placementIdsOf, shapeOf } from './structure'
 
 // Gantry drawing: each axis's combination (axis, kit, gearbox, motor; two X axes when X is a twin arrangement) turned
 // into the gantry's world frame (X, Y horizontal, Z up, as calc/gantry.ts), the base axis at the origin, every
@@ -35,6 +36,9 @@ export interface GantryJointDrawing {
    *  travel from the base centre, and the end its drive is at (+1: +t) */
   flange?: number | null
   driveSign?: 1 | -1
+  /** how the second kit holds a pinned carried axis: its screws in the threaded rows (`GantryJoint.bolted`), or
+   *  profile mountings (`GantryJoint.mountings`), which take the kit's screws and pins off the drawing too */
+  secondKit?: 'bolted' | 'clamped'
   /** a custom cross beam between the kits (`GantryJoint.beam`): its drawing (at the reference length, stretched to
    *  `length`), the carried axis's mounting point along it (mm from its centre towards the second slide) and, for
    *  a Z beam, the adapter plate on its pad */
@@ -119,6 +123,30 @@ export function firstInstance(file: StepFile): StepFile {
     for (const id of [cdsr, rel, idt == null ? undefined : Number(idt), pds, nauo]) if (id != null) e.delete(id)
   }
   return { header: file.header, entities: e }
+}
+
+/**
+ * A copy of a kit file without the fixings into the carried profile, which the kit's wall holds well clear of its
+ * foot (the fixings into the base slide stay): the pins, whose bores lie at the profile's drive end only, and unless
+ * `keepScrews` the screws too.
+ */
+export function withoutCarriedFixings(file: StepFile, meta: AdapterMeta, keepScrews: boolean): StepFile {
+  const names = [...file.entities.values()]
+    .filter((b) => typeOf(b) === 'PRODUCT')
+    .map((b) => args(b)[0])
+    .filter((n) => (keepScrews ? /H7x/ : /ISO-4762|H7x/).test(n))
+  const placements = [...new Set(names)].flatMap((name) => {
+    const pd = definitionByName(file, name.replace(/^'|'$/g, ''))
+    const rep = pd == null ? null : shapeOf(file, pd)
+    return rep == null ? [] : placementIdsOf(file, rep)
+  })
+  return withoutInstances(
+    file,
+    placements.filter((id) => {
+      const at = pointOf(file.entities.get(refs(file.entities.get(id) ?? '')[0]) ?? '')
+      return at != null && Math.abs(dot(sub(at, meta.base.origin), meta.base.axis)) > 20
+    }),
+  )
 }
 
 /** The way a kit's carried face reaches from its foot along the carried travel (file coordinates) */
@@ -254,8 +282,15 @@ export async function buildGantry(
       const kt = (Math.abs(want) > 1e-6 && fits(pick)) || placeKit(pick.meta, p, wb.n, run, w.n, upward)
       if (!kt) return
       const url = pick.url
-      if (!files.has(url)) files.set(url, parseStep(kitTexts.get(url)!))
-      kits.push({ role: 'adapter', axis: below, name: `${pick.kit.model}${k ? ` (${k + 1})` : ''}`, file: files.get(url)!, transform: kt })
+      // the kit nearest the drive flange pins the carried axis (the seats need not be in the calc's slide order)
+      const fromFlange = (q: Vec3) => Math.abs(dot(sub(q, centre), run) - (joint?.flange ?? 0))
+      const second = seats.some((q) => fromFlange(q) < fromFlange(p)) ? joint?.secondKit : undefined
+      const key = second ? `${url}#${second}` : url
+      if (!files.has(key)) {
+        const file = parseStep(kitTexts.get(url)!)
+        files.set(key, second ? withoutCarriedFixings(file, pick.meta, second === 'bolted') : file)
+      }
+      kits.push({ role: 'adapter', axis: below, name: `${pick.kit.model}${k ? ` (${k + 1})` : ''}`, file: files.get(key)!, transform: kt })
       // its profile mountings, one jaw on each seat of the kit's wall
       const m = pick.mountings
       if (m && pick.meta.mountings) {

@@ -457,10 +457,10 @@ export const en: Record<string, string> = {
   '장착 위치의 {axis} 이동 방향 값은 놓이는 쪽(+/−)만 정합니다.': "The mounting position's {axis} travel value only picks the side (+/−).",
   '{axis}축이 두 번째 {base}축 키트의 프로파일 마운팅(EAHF)까지 모두 닿지 않습니다. {base}축 간격을 {spacing} mm로 하면 맞습니다.':
     "The {axis} axis does not reach all the profile mountings (EAHF) of the second {base} axis kit. A {base} axis spacing of {spacing} mm fits.",
-  '두 번째 {base}축 키트도 볼트를 {axis}축 프로파일 아랫면의 나사 구멍에 체결합니다({base}축 간격이 나사 구멍 위치에 맞음). 프로파일 마운팅(EAHF)은 필요 없고, 키트의 핀은 프로파일의 핀 구멍과 맞지 않으면 넣지 않습니다.':
-    "The second {base} axis kit is bolted into the threaded holes on the underside of the {axis} profile too (the {base} axis spacing meets the hole positions). No profile mountings (EAHF) are needed; leave out the kit's pins unless they meet the profile's pin bores.",
-  '두 번째 {base}축 키트에서는 {axis}축 프로파일을 {model} {n}개로 클램프합니다(키트 벽의 M5 구멍, 프로파일 홈 어디서나). {base}축 간격을 나사 구멍 간격(100 mm)에 맞출 필요가 없습니다.':
-    "On the second {base} axis kit the {axis} profile is clamped with {n} × {model} (in the kit wall's M5 holes, anywhere along the profile slot), so the {base} axis spacing need not match the threaded hole pitch (100 mm).",
+  '두 번째 {base}축 키트도 볼트를 {axis}축 프로파일 아랫면의 나사 구멍에 체결합니다({base}축 간격이 나사 구멍 위치에 맞음). 프로파일 마운팅(EAHF)은 필요 없고, 이 키트의 프로파일 쪽 핀은 핀 구멍이 없어 쓰지 않습니다(도면에서도 뺌).':
+    "The second {base} axis kit is bolted into the threaded holes on the underside of the {axis} profile too (the {base} axis spacing meets the hole positions). No profile mountings (EAHF) are needed; this kit's pins on the profile side have no bores and are not used (left off the drawing).",
+  '두 번째 {base}축 키트에서는 {axis}축 프로파일을 {model} {n}개로 클램프합니다(키트 벽의 M5 구멍, 프로파일 홈 어디서나). {base}축 간격을 나사 구멍 간격(100 mm)에 맞출 필요가 없어, 키트 벽의 볼트 구멍과 프로파일의 나사 구멍은 맞지 않습니다. 이 키트의 프로파일 쪽 볼트와 핀은 쓰지 않아 도면에서 뺐고, {model}은 도면 파일이 없어 그리지 않았습니다.':
+    "On the second {base} axis kit the {axis} profile is clamped with {n} × {model} (in the kit wall's M5 holes, anywhere along the profile slot). The {base} axis spacing need not match the threaded hole pitch (100 mm), so the kit wall's screw holes do not meet the profile's threaded holes. This kit's screws and pins on the profile side are not used and are left off the drawing; {model} is not drawn, having no drawing file.",
   '프로파일 마운팅': 'Profile mounting',
   '{axis}축이 두 번째 {base}축 브래킷의 슬롯 너트 나사를 모두 지나 벽 뒤까지 닿지 않습니다. {base}축 간격을 {spacing} mm로 하면 맞습니다.':
     "The {axis} axis does not reach past all the slot nut screws of the second {base} axis bracket to behind its wall. A {base} axis spacing of {spacing} mm fits.",

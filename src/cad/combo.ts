@@ -182,8 +182,15 @@ function copySlide(file: StepFile, shifts: Vec3[]): boolean {
   return true
 }
 
-/** Moves the slide part by `shift` (file mm). False when it is no part of its own. */
-const moveSlide = (file: StepFile, shift: Vec3) => placePart(file, SLIDE_PART, { r: identity.r, t: shift })
+/** Parts of their own that sit on the slide: ELGT-BS's grease nipples, ELGD's set screws */
+const SLIDE_FITTINGS = /ELGT-M6X0,75|ISO-4026 M\d+x\d+/
+
+/** Moves the slide part with its fittings by `shift` (file mm). False when it is no part of its own. */
+function moveSlide(file: StepFile, shift: Vec3): boolean {
+  const moved = placePart(file, SLIDE_PART, { r: identity.r, t: shift })
+  if (moved) placePart(file, SLIDE_FITTINGS, { r: identity.r, t: shift })
+  return moved
+}
 
 /**
  * Places every instance of the part named `name` by `t` (file coordinates) on top of where it sits, editing the
@@ -316,10 +323,14 @@ function capsAt(file: StepFile, end: Frame, slide: AxisMeta['slide']) {
 /** A copy of the axis file without the shaft cover caps on the side `end` faces (a connecting shaft goes there) */
 function withoutCaps(file: StepFile, end: Frame, slide: AxisMeta['slide']): StepFile {
   const caps = capsAt(file, end, slide)
-  if (!caps.length) return file
+  return caps.length ? withoutInstances(file, caps) : file
+}
+
+/** A copy of an assembly file without the component instances at these placements (AXIS2_PLACEMENT_3D ids) */
+export function withoutInstances(file: StepFile, placements: number[]): StepFile {
   const e = new Map(file.entities)
   const find = (test: (body: string) => boolean) => [...e].find(([, b]) => test(b))?.[0]
-  for (const placement of caps) {
+  for (const placement of placements) {
     // the instance: transformation → relationship → context dependent shape → its shape → the assembly usage
     const idt = find((b) => typeOf(b) === 'ITEM_DEFINED_TRANSFORMATION' && refs(b)[1] === placement)
     if (idt == null) continue
@@ -327,7 +338,13 @@ function withoutCaps(file: StepFile, end: Frame, slide: AxisMeta['slide']): Step
     const cdsr = rel == null ? undefined : find((b) => typeOf(b) === 'CONTEXT_DEPENDENT_SHAPE_REPRESENTATION' && refs(b)[0] === rel)
     const pds = cdsr == null ? undefined : refs(e.get(cdsr)!)[1]
     const nauo = pds == null ? undefined : refs(e.get(pds) ?? '')[0]
+    const part = nauo == null ? undefined : refs(e.get(nauo) ?? '')[1]
     for (const id of [cdsr, rel, idt, pds, nauo]) if (id != null) e.delete(id)
+    // its last instance gone, a part left defined would read as a free part at the origin
+    if (part == null || find((b) => typeOf(b) === 'NEXT_ASSEMBLY_USAGE_OCCURRENCE' && refs(b)[1] === part) != null) continue
+    const shape = find((b) => typeOf(b) === 'PRODUCT_DEFINITION_SHAPE' && refs(b).at(-1) === part)
+    const sdr = shape == null ? undefined : find((b) => typeOf(b) === 'SHAPE_DEFINITION_REPRESENTATION' && refs(b)[0] === shape)
+    for (const id of [sdr, shape, part]) if (id != null) e.delete(id)
   }
   return { header: file.header, entities: e }
 }
