@@ -350,6 +350,47 @@ describe('gantry drawing', () => {
     }
   }, 120000)
 
+  const elgd80 = (longSlide: boolean) => axes.find((a) => a.family === 'ELGD' && a.size === 80 && a.drive === 'spindle' && a.longSlide === longSlide && !a.variant)!
+  it('holds each ELGD Y size on its own pin hole and jaw column of EHAM-AK-E24-80-E24-80', () => {
+    const fit = gantryJoint({ ...defaultGantry, config: 'xy', yMounting: 'wall', parallel: { ...defaultGantry.parallel, x: { ...defaultGantry.parallel.x, mode: 'single' } } }, 'x', 'y', elgd80(true), elgd80(false), 500, adapters)
+    expect(fit.kit!.accessories[0]).toMatchObject({ model: 'EAHF-E24-60-P-B4', quantity: 1 })
+    const meta = kitDrawing(fit.kit!).meta!
+    // pin top + half the profile width = the middle of the jaw columns, the upper column fixed
+    const placeOf = (carried: number, seats: { origin: number[] }[], pinTop: number, half: number) => {
+      expect(carried).toBeCloseTo(pinTop + half)
+      expect(Math.min(...seats.map((s) => s.origin[1])) + Math.max(...seats.map((s) => s.origin[1]))).toBeCloseTo(2 * carried)
+      expect(Math.max(...seats.map((s) => s.origin[1]))).toBeCloseTo(161.25)
+    }
+    placeOf(meta.carried.origin[1], meta.mountings!, 75, 40)
+    placeOf(meta.bySize![100].carried.origin[1], meta.bySize![100].mountings, 55, 50)
+    placeOf(meta.bySize![120].carried.origin[1], meta.bySize![120].mountings, 35, 60)
+    expect(meta.bySize![120].pin).toEqual([0, -40, 0])
+  })
+
+  it('draws a WD Y axis on its own jaw column, the pin moved to its hole', async () => {
+    const g: GantryInputs = { ...defaultGantry, config: 'xy', yMounting: 'wall', parallel: { ...defaultGantry.parallel, x: { ...defaultGantry.parallel.x, mode: 'single' } } }
+    const x = elgd80(true)
+    const y = axes.find((a) => a.family === 'ELGD' && a.variant === 'WD' && a.size === 120 && a.drive === 'spindle')!
+    const yd = axisDrawing('y', y, 500, g)
+    const joint = gantryJoint(g, 'x', 'y', x, y, 500, adapters, 500 + y.baseLength!)
+    const combo = await buildGantry(g, [axisDrawing('x', x, 800, g), yd], [jointDrawing(joint)], load)
+    const parts = await boxes(combo.step, /./)
+    const named = (re: RegExp) => parts.filter((b) => re.test(b.name))
+    const [slide] = named(/ELGD-BS-KF-WD-120(-L)?---\(high/)
+    const [pin] = named(/DIN 6325/)
+    const jaws = named(/EAHF-E24/)
+    expect(jaws).toHaveLength(2)
+    const across = 2
+    const middle = (slide.lo[across] + slide.hi[across]) / 2
+    // each jaw's lip 5 … 6 mm over the profile edge (120 mm wide), the pin touching the underside edge
+    for (const b of jaws) {
+      const inner = b.lo[across] > middle ? b.lo[across] : b.hi[across]
+      expect(Math.abs(inner - middle)).toBeGreaterThan(53)
+      expect(Math.abs(inner - middle)).toBeLessThan(57)
+    }
+    expect(pin.hi[across]).toBeCloseTo(middle - 60, 0)
+  }, 120000)
+
   it('clamps the ELGD Y profile on each EHAM-AK-E24 with the EAHF-E24-60-P-B4 jaws on the wall threads', async () => {
     const g: GantryInputs = { ...defaultGantry, config: 'xy', yMounting: 'wall', parallel: { ...defaultGantry.parallel, x: { ...defaultGantry.parallel.x, mode: 'twinMotor', spacing: 600 } } }
     const elgd = (size: number, longSlide = false) =>

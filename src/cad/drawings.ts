@@ -61,6 +61,9 @@ export interface AdapterMeta {
   /** an angle kit's seats for its profile mountings (EHAM-AK-E24: one per B4 jaw on the wall's threads, as the jaw's
    *  `mounting` frame) */
   mountings?: Frame[]
+  /** carried axis sizes the kit holds elsewhere than `carried` (EHAM-AK-E24-80-E24-80 with the WD axes): its own
+   *  `carried` and `mountings`, and `pin` (file mm), how far the pin the profile rests on moves to that size's hole */
+  bySize?: Record<string, { carried: Frame; mountings: Frame[]; pin: [number, number, number] }>
 }
 /** A custom cross beam (data/adapters/Custom, `joint: 'beam'`) at its reference `length` (mm, along file x from
  *  end A): `base` / `baseB` its end faces on the kits' profile centreline (as the carried profile's drive flange

@@ -106,6 +106,20 @@ const size = (m) => {
 }
 
 /** The axis drawing a kit's carried axis is checked against (one of its standard strokes ≥ 300 mm). */
+/** Across the carried travel: the middle of the jaw seats on the two sides of the profile (file y) */
+const jawsMiddle = (seats) => (Math.min(...seats.map((s) => s.origin[1])) + Math.max(...seats.map((s) => s.origin[1]))) / 2
+
+/** A WD axis file (ball screw, at least 300 mm stroke) for its profile width */
+function wdAxisFile(size) {
+  const re = new RegExp(`^\\d+_ELGD-BS-KF-WD-${size}-(\\d+)-.*\\.stp$`)
+  const files = readdirSync(join(axisDir, 'ELGD'))
+    .map((f) => [f, re.exec(f)])
+    .filter(([, m]) => m && Number(m[1]) >= 300)
+    .sort((x, y) => Number(x[1][1]) - Number(y[1][1]))
+  if (!files.length) throw new Error(`no WD ${size} axis file`)
+  return join(axisDir, 'ELGD', files[0][0])
+}
+
 function carriedAxisFile(model) {
   const elgt = /^EHAM-(?:AK|MA)-L9-\d+-L9-(\d+)/.exec(model)
   const elgd = /^EHAM-AK-E24-\d+-E24-(\d+)/.exec(model)
@@ -278,6 +292,7 @@ for (const f of readdirSync(dir).filter((f) => /\.stp$/i.test(f))) {
   let carried
   let mounting = null
   let mountings = []
+  const bySize = {}
   let info = ''
   if (/^EHAM-AK/.test(model)) {
     const faces = body.flatMap((m) => m.faces).filter((x) => Math.abs(x.n[0]) > 0.999 * x.area && x.n[0] > 0 && x.area > 1)
@@ -309,7 +324,19 @@ for (const f of readdirSync(dir).filter((f) => /\.stp$/i.test(f))) {
       y = pin.hi[1] + profileHalfWidth(axisFile)
       info = `rests on pin, end ${fixed(77.5 - behind)}`
       mountings = profileMountings(body, { ...carried, origin: [carried.origin[0], y, 0] })
+      // the profile centred between its jaws (its flat underside is a little narrower than the profile)
+      y = jawsMiddle(mountings)
       info += ` mountings ${mountings.map((m) => fixed(dot(sub(m.origin, base.origin), [0, 0, reach]))).join('/')}`
+      // EHAM-AK-E24-80-E24-80 also takes the WD axes: another pin hole of the three (instructions, fig. 6: the file
+      // has the pin in the one for size 80) and the lower jaw on the thread column level with it
+      if (/-E24-80-M/.test(model))
+        for (const [size, hole] of [[100, 52], [120, 32]]) {
+          const shift = hole - (pin.lo[1] + pin.hi[1]) / 2
+          const file = wdAxisFile(size)
+          const middle = fixed(pin.hi[1] + shift + profileHalfWidth(file))
+          const seats = profileMountings(body, { ...carried, origin: [carried.origin[0], middle, 0] })
+          bySize[size] = { carried: { ...carried, origin: [carried.origin[0], fixed(jawsMiddle(seats)), 0] }, mountings: seats, pin: [0, fixed(shift), 0] }
+        }
     }
     carried.origin[1] = fixed(y)
     info += ` wall ${fixed(-behind)}…${fixed(ahead)}`
@@ -334,7 +361,7 @@ for (const f of readdirSync(dir).filter((f) => /\.stp$/i.test(f))) {
     if (/-L2-45-P$/.test(model)) mounting = jawSeatL2(body)
   }
   const frame = (f) => JSON.stringify(f).replace(/,"/g, ', "').replace(/":/g, '": ').replace(/^\{/, '{ ').replace(/\}$/, ' }')
-  const json = `{\n  "base": ${frame(base)},\n  "carried": ${frame(carried)}${mounting ? `,\n  "mounting": ${frame(mounting)}` : ''}${mountings.length ? `,\n  "mountings": [\n${mountings.map((m) => `    ${frame(m)}`).join(',\n')}\n  ]` : ''}\n}\n`
+  const json = `{\n  "base": ${frame(base)},\n  "carried": ${frame(carried)}${mounting ? `,\n  "mounting": ${frame(mounting)}` : ''}${Object.keys(bySize).length ? `,\n  "bySize": ${JSON.stringify(bySize)}` : ''}${mountings.length ? `,\n  "mountings": [\n${mountings.map((m) => `    ${frame(m)}`).join(',\n')}\n  ]` : ''}\n}\n`
   console.log(model.padEnd(30), JSON.stringify(base.origin), JSON.stringify(carried.origin), info)
   if (!dryRun) {
     writeFileSync(join(dir, f.replace(/\.stp$/i, '.json')), json.replace(/,(\d|-)/g, ', $1'))

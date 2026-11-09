@@ -196,7 +196,7 @@ function moveSlide(file: StepFile, shift: Vec3): boolean {
  * Places every instance of the part named `name` by `t` (file coordinates) on top of where it sits, editing the
  * entities (new points and directions: the old ones may be shared). False when there is no such part.
  */
-function placePart(file: StepFile, name: string | RegExp, t: Transform): boolean {
+export function placePart(file: StepFile, name: string | RegExp, t: Transform): boolean {
   const pd = definitionByName(file, name)
   const rep = pd != null ? shapeOf(file, pd) : null
   const placements = rep != null ? placementIdsOf(file, rep) : []

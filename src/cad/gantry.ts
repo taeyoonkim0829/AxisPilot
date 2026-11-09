@@ -2,7 +2,7 @@ import { axisFrame, gantryChain, type GantryAxis, type GantryInputs } from '../c
 import type { Requirements } from '../calc/types'
 import type { AxisAdapter } from '../data/types'
 import { assemble, sourceNotice, type AssemblyPart } from './assemble'
-import { comboParts, withoutInstances, type Combo, type ComboDrawings, type ComboOptions, type ComboSelection, type PartRole, type TwinAxis } from './combo'
+import { comboParts, placePart, withoutInstances, type Combo, type ComboDrawings, type ComboOptions, type ComboSelection, type PartRole, type TwinAxis } from './combo'
 import type { AdapterMeta, BeamMeta, Drawing } from './drawings'
 import { add, apply, compose, cross, dot, identity, mate, rotate, scale, sub, type Frame, type Transform } from './geometry'
 import { args, parseStep, pointOf, refs, typeOf, writeStep, type StepFile, type Vec3 } from './step'
@@ -239,7 +239,12 @@ export async function buildGantry(
     const target = add(centre, [offset.x, offset.y, offset.z])
     const drawn =
       joint?.kits.length && joint.kits.every((k) => k.drawing?.meta)
-        ? joint.kits.map((k) => ({ kit: k.kit, url: k.drawing!.url, meta: k.drawing!.meta!, mountings: k.mountings ?? null }))
+        ? joint.kits.map((k) => {
+            // the place for the carried axis's size, where the kit has several
+            const carriedSize = byAxis.get(a)!.sel.axis.size
+            const size = carriedSize == null ? undefined : k.drawing!.meta!.bySize?.[carriedSize]
+            return { kit: k.kit, url: k.drawing!.url, meta: { ...k.drawing!.meta!, ...(size && { carried: size.carried, mountings: size.mountings }) }, pin: size?.pin, mountings: k.mountings ?? null }
+          })
         : null
     const meta = drawn?.[0].meta ?? null
     const pair = `${below.toUpperCase()}–${a.toUpperCase()}`
@@ -285,9 +290,10 @@ export async function buildGantry(
       // the kit nearest the drive flange pins the carried axis (the seats need not be in the calc's slide order)
       const fromFlange = (q: Vec3) => Math.abs(dot(sub(q, centre), run) - (joint?.flange ?? 0))
       const second = seats.some((q) => fromFlange(q) < fromFlange(p)) ? joint?.secondKit : undefined
-      const key = second ? `${url}#${second}` : url
+      const key = `${url}#${second ?? ''}#${pick.pin ?? ''}`
       if (!files.has(key)) {
         const file = parseStep(kitTexts.get(url)!)
+        if (pick.pin) placePart(file, /DIN 6325/, { r: identity.r, t: pick.pin })
         files.set(key, second ? withoutCarriedFixings(file, pick.meta, second === 'bolted') : file)
       }
       kits.push({ role: 'adapter', axis: below, name: `${pick.kit.model}${k ? ` (${k + 1})` : ''}`, file: files.get(key)!, transform: kt })
