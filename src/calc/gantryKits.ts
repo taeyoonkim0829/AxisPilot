@@ -41,6 +41,9 @@ export interface GantryJoint {
   /** two base slides: profile mountings ordered for the second kit on top of it (EHAM-AK-L9: EAHF-L2-45-P;
    *  quantity for that kit, `mass` kg for all of them) */
   mountings?: { model: string; partNumber: string; quantity: number; mass: number }
+  /** two base slides: at this spacing the second kit's screws meet the carried profile's threaded rows, so it is
+   *  bolted like the first and takes no `mountings` */
+  bolted?: boolean
   /** a custom cross beam (data/adapters/Custom) bolted between the two kits in place of the carried profile, the base
    *  spacing kept: carrying the Y axis on its front face, or the Z axis on an EHAM-MA plate (`plate`) on its pad */
   beam?: GantryBeam
@@ -135,7 +138,7 @@ function placement(
   kits: AxisAdapter[],
   slides: number[],
   length: number | null,
-): Pick<GantryJoint, 'offset' | 'kitAt' | 'aligned' | 'pinned' | 'flange' | 'driveSign' | 'span' | 'interference' | 'mountings'> & { short?: boolean } {
+): Pick<GantryJoint, 'offset' | 'kitAt' | 'aligned' | 'pinned' | 'flange' | 'driveSign' | 'span' | 'interference' | 'mountings' | 'bolted'> & { short?: boolean } {
   const b = axisFrame(g, base)
   const c = axisFrame(g, carried)
   const o = carried === 'z' ? g.offsets.yz : g.offsets.xy
@@ -171,6 +174,14 @@ function placement(
   // the mirrored walls reach towards each other: they collide below twice their reach (2 mm clearance)
   const clear = 2 * Math.max(...kits.map((k) => k.wall?.[1] ?? 0)) + 2
   const interference = spacing < clear
+  // the second kit's screws, from the flange: all on threaded rows (every pitch within the profile, measured on the
+  // ELGT-BS files) means it is bolted like the first kit
+  if (!interference && fit.clamp.mountings && fit.threads && fit.screws) {
+    const lo = d - fit.end - fit.screws[1] - fit.threads.first
+    const onRow = Math.abs(lo - Math.round(lo / fit.threads.pitch) * fit.threads.pitch) <= SCREW_PLAY
+    if (onRow && lo >= -SCREW_PLAY && d - fit.end - fit.screws[0] <= length)
+      return { ...placed, span: { mismatch: 0, spacing: d, clear }, interference, bolted: true }
+  }
   // the second kit (mirrored) clamps the profile with its profile mountings, anywhere along it: every mounting under
   // the profile slot, so the slot (far end less the end head) reaches past the farthest one, d − span[0]
   const { span, endCap, mountings: m } = fit.clamp
@@ -184,6 +195,9 @@ function placement(
     short: d > reach,
   }
 }
+
+/** mm: how far a kit screw may sit off a threaded row, inside its clearance hole (M6 Ø6.6) */
+const SCREW_PLAY = 0.25
 
 /**
  * The kit for a joint: the data's kits of that geometry fitting both axes (Festo kits; custom brackets only when no

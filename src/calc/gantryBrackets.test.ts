@@ -59,7 +59,28 @@ describe('custom brackets', () => {
     expect(near.beam).toBeUndefined()
     expect(near.span!.spacing).toBeCloseTo(800)
     expect(near.mountings).toMatchObject({ model: 'EAHF-L2-45-P', partNumber: '4835728', quantity: 6 })
+    expect(near.bolted).toBeUndefined()
     expect(near.status).toBe('ok')
+  })
+
+  it('bolts the second kit without EAHF where its screws meet the threaded rows', () => {
+    // X120 / Y120: screws 126 … 326 mm from the foot, end 44.5, rows 81.5 + 100 n from the flange: spacing 752 + 100 n
+    const at = (spacing: number) => gantryJoint(twinX(spacing), 'x', 'y', elgt(120), elgt(120), 500, adapters, 716)
+    for (const spacing of [752, 852]) {
+      const j = at(spacing)
+      expect(j.bolted).toBe(true)
+      expect(j.mountings).toBeUndefined()
+      expect(j.status).toBe('ok')
+      expect(j.span!.spacing).toBe(spacing)
+      expect(j.beam).toBeUndefined()
+    }
+    // off the rows
+    expect(at(753).bolted).toBeUndefined()
+    expect(at(753).mountings).toBeDefined()
+    // the row 781.5 mm from the flange lies beyond the 716 mm profile
+    expect(at(952).bolted).toBeUndefined()
+    // the kits' walls collide below 698 mm: 652 is on the rows but not free
+    expect(at(652).bolted).toBeUndefined()
   })
 
   it('takes a beam only when the carried axis does not reach the second kit at the entered spacing', () => {

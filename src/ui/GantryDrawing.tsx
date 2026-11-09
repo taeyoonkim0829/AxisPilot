@@ -351,6 +351,11 @@ function placementNotes(j: GantryJoint): { text: string; args: Record<string, st
       text: '두 번째 {base}축 키트에서는 {axis}축 프로파일을 {model} {n}개로 클램프합니다(키트 벽의 M5 구멍, 프로파일 홈 어디서나). {base}축 간격을 나사 구멍 간격(100 mm)에 맞출 필요가 없습니다.',
       args: { ...args, model: j.mountings.model, n: String(j.mountings.quantity) },
     })
+  else if (j.bolted)
+    out.push({
+      text: '두 번째 {base}축 키트도 볼트를 {axis}축 프로파일 아랫면의 나사 구멍에 체결합니다({base}축 간격이 나사 구멍 위치에 맞음). 프로파일 마운팅(EAHF)은 필요 없고, 키트의 핀은 프로파일의 핀 구멍과 맞지 않으면 넣지 않습니다.',
+      args,
+    })
   else if (j.span && custom)
     out.push({
       text: '두 번째 {base}축 브래킷에서도 같은 슬롯 너트로 {axis}축 프로파일을 어디서나 클램프합니다. {base}축 간격은 {axis}축 끝 헤드가 두 번째 브래킷 벽 뒤로 나가는 범위에서 자유롭게 정할 수 있습니다.',

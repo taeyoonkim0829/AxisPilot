@@ -293,14 +293,21 @@ describe('gantry drawing', () => {
   }, 120000)
 
   it('mirrors the angle kits under two X axes, both walls reaching inwards', async () => {
-    // Y 1000 + 216 mm long, pinned at the first kit, clamped on the second kit's profile mountings
+    // Y 1000 + 216 mm long, pinned at the first kit; at this spacing the second kit's screws meet its threaded rows
     const g: GantryInputs = { ...defaultGantry, config: 'xy', yMounting: 'wall', parallel: { ...defaultGantry.parallel, x: { ...defaultGantry.parallel.x, mode: 'twinMotor', spacing: 1006 } } }
     const elgt = (size: number) => axes.find((x) => x.family === 'ELGT' && x.drive === 'spindle' && x.size === size)!
     const [x, y] = [elgt(160), elgt(120)]
     const yd = axisDrawing('y', y, 1000, g)
     const xy = gantryJoint(g, 'x', 'y', x, y, 1000, adapters, yd.sel.stroke + y.baseLength!)
     expect(xy.span!.mismatch).toBeCloseTo(0)
+    expect(xy.bolted).toBe(true)
+    expect(xy.mountings).toBeUndefined()
     const combo = await buildGantry(g, [{ ...axisDrawing('x', x, 800, g), twin: { spacing: 1006, drive: true } }, yd], [jointDrawing(xy)], load)
+    // the second kit's screws (foot at +503, 153 … 353 mm back) on the rows from the flange at −503 + 71.5
+    const rows = [0, 1, 2, 3, 4, 5, 6, 7].map((n) => -503 + 71.5 + 81.5 + 100 * n)
+    const screws = await pinsAt(combo.step, /ISO-4762/)
+    expect(rows).toEqual(expect.arrayContaining([150, 250, 350]))
+    expect(screws).toEqual(expect.arrayContaining([150, 250, 350]))
     const found = (await boxes(combo.step, /EHAM-AK/)).filter((b) => /EHAM-AK/.test(b.name))
     // the first kit's pins in the Y pin bores (foot at −503)
     expect((await pinsAt(combo.step, /6H7x14/)).filter((p) => p < 0)).toEqual([-503 + 203, -503 + 303])
