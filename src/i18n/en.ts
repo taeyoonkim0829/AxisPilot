@@ -621,10 +621,8 @@ export const en: Record<string, string> = {
   '2축 · 모터 동기': 'Motor sync',
   '2축 · 기구 동기': 'Shaft sync',
   '축 1개로 부하를 지지하고 구동': 'One axis carries and drives the load',
-  '평행한 축 2개를 모터 2개로 동기 제어. 모터·키트·드라이브는 축 1개 기준 (각 2개)':
-    'Two parallel axes, two synchronised motors. Motor, kit and drive are sized for one axis (two of each)',
-  '평행한 축 2개를 모터 1개가 연결축으로 구동. 모터는 두 축 합계 기준':
-    'Two parallel axes, one motor through a connecting shaft. The motor is sized for both axes',
+  '평행한 축 2개를 모터 2개로 동기 제어': 'Two parallel axes, two synchronised motors',
+  '평행한 축 2개를 모터 1개가 연결축으로 구동': 'Two parallel axes, one motor through a connecting shaft',
   '가이드 수': 'Guides',
   '축 위치': 'Axis position',
   '가운데': 'Middle',

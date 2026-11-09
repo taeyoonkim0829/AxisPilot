@@ -29,8 +29,8 @@ import { fmt, kgf, mountingLabel, parallelModeLabel, pressDirectionLabel } from 
 
 const parallelModeHint: Record<ParallelMode, string> = {
   single: '축 1개로 부하를 지지하고 구동',
-  twinMotor: '평행한 축 2개를 모터 2개로 동기 제어. 모터·키트·드라이브는 축 1개 기준 (각 2개)',
-  twinShaft: '평행한 축 2개를 모터 1개가 연결축으로 구동. 모터는 두 축 합계 기준',
+  twinMotor: '평행한 축 2개를 모터 2개로 동기 제어',
+  twinShaft: '평행한 축 2개를 모터 1개가 연결축으로 구동',
   guides: '축 1개가 구동하고 가이드가 부하를 함께 지지',
 }
 /** EGC-80 belt axes with a Festo motor, rendered in the step 5 3D view */
