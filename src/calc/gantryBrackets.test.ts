@@ -58,7 +58,7 @@ describe('custom brackets', () => {
     const near = gantryJoint(twinX(800), 'x', 'y', elgt(120), elgt(120), 500, adapters, 716)
     expect(near.beam).toBeUndefined()
     expect(near.span!.spacing).toBeCloseTo(800)
-    expect(near.mountings).toMatchObject({ model: 'EAHF-L2-45-P', partNumber: '4835728', quantity: 6 })
+    expect(near.mountings).toMatchObject({ model: 'EAHF-L2-45-P', partNumber: '4835728', quantity: 3 })
     expect(near.bolted).toBeUndefined()
     expect(near.status).toBe('ok')
   })

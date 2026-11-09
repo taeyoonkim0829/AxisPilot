@@ -349,8 +349,8 @@ function placementNotes(j: GantryJoint): { text: string; args: Record<string, st
   ]
   if (j.mountings)
     out.push({
-      text: '두 번째 {base}축 키트에서는 {axis}축 프로파일을 {model} {n}개로 클램프합니다(키트 벽의 M5 구멍, 프로파일 홈 어디서나). {base}축 간격을 나사 구멍 간격(100 mm)에 맞출 필요가 없어, 키트 벽의 볼트 구멍과 프로파일의 나사 구멍은 맞지 않습니다. 이 키트의 프로파일 쪽 볼트와 핀은 쓰지 않아 도면에서 뺐고, {model}은 도면 파일이 없어 그리지 않았습니다.',
-      args: { ...args, model: j.mountings.model, n: String(j.mountings.quantity) },
+      text: '두 번째 {base}축 키트에서는 {axis}축 프로파일을 {model} {n}개(고정대 2개들이, 고정대 {jaws}개)로 클램프합니다(키트 벽의 M5 구멍, 프로파일 홈 어디서나). {base}축 간격을 나사 구멍 간격(100 mm)에 맞출 필요가 없어, 키트 벽의 볼트 구멍과 프로파일의 나사 구멍은 맞지 않습니다. 이 키트의 프로파일 쪽 볼트와 핀은 쓰지 않습니다.',
+      args: { ...args, model: j.mountings.model, n: String(j.mountings.quantity), jaws: String(j.mountings.quantity * 2) },
     })
   else if (j.bolted)
     out.push({

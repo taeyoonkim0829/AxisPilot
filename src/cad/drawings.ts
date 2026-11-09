@@ -275,10 +275,10 @@ export const adapterDrawingFor = (adapter: AxisAdapter, all = drawings) =>
       (adapter.partNumber != null ? d.partNumber === adapter.partNumber : d.partNumber == null && d.names.includes(adapter.model)),
   ) as Drawing<AdapterMeta> | undefined) ?? null
 
-/** The drawing of the profile mounting a gantry kit is ordered with (`accessories`, by part number; a `mounting`
- *  frame in its JSON): EAHF-E24-60-P-B4 on an EHAM-AK-E24 */
+/** The drawing of the profile mounting a gantry kit is ordered with (`accessories` or its `clamp`, by part number; a
+ *  `mounting` frame in its JSON): EAHF-E24-60-P-B4 on an EHAM-AK-E24, EAHF-L2-45-P on an EHAM-AK-L9 */
 export function mountingDrawingFor(adapter: AxisAdapter, all = drawings): { model: string; drawing: Drawing<AdapterMeta> } | null {
-  for (const a of adapter.accessories) {
+  for (const a of [...adapter.accessories, ...adapter.carried.flatMap((c) => c.clamp?.mountings ?? [])]) {
     const d = all.find((d) => d.kind === 'adapters' && d.partNumber === a.partNumber && (d.meta as AdapterMeta | null)?.mounting)
     if (d) return { model: a.model, drawing: d as Drawing<AdapterMeta> }
   }

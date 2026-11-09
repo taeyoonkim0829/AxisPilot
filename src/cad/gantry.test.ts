@@ -178,8 +178,8 @@ describe('gantry kits', () => {
     expect(fit.status).toBe('ok')
     expect(fit.span!.spacing).toBeCloseTo(900)
     expect(fit.span!.mismatch).toBeCloseTo(0)
-    expect(fit.mountings).toMatchObject({ model: 'EAHF-L2-45-P', quantity: 6 })
-    expect(fit.mountings!.mass).toBeCloseTo(0.21)
+    expect(fit.mountings).toMatchObject({ model: 'EAHF-L2-45-P', quantity: 3 })
+    expect(fit.mountings!.mass).toBeCloseTo(0.105)
     // farther apart: the Y axis does not reach them all; without a beam the spacing that fits is suggested
     const far = gantryJoint(twin(1000), 'x', 'y', x, y, 500, festo, 716)
     expect(far.span!.spacing).toBeCloseTo(902.5)
@@ -316,12 +316,21 @@ describe('gantry drawing', () => {
     // the profile fixings: both kits' screws, only the first kit's pins
     const fixings = async (step: string) => ({ screws: (await boxes(step, /ISO-4762 M6x12/)).length, pins: (await boxes(step, /6H7x14/)).filter((b) => b.hi[0] - b.lo[0] > 10).length })
     expect(await fixings(combo.step)).toEqual({ screws: 12, pins: 2 })
+    expect(await boxes(combo.step, /EAHF-L2-45-P/)).toHaveLength(0)
     // off the rows: the second kit clamped with EAHF, without its screws
     const off: GantryInputs = { ...g, parallel: { ...g.parallel, x: { ...g.parallel.x, spacing: 1000 } } }
     const clamped = gantryJoint(off, 'x', 'y', x, y, 1000, adapters, yd.sel.stroke + y.baseLength!)
     expect(clamped.mountings).toBeDefined()
     const free = await buildGantry(off, [{ ...axisDrawing('x', x, 800, off), twin: { spacing: 1000, drive: true } }, axisDrawing('y', y, 1000, off)], [jointDrawing(clamped)], load)
     expect(await fixings(free.step)).toEqual({ screws: 6, pins: 2 })
+    // six jaws on the second kit's wall (foot at +500), three either side of the Y profile
+    const jaws = await boxes(free.step, /EAHF-L2-45-P/)
+    expect(jaws).toHaveLength(6)
+    for (const b of jaws) {
+      expect(b.lo[1]).toBeGreaterThan(0)
+      expect(b.hi[1]).toBeLessThan(500)
+      expect(b.hi[0] - b.lo[0]).toBeCloseTo(12.2, 1)
+    }
     const found = (await boxes(combo.step, /EHAM-AK/)).filter((b) => /EHAM-AK/.test(b.name))
     // the first kit's pins in the Y pin bores (foot at −503)
     expect((await pinsAt(combo.step, /6H7x14/)).filter((p) => p < 0)).toEqual([-503 + 203, -503 + 303])

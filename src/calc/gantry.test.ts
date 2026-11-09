@@ -130,6 +130,9 @@ describe('computeGantry', () => {
     expect(j.interference).toBe(false)
     expect(j.span!.mismatch).toBeCloseTo(0)
     expect(j.status).toBe('ok')
+    // the spacing used is off the threaded rows: the second kit clamps with three pairs of EAHF jaws
+    expect(j.bolted).toBeUndefined()
+    expect(j.mountings).toMatchObject({ model: 'EAHF-L2-45-P', quantity: 3 })
   })
 
   it('takes the parallel arrangement on the base axis: Y in yz, X otherwise', () => {

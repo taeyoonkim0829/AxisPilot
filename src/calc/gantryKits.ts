@@ -38,8 +38,8 @@ export interface GantryJoint {
   span?: { mismatch: number; spacing: number | null; clear: number }
   /** two base slides: the kits' walls reaching towards each other overlap at this spacing */
   interference: boolean
-  /** two base slides: profile mountings ordered for the second kit on top of it (EHAM-AK-L9: EAHF-L2-45-P;
-   *  quantity for that kit, `mass` kg for all of them) */
+  /** two base slides: profile mountings ordered for the second kit on top of it (EHAM-AK-L9: EAHF-L2-45-P, each a
+   *  pair of jaws; quantity for that kit, `mass` kg for all of them) */
   mountings?: { model: string; partNumber: string; quantity: number; mass: number }
   /** two base slides: at this spacing the second kit's screws meet the carried profile's threaded rows, so it is
    *  bolted like the first and takes no `mountings` */

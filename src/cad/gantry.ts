@@ -37,7 +37,7 @@ export interface GantryJointDrawing {
   flange?: number | null
   driveSign?: 1 | -1
   /** how the second kit holds a pinned carried axis: its screws in the threaded rows (`GantryJoint.bolted`), or
-   *  profile mountings (`GantryJoint.mountings`), which take the kit's screws and pins off the drawing too */
+   *  profile mountings (`GantryJoint.mountings`), drawn in place of the kit's screws and pins */
   secondKit?: 'bolted' | 'clamped'
   /** a custom cross beam between the kits (`GantryJoint.beam`): its drawing (at the reference length, stretched to
    *  `length`), the carried axis's mounting point along it (mm from its centre towards the second slide) and, for
@@ -291,9 +291,10 @@ export async function buildGantry(
         files.set(key, second ? withoutCarriedFixings(file, pick.meta, second === 'bolted') : file)
       }
       kits.push({ role: 'adapter', axis: below, name: `${pick.kit.model}${k ? ` (${k + 1})` : ''}`, file: files.get(key)!, transform: kt })
-      // its profile mountings, one jaw on each seat of the kit's wall
+      // its profile mountings, one jaw on each seat of the kit's wall: on every kit when they are its accessories, else
+      // (EAHF-L2-45-P on EHAM-AK-L9) only on the second kit clamping the carried profile
       const m = pick.mountings
-      if (m && pick.meta.mountings) {
+      if (m && pick.meta.mountings && (second === 'clamped' || pick.kit.accessories.some((x) => x.model === m.model))) {
         const jaw = m.drawing.meta!.mounting!
         const key = `${m.drawing.url}#jaw`
         if (!files.has(key)) files.set(key, firstInstance(parseStep(kitTexts.get(m.drawing.url)!)))

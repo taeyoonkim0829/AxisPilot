@@ -218,17 +218,25 @@ function jawSeat(body) {
   return { origin: [fixed(c[0]), 0, fixed(c[1])], axis: [0, 1, 0], up: [0, 0, 1] }
 }
 
+/** EAHF-L2-45-P (catalog: a pair of jaws, L2 = 40 mm): the first jaw at its two screw holes, at x with its lip inwards */
+function jawSeatL2(body) {
+  const box = body[0]
+  const x = fixed(box.lo[0] < 0 ? -29 : 29)
+  if (Math.abs(box.hi[0] - box.lo[0] - 14.65) > 0.1) throw new Error('EAHF-L2-45-P: unexpected jaw width')
+  return { origin: [x, 0, 0], axis: [0, 1, 0], up: [0, 0, x < 0 ? -1 : 1] }
+}
+
 /**
  * EHAM-AK-E24: where the EAHF-E24-60-P-B4 jaws sit on the wall, one seat per jaw (assembly instructions 8238670:
  * the jaws' screws in the wall's M6 threads beside the profile, four along the travel per jaw). Each seat is the
  * jaw's `mounting` frame: on the wall face at the centre of its four threads, `axis` = the carried axis, `up` turned
  * so the jaw's lip (−x of the jaw file = −(axis × up)) points to the profile.
  */
-function profileMountings(body, carried) {
+function profileMountings(body, carried, thread = [4.6, 5.2], perJaw = 4, jawSpan = 61) {
   const k = carried.axis.findIndex((x) => Math.abs(x) > 0.5)
   const at = carried.origin[k]
   const { round, plane } = bores(body, k, at)
-  const threads = round.filter((h) => h.d > 4.6 && h.d < 5.2)
+  const threads = round.filter((h) => h.d > thread[0] && h.d < thread[1])
   // the two thread columns either side of the profile centreline (the wall has further threads nearer the foot)
   const all = [...new Set(threads.map((h) => fixed(h.c[0])))]
   const centre = carried.origin[plane[0]]
@@ -239,13 +247,13 @@ function profileMountings(body, carried) {
   const seats = []
   for (const col of columns) {
     const along = threads.filter((h) => fixed(h.c[0]) === col).map((h) => h.c[1]).sort((a, b) => a - b)
-    for (let i = 0; i < along.length; i += 4) {
-      const group = along.slice(i, i + 4)
-      if (group.length !== 4 || group[3] - group[0] > 61) throw new Error(`E24 kit: threads ${along} do not group by four`)
+    for (let i = 0; i < along.length; i += perJaw) {
+      const group = along.slice(i, i + perJaw)
+      if (group.length !== perJaw || group[perJaw - 1] - group[0] > jawSpan) throw new Error(`kit wall: threads ${along} do not group by ${perJaw}`)
       const origin = [0, 0, 0]
       origin[k] = at
       origin[plane[0]] = col
-      origin[plane[1]] = (group[0] + group[3]) / 2
+      origin[plane[1]] = (group[0] + group[perJaw - 1]) / 2
       const inward = [0, 0, 0]
       inward[plane[0]] = middle - col
       const up = [carried.up, scale(carried.up, -1)].find((u) => dot(scale(cross(carried.axis, u), -1), inward) > 0)
@@ -292,6 +300,9 @@ for (const f of readdirSync(dir).filter((f) => /\.stp$/i.test(f))) {
       const end = dot(sub(fit.drive, base.origin), fit.body)
       const screws = above.filter((m) => isScrew(m.name)).map((m) => dot(sub(centre(m), base.origin), fit.body))
       info = `pinned end ${fixed(end)} threads ${fit.rows.filter((x) => x > 0).slice(0, 2)} screws ${fixed(Math.min(...screws))}…${fixed(Math.max(...screws))}`
+      // the wall's M5 threads for EAHF-L2-45-P (catalog B3, L2 = 40 mm), one jaw per pair
+      mountings = profileMountings(body, { ...carried, origin: [carried.origin[0], y, 0] }, [3.9, 4.4], 2, 41)
+      info += ` mountings ${mountings.length}`
     } else if (/-E24-/.test(model) && axisFile) {
       // the profile rests on the cylindrical pin; its end at clearance A = 77.5 mm from the console end
       const pin = above.find((m) => isPin(m.name))
@@ -320,6 +331,7 @@ for (const f of readdirSync(dir).filter((f) => /\.stp$/i.test(f))) {
     // a pair of jaws (B4, for the 60 profile): one jaw on its own, the file's first instance, seated on its hole
     // pattern (the console's M6 threads), its lip towards −x
     if (/-B4$/.test(model)) mounting = jawSeat(body)
+    if (/-L2-45-P$/.test(model)) mounting = jawSeatL2(body)
   }
   const frame = (f) => JSON.stringify(f).replace(/,"/g, ', "').replace(/":/g, '": ').replace(/^\{/, '{ ').replace(/\}$/, ' }')
   const json = `{\n  "base": ${frame(base)},\n  "carried": ${frame(carried)}${mounting ? `,\n  "mounting": ${frame(mounting)}` : ''}${mountings.length ? `,\n  "mountings": [\n${mountings.map((m) => `    ${frame(m)}`).join(',\n')}\n  ]` : ''}\n}\n`
