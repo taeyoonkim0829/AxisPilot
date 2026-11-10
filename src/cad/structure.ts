@@ -25,7 +25,11 @@ export function rootDefinition(file: StepFile): number {
 /** Product definition whose PRODUCT name contains `name` (or matches it) */
 export function definitionByName(file: StepFile, name: string | RegExp): number | null {
   const product = ofType(file, 'PRODUCT').find(([, b]) => (typeof name === 'string' ? args(b)[0].includes(name) : name.test(args(b)[0])))?.[0]
-  if (product == null) return null
+  return product == null ? null : definitionOf(file, product)
+}
+
+/** Product definition of a PRODUCT */
+export function definitionOf(file: StepFile, product: number): number | null {
   const formation = [...file.entities].find(
     ([, b]) => typeOf(b).startsWith('PRODUCT_DEFINITION_FORMATION') && refs(b)[0] === product,
   )?.[0]
@@ -42,18 +46,22 @@ export function placementOf(file: StepFile, rep: number): { origin: Vec3; axes: 
     const rel = /REPRESENTATION_RELATIONSHIP\s*\([^()]*?,\s*#(\d+)\s*,\s*#\d+\s*\)/.exec(body)
     const idt = /REPRESENTATION_RELATIONSHIP_WITH_TRANSFORMATION\s*\(\s*#(\d+)\s*\)/.exec(body)
     if (!rel || !idt || Number(rel[1]) !== rep) continue
-    const placement = file.entities.get(refs(file.entities.get(Number(idt[1])) ?? '')[1] ?? -1) ?? ''
-    const [location, z, x] = refs(placement)
-    const origin = pointOf(file.entities.get(location) ?? '')
-    if (!origin) return null
-    const dir = (id: number | undefined, fallback: Vec3) =>
-      id == null ? fallback : (pointOf((file.entities.get(id) ?? '').replace(/^DIRECTION/, 'CARTESIAN_POINT')) ?? fallback)
-    const zz = dir(z, [0, 0, 1])
-    const xx = dir(x, [1, 0, 0])
-    const yy: Vec3 = [zz[1] * xx[2] - zz[2] * xx[1], zz[2] * xx[0] - zz[0] * xx[2], zz[0] * xx[1] - zz[1] * xx[0]]
-    return { origin, axes: [xx, yy, zz] }
+    return placementAxes(file, refs(file.entities.get(Number(idt[1])) ?? '')[1] ?? -1)
   }
   return null
+}
+
+/** Origin and axes (columns) of an AXIS2_PLACEMENT_3D */
+export function placementAxes(file: StepFile, placement: number): { origin: Vec3; axes: [Vec3, Vec3, Vec3] } | null {
+  const [location, z, x] = refs(file.entities.get(placement) ?? '')
+  const origin = pointOf(file.entities.get(location) ?? '')
+  if (!origin) return null
+  const dir = (id: number | undefined, fallback: Vec3) =>
+    id == null ? fallback : (pointOf((file.entities.get(id) ?? '').replace(/^DIRECTION/, 'CARTESIAN_POINT')) ?? fallback)
+  const zz = dir(z, [0, 0, 1])
+  const xx = dir(x, [1, 0, 0])
+  const yy: Vec3 = [zz[1] * xx[2] - zz[2] * xx[1], zz[2] * xx[0] - zz[0] * xx[2], zz[0] * xx[1] - zz[1] * xx[0]]
+  return { origin, axes: [xx, yy, zz] }
 }
 
 /** Every placement (AXIS2_PLACEMENT_3D id) a part's shape representation is mapped to, one per instance */

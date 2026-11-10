@@ -18,7 +18,7 @@ import {
 import { add, apply, cross, dot, identity, invert, mate, rotate, scale, sub, turnAbout, type Frame, type Transform } from './geometry'
 import { args, closure, directionBody, mapRefs, nextIdOf, parseStep, pointBody, pointOf, refs, typeOf, writeStep, type StepFile, type Vec3 } from './step'
 import { stretchedOrigin, stretchPart } from './stretch'
-import { definitionByName, placementIdsOf, shapeOf, solidsOf } from './structure'
+import { definitionByName, definitionOf, placementAxes, placementIdsOf, shapeOf, solidsOf } from './structure'
 
 export type PartRole = 'axis' | 'kit' | 'gearbox' | 'motor' | 'shaft' | 'adapter' | 'guide'
 
@@ -434,8 +434,7 @@ export function withoutLooseFasteners(file: StepFile, kit: KitMeta): StepFile {
   const loose: number[] = []
   for (const [product, body] of e) {
     if (typeOf(body) !== 'PRODUCT' || !FASTENER.test(args(body)[0])) continue
-    const formation = [...e].find(([, b]) => typeOf(b).startsWith('PRODUCT_DEFINITION_FORMATION') && refs(b)[0] === product)?.[0]
-    const pd = [...e].find(([, b]) => typeOf(b) === 'PRODUCT_DEFINITION' && refs(b)[0] === formation)?.[0]
+    const pd = definitionOf(file, product)
     const rep = pd != null ? shapeOf(file, pd) : null
     if (rep == null) continue
     const points = solidsOf(file, rep).flatMap((s) =>
@@ -447,15 +446,10 @@ export function withoutLooseFasteners(file: StepFile, kit: KitMeta): StepFile {
     )
     if (!points.length) continue
     for (const id of placementIdsOf(file, rep)) {
-      const [location, z, x] = refs(e.get(id) ?? '')
-      const origin = pointOf(e.get(location) ?? '')
-      if (!origin) continue
-      const dir = (d: number | undefined, fallback: Vec3) =>
-        d == null ? fallback : (pointOf((e.get(d) ?? '').replace(/^DIRECTION/, 'CARTESIAN_POINT')) ?? fallback)
-      const zz = dir(z, [0, 0, 1])
-      const xx = dir(x, [1, 0, 0])
-      const yy = cross(zz, xx)
-      const depth = (p: Vec3) => dot(sub(add(origin, add(scale(xx, p[0]), add(scale(yy, p[1]), scale(zz, p[2])))), f.origin), f.axis)
+      const placed = placementAxes(file, id)
+      if (!placed) continue
+      const [xx, yy, zz] = placed.axes
+      const depth = (p: Vec3) => dot(sub(add(placed.origin, add(scale(xx, p[0]), add(scale(yy, p[1]), scale(zz, p[2])))), f.origin), f.axis)
       if (Math.min(...points.map(depth)) > 1) loose.push(id)
     }
   }
