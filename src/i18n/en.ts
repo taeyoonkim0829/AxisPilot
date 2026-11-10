@@ -518,8 +518,6 @@ export const en: Record<string, string> = {
   '{axis}축은 빔 앞면 패드의 {plate}에 구동부를 위로 매답니다(패드 중심: 빔 가운데에서 {at} mm, 장착 위치).': 'The {axis} axis hangs, drive end up, from the {plate} on the pad on the beam front (pad centre {at} mm from the beam centre, the mounting position).',
   '{axis}축은 키트처럼 핀과 볼트로 빔 앞면에 고정합니다(프로파일 아랫면의 핀 구멍과 나사 구멍, 볼트 머리는 빔 안쪽). {axis}축 중심: 빔 가운데에서 {at} mm(장착 위치).': 'The {axis} axis is pinned and screwed onto the beam front as a kit holds it (the pin and threaded bores in the profile underside, screw heads inside the beam). {axis} axis centre: {at} mm from the beam centre (mounting position).',
   '{base}축 간격은 입력값 그대로 씁니다(빔 길이로 맞춤).': 'The {base} axis spacing is used as entered (the beam length is made to it).',
-  '조합 키트는 ELGT-BS, ELGD 데이터시트의 조합표 기준입니다. EGC는 Festo 키트가 없어 주문 제작 브래킷(앵글 브래킷, 어댑터 플레이트)을 씁니다. 축은 시작 위치에, Y축 슬라이드는 행정 가운데에 그리며, 위쪽 축은 조립 설명서대로 키트가 잡는 위치(핀과 볼트 구멍)에 붙이고, 그 데이터가 없는 키트는 입력한 장착 오프셋을 따릅니다. 키트가 없는 결합은 입력한 장착 위치에 축만 배치합니다. 키트에 축을 고정하는 프로파일 마운팅(EAHF)과 슬롯 너트는 도면에 없습니다.':
-    'Gantry kits follow the combination tables of the ELGT-BS and ELGD data sheets. EGC has no Festo kits and takes made-to-order brackets (angle brackets, adapter plates). The axes are drawn at their start position, the Y slide in the middle of its travel; a carried axis sits where the kit holds it as in the assembly instructions (pin and screw holes), else at the entered mounting offset. A joint without a kit places the axis alone at the entered mounting point. The profile mountings (EAHF) and slot nuts holding an axis on a kit are not drawn.',
   '키트 없이 배치한 결합: {pairs}': 'Joints placed without a kit: {pairs}',
   '조합 키트가 없는 결합이 있어 조합축 도면을 만들지 않습니다: {pairs}. 축 크기나 계열을 바꿔 키트가 있는 조합을 고르거나 브래킷을 따로 설계하세요.':
     'No gantry drawing: these joints have no gantry kit: {pairs}. Pick axes (size or range) that a kit joins, or design a bracket for the joint.',
@@ -614,8 +612,6 @@ export const en: Record<string, string> = {
     'A new version has been published. Please reload the page. Your inputs will be reset.',
   '새로 고침': 'Reload',
   '3D 뷰어를 불러오는 중…': 'Loading the 3D viewer…',
-  '제조사 CAD 데이터(STEP)를 그대로 조립합니다. 무게 중심(빨간 점)은 슬라이드 중심(시작 위치) 기준입니다. DXF · PDF 도면은 KS 제도 기준(KS A 0005 · KS B 0001)의 정면·평면·우측면도(제3각법)로, 표준 척도와 용지에 윤곽선, 표제란, 부품란을 넣습니다.':
-    "The manufacturers' CAD data (STEP) is assembled as is. The centre of gravity (red dot) is relative to the slide centre at the start position. The DXF and PDF drawings follow the KS drafting rules (KS A 0005, KS B 0001): front, top and right side views (third-angle projection) at a standard scale on a standard sheet with border, title block and parts list.",
   '등각': 'Isometric',
   '정면': 'Front',
   '평면': 'Top',

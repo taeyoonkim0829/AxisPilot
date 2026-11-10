@@ -995,6 +995,9 @@ h3 {
 }
 
 .mode-switch button {
+  /* two equal halves whatever the label length */
+  flex: 1 1 0;
+  min-width: 0;
   padding: 10px 14px;
   font-weight: 600;
 }
@@ -1113,6 +1116,10 @@ details summary {
   font-weight: 600;
   margin-bottom: 12px;
   width: fit-content;
+}
+
+details:not([open]) > summary {
+  margin-bottom: 0;
 }
 
 details summary:hover {
