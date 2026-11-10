@@ -16,9 +16,9 @@ import {
   type ShaftMeta,
 } from './drawings'
 import { add, apply, cross, dot, identity, invert, mate, rotate, scale, sub, turnAbout, type Frame, type Transform } from './geometry'
-import { directionBody, mapRefs, nextIdOf, parseStep, pointBody, pointOf, refs, typeOf, writeStep, type StepFile, type Vec3 } from './step'
+import { args, closure, directionBody, mapRefs, nextIdOf, parseStep, pointBody, pointOf, refs, typeOf, writeStep, type StepFile, type Vec3 } from './step'
 import { stretchedOrigin, stretchPart } from './stretch'
-import { definitionByName, placementIdsOf, shapeOf } from './structure'
+import { definitionByName, placementIdsOf, shapeOf, solidsOf } from './structure'
 
 export type PartRole = 'axis' | 'kit' | 'gearbox' | 'motor' | 'shaft' | 'adapter' | 'guide'
 
@@ -420,6 +420,48 @@ export function placeCoupling(file: StepFile, kit: KitMeta) {
   for (const part of s.parts) placePart(file, part, t)
 }
 
+/** Screws, nuts and seals by their names in Festo's kit files (`DIN-912 - M6x12(F)`, `8098119 M4`, `… M3-NBR-…`) */
+const FASTENER = /ISO|DIN|\bM\d+(x\d|\b|-)/i
+
+/**
+ * A copy of a Festo kit file without the fasteners lying wholly beyond the motor face, in the motor drawn there:
+ * the EAMM files park spare screws there (EAMM-A-D32-40P: four M6x12 47 mm deep) and seat the motor's own screws,
+ * nuts and seals on a nominal flange, which the motor's flange is not.
+ */
+export function withoutLooseFasteners(file: StepFile, kit: KitMeta): StepFile {
+  const f = kit.motorFace
+  const e = file.entities
+  const loose: number[] = []
+  for (const [product, body] of e) {
+    if (typeOf(body) !== 'PRODUCT' || !FASTENER.test(args(body)[0])) continue
+    const formation = [...e].find(([, b]) => typeOf(b).startsWith('PRODUCT_DEFINITION_FORMATION') && refs(b)[0] === product)?.[0]
+    const pd = [...e].find(([, b]) => typeOf(b) === 'PRODUCT_DEFINITION' && refs(b)[0] === formation)?.[0]
+    const rep = pd != null ? shapeOf(file, pd) : null
+    if (rep == null) continue
+    const points = solidsOf(file, rep).flatMap((s) =>
+      [...closure(file, s)].flatMap((id) => {
+        const b = e.get(id) ?? ''
+        const p = typeOf(b) === 'CARTESIAN_POINT' ? pointOf(b) : null
+        return p ? [p] : []
+      }),
+    )
+    if (!points.length) continue
+    for (const id of placementIdsOf(file, rep)) {
+      const [location, z, x] = refs(e.get(id) ?? '')
+      const origin = pointOf(e.get(location) ?? '')
+      if (!origin) continue
+      const dir = (d: number | undefined, fallback: Vec3) =>
+        d == null ? fallback : (pointOf((e.get(d) ?? '').replace(/^DIRECTION/, 'CARTESIAN_POINT')) ?? fallback)
+      const zz = dir(z, [0, 0, 1])
+      const xx = dir(x, [1, 0, 0])
+      const yy = cross(zz, xx)
+      const depth = (p: Vec3) => dot(sub(add(origin, add(scale(xx, p[0]), add(scale(yy, p[1]), scale(zz, p[2])))), f.origin), f.axis)
+      if (Math.min(...points.map(depth)) > 1) loose.push(id)
+    }
+  }
+  return loose.length ? withoutInstances(file, loose) : file
+}
+
 export const connectorSide = (options: ComboOptions, parallel: boolean): Side =>
   options.motorConnector ?? (parallel ? options.kitSide : 'up')
 
@@ -622,7 +664,7 @@ export async function comboParts(
   const position = twin && !twin.drive && turnable(sel.axis) ? shaftDrivePosition(axisMeta, req.mounting, chosen) : chosen
   const world = mountingFrame(req.mounting)
   const parallel = sel.kit.type === 'parallel'
-  const kitFile = parseStep(kitText)
+  const kitFile = sel.kit.special ? parseStep(kitText) : withoutLooseFasteners(parseStep(kitText), kitMeta)
   placeCoupling(kitFile, kitMeta)
   const gearboxFile = gearboxText ? parseStep(gearboxText) : null
   const motorFile = parseStep(motorText)

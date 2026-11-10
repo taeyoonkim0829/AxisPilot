@@ -3,6 +3,7 @@ import { axes, gearboxes, kits, motors, shafts } from '../data'
 import {
   buildCombo,
   placeCoupling,
+  withoutLooseFasteners,
   comboDrawings,
   defaultComboOptions,
   drivePositionWords,
@@ -278,7 +279,7 @@ describe('combination', () => {
     const sel = selection(800)
     const combo = await buildCombo(sel, comboDrawings(sel, testDrawings), { mounting, cog: { x: 0, y: 0, z: 50 } }, load)
     const box = await meshBox(combo.step)
-    expect(box.meshes).toBe(7 + 16 + 1)
+    expect(box.meshes).toBe(7 + 12 + 1) // the kit without the four M4 nuts filed inside the motor
     // floor: motor end at −X; axis end face 730 + 300 mm from the far end (the shaft stub sits in the kit),
     // kit 47 mm, motor 114.5 mm behind its flange
     const length = 730 + 300 + 47 + 114.5
@@ -385,7 +386,7 @@ describe('combination', () => {
     expect(found.kit?.path).toBe(files[4])
     const combo = await buildCombo(sel, found, { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
     const box = await meshBox(combo.step)
-    expect(box.meshes).toBe(7 + 20 + 1)
+    expect(box.meshes).toBe(7 + 16 + 1) // the kit without the four M4 nuts filed inside the motor
     // the housing reaches 34.8 mm beyond the axis end face; the motor lies alongside the axis
     expect(box.hi[0] - box.lo[0]).toBeCloseTo(730 + 300 + 34.8, 0)
     // below the axis: kit 114 mm centre distance, motor connector pointing away from the axis (71 mm off centre);
@@ -646,6 +647,18 @@ describe('combination', () => {
     const coupling = part('EAMC-42-50')
     expect(coupling.hi[0]).toBeLessThan(housing.hi[0] - 5)
     expect(coupling.lo[0]).toBeGreaterThan(housing.hi[0] - 63.2 + 5)
+  }, 60000)
+
+  it('leaves out the kit screws filed beyond the motor face, inside the motor', async () => {
+    // EAMM-A-D32-40P parks four M6x12 47 mm beyond its motor face; the M6x20 into the axis and the M3 stay
+    const path = 'data/kits/Festo/Drawings/EAMM-A/1976465_EAMM-A-D32-40P.stp'
+    const file = parseStep(await text(path))
+    const kept = withoutLooseFasteners(file, metas[`../../${path.replace(/\.stp$/, '.json')}`] as KitMeta)
+    const count = (f: StepFile, name: string) => [...f.entities.values()].filter((b) => typeOf(b) === 'NEXT_ASSEMBLY_USAGE_OCCURRENCE' && b.includes(name)).length
+    expect(count(file, 'M6x12')).toBe(4)
+    expect(count(kept, 'M6x12')).toBe(0)
+    expect(count(kept, 'M6x20')).toBe(4)
+    expect(count(kept, 'M3x12')).toBe(count(file, 'M3x12'))
   }, 60000)
 
   it('takes the cover cap off the shaft end the kit goes on when the head is capped on both sides', async () => {
