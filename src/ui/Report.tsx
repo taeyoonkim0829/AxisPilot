@@ -36,6 +36,7 @@ import {
   moveLabel,
   parallelModeLabel,
   pressDirectionLabel,
+  rodsLabel,
   sideLabel,
   supplyLabel,
 } from './format'
@@ -153,6 +154,8 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
     beltMeta && axis?.layout.mode === 'twinShaft' ? shaftDrivePosition(beltMeta, req.mounting, assembly.drive) : assembly.drive
   // motor sync, single axis screen: the axes turned on their sides, the slides facing each other, as in step 5
   const facing = !gantry && axis?.layout.mode === 'twinMotor' && assembly.twinFacing === true
+  // an electric cylinder, with or without the EAGF, as in step 5
+  const cylinder = axis?.axis.family === 'ESBF' ? { eagf: axis.guide?.guide.kind === 'cylinder' } : null
   const words = beltMeta ? drivePositionWords(beltMeta, req.mounting, drivePosition, facing ? 1 : 0) : null
   const motorPosition = words ? `${t(words.end)} · ${t(words.side)}` : null
   // motor sync: the second axis's motor position (default the mirror image of the first), as in step 5
@@ -483,6 +486,7 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
                       twinAssembly ? '모터 조립 방향 (첫 번째 축, 커넥터)' : '모터 조립 방향 (커넥터)',
                       t(sideLabel[connectorSide(assembly, kit.type === 'parallel')]),
                     ],
+                    ...(cylinder?.eagf ? ([['가이드 방향 (EAGF 로드 위치)', t(rodsLabel[assembly.guideRods ?? 'upDown'])]] as Row[]) : []),
                     ...(twinAssembly && kit.type === 'parallel'
                       ? ([['키트 조립 방향 (두 번째 축, 모터 위치)', t(sideLabel[twinAssembly.kitSide])]] as Row[])
                       : []),
@@ -496,8 +500,8 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
                 <p className="report-note">{t('모터 쪽 축 끝에서 축을 바라볼 때 기준이며, 슬라이드 면이 상입니다.')}</p>
                 {[
                   ...new Set([
-                    ...assemblyWarnings(assembly, kit.type === 'parallel'),
-                    ...(twinAssembly ? assemblyWarnings(twinAssembly, kit.type === 'parallel') : []),
+                    ...assemblyWarnings(assembly, kit.type === 'parallel', cylinder),
+                    ...(twinAssembly ? assemblyWarnings(twinAssembly, kit.type === 'parallel', cylinder) : []),
                   ]),
                 ].map((w) => (
                   <p key={w} className="report-note warn-text">

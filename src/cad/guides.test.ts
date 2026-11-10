@@ -4,7 +4,7 @@ import { defaultParallel, defaultSettings, type Requirements } from '../calc/typ
 import { axes, guides, kits, motors } from '../data'
 import { evaluateDrive } from '../calc/motorSelection'
 import { comboInputs } from '../ui/comboInputs'
-import { buildCombo } from './combo'
+import { assemblyWarnings, buildCombo, defaultComboOptions } from './combo'
 import type { Drawing } from './drawings'
 
 const texts = import.meta.glob<string>(['../../data/*/Festo/Drawings/**/*.stp'], { query: '?raw', import: 'default' })
@@ -59,7 +59,23 @@ describe('guides in the combination drawing', () => {
     for (const rod of rods) expect(rod.hi[0] - rod.lo[0]).toBeCloseTo(57.7 + 485.3 - 100, 0)
     // the guide rods one above the other (across x on the file's +x = world up)
     expect(Math.abs(rods[0].lo[2] - rods[1].lo[2])).toBeCloseTo(74, 0)
+    // turned a quarter: the rods side by side (floor: across the travel, world y), level with each other
+    const side = (await boxes((await buildCombo(selection!, found!, r, load, { ...defaultComboOptions, guideRods: 'leftRight' }, twin)).step)).filter(
+      (p) => p.name.includes('(FST)'),
+    )
+    expect(Math.abs(side[0].lo[1] - side[1].lo[1])).toBeCloseTo(74, 0)
+    expect(side[0].lo[2]).toBeCloseTo(side[1].lo[2], 1)
   }, 60000)
+
+  it('warns of the cylinder and the EAGF rods, not of a slide, for an ESBF with a parallel kit', () => {
+    const o = { ...defaultComboOptions, kitSide: 'up' as const }
+    expect(assemblyWarnings(o, true, { eagf: false })).toEqual([])
+    expect(assemblyWarnings(o, true, { eagf: true })).toEqual([expect.stringContaining('EAGF 가이드 로드 쪽')])
+    expect(assemblyWarnings({ ...o, guideRods: 'leftRight' }, true, { eagf: true })).toEqual([])
+    expect(assemblyWarnings({ ...o, motorConnector: 'down', guideRods: 'leftRight' }, true, { eagf: true })).toEqual([
+      expect.stringContaining('실린더 쪽을 향합니다'),
+    ])
+  })
 
   it('places the guide axes beside the axis, slides level, lengthened to the stroke', async () => {
     const r = { ...req, stroke: 500, parallel: { ...defaultParallel, mode: 'guides' as const, spacing: 300, guideCount: 2, guideAxis: true } }

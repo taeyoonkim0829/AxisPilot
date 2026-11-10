@@ -87,6 +87,9 @@ const defaultMotorMeta = (maker: string): MotorMeta => ({
 export type Side = 'up' | 'down' | 'left' | 'right'
 export const SIDES: readonly Side[] = ['up', 'down', 'left', 'right']
 
+/** Where the EAGF's two guide rods sit beside the cylinder: above and below it, or left and right (`Side`s) */
+export type GuideRods = 'upDown' | 'leftRight'
+
 /**
  * Assembly orientation: the side a parallel kit puts the motor on (kit turned about the axis drive shaft) and where
  * the motor connector points (any kit). `motorConnector` null = automatic: away from the axis with a parallel kit
@@ -108,6 +111,9 @@ export interface ComboOptions {
   /** the slide drawn in the middle of the profile (the middle of its travel) instead of at the start position; the
    *  gantry drawing's Y axis */
   slideCentred?: boolean
+  /** EAGF on an ESBF: its guide rods above and below the cylinder (default) or left and right; drawing only, the
+   *  data sheet loads are the same both ways (Fy = Fz, My = Mz) */
+  guideRods?: GuideRods
 }
 
 /**
@@ -481,9 +487,23 @@ const mirrorSides = (options: ComboOptions): ComboOptions => ({
 const opposite: Record<Side, Side> = { up: 'down', down: 'up', left: 'right', right: 'left' }
 
 /** Warnings about the chosen orientation (Korean source text), shown in step 5 and the report. */
-export function assemblyWarnings(options: ComboOptions, parallel: boolean): string[] {
+export function assemblyWarnings(options: ComboOptions, parallel: boolean, cylinder?: { eagf: boolean } | null): string[] {
   if (!parallel) return []
   const warnings: string[] = []
+  // an electric cylinder has no slide: the motor beside it meets the cylinder body and, with the EAGF, the guide
+  // housing and rods (the rods run back along the cylinder from its front flange)
+  if (cylinder) {
+    if (connectorSide(options, parallel) === opposite[options.kitSide])
+      warnings.push(
+        cylinder.eagf
+          ? '모터 커넥터가 실린더 쪽을 향합니다. 실린더 본체 및 EAGF 가이드 하우징·로드와의 간섭을 확인하세요.'
+          : '모터 커넥터가 실린더 쪽을 향합니다. 실린더 본체와의 간섭을 확인하세요.',
+      )
+    const rods: Side[] = options.guideRods === 'leftRight' ? ['left', 'right'] : ['up', 'down']
+    if (cylinder.eagf && rods.includes(options.kitSide))
+      warnings.push('모터가 EAGF 가이드 로드 쪽에 있어 가이드 하우징·로드와 간섭할 수 있습니다. 키트 조립 방향이나 가이드 방향을 바꾸세요.')
+    return warnings
+  }
   if (connectorSide(options, parallel) === opposite[options.kitSide])
     warnings.push('모터 커넥터가 축 쪽을 향합니다. 간섭을 확인하세요.')
   if (options.kitSide === 'up')
@@ -795,7 +815,13 @@ export async function comboParts(
     if (d !== 0 && meta.stretch) file = stretchPart(file, meta.stretch, d).file
     const at = (p: Vec3) => (d !== 0 && meta.stretch ? stretchedOrigin(p, meta.stretch, d) : p)
     if (meta.mount && meta.yoke && axisMeta.front) {
-      const front = { ...axisMeta.front, origin: stretch !== 0 && axisMeta.stretch ? stretchedOrigin(axisMeta.front.origin, axisMeta.stretch, stretch) : axisMeta.front.origin }
+      const f = axisMeta.front
+      // the EAGF's `up` lies in its rods' plane: on the slide normal (`front.up`) they sit above and below
+      const front = {
+        ...f,
+        origin: stretch !== 0 && axisMeta.stretch ? stretchedOrigin(f.origin, axisMeta.stretch, stretch) : f.origin,
+        up: options.guideRods === 'leftRight' ? cross(f.axis, f.up) : f.up,
+      }
       const transform = mate(axisToWorld, front, { ...meta.mount, origin: at(meta.mount.origin) })
       parts.push({ role: 'guide', name: guide.model, file, transform })
       payloadAt = apply(transform, at(meta.yoke))

@@ -559,6 +559,16 @@ export const en: Record<string, string> = {
   '위': 'Up',
   '모터 쪽 축 끝에서 축을 바라볼 때 기준이며, 슬라이드 면이 상입니다.': 'Seen from the motor end of the axis looking along it, with the slide surface at the top.',
   '모터 커넥터가 축 쪽을 향합니다. 간섭을 확인하세요.': 'The motor connector points towards the axis. Check for interference.',
+  '모터 커넥터가 실린더 쪽을 향합니다. 실린더 본체와의 간섭을 확인하세요.':
+    'The motor connector points towards the cylinder. Check for interference with the cylinder body.',
+  '모터 커넥터가 실린더 쪽을 향합니다. 실린더 본체 및 EAGF 가이드 하우징·로드와의 간섭을 확인하세요.':
+    'The motor connector points towards the cylinder. Check for interference with the cylinder body and the EAGF guide housing and rods.',
+  '모터가 EAGF 가이드 로드 쪽에 있어 가이드 하우징·로드와 간섭할 수 있습니다. 키트 조립 방향이나 가이드 방향을 바꾸세요.':
+    'The motor is on the side of the EAGF guide rods and can interfere with the guide housing and rods. Change the kit assembly direction or the guide orientation.',
+  '가이드 방향 (EAGF 로드 위치)': 'Guide orientation (EAGF rod position)',
+  '가이드 로드 {rods}': 'guide rods {rods}',
+  상하: 'top / bottom',
+  좌우: 'left / right',
   '모터가 슬라이드 쪽에 있어 슬라이드·부하와 간섭할 수 있으므로 사용 가능한 스트로크가 줄어들 수 있습니다.': 'The motor sits on the slide side and can collide with the slide or the payload, so the usable stroke may be shorter.',
   '같은 모터의 다른 옵션 도면': 'Drawing of another option of the same motor',
   '3D 미리보기': '3D preview',

@@ -25,7 +25,7 @@ import { ComboPreviewPanel } from './ComboPreviewPanel'
 import type { NoteTranslator } from './useComboPreview'
 import drawingImage from '../../images/help_combo_drawing.webp'
 import { HelpTip, RadioGroup } from './common'
-import { mountingLabel, sideLabel } from './format'
+import { mountingLabel, rodsLabel, sideLabel } from './format'
 import { loadText, useComboPreview } from './useComboPreview'
 
 interface Props {
@@ -109,6 +109,10 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
         : {}),
       ...change,
     })
+  // an electric cylinder: no slide, and with the EAGF drawn its guide rods above and below or left and right
+  const eagf = selection?.guide?.guide.kind === 'cylinder' && found?.guide != null
+  const cylinder = axis?.axis.family === 'ESBF' ? { eagf } : null
+  const rods = sides.guideRods ?? 'upDown'
   const shaftDrawing = axis?.shaft ? shaftDrawingFor(axis.shaft.shaft) : null
   const key = selection
     ? [
@@ -120,6 +124,7 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
         twinMotor && parallel ? twinSides.kitSide : '',
         twinMotor ? twinConnector : '',
         facing ? 'facing' : '',
+        eagf ? rods : '',
       ].join('|')
     : ''
   const ready = found != null && found.missing.length === 0
@@ -136,6 +141,7 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
       parallel && kitMotor(sides),
       tr('모터 커넥터 {side}', { side: tr(sideLabel[connector]) }),
       facing && tr('슬라이드 마주 보기'),
+      eagf && tr('가이드 로드 {rods}', { rods: tr(rodsLabel[rods]) }),
     ].filter(Boolean)
     const second = twinMotor ? [parallel && kitMotor(twinSides), tr('모터 커넥터 {side}', { side: tr(sideLabel[twinConnector]) })].filter(Boolean) : []
     return [
@@ -264,7 +270,7 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
         ]
       : []
 
-  const warnings = [...new Set([...assemblyWarnings(sides, parallel), ...(twinMotor ? assemblyWarnings(twinSides, parallel) : [])])]
+  const warnings = [...new Set([...assemblyWarnings(sides, parallel, cylinder), ...(twinMotor ? assemblyWarnings(twinSides, parallel, cylinder) : [])])]
 
   return (
     <section className="panel step" id="step-drawing">
@@ -345,6 +351,17 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
                   value={facing ? 'facing' : 'side'}
                   onChange={(a) => onSides({ ...sides, twinFacing: a === 'facing' })}
                   label={(a) => t(a === 'facing' ? '슬라이드 마주보기' : '나란히 (슬라이드 위)')}
+                />
+              </>
+            )}
+            {eagf && (
+              <>
+                <span>{t('가이드 방향 (EAGF 로드 위치)')}</span>
+                <RadioGroup
+                  options={['upDown', 'leftRight'] as const}
+                  value={rods}
+                  onChange={(guideRods) => onSides({ ...sides, guideRods })}
+                  label={(g) => t(rodsLabel[g])}
                 />
               </>
             )}
