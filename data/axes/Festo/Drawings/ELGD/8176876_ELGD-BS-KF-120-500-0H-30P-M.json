@@ -1,0 +1,7 @@
+{
+  "stroke": 500,
+  "drive": { "origin": [0, 76.4, 37.5], "axis": [0, 0, 1], "up": [0, 1, 0] },
+  "slide": { "origin": [0, 125.9, -91.5], "normal": [0, 1, 0], "travel": [0, 0, -1] },
+  "stretch": { "part": "8176876 ELGD-BS-KF-120-500-0H---M---(0-0-0-2-L---highh)", "axis": 2, "dir": -1, "range": [-663, -178], "move": [14534] },
+  "profile": { "origin": [0, 0, -312.25], "normal": [0, -1, 0] }
+}

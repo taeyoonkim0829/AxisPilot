@@ -784,6 +784,8 @@ function eagfFrames(file, model) {
 const typeRe = (code) => new RegExp(`^${code.split('…').map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('(\\d+)')}$`, 'i')
 
 function strokeOf(model) {
+  // ELGD with a mounting type (direct mounting M, front end M7) in the type code: the axis type without it
+  model = model.replace(/^(ELGD-.*)-M7?(?=-|$)/, '$1')
   for (const g of guideItems) {
     const m = typeRe(g.typeCode).exec(model)
     if (m) return Number(m[1])

@@ -52,6 +52,7 @@ export function comboInputs(
               }
             : {}),
           ...(axis.sensing ? { sensing: axis.sensing } : {}),
+          ...(axis.options?.mounting ? { mounting: axis.options.mounting } : {}),
         }
       : null
   const found = selection ? comboDrawings(selection) : null
@@ -91,4 +92,5 @@ export const comboKey = (selection: ComboSelection, req: Requirements, twin: Twi
     twin ? `${twin.spacing}/${twin.drive}/${twin.shaft?.model ?? ''}` : '',
     selection.guide ? `${selection.guide.model}@${selection.guide.offsets.join(',')}` : '',
     selection.sensing ? selection.sensing.switches.map((s) => s.part.model).join(',') : '',
+    selection.mounting ?? '',
   ].join('|')

@@ -1,6 +1,6 @@
 import type { Sensing, SwitchRole } from '../calc/axisSelection'
 import type { Mounting, Requirements } from '../calc/types'
-import type { Axis, Gearbox, GuideUnit, Kit, Motor } from '../data/types'
+import type { Axis, AxisMounting, Gearbox, GuideUnit, Kit, Motor } from '../data/types'
 import { assemble, sourceNotice, type AssemblyPart } from './assemble'
 import {
   axisDrawingsFor,
@@ -41,6 +41,8 @@ export interface ComboSelection {
   /** guide without drive: the EAGF on an electric cylinder (no `offsets`), or guide axes `offsets` mm beside the
    *  axis along the slide's lateral (+y) direction */
   guide?: { guide: GuideUnit; model: string; stroke: number; offsets: number[] }
+  /** ELGD mounting type ordered (direct mounting M, front end M7): drawn from its own file when there is one */
+  mounting?: AxisMounting | null
   /** position sensing: the switch lug on the (main) slide, the limit switches at the ends of the travel and the home
    *  switch beside the − limit (`switchPlacements`) */
   sensing?: Sensing | null
@@ -60,11 +62,15 @@ export interface ComboDrawings {
   /** the switch lug's and each proximity switch's drawing (as `sensing.switches`); null (left out) without one of them
    *  or the axis's `sensor` seats */
   sensors: { lug: Drawing<SensorMeta>; switches: Drawing<SensorMeta>[] } | null
+  /** a mounting type was ordered but has no file of its own: the standard profile is drawn */
+  mountingMissing: boolean
   missing: PartRole[]
 }
 
 export function comboDrawings(sel: ComboSelection, all?: Drawing[]): ComboDrawings {
-  const axis = axisDrawingsFor(sel.axis, sel.stroke, all)[0] ?? null
+  // the mounting type's own file (its profile's underside), else the standard one
+  const mounted = sel.mounting ? (axisDrawingsFor(sel.axis, sel.stroke, all, sel.mounting)[0] ?? null) : null
+  const axis = mounted ?? axisDrawingsFor(sel.axis, sel.stroke, all)[0] ?? null
   const motor = motorDrawingFor(sel.motor, all)
   const gearbox = sel.gearbox ? gearboxDrawingFor(sel.gearbox, sel.motor, all) : null
   const kit = kitDrawingFor(sel.kit, all)
@@ -84,6 +90,7 @@ export function comboDrawings(sel: ComboSelection, all?: Drawing[]): ComboDrawin
     gearbox,
     kit,
     guide: guide && (sel.guide!.guide.kind === 'axis' || axis?.meta?.front) ? guide : null,
+    mountingMissing: !!sel.mounting && !mounted,
     sensors: lug && switches.every((d) => d != null) && axis?.meta?.sensor ? { lug, switches: switches as Drawing<SensorMeta>[] } : null,
     missing,
   }

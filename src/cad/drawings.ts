@@ -1,4 +1,5 @@
-import type { Axis, AxisAdapter, ConnectingShaft, Gearbox, GuideUnit, Kit, Motor, SensorPart } from '../data/types'
+import { mountedTypeCode } from '../calc/axisSelection'
+import type { Axis, AxisAdapter, AxisMounting, ConnectingShaft, Gearbox, GuideUnit, Kit, Motor, SensorPart } from '../data/types'
 import { namesMotor } from '../data/names'
 import type { Frame } from './geometry'
 import type { StretchSpec } from './stretch'
@@ -188,9 +189,10 @@ export const drawings: Drawing[] = Object.entries(stepUrls).flatMap(([path, url]
 
 const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-/** Axis drawings of the axis's type (any stroke), the one needing the least length change first. */
-export function axisDrawingsFor(axis: Axis, stroke: number, all = drawings): Drawing<AxisMeta>[] {
-  const code = axis.typeCode ?? axis.model
+/** Axis drawings of the axis's type (any stroke), the one needing the least length change first; with a mounting
+ *  type (ELGD M / M7) the files of that type only (the profile's underside differs). */
+export function axisDrawingsFor(axis: Axis, stroke: number, all = drawings, mounting: AxisMounting | null = null): Drawing<AxisMeta>[] {
+  const code = mounting ? mountedTypeCode(axis, mounting) : (axis.typeCode ?? axis.model)
   const re = new RegExp(`^${code.split('…').map(escape).join('\\d+')}$`)
   return (all.filter((d) => d.kind === 'axes' && d.meta && d.names.some((n) => re.test(n))) as Drawing<AxisMeta>[]).sort(
     (a, b) => Math.abs(a.meta!.stroke - stroke) - Math.abs(b.meta!.stroke - stroke),

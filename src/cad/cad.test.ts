@@ -540,6 +540,29 @@ describe('combination', () => {
     expect(plus.hi[0]).toBeCloseTo(300 - 2 + 21 + 6.7, 1)
   }, 60000)
 
+  it('draws an ELGD ordered with direct mounting M from its own file, the threads under the profile kept at 100 mm', async () => {
+    const axis = axes.find((a) => a.id === 'ELGD-TB-KF-60')!
+    const sel: ComboSelection = {
+      axis,
+      axisModel: 'ELGD-TB-KF-60-800-0H-M-PU2',
+      stroke: 800,
+      motor: motors.find((m) => m.model === 'EMMT-AS-60-S-HS')!,
+      gearbox: null,
+      kit: kits.find((k) => k.product === 'EAMM-A-N48-60P' && k.axisCode === 'N48')!,
+      mounting: 'M',
+    }
+    const kitPath = allPaths.map((p) => p.slice(6)).find((p) => p.includes('_EAMM-A-N48-60P.stp'))!
+    const axisPaths = allPaths.map((p) => p.slice(6)).filter((p) => p.includes('/ELGD/') && p.includes('ELGD-TB-KF-60-'))
+    const own = [...axisPaths, kitPath, files[2]].map((p) => ({ ...parseDrawingPath(p)!, url: p, meta: metas[`../../${p.replace(/\.stp$/, '.json')}`] ?? null }))
+    const found = comboDrawings(sel, own)
+    expect(found.axis?.model).toBe('ELGD-TB-KF-60-500-0H-M-PU2')
+    expect(found.mountingMissing).toBe(false)
+    // without M the standard file of the nearest stroke
+    expect(comboDrawings({ ...sel, mounting: null }, own).axis?.model).toBe('ELGD-TB-KF-60-800-0H-PU2')
+    const combo = await buildCombo(sel, found, { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
+    expect(combo.stretch).toBe(300)
+  }, 60000)
+
   it('puts the motor of a belt axis on either shaft end and either end of the axis', async () => {
     const axis = axes.find((a) => a.id === 'EGC-70-...-TB-KF-GK')!
     const sel: ComboSelection = {

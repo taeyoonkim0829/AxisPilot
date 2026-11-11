@@ -203,6 +203,7 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
                       })
                     : t('추가 슬라이드 {codes} 포함, 슬라이드 중심 간격 {pitch} mm', { codes: axis!.options.slides.join(' + '), pitch: axis!.options.pitches.map((p) => Math.round(p * 1000)).join(' / ') })
                   : null,
+                found.mountingMissing ? t('취부 {code} 모델 없음: 표준 프로파일로 그림', { code: selection.mounting! }) : null,
               ]
                 .filter(Boolean)
                 .join(' · ') || null,

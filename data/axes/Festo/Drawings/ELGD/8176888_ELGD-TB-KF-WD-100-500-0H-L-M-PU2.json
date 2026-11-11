@@ -1,0 +1,8 @@
+{
+  "stroke": 500,
+  "drive": { "origin": [51, 23.4, 33], "axis": [1, 0, 0], "up": [0, 1, 0] },
+  "slide": { "origin": [0, 69.4, -93], "normal": [0, 1, 0], "travel": [0, 0, -1] },
+  "stretch": { "part": "8176888 ELGD-TB-KF-WD-100-500-0H-L--M---(high0002h)", "axis": 2, "dir": -1, "range": [-678, -194], "move": [12698, 12699] },
+  "profile": { "origin": [0, 0, -343], "normal": [0, -1, 0] },
+  "sensor": { "lug": { "origin": [50, 58.4, -93], "axis": [1, 0, 0], "up": [0, 1, 0] }, "slot": { "origin": [50, 37.4, -93], "axis": [1, 0, 0], "up": [0, 0, -1] } }
+}

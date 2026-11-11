@@ -218,6 +218,10 @@ function optionCode(axis: Axis, template: string, options: AxisOptions | null): 
   return [base, ...options.slides, ...(options.mounting ? [options.mounting] : []), ...(belt ? [belt] : [])].join('-')
 }
 
+/** The type code with a mounting type (ELGD `…-0H-M-PU2`, `…-0H-5P-M`), as ordered: its drawing's name */
+export const mountedTypeCode = (axis: Axis, mounting: AxisMounting) =>
+  optionCode(axis, axis.typeCode ?? axis.model, { slides: [], extension: 0, gaps: [], pitches: [], belt: null, mounting })
+
 /** Options that leave the standard product (no additional slide, the type code's belt, standard mounting) */
 const customised = (axis: Axis, options: AxisOptions | null) =>
   !!options && (options.slides.length > 0 || options.mounting != null || (options.belt != null && options.belt !== axis.beltMaterials?.[0]))
