@@ -1,3 +1,4 @@
+import { track } from '../analytics'
 import { useEffect, useRef, useState } from 'react'
 import { translate, type Lang } from '../i18n'
 import { shareUrl, type Shared } from '../share'
@@ -15,6 +16,7 @@ export function useReportExport(lang: Lang, name: string | null, share: () => Sh
   const pdfTab = useRef<Window | null>(null)
   const start = () => {
     pdfTab.current = openPendingTab(lang)
+    track('report_pdf_export')
     setExporting(true)
   }
   useEffect(() => {

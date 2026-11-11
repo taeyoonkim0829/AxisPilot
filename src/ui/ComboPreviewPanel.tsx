@@ -4,6 +4,7 @@ import { useT } from '../i18n'
 import { useTheme } from './theme'
 import { STALE_BUILD_NOTICE } from './staleBuild'
 import type { useComboPreview } from './useComboPreview'
+import { track } from '../analytics'
 
 const ComboViewer = lazy(() => import('./ComboViewer'))
 
@@ -31,13 +32,13 @@ export function ComboPreviewPanel<C extends Combo>({
         <button type="button" className="action-btn" onClick={showPreview} disabled={!ready || busy != null}>
           {t(preview ? '3D 미리보기 새로 고침' : '3D 미리보기')}
         </button>
-        <button type="button" className="action-btn" onClick={onStep} disabled={!ready || busy != null}>
+        <button type="button" className="action-btn" onClick={() => { track('drawing_step_export'); onStep() }} disabled={!ready || busy != null}>
           {t('STEP 내보내기')}
         </button>
-        <button type="button" className="action-btn" onClick={onDxf} disabled={!ready || busy != null}>
+        <button type="button" className="action-btn" onClick={() => { track('drawing_dxf_export'); onDxf() }} disabled={!ready || busy != null}>
           {t('DXF 내보내기')}
         </button>
-        <button type="button" className="action-btn" onClick={onPdf} disabled={!ready || busy != null}>
+        <button type="button" className="action-btn" onClick={() => { track('drawing_pdf_export'); onPdf() }} disabled={!ready || busy != null}>
           {t('PDF 도면 내보내기')}
         </button>
         {(busy ?? (stale && t('3D 모델을 만드는 중…'))) && <span className="muted">{busy ?? t('3D 모델을 만드는 중…')}</span>}

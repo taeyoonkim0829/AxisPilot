@@ -612,6 +612,8 @@ export const en: Record<string, string> = {
     'A new version has been published. Please reload the page. Your inputs will be reset.',
   '새로 고침': 'Reload',
   '3D 뷰어를 불러오는 중…': 'Loading the 3D viewer…',
+  '방문 통계를 위해 Google Analytics(쿠키)를 사용합니다. 입력값과 선정 결과는 수집하지 않습니다.':
+    'This site uses Google Analytics (cookies) for visitor statistics. Inputs and selections are not collected.',
   '등각': 'Isometric',
   '정면': 'Front',
   '평면': 'Top',

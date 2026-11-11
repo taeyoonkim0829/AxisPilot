@@ -17,6 +17,7 @@ import { RouteRail } from './ui/RouteRail'
 import { useReportExport } from './ui/useReportExport'
 import type { Shared, SingleShare } from './share'
 import { isStaleBuild, STALE_BUILD_NOTICE } from './ui/staleBuild'
+import { track } from './analytics'
 
 const initialRequirements: Requirements = {
   stroke: 500,
@@ -52,6 +53,7 @@ function useMode(initial?: AppMode): [AppMode, (mode: AppMode) => void] {
   }, [])
   const setMode = (next: AppMode) => {
     window.location.hash = next === 'gantry' ? 'gantry' : ''
+    track('screen_switch', { screen: next })
     setModeState(next)
     window.scrollTo(0, 0)
   }
