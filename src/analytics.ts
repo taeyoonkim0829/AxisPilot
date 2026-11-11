@@ -3,7 +3,7 @@
  * Only event names and the screen go out, never the inputs or selections (customers' project data); the page
  * location is sent without the query, which may still hold a shared calculation (`?r=`).
  */
-const GA_ID = '' // the GA4 web stream's measurement ID, G-XXXXXXXXXX
+const GA_ID = 'G-E23SDZP7FN' // the GA4 web stream's measurement ID, G-XXXXXXXXXX
 
 type Gtag = (...args: unknown[]) => void
 declare global {
