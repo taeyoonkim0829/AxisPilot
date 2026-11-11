@@ -211,6 +211,9 @@ export function AxisStep({ results, selectedId, onSelect, settings, onSettings }
             onChange={(v) => onSettings({ ...settings, spindleSupport: v })}
           />
         )}
+        {settings.drives.includes('belt') && settings.families.includes('ELGD') && (
+          <ToggleButton label={t('위치 센서')} checked={settings.sensors} onChange={(v) => onSettings({ ...settings, sensors: v })} />
+        )}
       </div>
       <AxisOptionFilters settings={settings} onSettings={onSettings} selected={selected ?? null} />
 

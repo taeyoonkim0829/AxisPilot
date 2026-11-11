@@ -71,5 +71,12 @@ export function partRows(
         ? ([[t('LM 가이드'), '—', t('별도 선정 (참고값: 3장)'), null, layout.guides, null]] as SelectionRow[])
         : []),
     ...(axis.shaft ? ([[t('연결축'), 'Festo', axis.shaft.model, axis.shaft.shaft.partNumber, 1, null]] as SelectionRow[]) : []),
+    // one lug per axis, a proximity switch at each end position
+    ...(axis.sensing
+      ? ([
+          [t('센서 러그'), 'Festo', axis.sensing.lug.model, axis.sensing.lug.partNumber, nAxes, null],
+          [t('근접 센서'), 'Festo', axis.sensing.sensor.model, axis.sensing.sensor.partNumber, nAxes * axis.sensing.count, null],
+        ] as SelectionRow[])
+      : []),
   ]
 }

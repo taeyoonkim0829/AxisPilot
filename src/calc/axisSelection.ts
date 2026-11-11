@@ -1,6 +1,6 @@
 // Axis sizing: motion profile, required force/torque at the axis drive shaft,
 // guide load comparison value, deflection and life. Motor-independent.
-import type { AdditionalSlide, Axis, AxisMounting, BeltMaterial, ConnectingShaft, GuideUnit } from '../data/types'
+import type { AdditionalSlide, Axis, AxisMounting, BeltMaterial, ConnectingShaft, GuideUnit, SensorPart } from '../data/types'
 import { curveAt } from './curve'
 import { dwellPhase, moveProfile, samplePhases, type MoveProfile, type Phase } from './motionProfile'
 import { cylinderGuideFor, eagfLoads, guideAxisFor, guideChecks, guideFv, type GuideFit } from './guideSelection'
@@ -95,6 +95,25 @@ export interface AxisEvaluation {
   /** the guide without drive: EAGF on an ESBF with the Festo guide (축 구성 가이드 축), or the guide axes (EGC-FA / ELFD) in place of
    *  the LM guides; null without one */
   guide: GuideFit | null
+  /** position sensing (`Settings.sensors`): the switch lug on the slide and the proximity switches, one per end
+   *  position; null when off or the axis has none */
+  sensing: Sensing | null
+}
+
+export interface Sensing {
+  lug: SensorPart
+  sensor: SensorPart
+  /** proximity switches: one at each end position */
+  count: number
+}
+
+/** The switch lug and proximity switch listed for this axis (family, variant, size, drive), null when there is none */
+export function sensingFor(axis: Axis, sensors: SensorPart[]): Sensing | null {
+  const fits = (s: SensorPart) =>
+    s.axes.some((a) => a.family === axis.family && a.variant === axis.variant && a.size === axis.size && a.drive === axis.drive)
+  const lug = sensors.find((s) => s.role === 'lug' && fits(s))
+  const sensor = sensors.find((s) => s.role === 'sensor' && fits(s))
+  return lug && sensor ? { lug, sensor, count: 2 } : null
 }
 
 /** Order options of an axis from the settings */
@@ -521,6 +540,7 @@ export function evaluateAxis(
   settings: Settings,
   shafts: ConnectingShaft[] = [],
   guides: GuideUnit[] = [],
+  sensors: SensorPart[] = [],
 ): AxisEvaluation | null {
   const feed = axisFeed(axis)
   if (!feed || !(req.stroke > 0 && req.velocity > 0 && req.acceleration > 0)) return null
@@ -604,7 +624,9 @@ export function evaluateAxis(
   const profile = req.movingProfile ? mAxis - axis.slideMass - extraMass : 0
   const driveMass = req.movingProfile ? Math.max(0, req.movingProfile.driveMass) : 0
   const moved = req.movingProfile ? profile + driveMass : slide
-  const axisPayload = share * req.payload + layout.guideMass + (cylinderGuide?.movingMass ?? 0)
+  // the switch lug rides on the slide like a part of the payload
+  const sensing = settings.sensors ? sensingFor(axis, sensors) : null
+  const axisPayload = share * req.payload + layout.guideMass + (cylinderGuide?.movingMass ?? 0) + (sensing?.lug.mass ?? 0)
   const mass = axisPayload + moved
   const axisInertia =
     axis.inertiaJ0 +
@@ -865,6 +887,15 @@ export function evaluateAxis(
     info.push({ label: '스핀들 서포트', value: Number.NaN, unit: '', note: '스핀들 서포트: 무부하 토크가 더 클 수 있음 (데이터시트 값 없음)' })
   if (offered && !support)
     info.push({ label: '스핀들 서포트', value: Number.NaN, unit: '', note: '{min} mm 초과 스트로크에서만 주문 가능 — 미적용', noteArgs: { min: offered.minStroke ?? 0 } })
+  if (sensing)
+    info.push({
+      label: '위치 센서',
+      value: sensing.count,
+      unit: '',
+      note: '{lug} + {sensor} (러그 {mass} kg 이동 질량 포함)',
+      noteArgs: { lug: sensing.lug.model, sensor: sensing.sensor.model, mass: sensing.lug.mass ?? 0 },
+    })
+  else if (settings.sensors) info.push({ label: '위치 센서', value: Number.NaN, unit: '', note: '이 축의 센서 · 센서 러그 데이터 없음' })
   if (shaft) info.push({ label: '모터 구동 이동 질량 (2축 합계)', value: req.payload + 2 * slide, unit: 'kg' })
   // LM guides: the largest load on one guide, for choosing the guide blocks
   const guideMembers = members.filter((_, i) => !layout.isAxis[i])
@@ -963,6 +994,7 @@ export function evaluateAxis(
     spindleSupport: support != null,
     shaft: ksk,
     guide: guideFit,
+    sensing,
   }
 }
 
@@ -974,12 +1006,13 @@ export function selectAxes(
   settings: Settings,
   shafts: ConnectingShaft[] = [],
   guides: GuideUnit[] = [],
+  sensors: SensorPart[] = [],
 ): AxisEvaluation[] {
   const choices = slideAxes(all, settings)
   const listed = all.filter((a) => settings.families.includes(a.family) && settings.drives.includes(a.drive))
   return listed
     .filter((a) => offersSlides(a, settings, choices) && offersMounting(a, settings, listed))
-    .map((a) => evaluateAxis(a, req, settings, shafts, guides))
+    .map((a) => evaluateAxis(a, req, settings, shafts, guides, sensors))
     .filter((e): e is AxisEvaluation => e !== null)
     .sort((a, b) => statusOrder[a.status] - statusOrder[b.status] || a.axisMass - b.axisMass)
 }

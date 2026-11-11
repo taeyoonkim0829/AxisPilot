@@ -1,4 +1,4 @@
-import type { Axis, AxisAdapter, ConnectingShaft, Gearbox, GuideUnit, Kit, Motor } from '../data/types'
+import type { Axis, AxisAdapter, ConnectingShaft, Gearbox, GuideUnit, Kit, Motor, SensorPart } from '../data/types'
 import { namesMotor } from '../data/names'
 import type { Frame } from './geometry'
 import type { StretchSpec } from './stretch'
@@ -8,7 +8,7 @@ import type { Vec3 } from './step'
 // (Festo) or the maker's own file name (Mitsubishi `hg-kr13_.stp`), each with a JSON of the same name holding its
 // mating frames (see data/README.md).
 
-export type DrawingKind = 'axes' | 'motors' | 'gearboxes' | 'kits' | 'shafts' | 'adapters' | 'guides'
+export type DrawingKind = 'axes' | 'motors' | 'gearboxes' | 'kits' | 'shafts' | 'adapters' | 'guides' | 'sensors'
 
 export interface AxisMeta {
   /** mm, stroke of the model in the file */
@@ -29,6 +29,18 @@ export interface AxisMeta {
   /** electric cylinder (ESBF): the front flange face on the rod axis, `axis` along the travel (out of the face),
    *  `up` = the slide normal; where a guide unit (EAGF) sits */
   front?: Frame
+  /** position sensing (ELGD-TB): `lug` = the switch lug's seat on the slide's side face (middle of its two threads,
+   *  `axis` out of the face, `up` = slide normal); `slot` = the sensor slot's centre at that face beside the slide
+   *  centre at the start position (`axis` out of the face, `up` = travel) */
+  sensor?: { lug: Frame; slot: Frame }
+}
+/** A switch lug or proximity switch (data/sensors): `seat` = lug: its face on the slide at its holes (`axis` away from
+ *  the slide, `up` towards the slide surface); switch: its top face at the sensing end (`axis` out of the slot, `up`
+ *  from the cable end to the sensing end). `without` / `move`: parts of the file left out or moved (file mm) */
+export interface SensorMeta {
+  seat: Frame
+  without?: string[]
+  move?: { parts: string[]; by: Vec3 }
 }
 /** A guide without drive (data/guides): guide axes take `slide`/`profile`/`stretch` like an axis; the EAGF `mount`,
  *  `yoke` and `stretch` (its guide rods) */
@@ -143,7 +155,7 @@ export const bracketDrawingUrl = (path: string | undefined): string | null => (p
 export function parseDrawingPath(
   path: string,
 ): Pick<Drawing, 'kind' | 'maker' | 'partNumber' | 'model' | 'names' | 'path'> | null {
-  const m = /data\/(axes|motors|gearboxes|kits|shafts|adapters|guides)\/([^/]+)\/Drawings\/(?:.*\/)?([^/]+)\.(?:stp|step)$/i.exec(path)
+  const m = /data\/(axes|motors|gearboxes|kits|shafts|adapters|guides|sensors)\/([^/]+)\/Drawings\/(?:.*\/)?([^/]+)\.(?:stp|step)$/i.exec(path)
   if (!m) return null
   const [, kind, maker, base] = m
   const named = /^(\d{5,})_(.+)$/.exec(base)
@@ -247,6 +259,9 @@ export function guideDrawingFor(guide: GuideUnit, stroke: number, all = drawings
   const list = all.filter((d) => d.kind === 'guides' && d.meta && d.partNumber && numbers.has(d.partNumber)) as Drawing<GuideMeta>[]
   return list.sort((a, b) => Math.abs(a.meta!.stroke - stroke) - Math.abs(b.meta!.stroke - stroke))[0] ?? null
 }
+
+export const sensorDrawingFor = (part: SensorPart, all = drawings) =>
+  (all.find((d) => d.kind === 'sensors' && d.meta && d.partNumber === part.partNumber) as Drawing<SensorMeta> | undefined) ?? null
 
 export const shaftDrawingFor = (shaft: ConnectingShaft, all = drawings) =>
   (all.find((d) => d.kind === 'shafts' && d.meta && d.partNumber === shaft.partNumber) as Drawing<ShaftMeta> | undefined) ?? null

@@ -1,5 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest'
-import { axes, gearboxes, kits, motors, shafts } from '../data'
+import { axes, gearboxes, kits, motors, sensors, shafts } from '../data'
+import { sensingFor } from '../calc/axisSelection'
 import {
   buildCombo,
   placeCoupling,
@@ -469,6 +470,55 @@ describe('combination', () => {
     const elgt = await build('ELGT-BS-90-…20P', files[0], 'EAMM-A-T46-60P', 'T46-90', 500, ['right'], [155])
     expect(elgt.slides).toHaveLength(2)
     expect(elgt.slides[1] - elgt.slides[0]).toBeCloseTo(155, 0)
+  }, 60000)
+
+  it('puts the switch lug on the slide side and a proximity switch in the sensor slot at each end', async () => {
+    const axis = axes.find((a) => a.id === 'ELGD-TB-KF-60')!
+    const sensing = sensingFor(axis, sensors)!
+    expect(sensing.lug.model).toBe('EAPM-E24-60-SLS')
+    const sel: ComboSelection = {
+      axis,
+      axisModel: 'ELGD-TB-KF-60-300',
+      stroke: 300,
+      motor: motors.find((m) => m.model === 'EMMT-AS-60-S-HS')!,
+      gearbox: null,
+      kit: kits.find((k) => k.product === 'EAMM-A-N48-60P' && k.axisCode === 'N48')!,
+      sensing,
+    }
+    const kitPath = allPaths.map((p) => p.slice(6)).find((p) => p.includes('_EAMM-A-N48-60P.stp'))!
+    const sensorPaths = allPaths.map((p) => p.slice(6)).filter((p) => p.startsWith('data/sensors/'))
+    const own = ['data/axes/Festo/Drawings/ELGD/8192344_ELGD-TB-KF-60-200-0H-PU2.stp', kitPath, files[2], ...sensorPaths].map((p) => ({
+      ...parseDrawingPath(p)!,
+      url: p,
+      meta: metas[`../../${p.replace(/\.stp$/, '.json')}`] ?? null,
+    }))
+    const found = comboDrawings(sel, own)
+    expect(found.sensors).not.toBeNull()
+    const combo = await buildCombo(sel, found, { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
+    expect(combo.parts.filter((p) => p.role === 'sensor')).toHaveLength(3)
+    const { parts } = await meshBox(combo.step)
+    // the file's alternative fixing (M3x20 through a spacer) left out, its M3x8 screws in the lug's holes
+    expect(parts.some((p) => /M3x20|5,7X3,4/.test(p.name))).toBe(false)
+    const screws = parts.filter((p) => /M3x8/.test(p.name))
+    expect(screws).toHaveLength(2)
+    const lug = parts.find((p) => /8196827 EAPM-E24-60-SLS/.test(p.name))!
+    // floor: travel +x, slide surface at z = 0; ELGD-TB-60: side faces 30 mm from the centre, threads 11 mm down
+    const side = Math.sign(lug.hi[1])
+    const inner = side > 0 ? lug.lo[1] : -lug.hi[1]
+    expect(inner).toBeCloseTo(30, 0)
+    expect((lug.lo[0] + lug.hi[0]) / 2).toBeCloseTo(0, 0)
+    expect(lug.hi[2]).toBeCloseTo(-11 + 4, 0)
+    for (const s of screws) expect((s.lo[2] + s.hi[2]) / 2).toBeCloseTo(-11, 0)
+    // the switches: in the slot 32 mm down on the lug's side, flush with the face, the sensing ends under the lug's
+    // centre at the start and at the end of the stroke, the bodies towards the middle
+    const switches = parts.filter((p) => /SIES-8M/.test(p.name)).sort((a, b) => a.lo[0] - b.lo[0])
+    expect(switches).toHaveLength(2)
+    for (const s of switches) {
+      expect((s.lo[2] + s.hi[2]) / 2).toBeCloseTo(-32, 0)
+      expect(side > 0 ? s.hi[1] : -s.lo[1]).toBeCloseTo(30, 0)
+    }
+    expect(switches[0].lo[0]).toBeCloseTo(0, 0)
+    expect(switches[1].hi[0]).toBeCloseTo(300, 0)
   }, 60000)
 
   it('puts the motor of a belt axis on either shaft end and either end of the axis', async () => {

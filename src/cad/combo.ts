@@ -1,5 +1,5 @@
 import type { Mounting, Requirements } from '../calc/types'
-import type { Axis, Gearbox, GuideUnit, Kit, Motor } from '../data/types'
+import type { Axis, Gearbox, GuideUnit, Kit, Motor, SensorPart } from '../data/types'
 import { assemble, sourceNotice, type AssemblyPart } from './assemble'
 import {
   axisDrawingsFor,
@@ -7,12 +7,14 @@ import {
   guideDrawingFor,
   kitDrawingFor,
   motorDrawingFor,
+  sensorDrawingFor,
   type AxisMeta,
   type Drawing,
   type GearboxMeta,
   type GuideMeta,
   type KitMeta,
   type MotorMeta,
+  type SensorMeta,
   type ShaftMeta,
 } from './drawings'
 import { add, apply, cross, dot, identity, invert, mate, rotate, scale, sub, turnAbout, type Frame, type Transform } from './geometry'
@@ -20,7 +22,7 @@ import { args, closure, directionBody, mapRefs, nextIdOf, parseStep, pointBody, 
 import { stretchedOrigin, stretchPart } from './stretch'
 import { definitionByName, definitionOf, placementAxes, placementIdsOf, shapeOf, solidsOf } from './structure'
 
-export type PartRole = 'axis' | 'kit' | 'gearbox' | 'motor' | 'shaft' | 'adapter' | 'guide'
+export type PartRole = 'axis' | 'kit' | 'gearbox' | 'motor' | 'shaft' | 'adapter' | 'guide' | 'sensor'
 
 export interface ComboSelection {
   axis: Axis
@@ -38,6 +40,8 @@ export interface ComboSelection {
   /** guide without drive: the EAGF on an electric cylinder (no `offsets`), or guide axes `offsets` mm beside the
    *  axis along the slide's lateral (+y) direction */
   guide?: { guide: GuideUnit; model: string; stroke: number; offsets: number[] }
+  /** position sensing: the switch lug on the (main) slide, a proximity switch at each end of the travel */
+  sensing?: { lug: SensorPart; sensor: SensorPart } | null
 }
 
 /** Drawings found for a selection; `missing` lists the parts without one (no assembly then). */
@@ -51,6 +55,8 @@ export interface ComboDrawings {
   kit: Drawing<KitMeta> | null
   /** the guide's drawing; without one (or, EAGF, without the cylinder's `front` frame) the guide is left out */
   guide: Drawing<GuideMeta> | null
+  /** the switch lug's and the proximity switch's drawings; null (left out) without either or the axis's `sensor` seats */
+  sensors: { lug: Drawing<SensorMeta>; sensor: Drawing<SensorMeta> } | null
   missing: PartRole[]
 }
 
@@ -65,6 +71,8 @@ export function comboDrawings(sel: ComboSelection, all?: Drawing[]): ComboDrawin
   if (sel.gearbox && !gearbox?.meta) missing.push('gearbox')
   if (!motor) missing.push('motor')
   const guide = sel.guide ? guideDrawingFor(sel.guide.guide, sel.guide.stroke, all) : null
+  const lug = sel.sensing ? sensorDrawingFor(sel.sensing.lug, all) : null
+  const sensor = sel.sensing ? sensorDrawingFor(sel.sensing.sensor, all) : null
   return {
     axis,
     motor: motor?.drawing ?? null,
@@ -73,6 +81,7 @@ export function comboDrawings(sel: ComboSelection, all?: Drawing[]): ComboDrawin
     gearbox,
     kit,
     guide: guide && (sel.guide!.guide.kind === 'axis' || axis?.meta?.front) ? guide : null,
+    sensors: lug && sensor && axis?.meta?.sensor ? { lug, sensor } : null,
     missing,
   }
 }
@@ -616,13 +625,16 @@ export async function comboParts(
   const motorMeta = (found.motor.meta as MotorMeta | null) ?? defaultMotorMeta(sel.motor.maker)
   const shaftTwin = twin && !twin.drive ? (twin.shaft ?? null) : null
   const guide = sel.guide && found.guide ? { ...sel.guide, drawing: found.guide } : null
-  const [axisText, kitText, motorText, gearboxText, shaftText, guideText] = await Promise.all([
+  const sensors = found.sensors
+  const [axisText, kitText, motorText, gearboxText, shaftText, guideText, lugText, sensorText] = await Promise.all([
     load(found.axis),
     load(found.kit),
     load(found.motor),
     found.gearbox ? load(found.gearbox) : Promise.resolve(null),
     shaftTwin ? load(shaftTwin.drawing) : Promise.resolve(null),
     guide ? load(guide.drawing) : Promise.resolve(null),
+    sensors ? load(sensors.lug) : Promise.resolve(null),
+    sensors ? load(sensors.sensor) : Promise.resolve(null),
   ])
 
   let stretched = parseStep(axisText)
@@ -661,6 +673,9 @@ export async function comboParts(
       base = { ...base, slide: { ...base.slide, origin: add(base.slide.origin, scale(t, centre)) } }
     }
   }
+  // the main slide's centre at the start and the end of its travel (the group travels the stroke less its span)
+  const travelStart = add(base.slide.origin, mainOffset)
+  const travelEnd = add(travelStart, scale(base.slide.travel, sel.stroke - (extra ?? []).reduce((sum, s) => sum + s.pitch, 0)))
   // the slide (with additional slides the group) in the middle of the profile, i.e. of its travel, on request; a
   // slide that is no part of its own (Creo exports) stays where the file has it
   let slideOffset = dot(sub(base.slide.origin, middle), base.slide.travel)
@@ -845,6 +860,37 @@ export async function comboParts(
       name += ` + ${guide.offsets.length} × ${guide.model}`
     }
   }
+  // Position sensing on the first axis: the switch lug on the main slide's side face as drawn, a proximity switch in
+  // the sensor slot at each end of the travel, its sensing end under the lug's centre there and its body (and
+  // cable) along the slot towards the middle, clear of the heads
+  if (sensors && lugText && sensorText && axisMeta.sensor) {
+    const seats = axisMeta.sensor
+    const lugMeta = sensors.lug.meta!
+    const from = (seat: Frame, slideAt: Vec3, up = seat.up): Frame => ({ ...seat, origin: add(slideAt, sub(seat.origin, axisMeta.slide.origin)), up })
+    let lugFile = parseStep(lugText)
+    for (const name of lugMeta.without ?? []) {
+      const pd = definitionByName(lugFile, name)
+      const rep = pd != null ? shapeOf(lugFile, pd) : null
+      if (rep != null) lugFile = withoutInstances(lugFile, placementIdsOf(lugFile, rep))
+    }
+    for (const name of lugMeta.move?.parts ?? []) placePart(lugFile, name, { r: identity.r, t: lugMeta.move!.by })
+    const lugModel = sel.sensing!.lug.model
+    parts.push({ role: 'sensor', name: lugModel, file: lugFile, transform: mate(first.axisToWorld, from(seats.lug, add(slide.origin, mainOffset)), lugMeta.seat) })
+    const sensorFile = parseStep(sensorText)
+    const sensorModel = sel.sensing!.sensor.model
+    ;[
+      [travelStart, -1],
+      [travelEnd, 1],
+    ].forEach(([at, out], i) =>
+      parts.push({
+        role: 'sensor',
+        name: `${sensorModel} (${i + 1})`,
+        file: sensorFile,
+        transform: mate(first.axisToWorld, from(seats.slot, at as Vec3, scale(seats.slot.up, out as number)), sensors.sensor.meta!.seat),
+      }),
+    )
+    name += ` + ${lugModel} + 2 × ${sensorModel}`
+  }
   // Second axis of a twin arrangement at +y (the COG's lateral direction), by default the mirror image of the
   // first (`mirroredDrive`; a slide standing out to one side drawn mirrored, `mirrorAxis`), with its own drive train
   // (drive position `options.twinDrive`, kit side and connector `twinOrientation`) when it has a motor
@@ -895,7 +941,7 @@ export async function comboParts(
   const cogY = facing ? req.cog.y - twin!.spacing / 2 : req.cog.y
   const cogOnSlide = add(payloadAt, add(add(scale(world.travel, req.cog.x), scale(lateral, cogY)), scale(world.normal, req.cog.z)))
   const cog = facing ? apply(facingTurn(identity, req.mounting, 1), cogOnSlide) : cogOnSlide
-  const notices = [...new Set([axisText, kitText, motorText, gearboxText, shaftText, guideText].flatMap((t) => (t && sourceNotice(t)) || []))]
+  const notices = [...new Set([axisText, kitText, motorText, gearboxText, shaftText, guideText, lugText, sensorText].flatMap((t) => (t && sourceNotice(t)) || []))]
   return {
     name,
     parts,

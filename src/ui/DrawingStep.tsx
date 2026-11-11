@@ -43,7 +43,7 @@ interface Props {
   tabs?: ReactNode
 }
 
-const roleLabel: Record<PartRole, string> = { axis: '축', kit: '연결키트', gearbox: '감속기', motor: '모터', shaft: '연결축', adapter: '조합 키트', guide: '가이드' }
+const roleLabel: Record<PartRole, string> = { axis: '축', kit: '연결키트', gearbox: '감속기', motor: '모터', shaft: '연결축', adapter: '조합 키트', guide: '가이드', sensor: '센서' }
 
 /** Step 5: the manufacturers' CAD models of the selection, assembled — 3D preview, STEP and DXF export. */
 export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, facingChoice = true, tabs }: Props) {
@@ -241,6 +241,17 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
                     : (found.guide.meta?.stroke ?? selection.guide.stroke) !== selection.guide.stroke
                       ? t('스트로크 {from} mm 모델을 {to} mm로 길이 보정', { from: found.guide.meta!.stroke, to: selection.guide.stroke })
                       : null,
+                },
+              ]
+            : []),
+          ...(selection.sensing
+            ? [
+                {
+                  role: 'sensor' as const,
+                  model: `${selection.sensing.lug.model} + 2 × ${selection.sensing.sensor.model}`,
+                  drawing: found.sensors?.lug ?? null,
+                  warn: !found.sensors,
+                  note: found.sensors ? null : t('도면이 없어 조합 도면에서 뺐습니다'),
                 },
               ]
             : []),

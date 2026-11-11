@@ -3,5 +3,6 @@
   "drive": { "origin": [51, 24, 32.95], "axis": [1, 0, 0], "up": [0, 1, 0] },
   "slide": { "origin": [0, 70, -93], "normal": [0, 1, 0], "travel": [0, 0, -1] },
   "stretch": { "part": "8176888 ELGD-TB-KF-WD-100-300-0H-L----(high0002h)", "axis": 2, "dir": -1, "range": [-478, -194], "move": [11892, 11893] },
-  "profile": { "origin": [0, 0, -243], "normal": [0, -1, 0] }
+  "profile": { "origin": [0, 0, -243], "normal": [0, -1, 0] },
+  "sensor": { "lug": { "origin": [50, 59, -93], "axis": [1, 0, 0], "up": [0, 1, 0] }, "slot": { "origin": [50, 38, -93], "axis": [1, 0, 0], "up": [0, 0, -1] } }
 }

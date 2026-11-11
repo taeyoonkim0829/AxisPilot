@@ -1,0 +1,20 @@
+{
+  "items": [
+    {
+      "id": "SIES-8M-PS-24V-K-7.5-OE",
+      "maker": "Festo",
+      "role": "sensor",
+      "model": "SIES-8M-PS-24V-K-7.5-OE",
+      "partNumber": "551386",
+      "mass": null,
+      "axes": [
+        { "family": "ELGD", "variant": "", "size": 60, "drive": "belt" },
+        { "family": "ELGD", "variant": "", "size": 80, "drive": "belt" },
+        { "family": "ELGD", "variant": "", "size": 120, "drive": "belt" },
+        { "family": "ELGD", "variant": "WD", "size": 100, "drive": "belt" },
+        { "family": "ELGD", "variant": "WD", "size": 120, "drive": "belt" }
+      ],
+      "dataSource": "ELGD-TB / ELGD-TB-WD data sheets 2026/09, accessories (inductive proximity switch for T-slot, N/O, PNP, cable 7.5 m)"
+    }
+  ]
+}

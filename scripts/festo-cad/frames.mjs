@@ -23,6 +23,9 @@
 // on the ESBF's front flange (`mount`), the yoke plate's front face (`yoke`), the guide rods' length change behind the
 // housing. ESBF axes also get `front` (the front flange face, largest +z face of the cylinder profile at its front),
 // where the EAGF sits; `--front` adds it to existing ESBF JSONs.
+// Position sensing (`--sensor`, ELGD-TB / -WD JSONs): `sensor.lug`, the switch lug's seat on the slide's side face
+// (the middle of its two M3 threads, `axis` out of the face, `up` = slide normal), and `sensor.slot`, the SIES-8M slot
+// at the face (its centre, beside the slide centre, `up` = travel), from `SENSOR_SEATS` (measured on the STEP models).
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { join, resolve } from 'node:path'
@@ -818,8 +821,28 @@ const profileOnly = args.includes('--profile')
 const couplingOnly = args.includes('--coupling')
 // --front: add the front flange frame (`front`) to existing ESBF JSONs, keeping everything else
 const frontOnly = args.includes('--front')
+// --sensor: add the position sensing seats (`sensor`) to existing ELGD-TB JSONs, keeping everything else
+const sensorOnly = args.includes('--sensor')
+/** ELGD-TB size → mm from the slide surface centre: the side face (slide and profile flush), the lug's M3 threads
+ *  (±17 about the slide centre) and the upper sensor slot's centre below the surface, measured on the STEP models */
+const SENSOR_SEATS = { 60: [30, 11, 32], 80: [40, 12, 33], 120: [60, 12, 34.5], 'WD-100': [50, 11, 32], 'WD-120': [60, 13, 34] }
 for (const file of files) {
   const out = file.replace(/\.stp$/i, '.json')
+  if (sensorOnly) {
+    const size = /ELGD-TB-KF-((?:WD-)?\d+)-/.exec(file)?.[1]
+    if (!existsSync(out) || !size || !SENSOR_SEATS[size]) continue
+    const old = JSON.parse(readFileSync(out, 'utf8'))
+    if (old.sensor && !force) continue
+    const [side, lug, slot] = SENSOR_SEATS[size]
+    const { origin: o, normal: n, travel: t } = old.slide
+    const lateral = [t[1] * n[2] - t[2] * n[1], t[2] * n[0] - t[0] * n[2], t[0] * n[1] - t[1] * n[0]]
+    const at = (depth) => o.map((v, i) => fixed(v + side * lateral[i] - depth * n[i]))
+    const sensor = { lug: { origin: at(lug), axis: lateral, up: n }, slot: { origin: at(slot), axis: lateral, up: t } }
+    if (dryRun) console.log(out, JSON.stringify(sensor))
+    else writeFileSync(out, format({ ...old, sensor }))
+    written++
+    continue
+  }
   if (frontOnly) {
     if (!existsSync(out) || !/ESBF-/.test(file)) continue
     const old = JSON.parse(readFileSync(out, 'utf8'))

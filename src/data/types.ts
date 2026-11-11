@@ -488,6 +488,22 @@ export interface AxisAdapter {
 }
 
 /**
+ * Position sensing (data/sensors): the switch lug screwed to the slide's side and the proximity switch in the
+ * profile's sensor slot that senses it, for the axes listed (one lug, a switch at each end position)
+ */
+export interface SensorPart {
+  id: string
+  maker: 'Festo'
+  role: 'lug' | 'sensor'
+  model: string
+  partNumber: string
+  /** kg; null where the data sheet gives none */
+  mass: number | null
+  axes: { family: AxisFamily; variant: Axis['variant']; size: number; drive: Axis['drive'] }[]
+  dataSource: string
+}
+
+/**
  * A guide without drive (data/guides): `cylinder` = guide unit on an electric cylinder (EAGF on ESBF, the yoke
  * plate on the piston rod, used with the Festo guide (축 구성 가이드 축)); `axis` = guide axis beside a drive axis of the same profile
  * (EGC-FA beside EGC, ELFD beside ELGD), in place of an LM guide of a parallel arrangement.

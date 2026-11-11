@@ -1,0 +1,20 @@
+{
+  "items": [
+    {
+      "id": "EAPM-E24-60-SLS",
+      "maker": "Festo",
+      "role": "lug",
+      "model": "EAPM-E24-60-SLS",
+      "partNumber": "8197117",
+      "mass": 0.032,
+      "axes": [
+        { "family": "ELGD", "variant": "", "size": 60, "drive": "belt" },
+        { "family": "ELGD", "variant": "", "size": 80, "drive": "belt" },
+        { "family": "ELGD", "variant": "", "size": 120, "drive": "belt" },
+        { "family": "ELGD", "variant": "WD", "size": 100, "drive": "belt" },
+        { "family": "ELGD", "variant": "WD", "size": 120, "drive": "belt" }
+      ],
+      "dataSource": "ELGD-TB / ELGD-TB-WD data sheets 2026/09, accessories (switch lug for SIES-8M)"
+    }
+  ]
+}

@@ -167,6 +167,8 @@ export interface Settings {
   standardStroke: boolean
   /** Order ball screw axes with their ball screw support (`Axis.spindleSupport`) where offered */
   spindleSupport: boolean
+  /** Position sensing where the axis has it (`SensorPart`): a switch lug on the slide, a proximity switch at each end */
+  sensors: boolean
 }
 
 export const defaultSettings: Settings = {
@@ -195,6 +197,7 @@ export const defaultSettings: Settings = {
   axisMounting: null,
   standardStroke: false,
   spindleSupport: false,
+  sensors: false,
 }
 
 /** Motor power supply: 200–240 V AC, 380–480 V AC, DC (24/48 V) */
