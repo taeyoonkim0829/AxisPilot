@@ -1,6 +1,6 @@
 // Axis sizing: motion profile, required force/torque at the axis drive shaft,
 // guide load comparison value, deflection and life. Motor-independent.
-import type { AdditionalSlide, Axis, AxisMounting, BeltMaterial, ConnectingShaft, GuideUnit, SensorPart } from '../data/types'
+import type { AdditionalSlide, Axis, AxisMounting, BeltMaterial, ConnectingShaft, GuideUnit, SensorContact, SensorPart } from '../data/types'
 import { curveAt } from './curve'
 import { dwellPhase, moveProfile, samplePhases, type MoveProfile, type Phase } from './motionProfile'
 import { cylinderGuideFor, eagfLoads, guideAxisFor, guideChecks, guideFv, type GuideFit } from './guideSelection'
@@ -100,20 +100,39 @@ export interface AxisEvaluation {
   sensing: Sensing | null
 }
 
+/** − limit at the start end, + limit at the far end, home beside the − limit (towards +) */
+export type SwitchRole = 'limitMinus' | 'limitPlus' | 'home'
 export interface Sensing {
   lug: SensorPart
-  sensor: SensorPart
-  /** proximity switches: one at each end position */
-  count: number
+  /** the proximity switches, − limit, + limit, then home when used */
+  switches: { role: SwitchRole; part: SensorPart }[]
 }
 
-/** The switch lug and proximity switch listed for this axis (family, variant, size, drive), null when there is none */
-export function sensingFor(axis: Axis, sensors: SensorPart[]): Sensing | null {
+/**
+ * The switch lug and the proximity switches listed for this axis (family, variant, size, drive) with the chosen
+ * output and contacts: a limit switch at each end, a home switch when `homeContact` is set; null when there is none.
+ */
+export function sensingFor(
+  axis: Axis,
+  sensors: SensorPart[],
+  settings: Pick<Settings, 'sensorOutput' | 'limitContact' | 'homeContact'>,
+): Sensing | null {
   const fits = (s: SensorPart) =>
     s.axes.some((a) => a.family === axis.family && a.variant === axis.variant && a.size === axis.size && a.drive === axis.drive)
   const lug = sensors.find((s) => s.role === 'lug' && fits(s))
-  const sensor = sensors.find((s) => s.role === 'sensor' && fits(s))
-  return lug && sensor ? { lug, sensor, count: 2 } : null
+  const pick = (contact: SensorContact) =>
+    sensors.find((s) => s.role === 'sensor' && fits(s) && s.output === settings.sensorOutput && s.contact === contact)
+  const limit = pick(settings.limitContact)
+  const home = settings.homeContact ? pick(settings.homeContact) : null
+  if (!lug || !limit || (settings.homeContact && !home)) return null
+  return {
+    lug,
+    switches: [
+      { role: 'limitMinus', part: limit },
+      { role: 'limitPlus', part: limit },
+      ...(home ? [{ role: 'home' as const, part: home }] : []),
+    ],
+  }
 }
 
 /** Order options of an axis from the settings */
@@ -625,7 +644,7 @@ export function evaluateAxis(
   const driveMass = req.movingProfile ? Math.max(0, req.movingProfile.driveMass) : 0
   const moved = req.movingProfile ? profile + driveMass : slide
   // the switch lug rides on the slide like a part of the payload
-  const sensing = settings.sensors ? sensingFor(axis, sensors) : null
+  const sensing = settings.sensors ? sensingFor(axis, sensors, settings) : null
   const axisPayload = share * req.payload + layout.guideMass + (cylinderGuide?.movingMass ?? 0) + (sensing?.lug.mass ?? 0)
   const mass = axisPayload + moved
   const axisInertia =
@@ -890,10 +909,14 @@ export function evaluateAxis(
   if (sensing)
     info.push({
       label: '위치 센서',
-      value: sensing.count,
+      value: sensing.switches.length,
       unit: '',
-      note: '{lug} + {sensor} (러그 {mass} kg 이동 질량 포함)',
-      noteArgs: { lug: sensing.lug.model, sensor: sensing.sensor.model, mass: sensing.lug.mass ?? 0 },
+      note: '{lug} + {switches} (러그 {mass} kg 이동 질량 포함)',
+      noteArgs: {
+        lug: sensing.lug.model,
+        switches: sensing.switches.map((s) => s.part.model).filter((m, i, all) => all.indexOf(m) === i).join(' + '),
+        mass: sensing.lug.mass ?? 0,
+      },
     })
   else if (settings.sensors) info.push({ label: '위치 센서', value: Number.NaN, unit: '', note: '이 축의 센서 · 센서 러그 데이터 없음' })
   if (shaft) info.push({ label: '모터 구동 이동 질량 (2축 합계)', value: req.payload + 2 * slide, unit: 'kg' })

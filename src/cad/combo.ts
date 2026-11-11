@@ -1,5 +1,6 @@
+import type { Sensing, SwitchRole } from '../calc/axisSelection'
 import type { Mounting, Requirements } from '../calc/types'
-import type { Axis, Gearbox, GuideUnit, Kit, Motor, SensorPart } from '../data/types'
+import type { Axis, Gearbox, GuideUnit, Kit, Motor } from '../data/types'
 import { assemble, sourceNotice, type AssemblyPart } from './assemble'
 import {
   axisDrawingsFor,
@@ -40,8 +41,9 @@ export interface ComboSelection {
   /** guide without drive: the EAGF on an electric cylinder (no `offsets`), or guide axes `offsets` mm beside the
    *  axis along the slide's lateral (+y) direction */
   guide?: { guide: GuideUnit; model: string; stroke: number; offsets: number[] }
-  /** position sensing: the switch lug on the (main) slide, a proximity switch at each end of the travel */
-  sensing?: { lug: SensorPart; sensor: SensorPart } | null
+  /** position sensing: the switch lug on the (main) slide, the limit switches at the ends of the travel and the home
+   *  switch beside the − limit (`switchPlacements`) */
+  sensing?: Sensing | null
 }
 
 /** Drawings found for a selection; `missing` lists the parts without one (no assembly then). */
@@ -55,8 +57,9 @@ export interface ComboDrawings {
   kit: Drawing<KitMeta> | null
   /** the guide's drawing; without one (or, EAGF, without the cylinder's `front` frame) the guide is left out */
   guide: Drawing<GuideMeta> | null
-  /** the switch lug's and the proximity switch's drawings; null (left out) without either or the axis's `sensor` seats */
-  sensors: { lug: Drawing<SensorMeta>; sensor: Drawing<SensorMeta> } | null
+  /** the switch lug's and each proximity switch's drawing (as `sensing.switches`); null (left out) without one of them
+   *  or the axis's `sensor` seats */
+  sensors: { lug: Drawing<SensorMeta>; switches: Drawing<SensorMeta>[] } | null
   missing: PartRole[]
 }
 
@@ -72,7 +75,7 @@ export function comboDrawings(sel: ComboSelection, all?: Drawing[]): ComboDrawin
   if (!motor) missing.push('motor')
   const guide = sel.guide ? guideDrawingFor(sel.guide.guide, sel.guide.stroke, all) : null
   const lug = sel.sensing ? sensorDrawingFor(sel.sensing.lug, all) : null
-  const sensor = sel.sensing ? sensorDrawingFor(sel.sensing.sensor, all) : null
+  const switches = (sel.sensing?.switches ?? []).map((s) => sensorDrawingFor(s.part, all))
   return {
     axis,
     motor: motor?.drawing ?? null,
@@ -81,7 +84,7 @@ export function comboDrawings(sel: ComboSelection, all?: Drawing[]): ComboDrawin
     gearbox,
     kit,
     guide: guide && (sel.guide!.guide.kind === 'axis' || axis?.meta?.front) ? guide : null,
-    sensors: lug && sensor && axis?.meta?.sensor ? { lug, sensor } : null,
+    sensors: lug && switches.every((d) => d != null) && axis?.meta?.sensor ? { lug, switches: switches as Drawing<SensorMeta>[] } : null,
     missing,
   }
 }
@@ -520,6 +523,39 @@ export function assemblyWarnings(options: ComboOptions, parallel: boolean, cylin
   return warnings
 }
 
+/** mm: a limit switch switches this far before the hardware limit (the end of the travel), protecting the machine */
+export const LIMIT_MARGIN = 2
+
+const SWITCH_NAMES: Record<SwitchRole, string> = { limitMinus: '-LIMIT', limitPlus: '+LIMIT', home: 'HOME' }
+
+/**
+ * Where the proximity switches go along the travel, in mm of the main slide's centre from its start position (0,
+ * travelling towards +): `end` = the switch's sensing end, `facing` = the way that end points (±1 along the travel).
+ * The lug (reaching `edge` mm either side of the slide centre) covers a switch whose switching point (`point` mm
+ * behind its sensing end) lies under it. Limit switches switch `LIMIT_MARGIN` before the end of the travel when the
+ * lug comes in from the middle, their sensing ends towards the axis ends and their bodies and cables towards the
+ * middle (the model's cable stub would run through the heads). The home switch lies right behind the − limit
+ * (`length` mm, sensing end to cable end) towards +, the same way round, the − limit's cable in its slot under it.
+ */
+export function switchPlacements(
+  roles: SwitchRole[],
+  travel: number,
+  edge: number,
+  point: number[],
+  length: number[],
+): { end: number; facing: 1 | -1 }[] {
+  const minus = roles.indexOf('limitMinus')
+  // the − limit's switching point at LIMIT_MARGIN − edge, its sensing end beyond it towards −
+  const minusEnd = LIMIT_MARGIN - edge - (minus >= 0 ? point[minus] : 0)
+  return roles.map((role, i) =>
+    role === 'limitMinus'
+      ? { end: minusEnd, facing: -1 as const }
+      : role === 'limitPlus'
+        ? { end: travel - LIMIT_MARGIN + edge + point[i], facing: 1 as const }
+        : { end: minusEnd + (minus >= 0 ? length[minus] : 0), facing: -1 as const },
+  )
+}
+
 /** World axes (Z up): the slide travels along X on floor and wall; vertical puts the motor on top. */
 export function mountingFrame(mounting: Mounting): { travel: Vec3; normal: Vec3 } {
   if (mounting === 'floor') return { travel: [1, 0, 0], normal: [0, 0, 1] }
@@ -626,7 +662,7 @@ export async function comboParts(
   const shaftTwin = twin && !twin.drive ? (twin.shaft ?? null) : null
   const guide = sel.guide && found.guide ? { ...sel.guide, drawing: found.guide } : null
   const sensors = found.sensors
-  const [axisText, kitText, motorText, gearboxText, shaftText, guideText, lugText, sensorText] = await Promise.all([
+  const [axisText, kitText, motorText, gearboxText, shaftText, guideText, lugText, switchTexts] = await Promise.all([
     load(found.axis),
     load(found.kit),
     load(found.motor),
@@ -634,7 +670,7 @@ export async function comboParts(
     shaftTwin ? load(shaftTwin.drawing) : Promise.resolve(null),
     guide ? load(guide.drawing) : Promise.resolve(null),
     sensors ? load(sensors.lug) : Promise.resolve(null),
-    sensors ? load(sensors.sensor) : Promise.resolve(null),
+    sensors ? Promise.all(sensors.switches.map(load)) : Promise.resolve(null),
   ])
 
   let stretched = parseStep(axisText)
@@ -860,10 +896,9 @@ export async function comboParts(
       name += ` + ${guide.offsets.length} × ${guide.model}`
     }
   }
-  // Position sensing on the first axis: the switch lug on the main slide's side face as drawn, a proximity switch in
-  // the sensor slot at each end of the travel, its sensing end under the lug's centre there and its body (and
-  // cable) along the slot towards the middle, clear of the heads
-  if (sensors && lugText && sensorText && axisMeta.sensor) {
+  // Position sensing on the first axis: the switch lug on the main slide's side face as drawn, the proximity switches
+  // in the sensor slot (`switchPlacements`)
+  if (sensors && lugText && switchTexts && axisMeta.sensor) {
     const seats = axisMeta.sensor
     const lugMeta = sensors.lug.meta!
     const from = (seat: Frame, slideAt: Vec3, up = seat.up): Frame => ({ ...seat, origin: add(slideAt, sub(seat.origin, axisMeta.slide.origin)), up })
@@ -876,20 +911,29 @@ export async function comboParts(
     for (const name of lugMeta.move?.parts ?? []) placePart(lugFile, name, { r: identity.r, t: lugMeta.move!.by })
     const lugModel = sel.sensing!.lug.model
     parts.push({ role: 'sensor', name: lugModel, file: lugFile, transform: mate(first.axisToWorld, from(seats.lug, add(slide.origin, mainOffset)), lugMeta.seat) })
-    const sensorFile = parseStep(sensorText)
-    const sensorModel = sel.sensing!.sensor.model
-    ;[
-      [travelStart, -1],
-      [travelEnd, 1],
-    ].forEach(([at, out], i) =>
+    const files = new Map<string, StepFile>()
+    const travel = dot(sub(travelEnd, travelStart), base.slide.travel)
+    const switches = sel.sensing!.switches
+    const placed = switchPlacements(
+      switches.map((s) => s.role),
+      travel,
+      lugMeta.edge ?? 0,
+      sensors.switches.map((d) => d.meta!.switchPoint ?? 0),
+      sensors.switches.map((d) => d.meta!.length ?? 0),
+    )
+    switches.forEach((s, i) => {
+      const drawing = sensors.switches[i]
+      const file = files.get(drawing.path) ?? parseStep(switchTexts[i])
+      files.set(drawing.path, file)
+      const at = add(travelStart, scale(base.slide.travel, placed[i].end))
       parts.push({
         role: 'sensor',
-        name: `${sensorModel} (${i + 1})`,
-        file: sensorFile,
-        transform: mate(first.axisToWorld, from(seats.slot, at as Vec3, scale(seats.slot.up, out as number)), sensors.sensor.meta!.seat),
-      }),
-    )
-    name += ` + ${lugModel} + 2 × ${sensorModel}`
+        name: `${s.part.model} (${SWITCH_NAMES[s.role]})`,
+        file,
+        transform: mate(first.axisToWorld, from(seats.slot, at, scale(seats.slot.up, placed[i].facing)), drawing.meta!.seat),
+      })
+    })
+    name += ` + ${lugModel} + ${switches.length} × ${[...new Set(switches.map((s) => s.part.model))].join(' / ')}`
   }
   // Second axis of a twin arrangement at +y (the COG's lateral direction), by default the mirror image of the
   // first (`mirroredDrive`; a slide standing out to one side drawn mirrored, `mirrorAxis`), with its own drive train
@@ -941,7 +985,7 @@ export async function comboParts(
   const cogY = facing ? req.cog.y - twin!.spacing / 2 : req.cog.y
   const cogOnSlide = add(payloadAt, add(add(scale(world.travel, req.cog.x), scale(lateral, cogY)), scale(world.normal, req.cog.z)))
   const cog = facing ? apply(facingTurn(identity, req.mounting, 1), cogOnSlide) : cogOnSlide
-  const notices = [...new Set([axisText, kitText, motorText, gearboxText, shaftText, guideText, lugText, sensorText].flatMap((t) => (t && sourceNotice(t)) || []))]
+  const notices = [...new Set([axisText, kitText, motorText, gearboxText, shaftText, guideText, lugText, ...(switchTexts ?? [])].flatMap((t) => (t && sourceNotice(t)) || []))]
   return {
     name,
     parts,

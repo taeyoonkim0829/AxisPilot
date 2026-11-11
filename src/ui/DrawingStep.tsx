@@ -248,7 +248,7 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
             ? [
                 {
                   role: 'sensor' as const,
-                  model: `${selection.sensing.lug.model} + 2 × ${selection.sensing.sensor.model}`,
+                  model: `${selection.sensing.lug.model} + ${selection.sensing.switches.length} × ${[...new Set(selection.sensing.switches.map((s) => s.part.model))].join(' / ')}`,
                   drawing: found.sensors?.lug ?? null,
                   warn: !found.sensors,
                   note: found.sensors ? null : t('도면이 없어 조합 도면에서 뺐습니다'),

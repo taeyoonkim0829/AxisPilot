@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { minSlidePitch, slideAxes, type AxisEvaluation } from '../calc/axisSelection'
 import { axes } from '../data'
 import type { AdditionalSlideSide, Settings } from '../calc/types'
-import type { AxisFamily, AxisMounting, DriveKind } from '../data/types'
+import type { AxisFamily, AxisMounting, DriveKind, SensorContact, SensorOutput } from '../data/types'
 import { CheckTable, CollapseTitle, HelpTip, InfoTable, NumberField, RadioGroup, Ratio, SortTh, StatusBadge, ToggleButton } from './common'
 import mountingImage from '../../images/help_axis_mounting.svg'
 import { statusRank, useSort } from './useSort'
@@ -54,6 +54,8 @@ function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'sett
   const elgd = settings.families.includes('ELGD')
   // M7 exists on ball screw axes only
   const mountings: ('standard' | AxisMounting)[] = settings.drives.includes('spindle') ? ['standard', 'M', 'M7'] : ['standard', 'M']
+  // position sensing (ELGD belt axes): the switches' output and contacts
+  const sensing = settings.sensors && elgd && settings.drives.includes('belt')
   if (choices.length === 0 && shown.length === 0 && !elgd) return null
   const mounting = settings.axisMounting && mountings.includes(settings.axisMounting) ? settings.axisMounting : 'standard'
   const sides: AdditionalSlideSide[] = choices.some((a) => a.additionalSlide!.both) ? ['none', 'left', 'right', 'both'] : ['none', 'left', 'right']
@@ -125,6 +127,37 @@ function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'sett
             onChange={(v) => onSettings({ ...settings, axisMounting: v === 'standard' ? null : v })}
           />
         </div>
+      )}
+      {sensing && (
+        <>
+          <div className="filter-group">
+            <span className="field-label">{t('센서 출력')}</span>
+            <RadioGroup
+              options={['PNP', 'NPN'] as SensorOutput[]}
+              value={settings.sensorOutput}
+              label={(v) => v}
+              onChange={(sensorOutput) => onSettings({ ...settings, sensorOutput })}
+            />
+          </div>
+          <div className="filter-group">
+            <span className="field-label">{t('Limit 접점')}</span>
+            <RadioGroup
+              options={['NO', 'NC'] as SensorContact[]}
+              value={settings.limitContact}
+              label={(v) => v}
+              onChange={(limitContact) => onSettings({ ...settings, limitContact })}
+            />
+          </div>
+          <div className="filter-group">
+            <span className="field-label">{t('Home 접점')}</span>
+            <RadioGroup
+              options={['none', 'NO', 'NC'] as const}
+              value={settings.homeContact ?? 'none'}
+              label={(v) => (v === 'none' ? t('미사용') : v)}
+              onChange={(v) => onSettings({ ...settings, homeContact: v === 'none' ? null : v })}
+            />
+          </div>
+        </>
       )}
     </div>
   )

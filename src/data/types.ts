@@ -497,11 +497,18 @@ export interface SensorPart {
   role: 'lug' | 'sensor'
   model: string
   partNumber: string
+  /** proximity switch: switching output and contact (N/O, N/C) */
+  output?: SensorOutput
+  contact?: SensorContact
   /** kg; null where the data sheet gives none */
   mass: number | null
   axes: { family: AxisFamily; variant: Axis['variant']; size: number; drive: Axis['drive'] }[]
+  /** a model with the same outline whose drawing this one takes (the other switching variants of a switch) */
+  sameOutline?: string
   dataSource: string
 }
+export type SensorOutput = 'PNP' | 'NPN'
+export type SensorContact = 'NO' | 'NC'
 
 /**
  * A guide without drive (data/guides): `cylinder` = guide unit on an electric cylinder (EAGF on ESBF, the yoke

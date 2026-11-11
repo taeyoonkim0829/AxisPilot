@@ -71,11 +71,15 @@ export function partRows(
         ? ([[t('LM 가이드'), '—', t('별도 선정 (참고값: 3장)'), null, layout.guides, null]] as SelectionRow[])
         : []),
     ...(axis.shaft ? ([[t('연결축'), 'Festo', axis.shaft.model, axis.shaft.shaft.partNumber, 1, null]] as SelectionRow[]) : []),
-    // one lug per axis, a proximity switch at each end position
+    // one lug per axis; the proximity switches by model (limit switches, home switch)
     ...(axis.sensing
       ? ([
           [t('센서 러그'), 'Festo', axis.sensing.lug.model, axis.sensing.lug.partNumber, nAxes, null],
-          [t('근접 센서'), 'Festo', axis.sensing.sensor.model, axis.sensing.sensor.partNumber, nAxes * axis.sensing.count, null],
+          ...[...new Set(axis.sensing.switches.map((s) => s.part))].map((part): SelectionRow => {
+            const roles = axis.sensing!.switches.filter((s) => s.part === part)
+            const names = [...new Set(roles.map((s) => t(s.role === 'home' ? 'Home 센서' : 'Limit 센서')))].join(' · ')
+            return [`${t('근접 센서')} (${names})`, 'Festo', part.model, part.partNumber, nAxes * roles.length, null]
+          }),
         ] as SelectionRow[])
       : []),
   ]

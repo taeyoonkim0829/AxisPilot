@@ -39,6 +39,11 @@ export interface AxisMeta {
  *  from the cable end to the sensing end). `without` / `move`: parts of the file left out or moved (file mm) */
 export interface SensorMeta {
   seat: Frame
+  /** lug: mm from its centre to its ends along the travel (it covers a switch within) */
+  edge?: number
+  /** switch: mm from its sensing end to its switching point (the mark on its top face) / to its cable end */
+  switchPoint?: number
+  length?: number
   without?: string[]
   move?: { parts: string[]; by: Vec3 }
 }
@@ -260,8 +265,11 @@ export function guideDrawingFor(guide: GuideUnit, stroke: number, all = drawings
   return list.sort((a, b) => Math.abs(a.meta!.stroke - stroke) - Math.abs(b.meta!.stroke - stroke))[0] ?? null
 }
 
-export const sensorDrawingFor = (part: SensorPart, all = drawings) =>
-  (all.find((d) => d.kind === 'sensors' && d.meta && d.partNumber === part.partNumber) as Drawing<SensorMeta> | undefined) ?? null
+/** A switch lug's or proximity switch's drawing by part number, else the drawing of the model with the same outline */
+export const sensorDrawingFor = (part: SensorPart, all = drawings) => {
+  const list = all.filter((d) => d.kind === 'sensors' && d.meta) as Drawing<SensorMeta>[]
+  return list.find((d) => d.partNumber === part.partNumber) ?? (part.sameOutline ? list.find((d) => d.names.includes(part.sameOutline!)) : null) ?? null
+}
 
 export const shaftDrawingFor = (shaft: ConnectingShaft, all = drawings) =>
   (all.find((d) => d.kind === 'shafts' && d.meta && d.partNumber === shaft.partNumber) as Drawing<ShaftMeta> | undefined) ?? null

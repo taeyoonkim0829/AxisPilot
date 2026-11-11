@@ -472,10 +472,19 @@ describe('combination', () => {
     expect(elgt.slides[1] - elgt.slides[0]).toBeCloseTo(155, 0)
   }, 60000)
 
-  it('puts the switch lug on the slide side and a proximity switch in the sensor slot at each end', async () => {
+  it('puts the switch lug on the slide side, the limit switches 2 mm before the ends and the home switch beside the - limit', async () => {
     const axis = axes.find((a) => a.id === 'ELGD-TB-KF-60')!
-    const sensing = sensingFor(axis, sensors)!
+    const sensing = sensingFor(axis, sensors, { sensorOutput: 'PNP', limitContact: 'NC', homeContact: 'NO' })!
     expect(sensing.lug.model).toBe('EAPM-E24-60-SLS')
+    expect(sensing.switches.map((s) => `${s.role} ${s.part.model}`)).toEqual([
+      'limitMinus SIES-8M-PO-24V-K-7.5-OE',
+      'limitPlus SIES-8M-PO-24V-K-7.5-OE',
+      'home SIES-8M-PS-24V-K-7.5-OE',
+    ])
+    expect(sensingFor(axis, sensors, { sensorOutput: 'NPN', limitContact: 'NO', homeContact: null })!.switches.map((s) => s.part.model)).toEqual([
+      'SIES-8M-NS-24V-K-7.5-OE',
+      'SIES-8M-NS-24V-K-7.5-OE',
+    ])
     const sel: ComboSelection = {
       axis,
       axisModel: 'ELGD-TB-KF-60-300',
@@ -493,9 +502,15 @@ describe('combination', () => {
       meta: metas[`../../${p.replace(/\.stp$/, '.json')}`] ?? null,
     }))
     const found = comboDrawings(sel, own)
-    expect(found.sensors).not.toBeNull()
+    // the N/C switches take the N/O model's drawing (same outline)
+    expect(found.sensors?.switches.map((d) => d.partNumber)).toEqual(['551386', '551386', '551386'])
     const combo = await buildCombo(sel, found, { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
-    expect(combo.parts.filter((p) => p.role === 'sensor')).toHaveLength(3)
+    expect(combo.parts.filter((p) => p.role === 'sensor').map((p) => p.name)).toEqual([
+      'EAPM-E24-60-SLS',
+      'SIES-8M-PO-24V-K-7.5-OE (-LIMIT)',
+      'SIES-8M-PO-24V-K-7.5-OE (+LIMIT)',
+      'SIES-8M-PS-24V-K-7.5-OE (HOME)',
+    ])
     const { parts } = await meshBox(combo.step)
     // the file's alternative fixing (M3x20 through a spacer) left out, its M3x8 screws in the lug's holes
     expect(parts.some((p) => /M3x20|5,7X3,4/.test(p.name))).toBe(false)
@@ -507,18 +522,22 @@ describe('combination', () => {
     const inner = side > 0 ? lug.lo[1] : -lug.hi[1]
     expect(inner).toBeCloseTo(30, 0)
     expect((lug.lo[0] + lug.hi[0]) / 2).toBeCloseTo(0, 0)
+    expect(lug.hi[0] - lug.lo[0]).toBeCloseTo(42, 0)
     expect(lug.hi[2]).toBeCloseTo(-11 + 4, 0)
     for (const s of screws) expect((s.lo[2] + s.hi[2]) / 2).toBeCloseTo(-11, 0)
-    // the switches: in the slot 32 mm down on the lug's side, flush with the face, the sensing ends under the lug's
-    // centre at the start and at the end of the stroke, the bodies towards the middle
-    const switches = parts.filter((p) => /SIES-8M/.test(p.name)).sort((a, b) => a.lo[0] - b.lo[0])
-    expect(switches).toHaveLength(2)
-    for (const s of switches) {
+    // the switches in the slot 32 mm down on the lug's side, flush with the face; switching point 6.7 mm behind the
+    // sensing end, the lug reaching 21 mm either side of the slide centre:
+    // - limit: switching point at 2 - 21, so the lug's edge reaches it with the slide centre 2 mm from the start, the
+    //   sensing end beyond it towards the start end, body and cable towards the middle; + limit likewise at 300 - 2;
+    //   home right behind the - limit (31.8 mm body), the same way round
+    const [minus, home, plus] = parts.filter((p) => /SIES-8M/.test(p.name)).sort((a, b) => a.lo[0] - b.lo[0])
+    for (const s of [minus, home, plus]) {
       expect((s.lo[2] + s.hi[2]) / 2).toBeCloseTo(-32, 0)
       expect(side > 0 ? s.hi[1] : -s.lo[1]).toBeCloseTo(30, 0)
     }
-    expect(switches[0].lo[0]).toBeCloseTo(0, 0)
-    expect(switches[1].hi[0]).toBeCloseTo(300, 0)
+    expect(minus.lo[0]).toBeCloseTo(2 - 21 - 6.7, 1)
+    expect(home.lo[0]).toBeCloseTo(2 - 21 - 6.7 + 31.8, 1)
+    expect(plus.hi[0]).toBeCloseTo(300 - 2 + 21 + 6.7, 1)
   }, 60000)
 
   it('puts the motor of a belt axis on either shaft end and either end of the axis', async () => {
