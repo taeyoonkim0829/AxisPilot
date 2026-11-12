@@ -3,14 +3,15 @@
 // Runs only when asked (it is no test):
 //   AXISPILOT_EXPORT=tmp/interference npx vitest run scripts/interference/export.test.ts
 // Writes <scenario>.step and <scenario>.json (each top-level part in order: name, role, the axis it belongs to or
-// the base axis of its gantry kit; each axis's world travel `t` and ordered stroke; zMode).
+// the base axis of its gantry kit; each axis's world travel `t` and ordered stroke; zMode; `ySlide`: where the drawing has
+// the Y slide, `GantryCombo.y`).
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, it } from 'vitest'
 import { axisCog } from '../../src/calc/axisSelection'
 import { axisFrame, defaultGantry, initialGantrySettings, type GantryAxis, type GantryInputs, type GantrySettings } from '../../src/calc/gantry'
 import type { AxisFamily } from '../../src/data/types'
-import { comboDrawings, defaultComboOptions, type ComboSelection } from '../../src/cad/combo'
+import { comboDrawings, defaultComboOptions, DRIVE_POSITIONS, type ComboOptions, type ComboSelection } from '../../src/cad/combo'
 import { adapterDrawingFor, mountingDrawingFor, parseDrawingPath, shaftDrawingFor, type BeamMeta, type Drawing } from '../../src/cad/drawings'
 import { buildGantry, type GantryAxisDrawing, type GantryJointDrawing } from '../../src/cad/gantry'
 import { apply, rotate } from '../../src/cad/geometry'
@@ -43,7 +44,7 @@ const open: GantrySettings = {
 const single = { ...defaultGantry.parallel, x: { ...defaultGantry.parallel.x, mode: 'single' as const } }
 
 /** the app's defaults and the variations most likely to bring X and Z (or Y) together */
-const scenarios: { name: string; g: GantryInputs; s: GantrySettings; ids?: Partial<Record<GantryAxis, string>> }[] = [
+const scenarios: { name: string; g: GantryInputs; s: GantrySettings; ids?: Partial<Record<GantryAxis, string>>; options?: Partial<Record<GantryAxis, Partial<ComboOptions>>> }[] = [
   { name: 'xyz-default', g: defaultGantry, s: initialGantrySettings },
   { name: 'xyz-y-floor', g: { ...defaultGantry, yMounting: 'floor' }, s: initialGantrySettings },
   { name: 'xyz-single-x', g: { ...defaultGantry, parallel: single }, s: initialGantrySettings },
@@ -57,6 +58,23 @@ const scenarios: { name: string; g: GantryInputs; s: GantrySettings; ids?: Parti
   { name: 'xyz-elgt-kits', g: defaultGantry, s: open, ids: { x: 'ELGT-BS-160-…10P', y: 'ELGT-BS-120-…10P', z: 'ELGT-BS-90-…10P' } },
   { name: 'xyz-elgt-kits-single-x', g: { ...defaultGantry, parallel: single }, s: open, ids: { x: 'ELGT-BS-160-…10P', y: 'ELGT-BS-120-…10P', z: 'ELGT-BS-90-…10P' } },
   { name: 'xyz-elgt-kits-long-z', g: { ...defaultGantry, motion: { ...defaultGantry.motion, z: { ...defaultGantry.motion.z, stroke: 400 } } }, s: open, ids: { x: 'ELGT-BS-160-…10P', y: 'ELGT-BS-120-…10P', z: 'ELGT-BS-90-…10P' } },
+  // ELGT-TB as the base axis on the EHAM kits (its slide is the ELGT-BS slide's)
+  { name: 'xyz-elgt-tb-base', g: defaultGantry, s: open, ids: { x: 'ELGT-TB-160', y: 'ELGT-BS-120-…10P', z: 'ELGT-BS-90-…10P' } },
+  { name: 'xyz-elgt-tb-base-120', g: defaultGantry, s: open, ids: { x: 'ELGT-TB-120', y: 'ELGT-BS-120-…10P', z: 'ELGT-BS-90-…10P' } },
+  { name: 'xyz-elgt-tb-base-single-x', g: { ...defaultGantry, parallel: single }, s: open, ids: { x: 'ELGT-TB-160', y: 'ELGT-BS-120-…10P', z: 'ELGT-BS-90-…10P' } },
+  // ELGT-TB carried on the EHAM kits (Y), the pins and screws in its profile's bores: on the wall (EHAM-AK), and on
+  // the floor on an EHAM-MA plate (XY, no Z: a Z cannot join a floor-mounted Y)
+  { name: 'xyz-elgt-tb-y', g: defaultGantry, s: open, ids: { x: 'ELGT-BS-160-…10P', y: 'ELGT-TB-120', z: 'ELGT-BS-90-…10P' } },
+  { name: 'xyz-elgt-tb-y-single-x', g: { ...defaultGantry, parallel: single }, s: open, ids: { x: 'ELGT-BS-160-…10P', y: 'ELGT-TB-120', z: 'ELGT-BS-90-…10P' } },
+  { name: 'xyz-elgt-tb-y-120', g: { ...defaultGantry, parallel: single }, s: open, ids: { x: 'ELGT-BS-120-…10P', y: 'ELGT-TB-120', z: 'ELGT-BS-90-…10P' } },
+  { name: 'xyz-elgt-tb-y-160', g: { ...defaultGantry, parallel: single }, s: open, ids: { x: 'ELGT-BS-160-…10P', y: 'ELGT-TB-160', z: 'ELGT-BS-90-…10P' } },
+  // the TB motor beside its head points at the X axis unless on the other shaft end (motor positions 1 and 3)
+  { name: 'xyz-elgt-tb-y-d1', g: defaultGantry, s: open, ids: { x: 'ELGT-BS-160-…10P', y: 'ELGT-TB-120', z: 'ELGT-BS-90-…10P' }, options: { y: { drive: DRIVE_POSITIONS[1] } } },
+  { name: 'xyz-elgt-tb-y-120-d1', g: { ...defaultGantry, parallel: single }, s: open, ids: { x: 'ELGT-BS-120-…10P', y: 'ELGT-TB-120', z: 'ELGT-BS-90-…10P' }, options: { y: { drive: DRIVE_POSITIONS[1] } } },
+  { name: 'xyz-elgt-tb-y-160-d1', g: { ...defaultGantry, parallel: single }, s: open, ids: { x: 'ELGT-BS-160-…10P', y: 'ELGT-TB-160', z: 'ELGT-BS-90-…10P' }, options: { y: { drive: DRIVE_POSITIONS[1] } } },
+  ...[1, 2, 3].map((d) => ({ name: `xyz-elgt-tb-y-single-x-d${d}`, g: { ...defaultGantry, parallel: single }, s: open, ids: { x: 'ELGT-BS-160-…10P', y: 'ELGT-TB-120', z: 'ELGT-BS-90-…10P' }, options: { y: { drive: DRIVE_POSITIONS[d] } } })),
+  { name: 'xy-elgt-tb-y-floor', g: { ...defaultGantry, config: 'xy', parallel: single, yMounting: 'floor' }, s: open, ids: { x: 'ELGT-BS-160-…10P', y: 'ELGT-TB-120' } },
+  { name: 'xy-elgt-bs-y-floor-ref', g: { ...defaultGantry, config: 'xy', parallel: single, yMounting: 'floor' }, s: open, ids: { x: 'ELGT-BS-160-…10P', y: 'ELGT-BS-120-…10P' } },
   { name: 'xyz-egc-brackets', g: defaultGantry, s: open, ids: { x: 'EGC-120-…-TB-KF-GK', y: 'EGC-80-...-TB-KF-GK', z: 'EGC-70-...-BS-10P-KF-GK' } },
   { name: 'xyz-egc-brackets-y-floor', g: { ...defaultGantry, yMounting: 'floor' }, s: open, ids: { x: 'EGC-120-…-TB-KF-GK', y: 'EGC-80-...-TB-KF-GK', z: 'EGC-70-...-BS-10P-KF-GK' } },
 ]
@@ -105,7 +123,7 @@ describe.skipIf(!out)('export gantry drawings for the interference check', () =>
                 ...(axis.shaft && shaftDrawing ? { shaft: { model: axis.shaft.model, length: axis.shaft.length, drawing: shaftDrawing } } : {}),
               }
             : undefined
-        axes.push({ axis: r.axis, sel, found, req: { mounting: req.mounting, cog: req.cog }, options: defaultComboOptions, twin })
+        axes.push({ axis: r.axis, sel, found, req: { mounting: req.mounting, cog: req.cog }, options: { ...defaultComboOptions, ...sc.options?.[r.axis] }, twin })
       }
       const joints: GantryJointDrawing[] = results.flatMap((r) =>
         r.joint
@@ -157,6 +175,6 @@ describe.skipIf(!out)('export gantry drawings for the interference check', () =>
       )
       mkdirSync(out!, { recursive: true })
       writeFileSync(join(out!, `${sc.name}.step`), combo.step)
-      writeFileSync(join(out!, `${sc.name}.json`), JSON.stringify({ scenario: sc.name, config: sc.g.config, zMode: sc.g.zMode, yMounting: sc.g.yMounting, axes: travel, unkitted: combo.unkitted, parts }, null, 1))
+      writeFileSync(join(out!, `${sc.name}.json`), JSON.stringify({ scenario: sc.name, config: sc.g.config, zMode: sc.g.zMode, yMounting: sc.g.yMounting, axes: travel, ySlide: combo.y ?? null, unkitted: combo.unkitted, parts }, null, 1))
     }, 600000)
 })

@@ -234,7 +234,8 @@ describe('custom brackets', () => {
   it('carries the Z axis like the EHAM-MA plate it names', () => {
     for (const b of custom.filter((k) => k.beam!.carries === 'z')) {
       const plate = adapters.find((k) => k.family === 'EHAM-MA' && b.accessories[2].model === k.model)!
-      expect(b.carried).toEqual(plate.carried)
+      // the plate also lists ELGT-TB, as a floor-mounted Y only: a TB axis cannot hang vertically as Z
+      expect(b.carried).toEqual(plate.carried.filter((c) => c.drive === 'spindle'))
       const z: Axis = elgt(b.carried[0].size)
       expect(beamBrackets(elgt(b.base[0].size), z, adapters)).toContain(b)
     }

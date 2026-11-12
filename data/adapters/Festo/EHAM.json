@@ -133,6 +133,12 @@
           "variant": null,
           "size": 120,
           "drive": "spindle"
+        },
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 120,
+          "drive": "belt"
         }
       ],
       "carried": [
@@ -193,6 +199,12 @@
           "variant": null,
           "size": 120,
           "drive": "spindle"
+        },
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 120,
+          "drive": "belt"
         }
       ],
       "carried": [
@@ -253,6 +265,12 @@
           "variant": null,
           "size": 120,
           "drive": "spindle"
+        },
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 120,
+          "drive": "belt"
         }
       ],
       "carried": [
@@ -277,6 +295,35 @@
               332.5
             ],
             "endCap": 11.5,
+            "mountings": {
+              "model": "EAHF-L2-45-P",
+              "partNumber": "4835728",
+              "quantity": 3,
+              "mass": 0.035
+            }
+          }
+        },
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 120,
+          "drive": "belt",
+          "end": 32,
+          "pinned": true,
+          "threads": {
+            "first": 94,
+            "pitch": 100
+          },
+          "screws": [
+            126,
+            326
+          ],
+          "clamp": {
+            "span": [
+              99.5,
+              332.5
+            ],
+            "endCap": 74.5,
             "mountings": {
               "model": "EAHF-L2-45-P",
               "partNumber": "4835728",
@@ -313,6 +360,12 @@
           "variant": null,
           "size": 120,
           "drive": "spindle"
+        },
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 120,
+          "drive": "belt"
         }
       ],
       "carried": [
@@ -337,6 +390,35 @@
               332.5
             ],
             "endCap": 11.5,
+            "mountings": {
+              "model": "EAHF-L2-45-P",
+              "partNumber": "4835728",
+              "quantity": 3,
+              "mass": 0.035
+            }
+          }
+        },
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 120,
+          "drive": "belt",
+          "end": 32,
+          "pinned": true,
+          "threads": {
+            "first": 94,
+            "pitch": 100
+          },
+          "screws": [
+            126,
+            326
+          ],
+          "clamp": {
+            "span": [
+              99.5,
+              332.5
+            ],
+            "endCap": 74.5,
             "mountings": {
               "model": "EAHF-L2-45-P",
               "partNumber": "4835728",
@@ -373,6 +455,12 @@
           "variant": null,
           "size": 160,
           "drive": "spindle"
+        },
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 160,
+          "drive": "belt"
         }
       ],
       "carried": [
@@ -397,6 +485,35 @@
               359.5
             ],
             "endCap": 11.5,
+            "mountings": {
+              "model": "EAHF-L2-45-P",
+              "partNumber": "4835728",
+              "quantity": 3,
+              "mass": 0.035
+            }
+          }
+        },
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 120,
+          "drive": "belt",
+          "end": 59,
+          "pinned": true,
+          "threads": {
+            "first": 94,
+            "pitch": 100
+          },
+          "screws": [
+            153,
+            353
+          ],
+          "clamp": {
+            "span": [
+              126.5,
+              359.5
+            ],
+            "endCap": 74.5,
             "mountings": {
               "model": "EAHF-L2-45-P",
               "partNumber": "4835728",
@@ -433,6 +550,12 @@
           "variant": null,
           "size": 160,
           "drive": "spindle"
+        },
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 160,
+          "drive": "belt"
         }
       ],
       "carried": [
@@ -457,6 +580,35 @@
               359.5
             ],
             "endCap": 11.5,
+            "mountings": {
+              "model": "EAHF-L2-45-P",
+              "partNumber": "4835728",
+              "quantity": 3,
+              "mass": 0.035
+            }
+          }
+        },
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 120,
+          "drive": "belt",
+          "end": 59,
+          "pinned": true,
+          "threads": {
+            "first": 94,
+            "pitch": 100
+          },
+          "screws": [
+            153,
+            353
+          ],
+          "clamp": {
+            "span": [
+              126.5,
+              359.5
+            ],
+            "endCap": 74.5,
             "mountings": {
               "model": "EAHF-L2-45-P",
               "partNumber": "4835728",
@@ -493,6 +645,12 @@
           "variant": null,
           "size": 160,
           "drive": "spindle"
+        },
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 160,
+          "drive": "belt"
         }
       ],
       "carried": [
@@ -517,6 +675,35 @@
               354.5
             ],
             "endCap": 13.5,
+            "mountings": {
+              "model": "EAHF-L2-45-P",
+              "partNumber": "4835728",
+              "quantity": 3,
+              "mass": 0.035
+            }
+          }
+        },
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 160,
+          "drive": "belt",
+          "end": 33,
+          "pinned": true,
+          "threads": {
+            "first": 115,
+            "pitch": 100
+          },
+          "screws": [
+            148,
+            348
+          ],
+          "clamp": {
+            "span": [
+              121.5,
+              354.5
+            ],
+            "endCap": 115.3,
             "mountings": {
               "model": "EAHF-L2-45-P",
               "partNumber": "4835728",
@@ -553,6 +740,12 @@
           "variant": null,
           "size": 160,
           "drive": "spindle"
+        },
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 160,
+          "drive": "belt"
         }
       ],
       "carried": [
@@ -577,6 +770,35 @@
               354.5
             ],
             "endCap": 13.5,
+            "mountings": {
+              "model": "EAHF-L2-45-P",
+              "partNumber": "4835728",
+              "quantity": 3,
+              "mass": 0.035
+            }
+          }
+        },
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 160,
+          "drive": "belt",
+          "end": 33,
+          "pinned": true,
+          "threads": {
+            "first": 115,
+            "pitch": 100
+          },
+          "screws": [
+            148,
+            348
+          ],
+          "clamp": {
+            "span": [
+              121.5,
+              354.5
+            ],
+            "endCap": 115.3,
             "mountings": {
               "model": "EAHF-L2-45-P",
               "partNumber": "4835728",
@@ -613,6 +835,12 @@
           "variant": null,
           "size": 120,
           "drive": "spindle"
+        },
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 120,
+          "drive": "belt"
         }
       ],
       "carried": [
@@ -657,6 +885,12 @@
           "variant": null,
           "size": 160,
           "drive": "spindle"
+        },
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 160,
+          "drive": "belt"
         }
       ],
       "carried": [
@@ -669,6 +903,22 @@
           "pinned": true,
           "threads": {
             "first": 81.5,
+            "pitch": 100
+          },
+          "screws": [
+            -150,
+            250
+          ]
+        },
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 120,
+          "drive": "belt",
+          "end": -244,
+          "pinned": true,
+          "threads": {
+            "first": 94,
             "pitch": 100
           },
           "screws": [
@@ -701,6 +951,12 @@
           "variant": null,
           "size": 120,
           "drive": "spindle"
+        },
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 120,
+          "drive": "belt"
         }
       ],
       "carried": [
@@ -745,6 +1001,12 @@
           "variant": null,
           "size": 160,
           "drive": "spindle"
+        },
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 160,
+          "drive": "belt"
         }
       ],
       "carried": [
@@ -757,6 +1019,22 @@
           "pinned": true,
           "threads": {
             "first": 81.5,
+            "pitch": 100
+          },
+          "screws": [
+            -150,
+            150
+          ]
+        },
+        {
+          "family": "ELGT",
+          "variant": null,
+          "size": 120,
+          "drive": "belt",
+          "end": -244,
+          "pinned": true,
+          "threads": {
+            "first": 94,
             "pitch": 100
           },
           "screws": [

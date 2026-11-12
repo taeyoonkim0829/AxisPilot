@@ -74,12 +74,20 @@ def main(stem: str) -> None:
         sl = [along(b) for (j, _, _, b, g) in bodies if j == i and g == slide_g]
         prof = [along(b) for (j, _, _, b, g) in bodies if j == i and g == prof_g]
         sign = 1
+        # the Y slide: where the drawing has it (`ySlide`, from the middle of its travel; centred unless it is no part of
+        # its own, as in the ELGT-TB Creo exports), its poses from the start of the travel (`start`)
+        if part["axis"] == "y" and meta.get("ySlide"):
+            travel["y"] = meta["ySlide"]["travel"]
+            print(f"  y: travel {[round(x, 3) for x in travel['y']]} (drawn {meta['ySlide']['offset']:+.1f} from the middle)", flush=True)
+            continue
         if sl and prof:
             stroke = strokes.get(part["axis"], 0)
             if max(r[1] for r in sl) + stroke > max(r[1] for r in prof) + 1:
                 sign = -1
         travel[part["axis"]] = [sign * x for x in t]
         print(f"  {part['axis']}: travel {[round(x, 3) for x in travel[part['axis']]]}", flush=True)
+
+    start = {"y": -strokes.get("y", 0) / 2 - meta["ySlide"]["offset"]} if meta.get("ySlide") else {}
 
     def offset(group: str, s: dict) -> tuple:
         """world displacement of a group in pose s (mm along each axis's travel from the start)"""
@@ -90,7 +98,7 @@ def main(stem: str) -> None:
             if axis not in travel:
                 continue
             for k in range(3):
-                v[k] += sign * s[axis] * travel[axis][k]
+                v[k] += sign * (s[axis] + start.get(axis, 0)) * travel[axis][k]
         return tuple(v)
 
     poses = [dict(zip("xyz", p)) for p in itertools.product(*[[0, strokes.get(a, 0) / 2, strokes.get(a, 0)] for a in "xyz"])]
