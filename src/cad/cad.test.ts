@@ -538,6 +538,8 @@ describe('combination', () => {
     for (const s of parts.filter((p) => /SIES-8M/.test(p.name))) {
       expect((s.lo[2] + s.hi[2]) / 2).toBeCloseTo(-32, 0)
       expect(side > 0 ? s.hi[1] : -s.lo[1]).toBeCloseTo(30, 0)
+      // the 130 mm cable stub cut to 4 mm, so it ends inside the next switch's body
+      expect(s.hi[0] - s.lo[0]).toBeCloseTo(31.8 + 4, 1)
     }
     const [minus, home, plus] = switchEnds(combo, [0, 4.6, 0])
     expect(minus).toBeCloseTo(2 - 21 - 6.7, 1)
@@ -951,7 +953,11 @@ describe('combination', () => {
     const [minus, home, plus] = switchEnds(combo, [0, 4.8, 26.3])
     expect(minus - plus).toBeCloseTo(471 - 33 - 99 - 0.7, 1)
     expect(home - plus).toBeCloseTo(2 * 27 - 0.7, 1)
-    for (const s of parts.filter((p) => /SMT-8M-A/.test(p.name))) expect(s.hi[2]).toBeCloseTo(37.25 + 5.5 - 0.4, 1)
+    for (const s of parts.filter((p) => /SMT-8M-A/.test(p.name))) {
+      expect(s.hi[2]).toBeCloseTo(37.25 + 5.5 - 0.4, 1)
+      // the 90 mm cable stub cut to 8 mm
+      expect(s.hi[0] - s.lo[0]).toBeCloseTo(26.3 + 8, 1)
+    }
     const brackets = parts.filter((p) => /SMB-8-FENG/.test(p.name)).sort((a, b) => a.lo[0] - b.lo[0])
     expect(brackets).toHaveLength(3)
     expect(brackets[2].hi[0] - brackets[0].lo[0]).toBeCloseTo(471 - 33 - 99, 1)

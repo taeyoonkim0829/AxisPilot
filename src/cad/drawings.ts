@@ -50,6 +50,9 @@ export interface SensorMeta {
   slot?: Frame
   /** Omron sensor: mm from its seat along `up` to its optical axis (the switching point) */
   beam?: number
+  /** switch: its cable stub cut short (the model's runs straight on through the next switch), by `stretchPart` cuts
+   *  of `by` mm each where `range` (file mm along `axis`) is clear, the far end (`dir`) moving in */
+  trim?: { part: string; axis: 0 | 1 | 2; dir: 1 | -1; cuts: { range: [number, number]; by: number }[] }
   /** lug: how it is fixed with an Omron sensor bracket (EAPM-E24-60-SLS on its spacers, further out) */
   withBracket?: Pick<SensorMeta, 'seat' | 'without' | 'move'>
   /** lug: mm from its centre to its ends along the travel (it covers a switch within) */

@@ -600,6 +600,12 @@ export function bodySwitchPlacements(
   )
 }
 
+/** A switch file with its cable stub cut short (`SensorMeta.trim`) */
+function trimmed(file: StepFile, trim: SensorMeta['trim']): StepFile {
+  for (const { range, by } of trim?.cuts ?? []) file = stretchPart(file, { part: trim!.part, axis: trim!.axis, dir: trim!.dir, range }, -by).file
+  return file
+}
+
 /** The file without the instances of the named parts (a sensor file's spare fixings, cable clips) */
 function withoutParts(file: StepFile, names: string[] = []): StepFile {
   for (const name of names) {
@@ -1037,7 +1043,7 @@ export async function comboParts(
     }
     switches.forEach((s, i) => {
       const drawing = sensors.switches[i]
-      const file = files.get(drawing.path) ?? withoutParts(parseStep(switchTexts[i]), drawing.meta!.without)
+      const file = files.get(drawing.path) ?? trimmed(withoutParts(parseStep(switchTexts[i]), drawing.meta!.without), drawing.meta!.trim)
       files.set(drawing.path, file)
       parts.push({ role: 'sensor', name: `${s.part.model} (${SWITCH_NAMES[s.role]})`, file, transform: mate(first.axisToWorld, slots[i], drawing.meta!.seat) })
     })
