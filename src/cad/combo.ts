@@ -572,24 +572,29 @@ export function switchPlacements(
   )
 }
 
-/** mm: a switch sensing the piston's magnet (ESBF) sits this far from each end of the cylinder body */
-export const BODY_END_GAP = 30
-
 /**
  * Where the proximity switches go on a cylinder body sensing the piston's magnet (ESBF), in mm from its front face
  * (rod end) towards the drive end (`body` mm long): `end` = the switch's sensing end, `facing` = the way it points
- * (+1 towards the front). The − limit's sensing end `BODY_END_GAP` from the front, the + limit's from the drive end,
- * cables towards the middle; the home switch right behind the + limit (the motor end) towards −, the same way round.
+ * (+1 towards the front). Each switch is centred in a mounting `pitch[i]` mm long (its bracket); the mountings stay
+ * within the sensor area (`area` = [L1 from the front, L2 from the drive end]): the − limit's at L1, the + limit's at
+ * L2, cables towards the middle, the home switch's right behind the + limit (the motor end) towards −, the same way round.
  */
-export function bodySwitchPlacements(roles: SwitchRole[], body: number, length: number[]): { end: number; facing: 1 | -1 }[] {
+export function bodySwitchPlacements(
+  roles: SwitchRole[],
+  body: number,
+  length: number[],
+  pitch: number[],
+  area: [number, number],
+): { end: number; facing: 1 | -1 }[] {
   const plus = roles.indexOf('limitPlus')
-  const plusEnd = body - BODY_END_GAP
-  return roles.map((role) =>
+  const inset = (i: number) => (pitch[i] - length[i]) / 2
+  const plusMount = body - area[1]
+  return roles.map((role, i) =>
     role === 'limitMinus'
-      ? { end: BODY_END_GAP, facing: 1 as const }
+      ? { end: area[0] + inset(i), facing: 1 as const }
       : role === 'limitPlus'
-        ? { end: plusEnd, facing: -1 as const }
-        : { end: plusEnd - (plus >= 0 ? length[plus] : 0), facing: -1 as const },
+        ? { end: plusMount - inset(i), facing: -1 as const }
+        : { end: plusMount - (plus >= 0 ? pitch[plus] : 0) - inset(i), facing: -1 as const },
   )
 }
 
@@ -980,7 +985,9 @@ export async function comboParts(
       slots = bodySwitchPlacements(
         switches.map((s) => s.role),
         body,
+        lengths,
         pitch,
+        sel.axis.sensorArea ?? [0, 0],
       ).map((p, i) => {
         const up = scale(u, p.facing)
         const frame = { ...seats.slot, origin: sub(seats.slot.origin, scale(u, p.end)), up }

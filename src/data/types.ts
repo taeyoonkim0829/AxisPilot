@@ -42,6 +42,9 @@ export interface Axis {
   pressureForceCurve?: [number, number][] | null
   /** ESBF: [stroke mm, max. lateral force on the piston rod N], read from the data sheet curve; replaces the guide check */
   rodLateralForceCurve?: [number, number][] | null
+  /** ESBF: mm [L1 from the body's front face, L2 from its drive end] bounding the area where sensor mountings may sit
+   *  (the piston magnet is asymmetric, data sheet "Sensor mounting") */
+  sensorArea?: [number, number]
   pulleyDiameter: number | null
   feedConstant: number | null
   spindleDiameter: number | null
