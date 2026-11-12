@@ -551,7 +551,9 @@ const SWITCH_NAMES: Record<SwitchRole, string> = { limitMinus: '-LIMIT', limitPl
  * behind its sensing end) lies under it. Limit switches switch `LIMIT_MARGIN` before the end of the travel when the
  * lug comes in from the middle, their sensing ends towards the axis ends and their bodies and cables towards the
  * middle (the model's cable stub would run through the heads). The home switch lies right behind the − limit
- * (`length` mm, sensing end to cable end) towards +, the same way round, the − limit's cable in its slot under it.
+ * (`length` mm, sensing end to cable end) towards +, the same way round, the − limit's cable in its slot under it;
+ * `mirrored` (Omron sensors on brackets, their connectors pointing along the travel): the − limit's mirror image
+ * instead, so their cables leave towards each other rather than the limit's into the home sensor.
  */
 export function switchPlacements(
   roles: SwitchRole[],
@@ -559,6 +561,7 @@ export function switchPlacements(
   edge: number,
   point: number[],
   length: number[],
+  mirrored = false,
 ): { end: number; facing: 1 | -1 }[] {
   const minus = roles.indexOf('limitMinus')
   // the − limit's switching point at LIMIT_MARGIN − edge, its sensing end beyond it towards −
@@ -568,7 +571,9 @@ export function switchPlacements(
       ? { end: minusEnd, facing: -1 as const }
       : role === 'limitPlus'
         ? { end: travel - LIMIT_MARGIN + edge + point[i], facing: 1 as const }
-        : { end: minusEnd + (minus >= 0 ? length[minus] : 0), facing: -1 as const },
+        : mirrored
+          ? { end: minusEnd + (minus >= 0 ? length[minus] : 0) + length[i], facing: 1 as const }
+          : { end: minusEnd + (minus >= 0 ? length[minus] : 0), facing: -1 as const },
   )
 }
 
@@ -980,6 +985,7 @@ export async function comboParts(
         lugMeta.edge ?? 0,
         sensors.switches.map((d, i) => (bracket ? beamFrom(i) : (d.meta!.switchPoint ?? 0))),
         bracket ? lengths.map(() => bracket.length ?? 0) : lengths,
+        !!bracket,
       )
       // the lug's middle off the slide centre along the travel (ELGD-BS slides), which the switches follow
       const lugShift = dot(sub(seats.lug.origin, axisMeta.slide.origin), axisMeta.slide.travel)
