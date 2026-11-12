@@ -137,7 +137,7 @@ function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'sett
               <RadioGroup
                 options={['Festo', 'Omron'] as SensorMaker[]}
                 value={settings.sensorMaker}
-                label={(v) => (v === 'Omron' ? 'Omron EE-SX674' : v)}
+                label={(v) => v}
                 onChange={(sensorMaker) => onSettings({ ...settings, sensorMaker })}
               />
             </div>
