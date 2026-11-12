@@ -298,6 +298,13 @@ export function axisMass(axis: Axis, stroke: number): number {
   return axis.baseMass + (axis.massPer10mm * stroke) / 10
 }
 
+/** Ball screw load factor while pressing: Festo's operating coefficient fB for press-in operations (1.4–1.6, ESBF data
+ *  sheet "Service life"), the speed's fw when that is higher */
+export const PRESS_LOAD_FACTOR = 1.5
+/** ESBF: the travel between the foremost and rearmost positions must be at least this many spindle pitches (data
+ *  sheet "Service life") */
+export const MIN_TRAVEL_PITCHES = 2.5
+
 /** Ball screw load factor fw by speed (Excel "Ball Screw 수명계산"). */
 export function screwLoadFactor(v: number): number {
   if (v <= 0.25) return 1.2
@@ -962,7 +969,9 @@ export function evaluateAxis(
       den += w
     }
     const meanLoad = Math.cbrt(num / den)
-    const loadKm = (axis.screwDynamicLoadRating / (screwLoadFactor(peakVelocity) * meanLoad)) ** 3 * axis.spindlePitch
+    // L = (C / (fw · Fxm))³ · pitch: Festo's Fxm–L curves are this with fw = 1 (ESBF data sheet)
+    const fw = press ? Math.max(screwLoadFactor(peakVelocity), PRESS_LOAD_FACTOR) : screwLoadFactor(peakVelocity)
+    const loadKm = (axis.screwDynamicLoadRating / (fw * meanLoad)) ** 3 * axis.spindlePitch
     // ESBF-BS: the life also ends after a number of switching cycles (one cycle = one round trip of the stroke).
     const cycleKm = axis.maxSwitchingCycles ? (axis.maxSwitchingCycles * 2 * req.stroke) / 1e6 : Infinity
     const km = Math.min(loadKm, cycleKm)
@@ -979,6 +988,19 @@ export function evaluateAxis(
         : life),
       alert: km < SCREW_LIFE_MIN_KM,
     })
+    const minTravel = MIN_TRAVEL_PITCHES * axis.spindlePitch
+    if (axis.family === 'ESBF' && req.stroke < minTravel) {
+      checks.push({
+        label: '최소 이동 거리',
+        value: req.stroke,
+        limit: minTravel,
+        unit: 'mm',
+        ratio: minTravel / req.stroke,
+        status: 'warn',
+        note: '스크류 리드의 {n}배 미만: 수명 보장 안 됨',
+        noteArgs: { n: MIN_TRAVEL_PITCHES },
+      })
+    }
     if (km < SCREW_LIFE_MIN_KM) {
       checks.push({
         label: '볼스크류 수명',

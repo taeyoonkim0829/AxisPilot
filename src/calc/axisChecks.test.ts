@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { axes, motors } from '../data'
 import { evaluateAxis, screwLoadFactor, slideGroupLoads, SCREW_LIFE_MIN_KM } from './axisSelection'
 import { evaluateDrive } from './motorSelection'
-import { defaultParallel, defaultSettings, type Requirements, type Settings } from './types'
+import { defaultParallel, defaultPress, defaultSettings, type Requirements, type Settings } from './types'
 
 // The checks that warn or fail an axis or motor, against their formulas worked out by hand (CLAUDE.md, "Calculation
 // reference"): deflection, ball screw life, inertia ratio, regeneration, loads spread over additional slides.
@@ -54,6 +54,22 @@ describe('ball screw life', () => {
     const c = checkOf(ev.checks, '볼스크류 수명')!
     expect(c.status).toBe('warn')
     expect(c.limit).toBe(SCREW_LIFE_MIN_KM)
+  })
+
+  it('takes the press-in operating coefficient while pressing, and warns on an ESBF stroke under 2.5 pitches', () => {
+    const base = { stroke: 200, payload: 5, velocity: 0.1, parallel: { ...defaultParallel, mode: 'guides' as const, guideAxis: true } }
+    expect(checkOf(run('ESBF-BS-50-…-10P', base).checks, '최소 이동 거리')).toBeUndefined()
+    const short = checkOf(run('ESBF-BS-50-…-20P', { ...base, stroke: 45 }).checks, '최소 이동 거리')!
+    expect(short.status).toBe('warn')
+    expect(short.limit).toBe(50)
+    // pressing with no force at the same speed: the about the same Fxm, fw 1.5 instead of 1.2 (v ≤ 0.25 m/s); a vertical
+    // 100 kg load keeps the load life under the switching cycles' 16000 km
+    const heavy = { ...base, stroke: 800, payload: 100, mounting: 'vertical' as const }
+    const loaded = infoOf(run('ESBF-BS-50-…-10P', heavy), '볼스크류 예상 수명').value
+    const pressed = infoOf(run('ESBF-BS-50-…-10P', { ...heavy, press: { ...defaultPress, enabled: true, force: 0, distance: 20, speed: 0.1, holdTime: 0 } }), '볼스크류 예상 수명').value
+    // (1.2 / 1.5)³ = 0.51; the press move's own profile changes Fxm a little
+    expect(pressed / loaded).toBeGreaterThan(0.45)
+    expect(pressed / loaded).toBeLessThan(0.65)
   })
 
   it('gives no warning above the minimum', () => {
