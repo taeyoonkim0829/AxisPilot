@@ -179,6 +179,14 @@ describe('axis order options', () => {
     expect(e.guideFv).toBeLessThan(plain.guideFv)
   })
 
+  it('rounds the stroke lengthened by an additional slide up to a standard stroke with 표준 스트로크', () => {
+    const e = evaluateAxis(elgd, req, { ...defaultSettings, additionalSlide: 'right', standardStroke: true })!
+    const lengths = Object.keys(elgd.strokePartNumbers!).map(Number)
+    const next = Math.min(...lengths.filter((s) => s >= 1192))
+    expect(e.order).toEqual({ model: `ELGD-TB-KF-80-${next}-0H-ZR-PU2`, partNumber: elgd.moduleNumber, stroke: next, modular: false })
+    expect(e.checks.find((c) => c.label === '표준 스트로크')).toBeUndefined()
+  })
+
   it('takes the entered centre spacing of the slides, at least the minimum', () => {
     const at = (slidePitch: number) => evaluateAxis(elgd, req, { ...defaultSettings, additionalSlide: 'left', slidePitch })!
     // 262 mm centre to centre = half of both slide lengths (142) + 120 mm between them

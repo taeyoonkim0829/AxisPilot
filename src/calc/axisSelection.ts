@@ -259,7 +259,7 @@ export interface AxisOrder {
  * else the next of its fixed strokes (ELGT-BS has only fixed ones, 50 mm apart). That stroke takes its standard
  * part number when it is a standard stroke, else the module number. Axes without a module number (ELGT-TB-…-CS)
  * round up to the next standard stroke, and so does every axis with `standardOnly` (the modular stroke only when no
- * standard stroke is long enough). Axes without order data keep their data model name.
+ * standard stroke is long enough; with order options by module number, at the standard stroke). Axes without order data keep their data model name.
  */
 export function axisOrder(axis: Axis, stroke: number, options: AxisOptions | null = null, standardOnly = false): AxisOrder {
   const template = axis.typeCode ?? axis.model
@@ -272,7 +272,16 @@ export function axisOrder(axis: Axis, stroke: number, options: AxisOptions | nul
     .map(Number)
     .sort((a, b) => a - b)
   const floor = options?.slides.length ? (axis.additionalSlide?.minStroke ?? 0) : 0
-  const configured = axis.moduleNumber ? moduleStroke(axis.moduleStrokes, Math.max(stroke + (options?.extension ?? 0), floor)) : null
+  const wanted = Math.max(stroke + (options?.extension ?? 0), floor)
+  // with options (additional slides …) the axis is configured by module number; `standardOnly` still rounds its
+  // stroke (lengthened by the slides) up to the next standard stroke
+  const lengths = Object.keys(axis.strokePartNumbers ?? {})
+    .map(Number)
+    .sort((a, b) => a - b)
+  const nextLength = standardOnly && axis.moduleNumber && customised(axis, options) ? lengths.find((s) => s >= wanted) : undefined
+  if (nextLength != null)
+    return { model: optionCode(axis, template, options).replace('…', String(nextLength)), partNumber: axis.moduleNumber!, stroke: nextLength, modular: false }
+  const configured = axis.moduleNumber ? moduleStroke(axis.moduleStrokes, wanted) : null
   const next = strokes.find((s) => s >= stroke)
   const standard = configured == null || (standardOnly && next != null) ? next : strokes.find((s) => s === configured)
   const ordered = standard ?? configured ?? Math.ceil(stroke)
