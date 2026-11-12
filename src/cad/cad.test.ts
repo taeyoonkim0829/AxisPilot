@@ -572,6 +572,53 @@ describe('combination', () => {
     expect(plus.hi[0]).toBeCloseTo(shift + 300 - 2 + 21 + 6.7, 1)
   }, 60000)
 
+  it('senses an EGC with the SF-EGC-1 lug on the slide side and the switches in the tilted corner slot', async () => {
+    const axis = axes.find((a) => a.id === 'EGC-80-...-TB-KF-GK')!
+    const sensing = sensingFor(axis, sensors, { sensorOutput: 'PNP', limitContact: 'NC', homeContact: 'NO' })!
+    expect(sensing.lug?.partNumber).toBe('558048')
+    expect(sensing.switches.map((s) => s.part.partNumber)).toEqual(['551391', '551391', '551386'])
+    const sel: ComboSelection = {
+      axis,
+      axisModel: 'EGC-80-500-TB-KF-0H-GK',
+      stroke: 500,
+      motor: motors.find((m) => m.model === 'EMMT-AS-60-S-HS')!,
+      gearbox: null,
+      kit: kits.find((k) => k.product === 'EAMM-A-L48-60G')!,
+      sensing,
+    }
+    const sensorPaths = allPaths.map((p) => p.slice(6)).filter((p) => p.startsWith('data/sensors/'))
+    const own = ['data/axes/Festo/Drawings/EGC/3013354_EGC-80-500-TB-KF-0H-GK.stp', 'data/kits/Festo/Drawings/EAMM-A/557983_EAMM-A-L48-60G.stp', files[2], ...sensorPaths].map(
+      (p) => ({ ...parseDrawingPath(p)!, url: p, meta: metas[`../../${p.replace(/\.stp$/, '.json')}`] ?? null }),
+    )
+    const found = comboDrawings(sel, own)
+    expect(found.sensors?.lug?.partNumber).toBe('558048')
+    const combo = await buildCombo(sel, found, { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
+    const { parts } = await meshBox(combo.step)
+    // floor: travel +x, slide surface at z = 0; the lug (90 mm, its flag 70) on the slide's side face 31.6 mm out, its
+    // two M4 screws 16 mm down, the flag tilted out over the profile's corner
+    const lug = parts.find((p) => /558048 SF-EGC-1-80_\(p\)/.test(p.name))!
+    const side = Math.sign(lug.hi[1])
+    const [inner, outer] = side > 0 ? [lug.lo[1], lug.hi[1]] : [-lug.hi[1], -lug.lo[1]]
+    expect(inner).toBeCloseTo(31.6, 1)
+    expect(outer).toBeCloseTo(31.6 + 10.79, 1)
+    expect((lug.lo[0] + lug.hi[0]) / 2).toBeCloseTo(0, 0)
+    expect(lug.hi[0] - lug.lo[0]).toBeCloseTo(90, 0)
+    for (const s of parts.filter((p) => /M4x8/.test(p.name))) expect((s.lo[2] + s.hi[2]) / 2).toBeCloseTo(-16, 0)
+    // the switches in the corner slot under the flag (opening centre 34.05 mm out, 28.2 mm down), on the lug's side;
+    // the flag reaching 35 mm either side of the slide centre, switching point 6.7 mm behind the sensing end
+    const [minus, home, plus] = parts.filter((p) => /SIES-8M/.test(p.name)).sort((a, b) => a.lo[0] - b.lo[0])
+    for (const s of [minus, home, plus]) {
+      const y = side * ((s.lo[1] + s.hi[1]) / 2)
+      expect(y).toBeGreaterThan(26)
+      expect(y).toBeLessThan(36)
+      expect(s.hi[2]).toBeLessThan(-22)
+      expect(s.lo[2]).toBeGreaterThan(-36)
+    }
+    expect(minus.lo[0]).toBeCloseTo(2 - 35 - 6.7, 1)
+    expect(home.lo[0]).toBeCloseTo(2 - 35 - 6.7 + 31.8, 1)
+    expect(plus.hi[0]).toBeCloseTo(500 - 2 + 35 + 6.7, 1)
+  }, 60000)
+
   it('draws an ELGD ordered with direct mounting M from its own file, the threads under the profile kept at 100 mm', async () => {
     const axis = axes.find((a) => a.id === 'ELGD-TB-KF-60')!
     const sel: ComboSelection = {

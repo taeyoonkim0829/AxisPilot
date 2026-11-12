@@ -9,18 +9,8 @@
       "length": 27,
       "mass": null,
       "axes": [
-        {
-          "family": "ESBF",
-          "variant": "",
-          "size": 32,
-          "drive": "spindle"
-        },
-        {
-          "family": "ESBF",
-          "variant": "",
-          "size": 40,
-          "drive": "spindle"
-        }
+        { "family": "ESBF", "variant": "", "size": 32, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 40, "drive": "spindle" }
       ],
       "dataSource": "ESBF data sheet 2025/11, accessories p.62 (mounting kit for proximity sensor SMT-8, mounted on the profile with two screws, one per sensor); drawing from PARTdataManager"
     },
@@ -33,18 +23,8 @@
       "length": 27,
       "mass": null,
       "axes": [
-        {
-          "family": "ESBF",
-          "variant": "",
-          "size": 50,
-          "drive": "spindle"
-        },
-        {
-          "family": "ESBF",
-          "variant": "",
-          "size": 63,
-          "drive": "spindle"
-        }
+        { "family": "ESBF", "variant": "", "size": 50, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 63, "drive": "spindle" }
       ],
       "dataSource": "ESBF data sheet 2025/11, accessories p.62 (mounting kit for proximity sensor SMT-8, mounted on the profile with two screws, one per sensor); drawing from PARTdataManager"
     },
@@ -57,18 +37,8 @@
       "length": 27,
       "mass": null,
       "axes": [
-        {
-          "family": "ESBF",
-          "variant": "",
-          "size": 80,
-          "drive": "spindle"
-        },
-        {
-          "family": "ESBF",
-          "variant": "",
-          "size": 100,
-          "drive": "spindle"
-        }
+        { "family": "ESBF", "variant": "", "size": 80, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 100, "drive": "spindle" }
       ],
       "dataSource": "ESBF data sheet 2025/11, accessories p.62 (mounting kit for proximity sensor SMT-8, mounted on the profile with two screws, one per sensor); drawing from PARTdataManager"
     }

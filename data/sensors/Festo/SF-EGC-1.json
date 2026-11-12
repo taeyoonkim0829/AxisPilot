@@ -1,0 +1,68 @@
+{
+  "items": [
+    {
+      "id": "SF-EGC-1-50",
+      "maker": "Festo",
+      "role": "lug",
+      "model": "SF-EGC-1-50",
+      "partNumber": "558046",
+      "mass": 0.02,
+      "axes": [
+        { "family": "EGC", "variant": "", "size": 50, "drive": "belt" }
+      ],
+      "dataSource": "EGC-TB-KF data sheet 2026/10 p.51, EGC-BS-KF p.55 (switch lug SF-EGC-1 for sensing via SIES-8M, screwed to the slide side with two screws); drawing from PARTdataManager"
+    },
+    {
+      "id": "SF-EGC-1-70",
+      "maker": "Festo",
+      "role": "lug",
+      "model": "SF-EGC-1-70",
+      "partNumber": "558047",
+      "mass": 0.05,
+      "axes": [
+        { "family": "EGC", "variant": "", "size": 70, "drive": "belt" },
+        { "family": "EGC", "variant": "", "size": 70, "drive": "spindle" }
+      ],
+      "dataSource": "EGC-TB-KF data sheet 2026/10 p.51, EGC-BS-KF p.55 (switch lug SF-EGC-1 for sensing via SIES-8M, screwed to the slide side with two screws); drawing from PARTdataManager"
+    },
+    {
+      "id": "SF-EGC-1-80",
+      "maker": "Festo",
+      "role": "lug",
+      "model": "SF-EGC-1-80",
+      "partNumber": "558048",
+      "mass": 0.063,
+      "axes": [
+        { "family": "EGC", "variant": "", "size": 80, "drive": "belt" },
+        { "family": "EGC", "variant": "", "size": 80, "drive": "spindle" }
+      ],
+      "dataSource": "EGC-TB-KF data sheet 2026/10 p.51, EGC-BS-KF p.55 (switch lug SF-EGC-1 for sensing via SIES-8M, screwed to the slide side with two screws); drawing from PARTdataManager"
+    },
+    {
+      "id": "SF-EGC-1-120",
+      "maker": "Festo",
+      "role": "lug",
+      "model": "SF-EGC-1-120",
+      "partNumber": "558049",
+      "mass": 0.147,
+      "axes": [
+        { "family": "EGC", "variant": "", "size": 120, "drive": "belt" },
+        { "family": "EGC", "variant": "", "size": 120, "drive": "spindle" }
+      ],
+      "dataSource": "EGC-TB-KF data sheet 2026/10 p.51, EGC-BS-KF p.55 (switch lug SF-EGC-1 for sensing via SIES-8M, screwed to the slide side with two screws); drawing from PARTdataManager"
+    },
+    {
+      "id": "SF-EGC-1-185",
+      "maker": "Festo",
+      "role": "lug",
+      "model": "SF-EGC-1-185",
+      "partNumber": "558051",
+      "mass": 0.246,
+      "axes": [
+        { "family": "EGC", "variant": "", "size": 185, "drive": "belt" },
+        { "family": "EGC", "variant": "", "size": 185, "drive": "spindle" }
+      ],
+      "dataSource": "EGC-TB-KF data sheet 2026/10 p.51, EGC-BS-KF p.55 (switch lug SF-EGC-1 for sensing via SIES-8M, screwed to the slide side with two screws); drawing from PARTdataManager"
+    }
+  ]
+}
