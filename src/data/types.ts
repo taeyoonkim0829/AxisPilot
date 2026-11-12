@@ -45,6 +45,8 @@ export interface Axis {
   /** ESBF: mm [L1 from the body's front face, L2 from its drive end] bounding the area where sensor mountings may sit
    *  (the piston magnet is asymmetric, data sheet "Sensor mounting") */
   sensorArea?: [number, number]
+  /** ESBF: mm, the cylinder body's length (front face to drive end) at stroke 0, data sheet L2 (+ stroke) */
+  bodyLength?: number
   pulleyDiameter: number | null
   feedConstant: number | null
   spindleDiameter: number | null
@@ -504,6 +506,8 @@ export interface SensorPart {
   /** proximity switch: switching output and contact (N/O, N/C) */
   output?: SensorOutput
   contact?: SensorContact
+  /** bracket: mm along the travel */
+  length?: number
   /** kg; null where the data sheet gives none */
   mass: number | null
   axes: { family: AxisFamily; variant: Axis['variant']; size: number; drive: Axis['drive'] }[]

@@ -6,6 +6,7 @@
       "role": "bracket",
       "model": "SMB-8-FENG-32/40",
       "partNumber": "175705",
+      "length": 27,
       "mass": null,
       "axes": [
         {
@@ -29,6 +30,7 @@
       "role": "bracket",
       "model": "SMB-8-FENG-50/63",
       "partNumber": "175706",
+      "length": 27,
       "mass": null,
       "axes": [
         {
@@ -52,6 +54,7 @@
       "role": "bracket",
       "model": "SMB-8-FENG-80/100",
       "partNumber": "175707",
+      "length": 27,
       "mass": null,
       "axes": [
         {

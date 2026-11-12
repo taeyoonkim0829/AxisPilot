@@ -948,6 +948,22 @@ export function evaluateAxis(
         : { note: '{switches} (피스톤 자석 감지)', noteArgs: { switches: switchModels(sensing) } }),
     })
   else if (settings.sensors) info.push({ label: '위치 센서', value: Number.NaN, unit: '', note: '이 축의 센서 · 센서 러그 데이터 없음' })
+  // ESBF: the switch brackets side by side must fit the data sheet's sensor mounting area (L1 / L2 off the body ends)
+  if (sensing?.bracket?.length && axis.sensorArea && axis.bodyLength != null) {
+    const area = axis.bodyLength + builtStroke - axis.sensorArea[0] - axis.sensorArea[1]
+    const needed = sensing.switches.length * sensing.bracket.length
+    if (area < needed)
+      checks.push({
+        label: '센서 장착 구간',
+        value: Math.max(area, 0),
+        limit: needed,
+        unit: 'mm',
+        ratio: needed / Math.max(area, 1),
+        status: 'warn',
+        note: '센서 브라켓 {n}개가 장착 구간 (L1 ~ L2)에 들어가지 않음: 스트로크 {stroke} mm 이상 필요',
+        noteArgs: { n: sensing.switches.length, stroke: Math.ceil(builtStroke + needed - area) },
+      })
+  }
   if (shaft) info.push({ label: '모터 구동 이동 질량 (2축 합계)', value: req.payload + 2 * slide, unit: 'kg' })
   // LM guides: the largest load on one guide, for choosing the guide blocks
   const guideMembers = members.filter((_, i) => !layout.isAxis[i])
