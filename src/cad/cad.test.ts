@@ -615,9 +615,10 @@ describe('combination', () => {
     // reaching into their 5 mm slots (9 mm deep) between the arms; the optical axis (7 mm along the sensor from its
     // holes, 10.5 from its back) where the lug's edge is with the slide 2 mm from either end of the travel, `point` mm
     // in from its bracket's end; the limits on their brackets' inner hole pairs, connectors towards the axis ends, the
-    // home sensor back to back with the - limit on the next bracket, its connector towards +; each sensor's two M3
-    // screws (ELGT-BS: the SHE's) at its hole pair
-    const checkOmron = async (step: string, lugName: RegExp, travel: number, edge: number, point: number) => {
+    // home sensor back to back with the - limit on the next bracket, its connector towards + (`inwards`, ELGD-60: the
+    // limits the other way round, their brackets reaching inwards, home on the next bracket in, connector towards +);
+    // each sensor's two M3 screws (ELGT-BS: the SHE's, else drawn with the sensor) at its hole pair, 3.5 mm from its back
+    const checkOmron = async (step: string, lugName: RegExp, travel: number, edge: number, point: number, bracket: number, inwards: boolean) => {
       const { parts } = await meshBox(step)
       const lug = parts.find((p) => lugName.test(p.name))!
       const [minus, home, plus] = parts.filter((p) => /EE.SX674P/.test(p.name)).sort((a, b) => a.lo[0] - b.lo[0])
@@ -632,17 +633,18 @@ describe('combination', () => {
         const outer = Math.abs(lug.lo[1]) > Math.abs(lug.hi[1]) ? lug.lo[1] : lug.hi[1]
         expect(Math.abs(outer - middle)).toBeLessThan(2.5)
       }
-      expect(minus.hi[0] - 10.5).toBeCloseTo(2 - edge, 1)
-      expect(home.lo[0] + 10.5).toBeCloseTo(2 - edge + 2 * point, 1)
-      expect(plus.lo[0] + 10.5).toBeCloseTo(travel - 2 + edge, 1)
-      // the bracket screws (not the lug's) level with the sensors
+      // each sensor's back (+1: its high end), its optical axis 10.5 mm in from it
+      const backs: [typeof minus, 1 | -1, number][] = [
+        [minus, inwards ? -1 : 1, 2 - edge],
+        [home, -1, 2 - edge + (inwards ? bracket : 2 * point)],
+        [plus, inwards ? 1 : -1, travel - 2 + edge],
+      ]
       const screws = parts.filter((p) => /ISO-4762 M3x6/.test(p.name) && p.hi[2] < minus.hi[2])
-      if (screws.length) {
-        expect(screws).toHaveLength(6)
-        for (const s of [minus, home, plus]) {
-          const back = s === minus ? s.hi[0] : s.lo[0]
-          expect(screws.filter((c) => Math.abs((c.lo[0] + c.hi[0]) / 2 - (back - 3.5 * Math.sign(back - (s.lo[0] + s.hi[0]) / 2))) < 1)).toHaveLength(2)
-        }
+      expect(screws).toHaveLength(6)
+      for (const [s, side, beam] of backs) {
+        const back = side > 0 ? s.hi[0] : s.lo[0]
+        expect(back - side * 10.5).toBeCloseTo(beam, 1)
+        expect(screws.filter((c) => Math.abs((c.lo[0] + c.hi[0]) / 2 - (back - side * 3.5)) < 1)).toHaveLength(2)
       }
     }
     const sensorPaths = allPaths.map((p) => p.slice(6)).filter((p) => p.startsWith('data/sensors/'))
@@ -672,11 +674,11 @@ describe('combination', () => {
     const found = comboDrawings(sel, drawingsOf(['data/axes/Festo/Drawings/ELGD/8192344_ELGD-TB-KF-60-200-0H-PU2.stp', kitPath, files[2]]))
     expect(found.sensors?.bracket?.partNumber).toBe('8197121')
     const combo = await buildCombo(sel, found, { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
-    await checkOmron(combo.step, /EAPM-E24-60-SLS---/, 300, 21, 25.5)
+    await checkOmron(combo.step, /EAPM-E24-60-SLS---/, 300, 21, 25.5, 77, true)
     const elgt = { ...selection(500), sensing: sensingFor(selection(500).axis, sensors, omron)! }
     expect([elgt.sensing.lug?.partNumber, elgt.sensing.bracket?.partNumber]).toEqual(['8120123', '8119255'])
     const combo2 = await buildCombo(elgt, comboDrawings(elgt, drawingsOf(files.slice(0, 3))), { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
-    await checkOmron(combo2.step, /EAPM-L9-90-SLE---/, 500, 7.5, 12.5)
+    await checkOmron(combo2.step, /EAPM-L9-90-SLE---/, 500, 7.5, 12.5, 55, false)
   }, 60000)
 
   it('senses an EGC with the SF-EGC-1 lug on the slide side and the switches in the tilted corner slot', async () => {

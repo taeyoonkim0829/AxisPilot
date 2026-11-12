@@ -34,8 +34,10 @@ export interface AxisMeta {
    *  `axis` out of the face, `up` = slide normal); `slot` = the sensor slot's centre at that face beside the slide
    *  centre at the start position (`axis` out of the face, `up` = travel). ESBF (no lug, a magnet in the piston):
    *  `slot` = the top face's slot at the body's front face, `up` = towards the rod end. `bracket` = the slot an
-   *  Omron sensor bracket's slot nuts go in (ELGT-BS: [2]), as `slot`; without it the bracket takes `slot` (ELGD) */
-  sensor?: { lug?: Frame; slot: Frame; bracket?: Frame }
+   *  Omron sensor bracket's slot nuts go in (ELGT-BS: [2]), as `slot`; without it the bracket takes `slot` (ELGD).
+   *  `limitsInwards`: Omron limit sensors facing the axis ends, their brackets reaching inwards (ELGD-60, whose heads
+   *  and kits an outward bracket would reach) */
+  sensor?: { lug?: Frame; slot: Frame; bracket?: Frame; limitsInwards?: boolean }
 }
 /** A switch lug, proximity switch or switch bracket (data/sensors): `seat` = lug: its face on the slide at its holes
  *  (`axis` away from the slide, `up` towards the slide surface); switch: its top face at the sensing end (`axis` out of
@@ -54,6 +56,9 @@ export interface SensorMeta {
   screws?: string[]
   /** Omron sensor: mm from its seat along `up` to its optical axis (the switching point) */
   beam?: number
+  /** Omron sensor: its two fixing screws (the drawing named `model`), seated on its mounting ears at `at` (file mm),
+   *  `axis` into the holes; drawn where the bracket brings none of its own (`screws`) */
+  fixing?: { model: string; at: [number, number, number][]; axis: [number, number, number]; up: [number, number, number] }
   /** switch: its cable stub cut short (the model's runs straight on through the next switch), by `stretchPart` cuts
    *  of `by` mm each where `range` (file mm along `axis`) is clear, the far end (`dir`) moving in */
   trim?: { part: string; axis: 0 | 1 | 2; dir: 1 | -1; cuts: { range: [number, number]; by: number }[] }

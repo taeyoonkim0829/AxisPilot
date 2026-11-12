@@ -1,6 +1,6 @@
 import type { Sensing, SwitchRole } from '../calc/axisSelection'
 import type { Mounting, Requirements } from '../calc/types'
-import type { Axis, AxisMounting, Gearbox, GuideUnit, Kit, Motor } from '../data/types'
+import type { Axis, AxisMounting, Gearbox, GuideUnit, Kit, Motor, SensorPart } from '../data/types'
 import { assemble, sourceNotice, type AssemblyPart } from './assemble'
 import {
   axisDrawingsFor,
@@ -61,7 +61,7 @@ export interface ComboDrawings {
   guide: Drawing<GuideMeta> | null
   /** the switch lug's, the switch bracket's and each proximity switch's drawing (as `sensing.switches`); null (left
    *  out) without one of them or the axis's `sensor` seats */
-  sensors: { lug: Drawing<SensorMeta> | null; bracket: Drawing<SensorMeta> | null; switches: Drawing<SensorMeta>[] } | null
+  sensors: { lug: Drawing<SensorMeta> | null; bracket: Drawing<SensorMeta> | null; switches: Drawing<SensorMeta>[]; fixing?: Drawing<SensorMeta> | null } | null
   /** a mounting type was ordered but has no file of its own: the standard profile is drawn */
   mountingMissing: boolean
   missing: PartRole[]
@@ -83,6 +83,9 @@ export function comboDrawings(sel: ComboSelection, all?: Drawing[]): ComboDrawin
   const lug = sel.sensing?.lug ? sensorDrawingFor(sel.sensing.lug, all) : null
   const bracket = sel.sensing?.bracket ? sensorDrawingFor(sel.sensing.bracket, all) : null
   const switches = (sel.sensing?.switches ?? []).map((s) => sensorDrawingFor(s.part, all))
+  // the Omron sensors' fixing screws (left out without a drawing)
+  const fixingModel = switches[0]?.meta?.fixing?.model
+  const fixing = fixingModel ? sensorDrawingFor({ partNumber: '', maker: 'Omron', model: fixingModel } as SensorPart, all) : null
   return {
     axis,
     motor: motor?.drawing ?? null,
@@ -99,7 +102,7 @@ export function comboDrawings(sel: ComboSelection, all?: Drawing[]): ComboDrawin
       switches.every((d) => d != null) &&
       axis?.meta?.sensor &&
       !!lug === !!axis.meta.sensor.lug
-        ? { lug, bracket, switches: switches as Drawing<SensorMeta>[] }
+        ? { lug, bracket, switches: switches as Drawing<SensorMeta>[], fixing }
         : null,
     missing,
   }
@@ -555,7 +558,9 @@ const SWITCH_NAMES: Record<SwitchRole, string> = { limitMinus: '-LIMIT', limitPl
  * connectors) face each other instead of the limit's running into the home switch.
  * `outwards` (Omron sensors on brackets, `end` = the bracket's end at the sensor, connector pointing the other way):
  * the limits on their brackets' inner ends, connectors towards the axis ends; home back to back with the − limit on
- * the next bracket inwards, its connector towards +.
+ * the next bracket inwards, its connector towards +. `limitsInwards` (axis JSON `sensor.limitsInwards`, ELGD-60): the
+ * limits the other way round, on their brackets' outer ends so the brackets reach inwards, clear of the heads and kit;
+ * home on the next bracket in, its connector towards +.
  */
 export function switchPlacements(
   roles: SwitchRole[],
@@ -564,8 +569,21 @@ export function switchPlacements(
   point: number[],
   length: number[],
   outwards = false,
+  limitsInwards = false,
 ): { end: number; facing: 1 | -1 }[] {
   const minus = roles.indexOf('limitMinus')
+  if (outwards && limitsInwards) {
+    // the limits facing the axis ends, their brackets reaching inwards; home on the next bracket in, connector
+    // towards + (away from the − limit)
+    const outer = LIMIT_MARGIN - edge - (minus >= 0 ? point[minus] : 0)
+    return roles.map((role, i) =>
+      role === 'limitMinus'
+        ? { end: outer, facing: -1 as const }
+        : role === 'limitPlus'
+          ? { end: travel - LIMIT_MARGIN + edge + point[i], facing: 1 as const }
+          : { end: outer + (minus >= 0 ? length[minus] : 0), facing: -1 as const },
+    )
+  }
   if (outwards) {
     // the − limit's bracket end (and the home's, abutting it) `point` beyond its switching point towards +
     const inner = LIMIT_MARGIN - edge + (minus >= 0 ? point[minus] : 0)
@@ -737,7 +755,7 @@ export async function comboParts(
   const shaftTwin = twin && !twin.drive ? (twin.shaft ?? null) : null
   const guide = sel.guide && found.guide ? { ...sel.guide, drawing: found.guide } : null
   const sensors = found.sensors
-  const [axisText, kitText, motorText, gearboxText, shaftText, guideText, lugText, bracketText, switchTexts] = await Promise.all([
+  const [axisText, kitText, motorText, gearboxText, shaftText, guideText, lugText, bracketText, switchTexts, fixingText] = await Promise.all([
     load(found.axis),
     load(found.kit),
     load(found.motor),
@@ -747,6 +765,7 @@ export async function comboParts(
     sensors?.lug ? load(sensors.lug) : Promise.resolve(null),
     sensors?.bracket ? load(sensors.bracket) : Promise.resolve(null),
     sensors ? Promise.all(sensors.switches.map(load)) : Promise.resolve(null),
+    sensors?.fixing && sensors.bracket && !sensors.bracket.meta?.screws?.length ? load(sensors.fixing) : Promise.resolve(null),
   ])
 
   let stretched = parseStep(axisText)
@@ -1004,6 +1023,7 @@ export async function comboParts(
         sensors.switches.map((d, i) => (bracket ? beamFrom(i) : (d.meta!.switchPoint ?? 0))),
         bracket ? lengths.map(() => bracket.length ?? 0) : lengths,
         bracket != null,
+        !!seats.limitsInwards,
       )
       // the lug's middle off the slide centre along the travel (ELGD-BS slides), which the switches follow
       const lugShift = dot(sub(seats.lug.origin, axisMeta.slide.origin), axisMeta.slide.travel)
@@ -1066,7 +1086,16 @@ export async function comboParts(
       const drawing = sensors.switches[i]
       const file = files.get(drawing.path) ?? trimmed(withoutParts(parseStep(switchTexts[i]), drawing.meta!.without), drawing.meta!.trim)
       files.set(drawing.path, file)
-      parts.push({ role: 'sensor', name: `${s.part.model} (${SWITCH_NAMES[s.role]})`, file, transform: mate(first.axisToWorld, slots[i], drawing.meta!.seat) })
+      const transform = mate(first.axisToWorld, slots[i], drawing.meta!.seat)
+      parts.push({ role: 'sensor', name: `${s.part.model} (${SWITCH_NAMES[s.role]})`, file, transform })
+      // its fixing screws on its ears, where the bracket brings none
+      const fixing = drawing.meta!.fixing
+      if (fixing && fixingText && sensors.fixing?.meta) {
+        const screw = files.get(sensors.fixing.path) ?? parseStep(fixingText)
+        files.set(sensors.fixing.path, screw)
+        for (const at of fixing.at)
+          parts.push({ role: 'sensor', name: `${sensors.fixing.model} (${SWITCH_NAMES[s.role]})`, file: screw, transform: mate(transform, { origin: at, axis: fixing.axis, up: fixing.up }, sensors.fixing.meta.seat) })
+      }
     })
     name += ` + ${sel.sensing!.lug ? `${sel.sensing!.lug.model} + ` : ''}${switches.length} × ${[...new Set(switches.map((s) => s.part.model))].join(' / ')}${sensors.bracket ? ` + ${switches.length} × ${sel.sensing!.bracket!.model}` : ''}`
   }

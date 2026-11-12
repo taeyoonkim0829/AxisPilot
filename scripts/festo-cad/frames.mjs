@@ -836,6 +836,9 @@ const SENSOR_SEATS = {
 }
 /** ESBF size → mm from the cylinder axis to the top face with the sensor slot (measured on the STEP models, which
  *  leave the slot out; the data sheet's sensor mounting L3) */
+/** ELGD drive-size keys whose Omron limit sensors face the axis ends (`sensor.limitsInwards`), found by the interference
+ *  check: an outward bracket reaches the size-60 heads and kits, the TB-80 heads, a parallel kit's motor on BS-WD-120 */
+const ELGD_LIMITS_INWARDS = ['TB-60', 'BS-60', 'TB-80', 'BS-WD-120']
 const ESBF_SLOT_TOP = { 32: 22.25, 40: 26.75, 50: 31.75, 63: 37.25, 80: 46.25, 100: 54.75 }
 /** EGC-TB-KF / EGC-BS-KF size → mm from the slide surface centre, on the side away from `slide.front` (TB) / along
  *  travel × normal (BS), where the switch lug SF-EGC-1's threads are: the slide's side face, the threads' depth below
@@ -912,7 +915,12 @@ for (const file of files) {
     const { origin: o, normal: n, travel: t } = old.slide
     const lateral = [t[1] * n[2] - t[2] * n[1], t[2] * n[0] - t[0] * n[2], t[0] * n[1] - t[1] * n[0]]
     const at = (depth, along = 0) => o.map((v, i) => fixed(v + side * lateral[i] - depth * n[i] + along * t[i]))
-    const sensor = { lug: { origin: at(lug, shift), axis: lateral, up: n }, slot: { origin: at(slot), axis: lateral, up: t } }
+    const sensor = {
+      lug: { origin: at(lug, shift), axis: lateral, up: n },
+      slot: { origin: at(slot), axis: lateral, up: t },
+      // Omron brackets reaching outwards would run into the size-60 heads and kits: the limits face the axis ends
+      ...(ELGD_LIMITS_INWARDS.includes(`${m[1]}-${m[2]}`) ? { limitsInwards: true } : {}),
+    }
     if (dryRun) console.log(out, JSON.stringify(sensor))
     else writeFileSync(out, format({ ...old, sensor }))
     written++

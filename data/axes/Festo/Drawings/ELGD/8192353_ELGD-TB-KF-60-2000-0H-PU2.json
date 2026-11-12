@@ -4,5 +4,5 @@
   "slide": { "origin": [0, 82, -57.5], "normal": [0, 1, 0], "travel": [0, 0, -1] },
   "stretch": { "part": "8176884 ELGD-TB-KF-60-2000-0H---(high0 0 0 2_h)", "axis": 2, "dir": -1, "range": [-2107, -122], "move": [11862, 11863] },
   "profile": { "origin": [0, 0, -1057.5], "normal": [0, -1, 0] },
-  "sensor": { "lug": { "origin": [30, 71, -57.5], "axis": [1, 0, 0], "up": [0, 1, 0] }, "slot": { "origin": [30, 50, -57.5], "axis": [1, 0, 0], "up": [0, 0, -1] } }
+  "sensor": { "lug": { "origin": [30, 71, -57.5], "axis": [1, 0, 0], "up": [0, 1, 0] }, "slot": { "origin": [30, 50, -57.5], "axis": [1, 0, 0], "up": [0, 0, -1] }, "limitsInwards": true }
 }

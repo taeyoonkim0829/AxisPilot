@@ -5,5 +5,5 @@
   "stretch": { "part": "8176879 ELGD-BS-KF-WD-120-600-0H---(highh)", "axis": 2, "dir": -1, "range": [-857, -271], "move": [14473] },
   "profile": { "origin": [0, 0, -421.8], "normal": [0, -1, 0] },
   "coupling": { "part": "EAMC-30-GB16-D10x10-A", "jaw": [-1, 0, 0], "count": 3 },
-  "sensor": { "lug": { "origin": [60, 69, -134.5], "axis": [1, 0, 0], "up": [0, 1, 0] }, "slot": { "origin": [60, 48, -134.5], "axis": [1, 0, 0], "up": [0, 0, -1] } }
+  "sensor": { "lug": { "origin": [60, 69, -134.5], "axis": [1, 0, 0], "up": [0, 1, 0] }, "slot": { "origin": [60, 48, -134.5], "axis": [1, 0, 0], "up": [0, 0, -1] }, "limitsInwards": true }
 }
