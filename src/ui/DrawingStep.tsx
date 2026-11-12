@@ -179,7 +179,8 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
     ]
   }
 
-  const rows: { role: PartRole; model: string; drawing: Drawing | null; note: string | null; warn?: boolean }[] =
+  // `label`: shown in place of the role's name (the sensing parts, listed one by one as in the report)
+  const rows: { role: PartRole; label?: string; model: string; drawing: Drawing | null; note: string | null; warn?: boolean }[] =
     selection && found
       ? [
           {
@@ -245,16 +246,30 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
                 },
               ]
             : []),
+          // the switch lug, the brackets and the proximity switches by model, as the report lists them
           ...(selection.sensing
-            ? [
-                {
-                  role: 'sensor' as const,
-                  model: `${selection.sensing.lug ? `${selection.sensing.lug.model} + ` : ''}${selection.sensing.switches.length} × ${[...new Set(selection.sensing.switches.map((s) => s.part.model))].join(' / ')}${selection.sensing.bracket ? ` + ${selection.sensing.switches.length} × ${selection.sensing.bracket.model}` : ''}`,
-                  drawing: found.sensors?.lug ?? found.sensors?.switches[0] ?? null,
-                  warn: !found.sensors,
-                  note: found.sensors ? null : t('도면이 없어 조합 도면에서 뺐습니다'),
-                },
-              ]
+            ? (() => {
+                const sensing = selection.sensing
+                const missing = { warn: !found.sensors, note: found.sensors ? null : t('도면이 없어 조합 도면에서 뺐습니다') }
+                const n = sensing.switches.length
+                return [
+                  ...(sensing.lug ? [{ role: 'sensor' as const, label: t('센서 러그'), model: sensing.lug.model, drawing: found.sensors?.lug ?? null, ...missing }] : []),
+                  ...(sensing.bracket
+                    ? [{ role: 'sensor' as const, label: t('센서 브라켓'), model: `${n} × ${sensing.bracket.model}`, drawing: found.sensors?.bracket ?? null, ...missing }]
+                    : []),
+                  ...[...new Set(sensing.switches.map((s) => s.part))].map((part) => {
+                    const roles = sensing.switches.filter((s) => s.part === part)
+                    const names = [...new Set(roles.map((s) => t(s.role === 'home' ? 'Home 센서' : 'Limit 센서')))].join(' · ')
+                    return {
+                      role: 'sensor' as const,
+                      label: `${t('근접 센서')} (${names})`,
+                      model: `${roles.length} × ${part.model}`,
+                      drawing: found.sensors?.switches[sensing.switches.indexOf(roles[0])] ?? null,
+                      ...missing,
+                    }
+                  }),
+                ]
+              })()
             : []),
           ...(axis!.shaft
             ? [
@@ -308,8 +323,8 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
               </thead>
               <tbody>
                 {rows.map((r) => (
-                  <tr key={r.role}>
-                    <td>{t(roleLabel[r.role])}</td>
+                  <tr key={`${r.role}-${r.label ?? ''}`}>
+                    <td>{r.label ?? t(roleLabel[r.role])}</td>
                     <td className="model">{r.model}</td>
                     <td className={r.drawing ? undefined : 'fail-text'}>
                       {r.drawing ? [r.drawing.partNumber, r.drawing.model].filter(Boolean).join(' ') : t('도면 없음')}
@@ -342,7 +357,7 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
               {t('도면이 없는 부품이 있어 조합할 수 없습니다: {parts}. 관리자에게 문의하세요.', {
                 parts: rows
                   .filter((r) => found?.missing.includes(r.role))
-                  .map((r) => `${t(roleLabel[r.role])} ${r.model}`)
+                  .map((r) => `${r.label ?? t(roleLabel[r.role])} ${r.model}`)
                   .join(', '),
               })}
             </p>
