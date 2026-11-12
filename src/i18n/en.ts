@@ -198,8 +198,6 @@ export const en: Record<string, string> = {
   'Limit 센서': 'Limit switch',
   '취부 {code} 모델 없음: 표준 프로파일로 그림': 'No {code} mounting model: drawn with the standard profile',
   '센서 출력': 'Switch output',
-  'Limit 접점': 'Limit contact',
-  'Home 접점': 'Home contact',
   '이 축의 센서 · 센서 러그 데이터 없음': 'No sensor / switch lug data for this axis',
   '스핀들 서포트 사용': 'With spindle support',
   '스핀들 서포트 사용, 스트로크 {stroke} mm의 속도-스트로크 선도 기준 (최대 {max} m/s)': 'With spindle support, speed-stroke curve at a stroke of {stroke} mm (max. {max} m/s)',

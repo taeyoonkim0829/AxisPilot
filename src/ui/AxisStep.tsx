@@ -140,7 +140,7 @@ function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'sett
             />
           </div>
           <div className="filter-group">
-            <span className="field-label">{t('Limit 접점')}</span>
+            <span className="field-label">{t('Limit 센서')}</span>
             <RadioGroup
               options={['NO', 'NC'] as SensorContact[]}
               value={settings.limitContact}
@@ -149,7 +149,7 @@ function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'sett
             />
           </div>
           <div className="filter-group">
-            <span className="field-label">{t('Home 접점')}</span>
+            <span className="field-label">{t('Home 센서')}</span>
             <RadioGroup
               options={['none', 'NO', 'NC'] as const}
               value={settings.homeContact ?? 'none'}
