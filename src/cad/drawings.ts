@@ -36,14 +36,19 @@ export interface AxisMeta {
    *  `slot` = the top face's slot at the body's front face, `up` = towards the rod end */
   sensor?: { lug?: Frame; slot: Frame }
 }
-/** A switch lug or proximity switch (data/sensors): `seat` = lug: its face on the slide at its holes (`axis` away from
- *  the slide, `up` towards the slide surface); switch: its top face at the sensing end (`axis` out of the slot, `up`
- *  from the cable end to the sensing end). `without` / `move`: parts of the file left out or moved (file mm) */
+/** A switch lug, proximity switch or switch bracket (data/sensors): `seat` = lug: its face on the slide at its holes
+ *  (`axis` away from the slide, `up` towards the slide surface); switch: its top face at the sensing end (`axis` out of
+ *  the slot, `up` from the cable end to the sensing end); bracket: its underside at the inner face of the hook that
+ *  grips the profile's side, at mid length (`axis` up from the profile's top face, `up` along the travel, the hook
+ *  towards axis × up). `without` / `move`: parts of the file left out or moved (file mm) */
 export interface SensorMeta {
   seat: Frame
+  /** bracket: its sensor slot's opening at mid length, where a switch's seat goes (`axis` / `up` as the seat's) */
+  slot?: Frame
   /** lug: mm from its centre to its ends along the travel (it covers a switch within) */
   edge?: number
-  /** switch: mm from its sensing end to its switching point (the mark on its top face) / to its cable end */
+  /** switch: mm from its sensing end to its switching point (the mark on its top face) / to its cable end;
+   *  bracket: its length along the travel */
   switchPoint?: number
   length?: number
   without?: string[]

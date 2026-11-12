@@ -193,6 +193,7 @@ export const en: Record<string, string> = {
   '스핀들 서포트': 'Spindle support',
   '위치 센서': 'Position sensing',
   '센서 러그': 'Switch lug',
+  '센서 브라켓': 'Sensor bracket',
   '근접 센서': 'Proximity switch',
   '센서': 'Sensors',
   '{lug} + {switches} (러그 {mass} kg 이동 질량 포함)': '{lug} + {switches} (lug {mass} kg included in the moving mass)',

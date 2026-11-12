@@ -773,10 +773,11 @@ describe('combination', () => {
     expect(coupling.lo[0]).toBeGreaterThan(housing.hi[0] - 63.2 + 5)
   }, 60000)
 
-  it('puts the ESBF switches 30 mm from the body ends, the home switch beside the + limit at the motor end', async () => {
+  it('puts the ESBF switches in brackets 30 mm from the body ends, the home switch beside the + limit at the motor end', async () => {
     const axis = axes.find((a) => a.model === 'ESBF-BS-63-…-5P')!
     const sensing = sensingFor(axis, sensors, { sensorOutput: 'PNP', limitContact: 'NC', homeContact: 'NO' })!
     expect(sensing.lug).toBeNull()
+    expect(sensing.bracket?.partNumber).toBe('175706')
     expect(sensing.switches.map((s) => `${s.part.model} ${s.part.partNumber}`)).toEqual([
       'SMT-8M-A-PO-24V-E-7,5-OE 574340',
       'SMT-8M-A-PO-24V-E-7,5-OE 574340',
@@ -802,11 +803,22 @@ describe('combination', () => {
     expect(parts.some((p) => /ASCF/.test(p.name))).toBe(false)
     // floor: rod end at +X, motor at -X; the body 571 - 100 mm long (stroke 400 -> 300); the + limit's sensing end
     // 30 mm from the drive end pointing at it, the - limit's 30 mm from the front, the home switch (26.3 mm body)
-    // right behind the + limit; tops flush with the top face 37.25 mm above the rod axis
+    // a bracket (27 mm) behind the + limit; each switch centred in an SMB-8-FENG-50/63 bracket whose underside rests
+    // on the top face 37.25 mm above the rod axis and whose hook reaches down the profile's side (37.25 mm out)
     const [plus, home, minus] = parts.filter((p) => /SMT-8M-A/.test(p.name)).sort((a, b) => a.lo[0] - b.lo[0])
     expect(minus.hi[0] - plus.lo[0]).toBeCloseTo(471 - 60, 1)
-    expect(home.lo[0] - plus.lo[0]).toBeCloseTo(26.3, 1)
-    for (const s of [plus, home, minus]) expect(s.hi[2]).toBeCloseTo(37.25, 1)
+    expect(home.lo[0] - plus.lo[0]).toBeCloseTo(27, 1)
+    for (const s of [plus, home, minus]) expect(s.hi[2]).toBeCloseTo(37.25 + 5.5 - 0.4, 1)
+    const brackets = parts.filter((p) => /SMB-8-FENG/.test(p.name)).sort((a, b) => a.lo[0] - b.lo[0])
+    expect(brackets).toHaveLength(3)
+    // centred on the switch bodies (26.3 mm from their sensing ends, the cables leaving them)
+    const centres = [plus.lo[0] + 13.15, home.lo[0] + 13.15, minus.hi[0] - 13.15]
+    brackets.forEach((b, i) => {
+      expect((b.lo[0] + b.hi[0]) / 2).toBeCloseTo(centres[i], 1)
+      expect(b.lo[2]).toBeCloseTo(37.25 - 15.5 - 0.4 + 0.4, 0)
+      // the hook on one side: 37.25 + its 2.7 mm wall
+      expect(Math.max(-b.lo[1], b.hi[1])).toBeCloseTo(37.25 + 2.7, 1)
+    })
   }, 60000)
 
   it('leaves out the kit screws filed beyond the motor face, inside the motor', async () => {

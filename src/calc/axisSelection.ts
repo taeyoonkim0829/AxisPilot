@@ -105,6 +105,9 @@ export type SwitchRole = 'limitMinus' | 'limitPlus' | 'home'
 export interface Sensing {
   /** the switch lug on the slide; null where the switches sense a magnet in the piston (ESBF) */
   lug: SensorPart | null
+  /** the mounting kit holding each switch on the profile (ESBF: SMB-8-FENG, one per switch); null where the
+   *  switches go into the profile's slot */
+  bracket: SensorPart | null
   /** the proximity switches, − limit, + limit, then home when used */
   switches: { role: SwitchRole; part: SensorPart }[]
 }
@@ -122,6 +125,7 @@ export function sensingFor(
   const fits = (s: SensorPart) =>
     s.axes.some((a) => a.family === axis.family && a.variant === axis.variant && a.size === axis.size && a.drive === axis.drive)
   const lug = sensors.find((s) => s.role === 'lug' && fits(s)) ?? null
+  const bracket = sensors.find((s) => s.role === 'bracket' && fits(s)) ?? null
   const pick = (contact: SensorContact) =>
     sensors.find((s) => s.role === 'sensor' && fits(s) && s.output === settings.sensorOutput && s.contact === contact)
   const limit = pick(settings.limitContact)
@@ -129,6 +133,7 @@ export function sensingFor(
   if (!limit || (settings.homeContact && !home)) return null
   return {
     lug,
+    bracket,
     switches: [
       { role: 'limitMinus', part: limit },
       { role: 'limitPlus', part: limit },

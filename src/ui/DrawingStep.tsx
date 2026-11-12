@@ -249,7 +249,7 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
             ? [
                 {
                   role: 'sensor' as const,
-                  model: `${selection.sensing.lug ? `${selection.sensing.lug.model} + ` : ''}${selection.sensing.switches.length} × ${[...new Set(selection.sensing.switches.map((s) => s.part.model))].join(' / ')}`,
+                  model: `${selection.sensing.lug ? `${selection.sensing.lug.model} + ` : ''}${selection.sensing.switches.length} × ${[...new Set(selection.sensing.switches.map((s) => s.part.model))].join(' / ')}${selection.sensing.bracket ? ` + ${selection.sensing.switches.length} × ${selection.sensing.bracket.model}` : ''}`,
                   drawing: found.sensors?.lug ?? found.sensors?.switches[0] ?? null,
                   warn: !found.sensors,
                   note: found.sensors ? null : t('도면이 없어 조합 도면에서 뺐습니다'),

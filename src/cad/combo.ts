@@ -59,9 +59,9 @@ export interface ComboDrawings {
   kit: Drawing<KitMeta> | null
   /** the guide's drawing; without one (or, EAGF, without the cylinder's `front` frame) the guide is left out */
   guide: Drawing<GuideMeta> | null
-  /** the switch lug's and each proximity switch's drawing (as `sensing.switches`); null (left out) without one of them
-   *  or the axis's `sensor` seats */
-  sensors: { lug: Drawing<SensorMeta> | null; switches: Drawing<SensorMeta>[] } | null
+  /** the switch lug's, the switch bracket's and each proximity switch's drawing (as `sensing.switches`); null (left
+   *  out) without one of them or the axis's `sensor` seats */
+  sensors: { lug: Drawing<SensorMeta> | null; bracket: Drawing<SensorMeta> | null; switches: Drawing<SensorMeta>[] } | null
   /** a mounting type was ordered but has no file of its own: the standard profile is drawn */
   mountingMissing: boolean
   missing: PartRole[]
@@ -81,6 +81,7 @@ export function comboDrawings(sel: ComboSelection, all?: Drawing[]): ComboDrawin
   if (!motor) missing.push('motor')
   const guide = sel.guide ? guideDrawingFor(sel.guide.guide, sel.guide.stroke, all) : null
   const lug = sel.sensing?.lug ? sensorDrawingFor(sel.sensing.lug, all) : null
+  const bracket = sel.sensing?.bracket ? sensorDrawingFor(sel.sensing.bracket, all) : null
   const switches = (sel.sensing?.switches ?? []).map((s) => sensorDrawingFor(s.part, all))
   return {
     axis,
@@ -92,8 +93,13 @@ export function comboDrawings(sel: ComboSelection, all?: Drawing[]): ComboDrawin
     guide: guide && (sel.guide!.guide.kind === 'axis' || axis?.meta?.front) ? guide : null,
     mountingMissing: !!sel.mounting && !mounted,
     sensors:
-      sel.sensing && (lug || !sel.sensing.lug) && switches.every((d) => d != null) && axis?.meta?.sensor && !!lug === !!axis.meta.sensor.lug
-        ? { lug, switches: switches as Drawing<SensorMeta>[] }
+      sel.sensing &&
+      (lug || !sel.sensing.lug) &&
+      (bracket?.meta?.slot || !sel.sensing.bracket) &&
+      switches.every((d) => d != null) &&
+      axis?.meta?.sensor &&
+      !!lug === !!axis.meta.sensor.lug
+        ? { lug, bracket, switches: switches as Drawing<SensorMeta>[] }
         : null,
     missing,
   }
@@ -703,7 +709,7 @@ export async function comboParts(
   const shaftTwin = twin && !twin.drive ? (twin.shaft ?? null) : null
   const guide = sel.guide && found.guide ? { ...sel.guide, drawing: found.guide } : null
   const sensors = found.sensors
-  const [axisText, kitText, motorText, gearboxText, shaftText, guideText, lugText, switchTexts] = await Promise.all([
+  const [axisText, kitText, motorText, gearboxText, shaftText, guideText, lugText, bracketText, switchTexts] = await Promise.all([
     load(found.axis),
     load(found.kit),
     load(found.motor),
@@ -711,6 +717,7 @@ export async function comboParts(
     shaftTwin ? load(shaftTwin.drawing) : Promise.resolve(null),
     guide ? load(guide.drawing) : Promise.resolve(null),
     sensors?.lug ? load(sensors.lug) : Promise.resolve(null),
+    sensors?.bracket ? load(sensors.bracket) : Promise.resolve(null),
     sensors ? Promise.all(sensors.switches.map(load)) : Promise.resolve(null),
   ])
 
@@ -939,7 +946,7 @@ export async function comboParts(
   }
   // Position sensing on the first axis: the switch lug on the main slide's side face as drawn, the proximity switches
   // in the sensor slot (`switchPlacements`); without a lug (ESBF) the switches at fixed places on the body
-  // (`bodySwitchPlacements`)
+  // (`bodySwitchPlacements`), each in a bracket hooked onto the profile's side
   if (sensors && switchTexts && axisMeta.sensor) {
     const seats = axisMeta.sensor
     const from = (seat: Frame, slideAt: Vec3, up = seat.up): Frame => ({ ...seat, origin: add(slideAt, sub(seat.origin, axisMeta.slide.origin)), up })
@@ -967,11 +974,30 @@ export async function comboParts(
       // the body from its front face (the slot frame) to the drive end, after the length change
       const u = seats.slot.up
       const body = dot(sub(seats.slot.origin, base.drive.origin), u)
+      const bracket = sensors.bracket?.meta
+      // switches side by side are a bracket apart
+      const pitch = lengths.map((l) => Math.max(l, bracket?.length ?? 0))
       slots = bodySwitchPlacements(
         switches.map((s) => s.role),
         body,
-        lengths,
-      ).map((p) => ({ ...seats.slot, origin: sub(seats.slot.origin, scale(u, p.end)), up: scale(u, p.facing) }))
+        pitch,
+      ).map((p, i) => {
+        const up = scale(u, p.facing)
+        const frame = { ...seats.slot, origin: sub(seats.slot.origin, scale(u, p.end)), up }
+        if (!bracket || !bracketText) return frame
+        // the bracket centred on its switch, its hook on the profile's side: the profile is square, so the side lies
+        // as far from the rod axis (the drive frame's line) as the top face
+        const side = cross(seats.slot.axis, u)
+        const half = dot(sub(seats.slot.origin, base.drive.origin), seats.slot.axis)
+        const centre = sub(frame.origin, scale(up, lengths[i] / 2))
+        const seat = { ...seats.slot, origin: add(centre, scale(side, half)), up: u }
+        const file = files.get(sensors.bracket!.path) ?? parseStep(bracketText)
+        files.set(sensors.bracket!.path, file)
+        parts.push({ role: 'sensor', name: `${sel.sensing!.bracket!.model} (${SWITCH_NAMES[switches[i].role]})`, file, transform: mate(first.axisToWorld, seat, bracket.seat) })
+        // the switch in the bracket's slot, centred on it
+        const inSlot = apply(mate(identity, seat, bracket.seat), bracket.slot!.origin)
+        return { ...frame, origin: add(inSlot, scale(up, lengths[i] / 2)) }
+      })
     }
     switches.forEach((s, i) => {
       const drawing = sensors.switches[i]
@@ -979,7 +1005,7 @@ export async function comboParts(
       files.set(drawing.path, file)
       parts.push({ role: 'sensor', name: `${s.part.model} (${SWITCH_NAMES[s.role]})`, file, transform: mate(first.axisToWorld, slots[i], drawing.meta!.seat) })
     })
-    name += ` + ${sel.sensing!.lug ? `${sel.sensing!.lug.model} + ` : ''}${switches.length} × ${[...new Set(switches.map((s) => s.part.model))].join(' / ')}`
+    name += ` + ${sel.sensing!.lug ? `${sel.sensing!.lug.model} + ` : ''}${switches.length} × ${[...new Set(switches.map((s) => s.part.model))].join(' / ')}${sensors.bracket ? ` + ${switches.length} × ${sel.sensing!.bracket!.model}` : ''}`
   }
   // Second axis of a twin arrangement at +y (the COG's lateral direction), by default the mirror image of the
   // first (`mirroredDrive`; a slide standing out to one side drawn mirrored, `mirrorAxis`), with its own drive train
@@ -1031,7 +1057,7 @@ export async function comboParts(
   const cogY = facing ? req.cog.y - twin!.spacing / 2 : req.cog.y
   const cogOnSlide = add(payloadAt, add(add(scale(world.travel, req.cog.x), scale(lateral, cogY)), scale(world.normal, req.cog.z)))
   const cog = facing ? apply(facingTurn(identity, req.mounting, 1), cogOnSlide) : cogOnSlide
-  const notices = [...new Set([axisText, kitText, motorText, gearboxText, shaftText, guideText, lugText, ...(switchTexts ?? [])].flatMap((t) => (t && sourceNotice(t)) || []))]
+  const notices = [...new Set([axisText, kitText, motorText, gearboxText, shaftText, guideText, lugText, bracketText, ...(switchTexts ?? [])].flatMap((t) => (t && sourceNotice(t)) || []))]
   return {
     name,
     parts,

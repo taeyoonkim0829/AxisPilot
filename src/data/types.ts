@@ -489,12 +489,13 @@ export interface AxisAdapter {
 
 /**
  * Position sensing (data/sensors): the switch lug screwed to the slide's side and the proximity switch in the
- * profile's sensor slot that senses it, for the axes listed (one lug, a switch at each end position)
+ * profile's sensor slot that senses it, for the axes listed (one lug, a switch at each end position); `bracket` = a
+ * mounting kit holding one switch on a profile without a sensor slot (ESBF: SMB-8-FENG)
  */
 export interface SensorPart {
   id: string
   maker: 'Festo'
-  role: 'lug' | 'sensor'
+  role: 'lug' | 'sensor' | 'bracket'
   model: string
   partNumber: string
   /** proximity switch: switching output and contact (N/O, N/C) */

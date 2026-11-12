@@ -1,0 +1,73 @@
+{
+  "items": [
+    {
+      "id": "SMB-8-FENG-32/40",
+      "maker": "Festo",
+      "role": "bracket",
+      "model": "SMB-8-FENG-32/40",
+      "partNumber": "175705",
+      "mass": null,
+      "axes": [
+        {
+          "family": "ESBF",
+          "variant": "",
+          "size": 32,
+          "drive": "spindle"
+        },
+        {
+          "family": "ESBF",
+          "variant": "",
+          "size": 40,
+          "drive": "spindle"
+        }
+      ],
+      "dataSource": "ESBF data sheet 2025/11, accessories p.62 (mounting kit for proximity sensor SMT-8, mounted on the profile with two screws, one per sensor); drawing from PARTdataManager"
+    },
+    {
+      "id": "SMB-8-FENG-50/63",
+      "maker": "Festo",
+      "role": "bracket",
+      "model": "SMB-8-FENG-50/63",
+      "partNumber": "175706",
+      "mass": null,
+      "axes": [
+        {
+          "family": "ESBF",
+          "variant": "",
+          "size": 50,
+          "drive": "spindle"
+        },
+        {
+          "family": "ESBF",
+          "variant": "",
+          "size": 63,
+          "drive": "spindle"
+        }
+      ],
+      "dataSource": "ESBF data sheet 2025/11, accessories p.62 (mounting kit for proximity sensor SMT-8, mounted on the profile with two screws, one per sensor); drawing from PARTdataManager"
+    },
+    {
+      "id": "SMB-8-FENG-80/100",
+      "maker": "Festo",
+      "role": "bracket",
+      "model": "SMB-8-FENG-80/100",
+      "partNumber": "175707",
+      "mass": null,
+      "axes": [
+        {
+          "family": "ESBF",
+          "variant": "",
+          "size": 80,
+          "drive": "spindle"
+        },
+        {
+          "family": "ESBF",
+          "variant": "",
+          "size": 100,
+          "drive": "spindle"
+        }
+      ],
+      "dataSource": "ESBF data sheet 2025/11, accessories p.62 (mounting kit for proximity sensor SMT-8, mounted on the profile with two screws, one per sensor); drawing from PARTdataManager"
+    }
+  ]
+}
