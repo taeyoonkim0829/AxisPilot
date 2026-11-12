@@ -582,6 +582,10 @@ export const en: Record<string, string> = {
     'The motor is on the side of the EAGF guide rods and can interfere with the guide housing and rods. Change the kit assembly direction or the guide orientation.',
   '가이드 방향 (EAGF 로드 위치)': 'Guide orientation (EAGF rod position)',
   '가이드 로드 {rods}': 'guide rods {rods}',
+  '센서 {side}': 'sensors {side}',
+  '센서 취부 방향': 'Sensor mounting side',
+  '센서가 병렬 키트의 모터 쪽에 있어 모터와 간섭할 수 있습니다. 센서 취부 방향이나 키트 조립 방향을 바꾸세요.':
+    "The sensors are on the side of the parallel kit's motor and can interfere with it. Change the sensor mounting side or the kit assembly direction.",
   상하: 'top / bottom',
   좌우: 'left / right',
   '모터가 슬라이드 쪽에 있어 슬라이드·부하와 간섭할 수 있으므로 사용 가능한 스트로크가 줄어들 수 있습니다.': 'The motor sits on the slide side and can collide with the slide or the payload, so the usable stroke may be shorter.',

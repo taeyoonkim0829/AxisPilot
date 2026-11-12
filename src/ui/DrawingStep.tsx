@@ -10,6 +10,7 @@ import {
   drivePositionWords,
   mirroredDrive,
   motorFacesTwin,
+  sensorSides,
   shaftDrivePosition,
   SIDES,
   twinPositionWords,
@@ -112,6 +113,9 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
   const eagf = selection?.guide?.guide.kind === 'cylinder' && found?.guide != null
   const cylinder = axis?.axis.family === 'ESBF' ? { eagf } : null
   const rods = sides.guideRods ?? 'upDown'
+  // position sensing on the other side of the profile (ESBF: any face)
+  const sensing = selection?.sensing && found?.sensors ? sensorSides(axisMeta) : null
+  const sensorSide = sensing ? (sides.sensorSide && sensing.options.includes(sides.sensorSide) ? sides.sensorSide : sensing.filed) : null
   const shaftDrawing = axis?.shaft ? shaftDrawingFor(axis.shaft.shaft) : null
   const key = selection
     ? [
@@ -124,6 +128,7 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
         twinMotor ? twinConnector : '',
         facing ? 'facing' : '',
         eagf ? rods : '',
+        sensorSide ?? '',
       ].join('|')
     : ''
   const ready = found != null && found.missing.length === 0
@@ -141,6 +146,7 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
       tr('모터 커넥터 {side}', { side: tr(sideLabel[connector]) }),
       facing && tr('슬라이드 마주 보기'),
       eagf && tr('가이드 로드 {rods}', { rods: tr(rodsLabel[rods]) }),
+      sensorSide && tr('센서 {side}', { side: tr(sideLabel[sensorSide]) }),
     ].filter(Boolean)
     const second = twinMotor ? [parallel && kitMotor(twinSides), tr('모터 커넥터 {side}', { side: tr(sideLabel[twinConnector]) })].filter(Boolean) : []
     return [
@@ -296,7 +302,14 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
         ]
       : []
 
-  const warnings = [...new Set([...assemblyWarnings(sides, parallel, cylinder), ...(twinMotor ? assemblyWarnings(twinSides, parallel, cylinder) : [])])]
+  const warnings = [
+    ...new Set([
+      ...assemblyWarnings(sides, parallel, cylinder),
+      ...(twinMotor ? assemblyWarnings(twinSides, parallel, cylinder) : []),
+      // a parallel kit's motor lies alongside the profile on its side
+      ...(parallel && sensorSide === sides.kitSide ? ['센서가 병렬 키트의 모터 쪽에 있어 모터와 간섭할 수 있습니다. 센서 취부 방향이나 키트 조립 방향을 바꾸세요.'] : []),
+    ]),
+  ]
 
   return (
     <section className="panel step" id="step-drawing">
@@ -443,6 +456,17 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
                   options={SIDES}
                   value={twinConnector}
                   onChange={(twinMotorConnector) => onSides({ ...sides, twinMotorConnector })}
+                  label={(s) => t(sideLabel[s])}
+                />
+              </>
+            )}
+            {sensing && sensorSide && (
+              <>
+                <span>{t('센서 취부 방향')}</span>
+                <RadioGroup
+                  options={sensing.options}
+                  value={sensorSide}
+                  onChange={(s) => onSides({ ...sides, sensorSide: s })}
                   label={(s) => t(sideLabel[s])}
                 />
               </>

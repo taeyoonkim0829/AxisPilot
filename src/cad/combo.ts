@@ -145,6 +145,43 @@ export interface ComboOptions {
   /** EAGF on an ESBF: its guide rods above and below the cylinder (default) or left and right; drawing only, the
    *  data sheet loads are the same both ways (Fy = Fz, My = Mz) */
   guideRods?: GuideRods
+  /** The side the position sensing goes on (`sensorSides`); null = as the axis JSON's seats put it */
+  sensorSide?: Side | null
+}
+
+/**
+ * The sides the position sensing can go on, seen from the motor end with the slide surface up (`Side`), and the one
+ * the axis JSON's `sensor` seats put it on: an ESBF on any face of its square profile, an axis with a slide on
+ * either side of the profile; none for EGC, whose slide stands out to one side (the lug's face on the other side is
+ * not measured). `turn` moves a seat frame to `side`: the cylinder's turned about its rod axis, the slide axis's
+ * mirrored across the profile's middle plane (lug, slot and bracket seats are mirror images; the parts placed on
+ * them come out turned, not mirrored).
+ */
+export function sensorSides(meta: AxisMeta | null | undefined) {
+  const seats = meta?.sensor
+  if (!meta || !seats || !meta.profile || meta.slide.front) return null
+  const { normal: up, travel } = meta.slide
+  const out = scale(travel, Math.sign(dot(sub(meta.drive.origin, meta.profile.origin), travel)) || 1)
+  const right = cross(up, out)
+  const vector = (s: Side) => (s === 'up' ? up : s === 'down' ? scale(up, -1) : s === 'right' ? right : scale(right, -1))
+  const cylinder = !seats.lug
+  // the cylinder's rod axis lies on the drive frame's line; a slide axis's profile middle on the profile frame
+  const v = sub(seats.lug?.origin ?? seats.slot.origin, cylinder ? meta.drive.origin : meta.profile.origin)
+  const [du, dr] = [dot(v, up), dot(v, right)]
+  const filed: Side = cylinder && Math.abs(du) > Math.abs(dr) ? (du > 0 ? 'up' : 'down') : dr > 0 ? 'right' : 'left'
+  const options: readonly Side[] = cylinder ? SIDES : ['left', 'right']
+  const turn = (side: Side) => {
+    if (side === filed || !options.includes(side)) return (f: Frame) => f
+    if (cylinder) {
+      const m = turnAbout(identity, meta.drive.origin, scale(out, 1 / Math.hypot(...out)), vector(filed), vector(side))
+      return (f: Frame): Frame => ({ origin: apply(m, f.origin), axis: rotate(m, f.axis), up: rotate(m, f.up) })
+    }
+    const n = scale(right, 1 / Math.hypot(...right))
+    const o = meta.profile!.origin
+    const mirror = (w: Vec3) => sub(w, scale(n, 2 * dot(w, n)))
+    return (f: Frame): Frame => ({ origin: add(o, mirror(sub(f.origin, o))), axis: mirror(f.axis), up: mirror(f.up) })
+  }
+  return { filed, options, turn }
 }
 
 /**
@@ -995,8 +1032,12 @@ export async function comboParts(
   // in the sensor slot (`switchPlacements`); without a lug (ESBF) the switches at fixed places on the body
   // (`bodySwitchPlacements`), each in a bracket hooked onto the profile's side
   if (sensors && switchTexts && axisMeta.sensor) {
-    const seats = axisMeta.sensor
-    const from = (seat: Frame, slideAt: Vec3, up = seat.up): Frame => ({ ...seat, origin: add(slideAt, sub(seat.origin, axisMeta.slide.origin)), up })
+    const turn = options.sensorSide ? sensorSides(axisMeta)?.turn(options.sensorSide) : undefined
+    const filed = axisMeta.sensor
+    const seats = turn
+      ? { ...filed, slot: turn(filed.slot), ...(filed.lug ? { lug: turn(filed.lug) } : {}), ...(filed.bracket ? { bracket: turn(filed.bracket) } : {}) }
+      : filed
+    const from =(seat: Frame, slideAt: Vec3, up = seat.up): Frame => ({ ...seat, origin: add(slideAt, sub(seat.origin, axisMeta.slide.origin)), up })
     const files = new Map<string, StepFile>()
     const switches = sel.sensing!.switches
     const lengths = sensors.switches.map((d) => d.meta!.length ?? 0)

@@ -9,11 +9,12 @@ import {
   defaultComboOptions,
   drivePositionWords,
   DRIVE_POSITIONS,
+  sensorSides,
   twinPositionWords,
   type ComboOptions,
   type ComboSelection,
 } from './combo'
-import { gearboxDrawingFor, motorDrawingFor, parseDrawingPath, shaftDrawingFor, siemensVariant, type Drawing, type KitMeta, type ShaftMeta } from './drawings'
+import { gearboxDrawingFor, motorDrawingFor, parseDrawingPath, shaftDrawingFor, siemensVariant, type AxisMeta, type Drawing, type KitMeta, type ShaftMeta } from './drawings'
 import { apply, invert, mate, type Frame } from './geometry'
 import { closure, parseStep, pointOf, refs, typeOf, writeStep, type StepFile } from './step'
 import { stretchPart, type StretchSpec } from './stretch'
@@ -545,6 +546,22 @@ describe('combination', () => {
     expect(minus).toBeCloseTo(2 - 21 - 6.7, 1)
     expect(home).toBeCloseTo(2 - 21 - 6.7 + 2 * 31.8, 1)
     expect(plus).toBeCloseTo(300 - 2 + 21 + 6.7, 1)
+    // 센서 취부 방향: on the profile's other side, lug and switches turned (not mirrored), where they were along the travel
+    const choice = sensorSides(found.axis!.meta as AxisMeta)!
+    expect(choice.options).toEqual(['left', 'right'])
+    const other = await buildCombo(sel, found, { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load, {
+      ...defaultComboOptions,
+      sensorSide: choice.filed === 'left' ? 'right' : 'left',
+    })
+    const turned = (await meshBox(other.step)).parts
+    const lug2 = turned.find((p) => /8196827 EAPM-E24-60-SLS/.test(p.name))!
+    expect(side > 0 ? -lug2.hi[1] : lug2.lo[1]).toBeCloseTo(30, 0)
+    expect(lug2.hi[2]).toBeCloseTo(-11 + 4, 0)
+    for (const s of turned.filter((p) => /SIES-8M/.test(p.name))) {
+      expect((s.lo[2] + s.hi[2]) / 2).toBeCloseTo(-32, 0)
+      expect(side > 0 ? -s.lo[1] : s.hi[1]).toBeCloseTo(30, 0)
+    }
+    expect(switchEnds(other, [0, 4.6, 0]).map((x) => Math.round(x * 10))).toEqual([minus, home, plus].map((x) => Math.round(x * 10)))
   }, 60000)
 
   it('senses an ELGD-BS with the lug where its slide has the threads, off the slide centre, the switches following it', async () => {
@@ -679,6 +696,18 @@ describe('combination', () => {
     expect([elgt.sensing.lug?.partNumber, elgt.sensing.bracket?.partNumber]).toEqual(['8120123', '8119255'])
     const combo2 = await buildCombo(elgt, comboDrawings(elgt, drawingsOf(files.slice(0, 3))), { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
     await checkOmron(combo2.step, /EAPM-L9-90-SLE---/, 500, 7.5, 12.5, 55, false)
+    // the other side: brackets upright, the same placement along the travel
+    const filed = sensorSides(comboDrawings(elgt, drawingsOf(files.slice(0, 3))).axis!.meta as AxisMeta)!.filed
+    const combo3 = await buildCombo(elgt, comboDrawings(elgt, drawingsOf(files.slice(0, 3))), { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load, {
+      ...defaultComboOptions,
+      sensorSide: filed === 'left' ? 'right' : 'left',
+    })
+    await checkOmron(combo3.step, /EAPM-L9-90-SLE---/, 500, 7.5, 12.5, 55, false)
+    const lugY = async (step: string) => {
+      const lug = (await meshBox(step)).parts.find((p) => /EAPM-L9-90-SLE---/.test(p.name))!
+      return Math.sign(lug.lo[1] + lug.hi[1])
+    }
+    expect(await lugY(combo3.step)).toBe(-(await lugY(combo2.step)))
   }, 60000)
 
   it('senses an EGC with the SF-EGC-1 lug on the slide side and the switches in the tilted corner slot', async () => {
@@ -981,6 +1010,20 @@ describe('combination', () => {
       // the hook on one side: 37.25 + its 2.7 mm wall
       expect(Math.max(-b.lo[1], b.hi[1])).toBeCloseTo(37.25 + 2.7, 1)
     })
+    // 센서 취부 방향: on any face of the square profile, turned about the rod axis, the same places along it
+    const choice = sensorSides(found.axis!.meta as AxisMeta)!
+    expect([choice.filed, choice.options]).toEqual(['up', ['up', 'down', 'left', 'right']])
+    const top = 37.25 + 5.5 - 0.4
+    for (const sensorSide of ['down', 'left', 'right'] as const) {
+      const turned = await buildCombo(sel, found, { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load, { ...defaultComboOptions, sensorSide })
+      expect(switchEnds(turned, [0, 4.8, 26.3]).map((x) => Math.round(x * 10))).toEqual([minus, home, plus].map((x) => Math.round(x * 10)))
+      for (const s of (await meshBox(turned.step)).parts.filter((p) => /SMT-8M-A/.test(p.name))) {
+        const [y, z] = [Math.max(-s.lo[1], s.hi[1]), Math.max(-s.lo[2], s.hi[2])]
+        if (sensorSide === 'down') expect(-s.lo[2]).toBeCloseTo(top, 1)
+        else expect(y).toBeCloseTo(top, 1)
+        expect(Math.min(y, z)).toBeLessThan(top - 5)
+      }
+    }
   }, 60000)
 
   it('leaves out the kit screws filed beyond the motor face, inside the motor', async () => {
