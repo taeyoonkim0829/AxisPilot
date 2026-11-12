@@ -103,7 +103,8 @@ export interface AxisEvaluation {
 /** − limit at the start end, + limit at the far end, home beside the − limit (towards +) */
 export type SwitchRole = 'limitMinus' | 'limitPlus' | 'home'
 export interface Sensing {
-  lug: SensorPart
+  /** the switch lug on the slide; null where the switches sense a magnet in the piston (ESBF) */
+  lug: SensorPart | null
   /** the proximity switches, − limit, + limit, then home when used */
   switches: { role: SwitchRole; part: SensorPart }[]
 }
@@ -111,6 +112,7 @@ export interface Sensing {
 /**
  * The switch lug and the proximity switches listed for this axis (family, variant, size, drive) with the chosen
  * output and contacts: a limit switch at each end, a home switch when `homeContact` is set; null when there is none.
+ * Axes whose switches sense the piston's magnet (ESBF) have no lug in the data.
  */
 export function sensingFor(
   axis: Axis,
@@ -119,12 +121,12 @@ export function sensingFor(
 ): Sensing | null {
   const fits = (s: SensorPart) =>
     s.axes.some((a) => a.family === axis.family && a.variant === axis.variant && a.size === axis.size && a.drive === axis.drive)
-  const lug = sensors.find((s) => s.role === 'lug' && fits(s))
+  const lug = sensors.find((s) => s.role === 'lug' && fits(s)) ?? null
   const pick = (contact: SensorContact) =>
     sensors.find((s) => s.role === 'sensor' && fits(s) && s.output === settings.sensorOutput && s.contact === contact)
   const limit = pick(settings.limitContact)
   const home = settings.homeContact ? pick(settings.homeContact) : null
-  if (!lug || !limit || (settings.homeContact && !home)) return null
+  if (!limit || (settings.homeContact && !home)) return null
   return {
     lug,
     switches: [
@@ -134,6 +136,8 @@ export function sensingFor(
     ],
   }
 }
+
+const switchModels = (sensing: Sensing) => [...new Set(sensing.switches.map((s) => s.part.model))].join(' + ')
 
 /** Order options of an axis from the settings */
 export interface AxisOptions {
@@ -656,7 +660,7 @@ export function evaluateAxis(
   const moved = req.movingProfile ? profile + driveMass : slide
   // the switch lug rides on the slide like a part of the payload
   const sensing = settings.sensors ? sensingFor(axis, sensors, settings) : null
-  const axisPayload = share * req.payload + layout.guideMass + (cylinderGuide?.movingMass ?? 0) + (sensing?.lug.mass ?? 0)
+  const axisPayload = share * req.payload + layout.guideMass + (cylinderGuide?.movingMass ?? 0) + (sensing?.lug?.mass ?? 0)
   const mass = axisPayload + moved
   const axisInertia =
     axis.inertiaJ0 +
@@ -922,12 +926,12 @@ export function evaluateAxis(
       label: '위치 센서',
       value: sensing.switches.length,
       unit: '',
-      note: '{lug} + {switches} (러그 {mass} kg 이동 질량 포함)',
-      noteArgs: {
-        lug: sensing.lug.model,
-        switches: sensing.switches.map((s) => s.part.model).filter((m, i, all) => all.indexOf(m) === i).join(' + '),
-        mass: sensing.lug.mass ?? 0,
-      },
+      ...(sensing.lug
+        ? {
+            note: '{lug} + {switches} (러그 {mass} kg 이동 질량 포함)',
+            noteArgs: { lug: sensing.lug.model, switches: switchModels(sensing), mass: sensing.lug.mass ?? 0 },
+          }
+        : { note: '{switches} (피스톤 자석 감지)', noteArgs: { switches: switchModels(sensing) } }),
     })
   else if (settings.sensors) info.push({ label: '위치 센서', value: Number.NaN, unit: '', note: '이 축의 센서 · 센서 러그 데이터 없음' })
   if (shaft) info.push({ label: '모터 구동 이동 질량 (2축 합계)', value: req.payload + 2 * slide, unit: 'kg' })

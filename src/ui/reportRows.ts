@@ -74,7 +74,7 @@ export function partRows(
     // one lug per axis; the proximity switches by model (limit switches, home switch)
     ...(axis.sensing
       ? ([
-          [t('센서 러그'), 'Festo', axis.sensing.lug.model, axis.sensing.lug.partNumber, nAxes, null],
+          ...(axis.sensing.lug ? [[t('센서 러그'), 'Festo', axis.sensing.lug.model, axis.sensing.lug.partNumber, nAxes, null]] : []),
           ...[...new Set(axis.sensing.switches.map((s) => s.part))].map((part): SelectionRow => {
             const roles = axis.sensing!.switches.filter((s) => s.part === part)
             const names = [...new Set(roles.map((s) => t(s.role === 'home' ? 'Home 센서' : 'Limit 센서')))].join(' · ')

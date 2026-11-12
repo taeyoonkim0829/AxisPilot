@@ -30,10 +30,11 @@ export interface AxisMeta {
   /** electric cylinder (ESBF): the front flange face on the rod axis, `axis` along the travel (out of the face),
    *  `up` = the slide normal; where a guide unit (EAGF) sits */
   front?: Frame
-  /** position sensing (ELGD-TB): `lug` = the switch lug's seat on the slide's side face (middle of its two threads,
+  /** position sensing (ELGD): `lug` = the switch lug's seat on the slide's side face (middle of its two threads,
    *  `axis` out of the face, `up` = slide normal); `slot` = the sensor slot's centre at that face beside the slide
-   *  centre at the start position (`axis` out of the face, `up` = travel) */
-  sensor?: { lug: Frame; slot: Frame }
+   *  centre at the start position (`axis` out of the face, `up` = travel). ESBF (no lug, a magnet in the piston):
+   *  `slot` = the top face's slot at the body's front face, `up` = towards the rod end */
+  sensor?: { lug?: Frame; slot: Frame }
 }
 /** A switch lug or proximity switch (data/sensors): `seat` = lug: its face on the slide at its holes (`axis` away from
  *  the slide, `up` towards the slide surface); switch: its top face at the sensing end (`axis` out of the slot, `up`

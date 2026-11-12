@@ -196,6 +196,7 @@ export const en: Record<string, string> = {
   '근접 센서': 'Proximity switch',
   '센서': 'Sensors',
   '{lug} + {switches} (러그 {mass} kg 이동 질량 포함)': '{lug} + {switches} (lug {mass} kg included in the moving mass)',
+  '{switches} (피스톤 자석 감지)': '{switches} (sensing the piston magnet)',
   'Home 센서': 'Home switch',
   'Limit 센서': 'Limit switch',
   '취부 {code} 모델 없음: 표준 프로파일로 그림': 'No {code} mounting model: drawn with the standard profile',

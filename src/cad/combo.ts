@@ -61,7 +61,7 @@ export interface ComboDrawings {
   guide: Drawing<GuideMeta> | null
   /** the switch lug's and each proximity switch's drawing (as `sensing.switches`); null (left out) without one of them
    *  or the axis's `sensor` seats */
-  sensors: { lug: Drawing<SensorMeta>; switches: Drawing<SensorMeta>[] } | null
+  sensors: { lug: Drawing<SensorMeta> | null; switches: Drawing<SensorMeta>[] } | null
   /** a mounting type was ordered but has no file of its own: the standard profile is drawn */
   mountingMissing: boolean
   missing: PartRole[]
@@ -80,7 +80,7 @@ export function comboDrawings(sel: ComboSelection, all?: Drawing[]): ComboDrawin
   if (sel.gearbox && !gearbox?.meta) missing.push('gearbox')
   if (!motor) missing.push('motor')
   const guide = sel.guide ? guideDrawingFor(sel.guide.guide, sel.guide.stroke, all) : null
-  const lug = sel.sensing ? sensorDrawingFor(sel.sensing.lug, all) : null
+  const lug = sel.sensing?.lug ? sensorDrawingFor(sel.sensing.lug, all) : null
   const switches = (sel.sensing?.switches ?? []).map((s) => sensorDrawingFor(s.part, all))
   return {
     axis,
@@ -91,7 +91,10 @@ export function comboDrawings(sel: ComboSelection, all?: Drawing[]): ComboDrawin
     kit,
     guide: guide && (sel.guide!.guide.kind === 'axis' || axis?.meta?.front) ? guide : null,
     mountingMissing: !!sel.mounting && !mounted,
-    sensors: lug && switches.every((d) => d != null) && axis?.meta?.sensor ? { lug, switches: switches as Drawing<SensorMeta>[] } : null,
+    sensors:
+      sel.sensing && (lug || !sel.sensing.lug) && switches.every((d) => d != null) && axis?.meta?.sensor && !!lug === !!axis.meta.sensor.lug
+        ? { lug, switches: switches as Drawing<SensorMeta>[] }
+        : null,
     missing,
   }
 }
@@ -563,6 +566,37 @@ export function switchPlacements(
   )
 }
 
+/** mm: a switch sensing the piston's magnet (ESBF) sits this far from each end of the cylinder body */
+export const BODY_END_GAP = 30
+
+/**
+ * Where the proximity switches go on a cylinder body sensing the piston's magnet (ESBF), in mm from its front face
+ * (rod end) towards the drive end (`body` mm long): `end` = the switch's sensing end, `facing` = the way it points
+ * (+1 towards the front). The − limit's sensing end `BODY_END_GAP` from the front, the + limit's from the drive end,
+ * cables towards the middle; the home switch right behind the + limit (the motor end) towards −, the same way round.
+ */
+export function bodySwitchPlacements(roles: SwitchRole[], body: number, length: number[]): { end: number; facing: 1 | -1 }[] {
+  const plus = roles.indexOf('limitPlus')
+  const plusEnd = body - BODY_END_GAP
+  return roles.map((role) =>
+    role === 'limitMinus'
+      ? { end: BODY_END_GAP, facing: 1 as const }
+      : role === 'limitPlus'
+        ? { end: plusEnd, facing: -1 as const }
+        : { end: plusEnd - (plus >= 0 ? length[plus] : 0), facing: -1 as const },
+  )
+}
+
+/** The file without the instances of the named parts (a sensor file's spare fixings, cable clips) */
+function withoutParts(file: StepFile, names: string[] = []): StepFile {
+  for (const name of names) {
+    const pd = definitionByName(file, name)
+    const rep = pd != null ? shapeOf(file, pd) : null
+    if (rep != null) file = withoutInstances(file, placementIdsOf(file, rep))
+  }
+  return file
+}
+
 /** World axes (Z up): the slide travels along X on floor and wall; vertical puts the motor on top. */
 export function mountingFrame(mounting: Mounting): { travel: Vec3; normal: Vec3 } {
   if (mounting === 'floor') return { travel: [1, 0, 0], normal: [0, 0, 1] }
@@ -676,7 +710,7 @@ export async function comboParts(
     found.gearbox ? load(found.gearbox) : Promise.resolve(null),
     shaftTwin ? load(shaftTwin.drawing) : Promise.resolve(null),
     guide ? load(guide.drawing) : Promise.resolve(null),
-    sensors ? load(sensors.lug) : Promise.resolve(null),
+    sensors?.lug ? load(sensors.lug) : Promise.resolve(null),
     sensors ? Promise.all(sensors.switches.map(load)) : Promise.resolve(null),
   ])
 
@@ -904,45 +938,48 @@ export async function comboParts(
     }
   }
   // Position sensing on the first axis: the switch lug on the main slide's side face as drawn, the proximity switches
-  // in the sensor slot (`switchPlacements`)
-  if (sensors && lugText && switchTexts && axisMeta.sensor) {
+  // in the sensor slot (`switchPlacements`); without a lug (ESBF) the switches at fixed places on the body
+  // (`bodySwitchPlacements`)
+  if (sensors && switchTexts && axisMeta.sensor) {
     const seats = axisMeta.sensor
-    const lugMeta = sensors.lug.meta!
     const from = (seat: Frame, slideAt: Vec3, up = seat.up): Frame => ({ ...seat, origin: add(slideAt, sub(seat.origin, axisMeta.slide.origin)), up })
-    let lugFile = parseStep(lugText)
-    for (const name of lugMeta.without ?? []) {
-      const pd = definitionByName(lugFile, name)
-      const rep = pd != null ? shapeOf(lugFile, pd) : null
-      if (rep != null) lugFile = withoutInstances(lugFile, placementIdsOf(lugFile, rep))
-    }
-    for (const name of lugMeta.move?.parts ?? []) placePart(lugFile, name, { r: identity.r, t: lugMeta.move!.by })
-    const lugModel = sel.sensing!.lug.model
-    parts.push({ role: 'sensor', name: lugModel, file: lugFile, transform: mate(first.axisToWorld, from(seats.lug, add(slide.origin, mainOffset)), lugMeta.seat) })
     const files = new Map<string, StepFile>()
-    const travel = dot(sub(travelEnd, travelStart), base.slide.travel)
     const switches = sel.sensing!.switches
-    const placed = switchPlacements(
-      switches.map((s) => s.role),
-      travel,
-      lugMeta.edge ?? 0,
-      sensors.switches.map((d) => d.meta!.switchPoint ?? 0),
-      sensors.switches.map((d) => d.meta!.length ?? 0),
-    )
-    // the lug's middle off the slide centre along the travel (ELGD-BS slides), which the switches follow
-    const lugShift = dot(sub(seats.lug.origin, axisMeta.slide.origin), axisMeta.slide.travel)
+    const lengths = sensors.switches.map((d) => d.meta!.length ?? 0)
+    let slots: Frame[]
+    if (sensors.lug && lugText && seats.lug) {
+      const lugMeta = sensors.lug.meta!
+      let lugFile = withoutParts(parseStep(lugText), lugMeta.without)
+      for (const name of lugMeta.move?.parts ?? []) placePart(lugFile, name, { r: identity.r, t: lugMeta.move!.by })
+      parts.push({ role: 'sensor', name: sel.sensing!.lug!.model, file: lugFile, transform: mate(first.axisToWorld, from(seats.lug, add(slide.origin, mainOffset)), lugMeta.seat) })
+      const travel = dot(sub(travelEnd, travelStart), base.slide.travel)
+      const placed = switchPlacements(
+        switches.map((s) => s.role),
+        travel,
+        lugMeta.edge ?? 0,
+        sensors.switches.map((d) => d.meta!.switchPoint ?? 0),
+        lengths,
+      )
+      // the lug's middle off the slide centre along the travel (ELGD-BS slides), which the switches follow
+      const lugShift = dot(sub(seats.lug.origin, axisMeta.slide.origin), axisMeta.slide.travel)
+      slots = placed.map((p) => from(seats.slot, add(travelStart, scale(base.slide.travel, p.end + lugShift)), scale(seats.slot.up, p.facing)))
+    } else {
+      // the body from its front face (the slot frame) to the drive end, after the length change
+      const u = seats.slot.up
+      const body = dot(sub(seats.slot.origin, base.drive.origin), u)
+      slots = bodySwitchPlacements(
+        switches.map((s) => s.role),
+        body,
+        lengths,
+      ).map((p) => ({ ...seats.slot, origin: sub(seats.slot.origin, scale(u, p.end)), up: scale(u, p.facing) }))
+    }
     switches.forEach((s, i) => {
       const drawing = sensors.switches[i]
-      const file = files.get(drawing.path) ?? parseStep(switchTexts[i])
+      const file = files.get(drawing.path) ?? withoutParts(parseStep(switchTexts[i]), drawing.meta!.without)
       files.set(drawing.path, file)
-      const at = add(travelStart, scale(base.slide.travel, placed[i].end + lugShift))
-      parts.push({
-        role: 'sensor',
-        name: `${s.part.model} (${SWITCH_NAMES[s.role]})`,
-        file,
-        transform: mate(first.axisToWorld, from(seats.slot, at, scale(seats.slot.up, placed[i].facing)), drawing.meta!.seat),
-      })
+      parts.push({ role: 'sensor', name: `${s.part.model} (${SWITCH_NAMES[s.role]})`, file, transform: mate(first.axisToWorld, slots[i], drawing.meta!.seat) })
     })
-    name += ` + ${lugModel} + ${switches.length} × ${[...new Set(switches.map((s) => s.part.model))].join(' / ')}`
+    name += ` + ${sel.sensing!.lug ? `${sel.sensing!.lug.model} + ` : ''}${switches.length} × ${[...new Set(switches.map((s) => s.part.model))].join(' / ')}`
   }
   // Second axis of a twin arrangement at +y (the COG's lateral direction), by default the mirror image of the
   // first (`mirroredDrive`; a slide standing out to one side drawn mirrored, `mirrorAxis`), with its own drive train

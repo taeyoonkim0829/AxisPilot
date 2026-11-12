@@ -475,7 +475,7 @@ describe('combination', () => {
   it('puts the switch lug on the slide side, the limit switches 2 mm before the ends and the home switch beside the - limit', async () => {
     const axis = axes.find((a) => a.id === 'ELGD-TB-KF-60')!
     const sensing = sensingFor(axis, sensors, { sensorOutput: 'PNP', limitContact: 'NC', homeContact: 'NO' })!
-    expect(sensing.lug.model).toBe('EAPM-E24-60-SLS')
+    expect(sensing.lug!.model).toBe('EAPM-E24-60-SLS')
     expect(sensing.switches.map((s) => `${s.role} ${s.part.model}`)).toEqual([
       'limitMinus SIES-8M-PO-24V-K-7.5-OE',
       'limitPlus SIES-8M-PO-24V-K-7.5-OE',
@@ -771,6 +771,42 @@ describe('combination', () => {
     const coupling = part('EAMC-42-50')
     expect(coupling.hi[0]).toBeLessThan(housing.hi[0] - 5)
     expect(coupling.lo[0]).toBeGreaterThan(housing.hi[0] - 63.2 + 5)
+  }, 60000)
+
+  it('puts the ESBF switches 30 mm from the body ends, the home switch beside the + limit at the motor end', async () => {
+    const axis = axes.find((a) => a.model === 'ESBF-BS-63-…-5P')!
+    const sensing = sensingFor(axis, sensors, { sensorOutput: 'PNP', limitContact: 'NC', homeContact: 'NO' })!
+    expect(sensing.lug).toBeNull()
+    expect(sensing.switches.map((s) => `${s.part.model} ${s.part.partNumber}`)).toEqual([
+      'SMT-8M-A-PO-24V-E-7,5-OE 574340',
+      'SMT-8M-A-PO-24V-E-7,5-OE 574340',
+      'SMT-8M-A-PS-24V-E-7,5-OE 574333',
+    ])
+    const sensorPaths = allPaths.map((p) => p.slice(6)).filter((p) => p.startsWith('data/sensors/'))
+    const paths = ['data/axes/Festo/Drawings/ESBF/574095_ESBF-BS-63-400-5P.stp', 'data/kits/Festo/Drawings/EAMM-A/543161_EAMM-A-D60-70A.stp', files[2], ...sensorPaths]
+    const drawings = paths.map((path) => ({ ...parseDrawingPath(path)!, url: path, meta: metas[`../../${path.replace(/\.stp$/, '.json')}`] ?? null }))
+    const sel: ComboSelection = {
+      axis,
+      axisModel: 'ESBF-BS-63-300-5P',
+      stroke: 300,
+      motor: motors.find((m) => m.model === 'EMMT-AS-60-S-HS')!,
+      gearbox: null,
+      kit: kits.find((k) => k.product === 'EAMM-A-D60-70A')!,
+      sensing,
+    }
+    const found = comboDrawings(sel, drawings)
+    expect(found.sensors?.lug).toBeNull()
+    const combo = await buildCombo(sel, found, { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
+    const { parts } = await meshBox(combo.step)
+    // the cable clips of the sensor file left out
+    expect(parts.some((p) => /ASCF/.test(p.name))).toBe(false)
+    // floor: rod end at +X, motor at -X; the body 571 - 100 mm long (stroke 400 -> 300); the + limit's sensing end
+    // 30 mm from the drive end pointing at it, the - limit's 30 mm from the front, the home switch (26.3 mm body)
+    // right behind the + limit; tops flush with the top face 37.25 mm above the rod axis
+    const [plus, home, minus] = parts.filter((p) => /SMT-8M-A/.test(p.name)).sort((a, b) => a.lo[0] - b.lo[0])
+    expect(minus.hi[0] - plus.lo[0]).toBeCloseTo(471 - 60, 1)
+    expect(home.lo[0] - plus.lo[0]).toBeCloseTo(26.3, 1)
+    for (const s of [plus, home, minus]) expect(s.hi[2]).toBeCloseTo(37.25, 1)
   }, 60000)
 
   it('leaves out the kit screws filed beyond the motor face, inside the motor', async () => {

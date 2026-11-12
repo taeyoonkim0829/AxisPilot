@@ -823,7 +823,7 @@ const profileOnly = args.includes('--profile')
 const couplingOnly = args.includes('--coupling')
 // --front: add the front flange frame (`front`) to existing ESBF JSONs, keeping everything else
 const frontOnly = args.includes('--front')
-// --sensor: add the position sensing seats (`sensor`) to existing ELGD-TB / -BS JSONs, keeping everything else
+// --sensor: add the position sensing seats (`sensor`) to existing ELGD-TB / -BS and ESBF JSONs, keeping everything else
 const sensorOnly = args.includes('--sensor')
 /** ELGD drive + size (+ `-L` for the long slide) → mm from the slide surface centre: the side face (slide and
  *  profile flush), the depth of the lug's M3 threads (17 either side of their middle), the upper sensor slot's centre
@@ -834,8 +834,24 @@ const SENSOR_SEATS = {
   'BS-60': [30, 11, 32, 4.1], 'BS-60-L': [30, 11, 32, -3], 'BS-80': [40, 12, 33, 0], 'BS-80-L': [40, 12, 33, 0],
   'BS-120': [60, 13, 34.5, 2], 'BS-120-L': [60, 13, 34.5, 0], 'BS-WD-100-L': [50, 11, 32, 15], 'BS-WD-120-L': [60, 13, 34, 0],
 }
+/** ESBF size → mm from the cylinder axis to the top face with the sensor slot (measured on the STEP models, which
+ *  leave the slot out; the data sheet's sensor mounting L3) */
+const ESBF_SLOT_TOP = { 32: 22.25, 40: 26.75, 50: 31.75, 63: 37.25, 80: 46.25, 100: 54.75 }
 for (const file of files) {
   const out = file.replace(/\.stp$/i, '.json')
+  const esbfSize = sensorOnly && /ESBF-BS-(\d+)-/.exec(file)?.[1]
+  if (esbfSize) {
+    // the slot at the body's front face (the `front` frame), on the top face, `up` = towards the rod end
+    if (!existsSync(out) || !ESBF_SLOT_TOP[esbfSize]) continue
+    const old = JSON.parse(readFileSync(out, 'utf8'))
+    if ((old.sensor && !force) || !old.front) continue
+    const n = old.slide.normal
+    const sensor = { slot: { origin: old.front.origin.map((v, i) => fixed(v + ESBF_SLOT_TOP[esbfSize] * n[i])), axis: n, up: old.front.axis } }
+    if (dryRun) console.log(out, JSON.stringify(sensor))
+    else writeFileSync(out, format({ ...old, sensor }))
+    written++
+    continue
+  }
   if (sensorOnly) {
     const m = /ELGD-(TB|BS)-KF-((?:WD-)?\d+)-\d+-0H(?:-\d+P)?(-L)?/.exec(file)
     const key = m && `${m[1]}-${m[2]}${m[1] === 'BS' ? (m[3] ?? '') : ''}`

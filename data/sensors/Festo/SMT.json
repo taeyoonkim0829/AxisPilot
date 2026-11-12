@@ -1,0 +1,83 @@
+{
+  "items": [
+    {
+      "id": "SMT-8M-A-PS-24V-E-7,5-OE",
+      "maker": "Festo",
+      "role": "sensor",
+      "model": "SMT-8M-A-PS-24V-E-7,5-OE",
+      "partNumber": "574333",
+      "output": "PNP",
+      "contact": "NO",
+      "mass": 0.0851,
+      "axes": [
+        { "family": "ESBF", "variant": "", "size": 32, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 40, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 50, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 63, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 80, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 100, "drive": "spindle" }
+      ],
+      "sameOutline": "SMT-8M-A-PO-24V-E-7,5-OE",
+      "dataSource": "ESBF data sheet 2025/11, accessories p.62-63 (magneto-resistive proximity switch for T-slot, inserted from above, flush with the cylinder profile), cable 7.5 m; 7.5 m is no standard length for this output: ordered by the module number 574333 (PARTdataManager SMT-8M-A modular system), mass taken as the 7.5 m N/C model's"
+    },
+    {
+      "id": "SMT-8M-A-PO-24V-E-7,5-OE",
+      "maker": "Festo",
+      "role": "sensor",
+      "model": "SMT-8M-A-PO-24V-E-7,5-OE",
+      "partNumber": "574340",
+      "output": "PNP",
+      "contact": "NC",
+      "mass": 0.0851,
+      "axes": [
+        { "family": "ESBF", "variant": "", "size": 32, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 40, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 50, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 63, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 80, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 100, "drive": "spindle" }
+      ],
+      "dataSource": "ESBF data sheet 2025/11, accessories p.62-63 (magneto-resistive proximity switch for T-slot, inserted from above, flush with the cylinder profile), cable 7.5 m"
+    },
+    {
+      "id": "SMT-8M-A-NS-24V-E-7,5-OE",
+      "maker": "Festo",
+      "role": "sensor",
+      "model": "SMT-8M-A-NS-24V-E-7,5-OE",
+      "partNumber": "574333",
+      "output": "NPN",
+      "contact": "NO",
+      "mass": 0.0851,
+      "axes": [
+        { "family": "ESBF", "variant": "", "size": 32, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 40, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 50, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 63, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 80, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 100, "drive": "spindle" }
+      ],
+      "sameOutline": "SMT-8M-A-PO-24V-E-7,5-OE",
+      "dataSource": "ESBF data sheet 2025/11, accessories p.62-63 (magneto-resistive proximity switch for T-slot, inserted from above, flush with the cylinder profile), cable 7.5 m; 7.5 m is no standard length for this output: ordered by the module number 574333 (PARTdataManager SMT-8M-A modular system), mass taken as the 7.5 m N/C model's"
+    },
+    {
+      "id": "SMT-8M-A-NO-24V-E-7,5-OE",
+      "maker": "Festo",
+      "role": "sensor",
+      "model": "SMT-8M-A-NO-24V-E-7,5-OE",
+      "partNumber": "8138001",
+      "output": "NPN",
+      "contact": "NC",
+      "mass": 0.0851,
+      "axes": [
+        { "family": "ESBF", "variant": "", "size": 32, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 40, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 50, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 63, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 80, "drive": "spindle" },
+        { "family": "ESBF", "variant": "", "size": 100, "drive": "spindle" }
+      ],
+      "sameOutline": "SMT-8M-A-PO-24V-E-7,5-OE",
+      "dataSource": "ESBF data sheet 2025/11, accessories p.62-63 (magneto-resistive proximity switch for T-slot, inserted from above, flush with the cylinder profile), cable 7.5 m"
+    }
+  ]
+}

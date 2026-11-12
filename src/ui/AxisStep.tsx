@@ -54,9 +54,9 @@ function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'sett
   const elgd = settings.families.includes('ELGD')
   // M7 exists on ball screw axes only
   const mountings: ('standard' | AxisMounting)[] = settings.drives.includes('spindle') ? ['standard', 'M', 'M7'] : ['standard', 'M']
-  // position sensing (ELGD): the switches' output and contacts
-  const sensing = settings.sensors && elgd
-  if (choices.length === 0 && shown.length === 0 && !elgd) return null
+  // position sensing (ELGD, ESBF): the switches' output and contacts
+  const sensing = settings.sensors && (elgd || settings.families.includes('ESBF'))
+  if (choices.length === 0 && shown.length === 0 && !elgd && !sensing) return null
   const mounting = settings.axisMounting && mountings.includes(settings.axisMounting) ? settings.axisMounting : 'standard'
   const sides: AdditionalSlideSide[] = choices.some((a) => a.additionalSlide!.both) ? ['none', 'left', 'right', 'both'] : ['none', 'left', 'right']
   return (
@@ -244,7 +244,7 @@ export function AxisStep({ results, selectedId, onSelect, settings, onSettings }
             onChange={(v) => onSettings({ ...settings, spindleSupport: v })}
           />
         )}
-        {settings.families.includes('ELGD') && (
+        {(settings.families.includes('ELGD') || settings.families.includes('ESBF')) && (
           <ToggleButton label={t('위치 센서')} checked={settings.sensors} onChange={(v) => onSettings({ ...settings, sensors: v })} />
         )}
       </div>

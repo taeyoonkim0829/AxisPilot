@@ -4,5 +4,6 @@
   "slide": { "origin": [0, 0, 91], "normal": [0, 1, 0], "travel": [0, 0, 1] },
   "stretch": { "part": "ESBF-BS-100-400---(ZR_-_-)", "also": ["ESBF-BS-100-400-5P---(KS_0)"], "axis": 2, "dir": -1, "range": [-580, -157], "move": [8262, 8276] },
   "profile": { "origin": [0, -55, -299], "normal": [0, -1, 0] },
-  "front": { "origin": [0, 0, 0], "axis": [0, 0, 1], "up": [0, 1, 0] }
+  "front": { "origin": [0, 0, 0], "axis": [0, 0, 1], "up": [0, 1, 0] },
+  "sensor": { "slot": { "origin": [0, 54.75, 0], "axis": [0, 1, 0], "up": [0, 0, 1] } }
 }
