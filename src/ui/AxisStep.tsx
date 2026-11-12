@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { minSlidePitch, slideAxes, type AxisEvaluation } from '../calc/axisSelection'
 import { axes } from '../data'
 import type { AdditionalSlideSide, Settings } from '../calc/types'
-import type { AxisFamily, AxisMounting, DriveKind, SensorContact, SensorOutput } from '../data/types'
+import type { AxisFamily, AxisMounting, DriveKind, SensorContact, SensorMaker, SensorOutput } from '../data/types'
 import { CheckTable, CollapseTitle, HelpTip, InfoTable, NumberField, RadioGroup, Ratio, SortTh, StatusBadge, ToggleButton } from './common'
 import mountingImage from '../../images/help_axis_mounting.svg'
 import { statusRank, useSort } from './useSort'
@@ -130,6 +130,18 @@ function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'sett
       )}
       {sensing && (
         <div className="axis-options-row">
+          {/* Omron EE-SX674 on a Festo sensor bracket: ELGD and ELGT-BS */}
+          {(elgd || settings.families.includes('ELGT')) && (
+            <div className="filter-group">
+              <span className="field-label">{t('센서 제조사')}</span>
+              <RadioGroup
+                options={['Festo', 'Omron'] as SensorMaker[]}
+                value={settings.sensorMaker}
+                label={(v) => (v === 'Omron' ? 'Omron EE-SX674' : v)}
+                onChange={(sensorMaker) => onSettings({ ...settings, sensorMaker })}
+              />
+            </div>
+          )}
           <div className="filter-group">
             <span className="field-label">{t('센서 출력')}</span>
             <RadioGroup

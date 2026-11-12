@@ -120,14 +120,17 @@ export interface Sensing {
 export function sensingFor(
   axis: Axis,
   sensors: SensorPart[],
-  settings: Pick<Settings, 'sensorOutput' | 'limitContact' | 'homeContact'>,
+  settings: Pick<Settings, 'sensorOutput' | 'limitContact' | 'homeContact'> & Partial<Pick<Settings, 'sensorMaker'>>,
 ): Sensing | null {
+  const maker = settings.sensorMaker ?? 'Festo'
+  // the switches of the chosen maker, the lug and bracket serving them
   const fits = (s: SensorPart) =>
+    (s.role === 'sensor' ? s.maker === maker : (s.systems ?? ['Festo']).includes(maker)) &&
     s.axes.some((a) => a.family === axis.family && a.variant === axis.variant && a.size === axis.size && a.drive === axis.drive)
   const lug = sensors.find((s) => s.role === 'lug' && fits(s)) ?? null
   const bracket = sensors.find((s) => s.role === 'bracket' && fits(s)) ?? null
   const pick = (contact: SensorContact) =>
-    sensors.find((s) => s.role === 'sensor' && fits(s) && s.output === settings.sensorOutput && s.contact === contact)
+    sensors.find((s) => s.role === 'sensor' && fits(s) && s.output === settings.sensorOutput && (s.contact == null || s.contact === contact))
   const limit = pick(settings.limitContact)
   const home = settings.homeContact ? pick(settings.homeContact) : null
   if (!limit || (settings.homeContact && !home)) return null

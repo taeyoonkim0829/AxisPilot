@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "id": "EAPM-E24-60-SHO",
+      "maker": "Festo",
+      "role": "bracket",
+      "systems": [
+        "Omron"
+      ],
+      "model": "EAPM-E24-60-SHO",
+      "partNumber": "8197121",
+      "mass": 0.067,
+      "axes": [
+        { "family": "ELGD", "variant": "", "size": 60, "drive": "belt" },
+        { "family": "ELGD", "variant": "", "size": 80, "drive": "belt" },
+        { "family": "ELGD", "variant": "", "size": 120, "drive": "belt" },
+        { "family": "ELGD", "variant": "WD", "size": 100, "drive": "belt" },
+        { "family": "ELGD", "variant": "WD", "size": 120, "drive": "belt" },
+        { "family": "ELGD", "variant": "", "size": 60, "drive": "spindle" },
+        { "family": "ELGD", "variant": "", "size": 80, "drive": "spindle" },
+        { "family": "ELGD", "variant": "", "size": 120, "drive": "spindle" },
+        { "family": "ELGD", "variant": "WD", "size": 100, "drive": "spindle" },
+        { "family": "ELGD", "variant": "WD", "size": 120, "drive": "spindle" }
+      ],
+      "dataSource": "ELGD-TB data sheet 2026/09 p.40, 45, 48 (sensor bracket for third-party sensors OMRON EE-SX674, screwed into the upper sensor slot with two slot nuts, one per sensor; sensed by the switch lug EAPM-E24-60-SLS on its spacers); drawing from PARTdataManager"
+    }
+  ]
+}

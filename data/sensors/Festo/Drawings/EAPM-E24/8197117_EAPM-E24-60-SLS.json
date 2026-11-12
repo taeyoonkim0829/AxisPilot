@@ -2,5 +2,6 @@
   "seat": { "origin": [-3.5, 36.2, 0], "axis": [1, 0, 0], "up": [0, 1, 0] },
   "edge": 21,
   "without": ["ISO-4762 M3x20", "8196826 ELGD-5,7X3,4X10,25"],
-  "move": { "parts": ["ISO 14579 M3x8(F)"], "by": [0, -10, 0] }
+  "move": { "parts": ["ISO 14579 M3x8(F)"], "by": [0, -10, 0] },
+  "withBracket": { "seat": { "origin": [10.85, 36.2, 0], "axis": [-1, 0, 0], "up": [0, 1, 0] }, "without": ["ISO 14579 M3x8(F)"] }
 }

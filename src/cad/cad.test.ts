@@ -31,6 +31,7 @@ const files = [
 const texts = import.meta.glob<string>(
   [
     '../../data/*/Festo/Drawings/**/*.stp',
+    '../../data/sensors/Omron/Drawings/**/*.stp',
     '../../data/motors/Mitsubishi/Drawings/HG-KR/hg-kr43_.stp',
     '../../data/gearboxes/Apex/Drawings/AB/ab0601-p0401200402.stp',
   ],
@@ -601,6 +602,64 @@ describe('combination', () => {
     expect(minus.lo[0]).toBeCloseTo(2 - 7.5 - 6.7, 1)
     expect(home.lo[0]).toBeCloseTo(2 - 7.5 - 6.7 + 31.8, 1)
     expect(plus.hi[0]).toBeCloseTo(500 - 2 + 7.5 + 6.7, 1)
+  }, 60000)
+
+  it('mounts Omron EE-SX674 sensors on their brackets, the lug passing through their slots (ELGD, ELGT-BS)', async () => {
+    // floor: travel +x, slide surface at z = 0. The sensors upright on their brackets (one each), the lug's tongue
+    // reaching into their 5 mm slots (9 mm deep) between the arms; the optical axis (7 mm along the sensor from its
+    // holes, 10.5 from its back) where the lug's edge is with the slide 2 mm from either end of the travel, the home
+    // sensor a bracket length behind the - limit's
+    const checkOmron = async (step: string, lugName: RegExp, travel: number, edge: number, bracket: number) => {
+      const { parts } = await meshBox(step)
+      const lug = parts.find((p) => lugName.test(p.name))!
+      const [minus, home, plus] = parts.filter((p) => /EE.SX674P/.test(p.name)).sort((a, b) => a.lo[0] - b.lo[0])
+      // one bracket (its meshes) per sensor
+      expect(new Set(parts.filter((p) => /^(8196830 EAPM-E24-60-SHO|8119256 EAPM-L9-SHE)---/.test(p.name)).map((p) => Math.round(p.lo[0]))).size).toBe(3)
+      for (const s of [minus, home, plus]) {
+        expect(s.hi[2] - s.lo[2]).toBeCloseTo(15.5, 1)
+        expect(lug.lo[2]).toBeLessThan(s.hi[2] - 5)
+        expect(lug.lo[2]).toBeGreaterThan(s.hi[2] - 9)
+        const middle = (s.lo[1] + s.hi[1]) / 2
+        // the tongue's outer face within the slot
+        const outer = Math.abs(lug.lo[1]) > Math.abs(lug.hi[1]) ? lug.lo[1] : lug.hi[1]
+        expect(Math.abs(outer - middle)).toBeLessThan(2.5)
+      }
+      expect(minus.lo[0] + 10.5).toBeCloseTo(2 - edge, 1)
+      expect(home.lo[0] + 10.5).toBeCloseTo(2 - edge + bracket, 1)
+      expect(plus.hi[0] - 10.5).toBeCloseTo(travel - 2 + edge, 1)
+    }
+    const sensorPaths = allPaths.map((p) => p.slice(6)).filter((p) => p.startsWith('data/sensors/'))
+    const drawingsOf = (paths: string[]) =>
+      [...paths, ...sensorPaths].map((p) => ({ ...parseDrawingPath(p)!, url: p, meta: metas[`../../${p.replace(/\.stp$/, '.json')}`] ?? null }))
+    const omron = { sensorMaker: 'Omron' as const, sensorOutput: 'PNP' as const, limitContact: 'NC' as const, homeContact: 'NO' as const }
+    // ELGD-TB-60: the SLS lug on its spacers, the EAPM-E24-60-SHO brackets in the upper sensor slot
+    const elgd = axes.find((a) => a.id === 'ELGD-TB-KF-60')!
+    const sensing = sensingFor(elgd, sensors, omron)!
+    expect([sensing.lug?.partNumber, sensing.bracket?.partNumber, ...sensing.switches.map((s) => s.part.model)]).toEqual([
+      '8197117',
+      '8197121',
+      'EE-SX674P',
+      'EE-SX674P',
+      'EE-SX674P',
+    ])
+    const sel: ComboSelection = {
+      axis: elgd,
+      axisModel: 'ELGD-TB-KF-60-300',
+      stroke: 300,
+      motor: motors.find((m) => m.model === 'EMMT-AS-60-S-HS')!,
+      gearbox: null,
+      kit: kits.find((k) => k.product === 'EAMM-A-N48-60P' && k.axisCode === 'N48')!,
+      sensing,
+    }
+    const kitPath = allPaths.map((p) => p.slice(6)).find((p) => p.includes('_EAMM-A-N48-60P.stp'))!
+    const found = comboDrawings(sel, drawingsOf(['data/axes/Festo/Drawings/ELGD/8192344_ELGD-TB-KF-60-200-0H-PU2.stp', kitPath, files[2]]))
+    expect(found.sensors?.bracket?.partNumber).toBe('8197121')
+    const combo = await buildCombo(sel, found, { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
+    await checkOmron(combo.step, /EAPM-E24-60-SLS---/, 300, 21, 77)
+    const elgt = { ...selection(500), sensing: sensingFor(selection(500).axis, sensors, omron)! }
+    expect([elgt.sensing.lug?.partNumber, elgt.sensing.bracket?.partNumber]).toEqual(['8120123', '8119255'])
+    const combo2 = await buildCombo(elgt, comboDrawings(elgt, drawingsOf(files.slice(0, 3))), { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
+    await checkOmron(combo2.step, /EAPM-L9-90-SLE---/, 500, 7.5, 55)
   }, 60000)
 
   it('senses an EGC with the SF-EGC-1 lug on the slide side and the switches in the tilted corner slot', async () => {

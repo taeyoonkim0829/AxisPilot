@@ -960,21 +960,48 @@ export async function comboParts(
     const lengths = sensors.switches.map((d) => d.meta!.length ?? 0)
     let slots: Frame[]
     if (sensors.lug && lugText && seats.lug) {
-      const lugMeta = sensors.lug.meta!
+      // with an Omron sensor bracket the lug may be fixed otherwise (EAPM-E24-60-SLS on its spacers)
+      const bracket = sensors.bracket?.meta && bracketText ? sensors.bracket.meta : null
+      const lugMeta = { ...sensors.lug.meta!, ...(bracket ? sensors.lug.meta!.withBracket : {}) }
       let lugFile = withoutParts(parseStep(lugText), lugMeta.without)
       for (const name of lugMeta.move?.parts ?? []) placePart(lugFile, name, { r: identity.r, t: lugMeta.move!.by })
       parts.push({ role: 'sensor', name: sel.sensing!.lug!.model, file: lugFile, transform: mate(first.axisToWorld, from(seats.lug, add(slide.origin, mainOffset)), lugMeta.seat) })
       const travel = dot(sub(travelEnd, travelStart), base.slide.travel)
+      // Omron: each sensor on its bracket, placed as one unit: from the bracket's end on the sensor side (its `up`
+      // end), whose optical axis is the switching point, the bracket's length long
+      const beamFrom = (i: number) => {
+        const { seat, slot, length = 0 } = bracket!
+        const beam = add(slot!.origin, scale(slot!.up, sensors.switches[i].meta!.beam ?? 0))
+        return length / 2 - dot(sub(beam, seat.origin), seat.up)
+      }
       const placed = switchPlacements(
         switches.map((s) => s.role),
         travel,
         lugMeta.edge ?? 0,
-        sensors.switches.map((d) => d.meta!.switchPoint ?? 0),
-        lengths,
+        sensors.switches.map((d, i) => (bracket ? beamFrom(i) : (d.meta!.switchPoint ?? 0))),
+        bracket ? lengths.map(() => bracket.length ?? 0) : lengths,
       )
       // the lug's middle off the slide centre along the travel (ELGD-BS slides), which the switches follow
       const lugShift = dot(sub(seats.lug.origin, axisMeta.slide.origin), axisMeta.slide.travel)
-      slots = placed.map((p) => from(seats.slot, add(travelStart, scale(base.slide.travel, p.end + lugShift)), scale(seats.slot.up, p.facing)))
+      slots = placed.map((p, i) => {
+        if (!bracket) return from(seats.slot, add(travelStart, scale(base.slide.travel, p.end + lugShift)), scale(seats.slot.up, p.facing))
+        // the bracket's slot nuts in its slot, upright (its seat's `up` × `axis` downwards, the bracket cannot be
+        // turned end for end), its centre half its length behind `end`; the sensor on the hole pair at the end
+        // facing `p.facing`: the file's (at the seat's `up` end) or the other one
+        const nuts = seats.bracket ?? seats.slot
+        const up = cross(axisMeta.slide.normal, nuts.axis)
+        const centre = p.end + lugShift - (p.facing * (bracket.length ?? 0)) / 2
+        const seat = from(nuts, add(travelStart, scale(base.slide.travel, centre)), up)
+        const file = files.get(sensors.bracket!.path) ?? parseStep(bracketText!)
+        files.set(sensors.bracket!.path, file)
+        parts.push({ role: 'sensor', name: `${sel.sensing!.bracket!.model} (${SWITCH_NAMES[switches[i].role]})`, file, transform: mate(first.axisToWorld, seat, bracket.seat) })
+        const onBracket = mate(identity, seat, bracket.seat)
+        const slot = bracket.slot!
+        const turned = dot(up, axisMeta.slide.travel) * p.facing < 0
+        const along = dot(sub(slot.origin, bracket.seat.origin), bracket.seat.up)
+        const own = turned ? { ...slot, origin: sub(slot.origin, scale(bracket.seat.up, 2 * along)), up: scale(slot.up, -1) } : slot
+        return { origin: apply(onBracket, own.origin), axis: rotate(onBracket, own.axis), up: rotate(onBracket, own.up) }
+      })
     } else {
       // the body from its front face (the slot frame) to the drive end, after the length change
       const u = seats.slot.up

@@ -1,0 +1,21 @@
+{
+  "items": [
+    {
+      "id": "EAPM-L9-SHE",
+      "maker": "Festo",
+      "role": "bracket",
+      "systems": [
+        "Omron"
+      ],
+      "model": "EAPM-L9-SHE",
+      "partNumber": "8119255",
+      "mass": 0.055,
+      "axes": [
+        { "family": "ELGT", "variant": "", "size": 90, "drive": "spindle" },
+        { "family": "ELGT", "variant": "", "size": 120, "drive": "spindle" },
+        { "family": "ELGT", "variant": "", "size": 160, "drive": "spindle" }
+      ],
+      "dataSource": "ELGT-BS data sheet 2026/09 p.47 (sensor bracket for OMRON EE-SX674, in the profile slot [2] with two slot nuts, one per sensor; sensed by the switch lug EAPM-L9-...-SLE); drawing from PARTdataManager"
+    }
+  ]
+}

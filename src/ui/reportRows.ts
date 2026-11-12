@@ -81,7 +81,7 @@ export function partRows(
           ...[...new Set(axis.sensing.switches.map((s) => s.part))].map((part): SelectionRow => {
             const roles = axis.sensing!.switches.filter((s) => s.part === part)
             const names = [...new Set(roles.map((s) => t(s.role === 'home' ? 'Home 센서' : 'Limit 센서')))].join(' · ')
-            return [`${t('근접 센서')} (${names})`, 'Festo', part.model, part.partNumber, nAxes * roles.length, null]
+            return [`${t('근접 센서')} (${names})`, part.maker, part.model, part.partNumber, nAxes * roles.length, null]
           }),
         ] as SelectionRow[])
       : []),

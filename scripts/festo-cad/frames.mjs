@@ -846,9 +846,10 @@ const ESBF_SLOT_TOP = { 32: 22.25, 40: 26.75, 50: 31.75, 63: 37.25, 80: 46.25, 1
 const EGC_SENSOR_SEATS = { 50: [15, 7.2, 13.5, 15.13], 70: [24.1, 11.7, 19.7, 24.41], 80: [31.6, 16, 24, 31.44], 120: [48, 24.5, 35.8, 47.71], 185: [77, 35.2, 48.5, 77.31] }
 /** ELGT-BS size → mm from the slide surface centre along travel × normal: the slide's side face with the switch lug
  *  EAPM-L9-…-SLS's two M3 threads (their middle on the slide centre), their depth, the profile's side face with the
- *  sensor slot [1] and the slot's centre below the surface (measured on the STEP models; the slide stands 1 to 4 mm
- *  out from the profile, the lugs of 90 / 160 joggled in by that) */
-const ELGT_SENSOR_SEATS = { 90: [50, 10, 45, 46.5], 120: [66, 18, 65, 33.5], 160: [89, 25, 85, 40.5] }
+ *  sensor slot [1] and the slot's centre below the surface, and the centre of slot [2] below it, where the Omron
+ *  sensor bracket EAPM-L9-SHE goes (measured on the STEP models; the slide stands 1 to 4 mm out from the profile, the
+ *  lugs of 90 / 160 joggled in by that) */
+const ELGT_SENSOR_SEATS = { 90: [50, 10, 45, 46.5, 61.5], 120: [66, 18, 65, 33.5, 56], 160: [89, 25, 85, 40.5, 63] }
 const EGC_SLOT = { out: 2.6, down: 4.22, tilt: (25 * Math.PI) / 180 }
 for (const file of files) {
   const out = file.replace(/\.stp$/i, '.json')
@@ -870,11 +871,15 @@ for (const file of files) {
     if (!existsSync(out) || !ELGT_SENSOR_SEATS[elgtSize]) continue
     const old = JSON.parse(readFileSync(out, 'utf8'))
     if (old.sensor && !force) continue
-    const [lugSide, lug, slotSide, slot] = ELGT_SENSOR_SEATS[elgtSize]
+    const [lugSide, lug, slotSide, slot, bracket] = ELGT_SENSOR_SEATS[elgtSize]
     const { origin: o, normal: n, travel: t } = old.slide
     const lateral = [t[1] * n[2] - t[2] * n[1], t[2] * n[0] - t[0] * n[2], t[0] * n[1] - t[1] * n[0]]
     const at = (side, depth) => o.map((v, i) => fixed(v + side * lateral[i] - depth * n[i]))
-    const sensor = { lug: { origin: at(lugSide, lug), axis: lateral, up: n }, slot: { origin: at(slotSide, slot), axis: lateral, up: t } }
+    const sensor = {
+      lug: { origin: at(lugSide, lug), axis: lateral, up: n },
+      slot: { origin: at(slotSide, slot), axis: lateral, up: t },
+      bracket: { origin: at(slotSide, bracket), axis: lateral, up: t },
+    }
     if (dryRun) console.log(out, JSON.stringify(sensor))
     else writeFileSync(out, format({ ...old, sensor }))
     written++

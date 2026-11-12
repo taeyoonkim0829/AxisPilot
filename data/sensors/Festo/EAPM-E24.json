@@ -19,7 +19,11 @@
         { "family": "ELGD", "variant": "WD", "size": 100, "drive": "spindle" },
         { "family": "ELGD", "variant": "WD", "size": 120, "drive": "spindle" }
       ],
-      "dataSource": "ELGD-TB / -TB-WD / -BS / -BS-WD data sheets 2026/09, accessories (switch lug for SIES-8M)"
+      "dataSource": "ELGD-TB / -TB-WD / -BS / -BS-WD data sheets 2026/09, accessories (switch lug for SIES-8M)",
+      "systems": [
+        "Festo",
+        "Omron"
+      ]
     }
   ]
 }

@@ -33,8 +33,9 @@ export interface AxisMeta {
   /** position sensing (ELGD): `lug` = the switch lug's seat on the slide's side face (middle of its two threads,
    *  `axis` out of the face, `up` = slide normal); `slot` = the sensor slot's centre at that face beside the slide
    *  centre at the start position (`axis` out of the face, `up` = travel). ESBF (no lug, a magnet in the piston):
-   *  `slot` = the top face's slot at the body's front face, `up` = towards the rod end */
-  sensor?: { lug?: Frame; slot: Frame }
+   *  `slot` = the top face's slot at the body's front face, `up` = towards the rod end. `bracket` = the slot an
+   *  Omron sensor bracket's slot nuts go in (ELGT-BS: [2]), as `slot`; without it the bracket takes `slot` (ELGD) */
+  sensor?: { lug?: Frame; slot: Frame; bracket?: Frame }
 }
 /** A switch lug, proximity switch or switch bracket (data/sensors): `seat` = lug: its face on the slide at its holes
  *  (`axis` away from the slide, `up` towards the slide surface); switch: its top face at the sensing end (`axis` out of
@@ -43,8 +44,14 @@ export interface AxisMeta {
  *  towards axis × up). `without` / `move`: parts of the file left out or moved (file mm) */
 export interface SensorMeta {
   seat: Frame
-  /** bracket: its sensor slot's opening at mid length, where a switch's seat goes (`axis` / `up` as the seat's) */
+  /** bracket: its sensor slot's opening at mid length, where a switch's seat goes (`axis` / `up` as the seat's); an
+   *  Omron bracket (with a lug): where the sensor's seat goes, its `seat` the face on the profile at the slot nuts'
+   *  middle (`axis` away from the profile, `up` along the travel) */
   slot?: Frame
+  /** Omron sensor: mm from its seat along `up` to its optical axis (the switching point) */
+  beam?: number
+  /** lug: how it is fixed with an Omron sensor bracket (EAPM-E24-60-SLS on its spacers, further out) */
+  withBracket?: Pick<SensorMeta, 'seat' | 'without' | 'move'>
   /** lug: mm from its centre to its ends along the travel (it covers a switch within) */
   edge?: number
   /** switch: mm from its sensing end to its switching point (the mark on its top face) / to its cable end;
@@ -276,7 +283,13 @@ export function guideDrawingFor(guide: GuideUnit, stroke: number, all = drawings
 /** A switch lug's or proximity switch's drawing by part number, else the drawing of the model with the same outline */
 export const sensorDrawingFor = (part: SensorPart, all = drawings) => {
   const list = all.filter((d) => d.kind === 'sensors' && d.meta) as Drawing<SensorMeta>[]
-  return list.find((d) => d.partNumber === part.partNumber) ?? (part.sameOutline ? list.find((d) => d.names.includes(part.sameOutline!)) : null) ?? null
+  return (
+    list.find((d) => d.partNumber === part.partNumber) ??
+    // files named by model alone (Omron)
+    list.find((d) => d.partNumber == null && d.maker === part.maker && d.names.includes(part.model)) ??
+    (part.sameOutline ? list.find((d) => d.names.includes(part.sameOutline!)) : null) ??
+    null
+  )
 }
 
 export const shaftDrawingFor = (shaft: ConnectingShaft, all = drawings) =>

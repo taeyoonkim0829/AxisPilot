@@ -5,5 +5,5 @@
   "stretch": { "part": "8121224 ELGT-BS-90-450--(high_h)", "axis": 2, "dir": -1, "range": [-627, -172] },
   "profile": { "origin": [0, 0, -304.25], "normal": [0, -1, 0] },
   "coupling": { "part": "EAMC-30-GB16-D12x10-A", "jaw": [-1, 0, 0], "count": 3 },
-  "sensor": { "lug": { "origin": [50, 80, -92], "axis": [1, 0, 0], "up": [0, 1, 0] }, "slot": { "origin": [45, 43.5, -92], "axis": [1, 0, 0], "up": [0, 0, -1] } }
+  "sensor": { "lug": { "origin": [50, 80, -92], "axis": [1, 0, 0], "up": [0, 1, 0] }, "slot": { "origin": [45, 43.5, -92], "axis": [1, 0, 0], "up": [0, 0, -1] }, "bracket": { "origin": [45, 28.5, -92], "axis": [1, 0, 0], "up": [0, 0, -1] } }
 }

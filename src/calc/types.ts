@@ -1,4 +1,4 @@
-import type { AxisFamily, AxisMounting, DriveKind, MotorMaker, SensorContact, SensorOutput } from '../data/types'
+import type { AxisFamily, AxisMounting, DriveKind, MotorMaker, SensorContact, SensorMaker, SensorOutput } from '../data/types'
 
 export type Mounting = 'floor' | 'wall' | 'vertical'
 
@@ -170,7 +170,9 @@ export interface Settings {
   /** Position sensing where the axis has it (`SensorPart`): a switch lug on the slide, a limit switch at each end and
    *  optionally a home switch beside the − limit */
   sensors: boolean
-  /** the proximity switches' output, the limit switches' contact, the home switch's (null = no home switch) */
+  /** the switches' maker (Festo; Omron EE-SX674 on a sensor bracket where the axis takes them), their output, the
+   *  limit switches' contact, the home switch's (null = no home switch) */
+  sensorMaker: SensorMaker
   sensorOutput: SensorOutput
   limitContact: SensorContact
   homeContact: SensorContact | null
@@ -203,6 +205,7 @@ export const defaultSettings: Settings = {
   standardStroke: false,
   spindleSupport: false,
   sensors: false,
+  sensorMaker: 'Festo',
   sensorOutput: 'PNP',
   limitContact: 'NC',
   homeContact: 'NO',

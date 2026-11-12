@@ -499,11 +499,14 @@ export interface AxisAdapter {
  */
 export interface SensorPart {
   id: string
-  maker: 'Festo'
+  maker: SensorMaker
   role: 'lug' | 'sensor' | 'bracket'
+  /** lug / bracket: the switches' makers it serves (`Settings.sensorMaker`); default Festo */
+  systems?: SensorMaker[]
   model: string
   partNumber: string
-  /** proximity switch: switching output and contact (N/O, N/C) */
+  /** proximity switch: switching output and contact (N/O, N/C); no contact = either by wiring (Omron light-ON /
+   *  dark-ON) */
   output?: SensorOutput
   contact?: SensorContact
   /** bracket: mm along the travel */
@@ -516,6 +519,8 @@ export interface SensorPart {
   dataSource: string
 }
 export type SensorOutput = 'PNP' | 'NPN'
+/** Festo's own switches, or Omron EE-SX674 photomicrosensors on a Festo sensor bracket (ELGD, ELGT-BS) */
+export type SensorMaker = 'Festo' | 'Omron'
 export type SensorContact = 'NO' | 'NC'
 
 /**

@@ -35,6 +35,51 @@
         { "family": "ELGT", "variant": "", "size": 160, "drive": "spindle" }
       ],
       "dataSource": "ELGT-BS data sheet 2026/09 p.22, 46 (switch lug EAPM-L9-...-SLS for sensing using SIES-8M in the profile slot [1], two M3x6 into the slide side); drawing from PARTdataManager"
+    },
+    {
+      "id": "EAPM-L9-90-SLE",
+      "maker": "Festo",
+      "role": "lug",
+      "systems": [
+        "Omron"
+      ],
+      "model": "EAPM-L9-90-SLE",
+      "partNumber": "8120123",
+      "mass": 0.01,
+      "axes": [
+        { "family": "ELGT", "variant": "", "size": 90, "drive": "spindle" }
+      ],
+      "dataSource": "ELGT-BS data sheet 2026/09 p.47 (switch lug for sensing with OMRON EE-SX674 in the sensor bracket EAPM-L9-SHE, two M3x6 into the slide side); drawing from PARTdataManager"
+    },
+    {
+      "id": "EAPM-L9-120-SLE",
+      "maker": "Festo",
+      "role": "lug",
+      "systems": [
+        "Omron"
+      ],
+      "model": "EAPM-L9-120-SLE",
+      "partNumber": "8120124",
+      "mass": 0.009,
+      "axes": [
+        { "family": "ELGT", "variant": "", "size": 120, "drive": "spindle" }
+      ],
+      "dataSource": "ELGT-BS data sheet 2026/09 p.47 (switch lug for sensing with OMRON EE-SX674 in the sensor bracket EAPM-L9-SHE, two M3x6 into the slide side); drawing from PARTdataManager"
+    },
+    {
+      "id": "EAPM-L9-160-SLE",
+      "maker": "Festo",
+      "role": "lug",
+      "systems": [
+        "Omron"
+      ],
+      "model": "EAPM-L9-160-SLE",
+      "partNumber": "8120125",
+      "mass": 0.008,
+      "axes": [
+        { "family": "ELGT", "variant": "", "size": 160, "drive": "spindle" }
+      ],
+      "dataSource": "ELGT-BS data sheet 2026/09 p.47 (switch lug for sensing with OMRON EE-SX674 in the sensor bracket EAPM-L9-SHE, two M3x6 into the slide side); drawing from PARTdataManager"
     }
   ]
 }
