@@ -780,7 +780,7 @@ describe('combination', () => {
     expect(sensing.switches.map((s) => `${s.part.model} ${s.part.partNumber}`)).toEqual([
       'SMT-8M-A-PO-24V-E-7,5-OE 574340',
       'SMT-8M-A-PO-24V-E-7,5-OE 574340',
-      'SMT-8M-A-PS-24V-E-7,5-OE 574333',
+      'SMT-8M-A-PS-24V-E-5,0-OE 574336',
     ])
     const sensorPaths = allPaths.map((p) => p.slice(6)).filter((p) => p.startsWith('data/sensors/'))
     const paths = ['data/axes/Festo/Drawings/ESBF/574095_ESBF-BS-63-400-5P.stp', 'data/kits/Festo/Drawings/EAMM-A/543161_EAMM-A-D60-70A.stp', files[2], ...sensorPaths]

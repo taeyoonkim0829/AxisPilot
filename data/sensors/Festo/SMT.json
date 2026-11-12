@@ -1,14 +1,14 @@
 {
   "items": [
     {
-      "id": "SMT-8M-A-PS-24V-E-7,5-OE",
+      "id": "SMT-8M-A-PS-24V-E-5,0-OE",
       "maker": "Festo",
       "role": "sensor",
-      "model": "SMT-8M-A-PS-24V-E-7,5-OE",
-      "partNumber": "574333",
+      "model": "SMT-8M-A-PS-24V-E-5,0-OE",
+      "partNumber": "574336",
       "output": "PNP",
       "contact": "NO",
-      "mass": 0.0851,
+      "mass": 0.0571,
       "axes": [
         { "family": "ESBF", "variant": "", "size": 32, "drive": "spindle" },
         { "family": "ESBF", "variant": "", "size": 40, "drive": "spindle" },
@@ -18,7 +18,7 @@
         { "family": "ESBF", "variant": "", "size": 100, "drive": "spindle" }
       ],
       "sameOutline": "SMT-8M-A-PO-24V-E-7,5-OE",
-      "dataSource": "ESBF data sheet 2025/11, accessories p.62-63 (magneto-resistive proximity switch for T-slot, inserted from above, flush with the cylinder profile), cable 7.5 m; 7.5 m is no standard length for this output: ordered by the module number 574333 (PARTdataManager SMT-8M-A modular system), mass taken as the 7.5 m N/C model's"
+      "dataSource": "ESBF data sheet 2025/11, accessories p.62-63 (magneto-resistive proximity switch for T-slot, inserted from above, flush with the cylinder profile); N/O PNP has no 7.5 m cable: the longest standard one below it, 5.0 m (part number and mass from PARTdataManager)"
     },
     {
       "id": "SMT-8M-A-PO-24V-E-7,5-OE",
@@ -40,14 +40,14 @@
       "dataSource": "ESBF data sheet 2025/11, accessories p.62-63 (magneto-resistive proximity switch for T-slot, inserted from above, flush with the cylinder profile), cable 7.5 m"
     },
     {
-      "id": "SMT-8M-A-NS-24V-E-7,5-OE",
+      "id": "SMT-8M-A-NS-24V-E-2,5-OE",
       "maker": "Festo",
       "role": "sensor",
-      "model": "SMT-8M-A-NS-24V-E-7,5-OE",
-      "partNumber": "574333",
+      "model": "SMT-8M-A-NS-24V-E-2,5-OE",
+      "partNumber": "574338",
       "output": "NPN",
       "contact": "NO",
-      "mass": 0.0851,
+      "mass": 0.0291,
       "axes": [
         { "family": "ESBF", "variant": "", "size": 32, "drive": "spindle" },
         { "family": "ESBF", "variant": "", "size": 40, "drive": "spindle" },
@@ -57,7 +57,7 @@
         { "family": "ESBF", "variant": "", "size": 100, "drive": "spindle" }
       ],
       "sameOutline": "SMT-8M-A-PO-24V-E-7,5-OE",
-      "dataSource": "ESBF data sheet 2025/11, accessories p.62-63 (magneto-resistive proximity switch for T-slot, inserted from above, flush with the cylinder profile), cable 7.5 m; 7.5 m is no standard length for this output: ordered by the module number 574333 (PARTdataManager SMT-8M-A modular system), mass taken as the 7.5 m N/C model's"
+      "dataSource": "ESBF data sheet 2025/11, accessories p.62-63 (magneto-resistive proximity switch for T-slot, inserted from above, flush with the cylinder profile); N/O NPN has no 7.5 m cable: the longest standard one below it, 2.5 m (mass taken as the PNP 2.5 m model's, PARTdataManager)"
     },
     {
       "id": "SMT-8M-A-NO-24V-E-7,5-OE",
