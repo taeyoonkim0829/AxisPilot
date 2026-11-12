@@ -61,6 +61,10 @@ type OcctMesh = { name: string; attributes: { position: { array: number[] } } }
 type Occt = { ReadStepFile: (data: Uint8Array, params: null) => { success: boolean; meshes: OcctMesh[] } }
 const occt = import('occt-import-js').then((m) => (m.default as () => Promise<Occt>)())
 
+/** world x of each position switch's sensing end (its seat origin `at`), by role: − limit, home, + limit */
+const switchEnds = (combo: { parts: { name: string; transform: Parameters<typeof apply>[0] }[] }, at: [number, number, number], model = /SIES-8M|SMT-8M/) =>
+  ['(-LIMIT)', '(HOME)', '(+LIMIT)'].map((role) => apply(combo.parts.find((p) => model.test(p.name) && p.name.endsWith(role))!.transform, at)[0])
+
 async function meshBox(step: string) {
   const result = (await occt).ReadStepFile(new TextEncoder().encode(step), null)
   expect(result.success).toBe(true)
@@ -530,15 +534,15 @@ describe('combination', () => {
     // sensing end, the lug reaching 21 mm either side of the slide centre:
     // - limit: switching point at 2 - 21, so the lug's edge reaches it with the slide centre 2 mm from the start, the
     //   sensing end beyond it towards the start end, body and cable towards the middle; + limit likewise at 300 - 2;
-    //   home right behind the - limit (31.8 mm body), the same way round
-    const [minus, home, plus] = parts.filter((p) => /SIES-8M/.test(p.name)).sort((a, b) => a.lo[0] - b.lo[0])
-    for (const s of [minus, home, plus]) {
+    //   home right behind the - limit (31.8 mm body), its mirror image (the cables facing each other)
+    for (const s of parts.filter((p) => /SIES-8M/.test(p.name))) {
       expect((s.lo[2] + s.hi[2]) / 2).toBeCloseTo(-32, 0)
       expect(side > 0 ? s.hi[1] : -s.lo[1]).toBeCloseTo(30, 0)
     }
-    expect(minus.lo[0]).toBeCloseTo(2 - 21 - 6.7, 1)
-    expect(home.lo[0]).toBeCloseTo(2 - 21 - 6.7 + 31.8, 1)
-    expect(plus.hi[0]).toBeCloseTo(300 - 2 + 21 + 6.7, 1)
+    const [minus, home, plus] = switchEnds(combo, [0, 4.6, 0])
+    expect(minus).toBeCloseTo(2 - 21 - 6.7, 1)
+    expect(home).toBeCloseTo(2 - 21 - 6.7 + 2 * 31.8, 1)
+    expect(plus).toBeCloseTo(300 - 2 + 21 + 6.7, 1)
   }, 60000)
 
   it('senses an ELGD-BS with the lug where its slide has the threads, off the slide centre, the switches following it', async () => {
@@ -594,14 +598,14 @@ describe('combination', () => {
     for (const s of parts.filter((p) => /M3x6/.test(p.name))) expect((s.lo[2] + s.hi[2]) / 2).toBeCloseTo(-10, 0)
     // the switches flush with the profile side in the slot 46.5 mm down; the tongue 7.5 mm either side of the slide
     // centre, switching point 6.7 mm behind the sensing end
-    const [minus, home, plus] = parts.filter((p) => /SIES-8M/.test(p.name)).sort((a, b) => a.lo[0] - b.lo[0])
-    for (const s of [minus, home, plus]) {
+    for (const s of parts.filter((p) => /SIES-8M/.test(p.name))) {
       expect(side > 0 ? s.hi[1] : -s.lo[1]).toBeCloseTo(45, 0)
       expect((s.lo[2] + s.hi[2]) / 2).toBeCloseTo(-46.5, 0)
     }
-    expect(minus.lo[0]).toBeCloseTo(2 - 7.5 - 6.7, 1)
-    expect(home.lo[0]).toBeCloseTo(2 - 7.5 - 6.7 + 31.8, 1)
-    expect(plus.hi[0]).toBeCloseTo(500 - 2 + 7.5 + 6.7, 1)
+    const [minus, home, plus] = switchEnds(combo, [0, 4.6, 0])
+    expect(minus).toBeCloseTo(2 - 7.5 - 6.7, 1)
+    expect(home).toBeCloseTo(2 - 7.5 - 6.7 + 2 * 31.8, 1)
+    expect(plus).toBeCloseTo(500 - 2 + 7.5 + 6.7, 1)
   }, 60000)
 
   it('mounts Omron EE-SX674 sensors on their brackets, the lug passing through their slots (ELGD, ELGT-BS)', async () => {
@@ -697,17 +701,17 @@ describe('combination', () => {
     for (const s of parts.filter((p) => /M4x8/.test(p.name))) expect((s.lo[2] + s.hi[2]) / 2).toBeCloseTo(-16, 0)
     // the switches in the corner slot under the flag (opening centre 34.05 mm out, 28.2 mm down), on the lug's side;
     // the flag reaching 35 mm either side of the slide centre, switching point 6.7 mm behind the sensing end
-    const [minus, home, plus] = parts.filter((p) => /SIES-8M/.test(p.name)).sort((a, b) => a.lo[0] - b.lo[0])
-    for (const s of [minus, home, plus]) {
+    for (const s of parts.filter((p) => /SIES-8M/.test(p.name))) {
       const y = side * ((s.lo[1] + s.hi[1]) / 2)
       expect(y).toBeGreaterThan(26)
       expect(y).toBeLessThan(36)
       expect(s.hi[2]).toBeLessThan(-22)
       expect(s.lo[2]).toBeGreaterThan(-36)
     }
-    expect(minus.lo[0]).toBeCloseTo(2 - 35 - 6.7, 1)
-    expect(home.lo[0]).toBeCloseTo(2 - 35 - 6.7 + 31.8, 1)
-    expect(plus.hi[0]).toBeCloseTo(500 - 2 + 35 + 6.7, 1)
+    const [minus, home, plus] = switchEnds(combo, [0, 4.6, 0])
+    expect(minus).toBeCloseTo(2 - 35 - 6.7, 1)
+    expect(home).toBeCloseTo(2 - 35 - 6.7 + 2 * 31.8, 1)
+    expect(plus).toBeCloseTo(500 - 2 + 35 + 6.7, 1)
   }, 60000)
 
   it('draws an ELGD ordered with direct mounting M from its own file, the threads under the profile kept at 100 mm', async () => {
@@ -941,17 +945,18 @@ describe('combination', () => {
     expect(parts.some((p) => /ASCF/.test(p.name))).toBe(false)
     // floor: rod end at +X, motor at -X; the body 571 - 100 mm long (stroke 400 -> 300); the brackets (27 mm) within
     // the sensor area, L1 = 33 from the front and L2 = 99 from the drive end: the - limit's at L1, the + limit's at L2,
-    // the home switch's right behind the + limit; each switch (26.3 mm) centred in its SMB-8-FENG-50/63 bracket, which rests
-    // on the top face 37.25 mm above the rod axis and whose hook reaches down the profile's side (37.25 mm out)
-    const [plus, home, minus] = parts.filter((p) => /SMT-8M-A/.test(p.name)).sort((a, b) => a.lo[0] - b.lo[0])
-    expect(minus.hi[0] - plus.lo[0]).toBeCloseTo(471 - 33 - 99 - 0.7, 1)
-    expect(home.lo[0] - plus.lo[0]).toBeCloseTo(27, 1)
-    for (const s of [plus, home, minus]) expect(s.hi[2]).toBeCloseTo(37.25 + 5.5 - 0.4, 1)
+    // the home switch's right behind the + limit, the switch its mirror image (the cables facing each other); each
+    // switch (26.3 mm) centred in its SMB-8-FENG-50/63 bracket, which rests on the top face 37.25 mm above the rod axis
+    // and whose hook reaches down the profile's side (37.25 mm out)
+    const [minus, home, plus] = switchEnds(combo, [0, 4.8, 26.3])
+    expect(minus - plus).toBeCloseTo(471 - 33 - 99 - 0.7, 1)
+    expect(home - plus).toBeCloseTo(2 * 27 - 0.7, 1)
+    for (const s of parts.filter((p) => /SMT-8M-A/.test(p.name))) expect(s.hi[2]).toBeCloseTo(37.25 + 5.5 - 0.4, 1)
     const brackets = parts.filter((p) => /SMB-8-FENG/.test(p.name)).sort((a, b) => a.lo[0] - b.lo[0])
     expect(brackets).toHaveLength(3)
     expect(brackets[2].hi[0] - brackets[0].lo[0]).toBeCloseTo(471 - 33 - 99, 1)
     // centred on the switch bodies (26.3 mm from their sensing ends, the cables leaving them)
-    const centres = [plus.lo[0] + 13.15, home.lo[0] + 13.15, minus.hi[0] - 13.15]
+    const centres = [plus + 13.15, home - 13.15, minus - 13.15]
     brackets.forEach((b, i) => {
       expect((b.lo[0] + b.hi[0]) / 2).toBeCloseTo(centres[i], 1)
       expect(b.lo[2]).toBeCloseTo(37.25 - 15.5 - 0.4 + 0.4, 0)
