@@ -553,6 +553,9 @@ const SWITCH_NAMES: Record<SwitchRole, string> = { limitMinus: '-LIMIT', limitPl
  * middle (the model's cable stub would run through the heads). The home switch lies right behind the − limit
  * (`length` mm, sensing end to cable end, or its bracket) towards +, as its mirror image: their cables (Omron:
  * connectors) face each other instead of the limit's running into the home switch.
+ * `outwards` (Omron sensors on brackets, `end` = the bracket's end at the sensor, connector pointing the other way):
+ * the limits on their brackets' inner ends, connectors towards the axis ends; home back to back with the − limit on
+ * the next bracket inwards, its connector towards +.
  */
 export function switchPlacements(
   roles: SwitchRole[],
@@ -560,8 +563,20 @@ export function switchPlacements(
   edge: number,
   point: number[],
   length: number[],
+  outwards = false,
 ): { end: number; facing: 1 | -1 }[] {
   const minus = roles.indexOf('limitMinus')
+  if (outwards) {
+    // the − limit's bracket end (and the home's, abutting it) `point` beyond its switching point towards +
+    const inner = LIMIT_MARGIN - edge + (minus >= 0 ? point[minus] : 0)
+    return roles.map((role, i) =>
+      role === 'limitMinus'
+        ? { end: inner, facing: 1 as const }
+        : role === 'limitPlus'
+          ? { end: travel - LIMIT_MARGIN + edge - point[i], facing: -1 as const }
+          : { end: inner, facing: -1 as const },
+    )
+  }
   // the − limit's switching point at LIMIT_MARGIN − edge, its sensing end beyond it towards −
   const minusEnd = LIMIT_MARGIN - edge - (minus >= 0 ? point[minus] : 0)
   return roles.map((role, i) =>
@@ -980,7 +995,7 @@ export async function comboParts(
       const beamFrom = (i: number) => {
         const { seat, slot, length = 0 } = bracket!
         const beam = add(slot!.origin, scale(slot!.up, sensors.switches[i].meta!.beam ?? 0))
-        return length / 2 - dot(sub(beam, seat.origin), seat.up)
+        return length / 2 - Math.abs(dot(sub(beam, seat.origin), seat.up))
       }
       const placed = switchPlacements(
         switches.map((s) => s.role),
@@ -988,6 +1003,7 @@ export async function comboParts(
         lugMeta.edge ?? 0,
         sensors.switches.map((d, i) => (bracket ? beamFrom(i) : (d.meta!.switchPoint ?? 0))),
         bracket ? lengths.map(() => bracket.length ?? 0) : lengths,
+        bracket != null,
       )
       // the lug's middle off the slide centre along the travel (ELGD-BS slides), which the switches follow
       const lugShift = dot(sub(seats.lug.origin, axisMeta.slide.origin), axisMeta.slide.travel)
@@ -995,18 +1011,23 @@ export async function comboParts(
         if (!bracket) return from(seats.slot, add(travelStart, scale(base.slide.travel, p.end + lugShift)), scale(seats.slot.up, p.facing))
         // the bracket's slot nuts in its slot, upright (its seat's `up` × `axis` downwards, the bracket cannot be
         // turned end for end), its centre half its length behind `end`; the sensor on the hole pair at the end
-        // facing `p.facing`: the file's (at the seat's `up` end) or the other one
+        // facing `p.facing`: the file's `slot` or the other one, its screws (`screws`, filed at `slot`) moved along
         const nuts = seats.bracket ?? seats.slot
         const up = cross(axisMeta.slide.normal, nuts.axis)
         const centre = p.end + lugShift - (p.facing * (bracket.length ?? 0)) / 2
         const seat = from(nuts, add(travelStart, scale(base.slide.travel, centre)), up)
-        const file = files.get(sensors.bracket!.path) ?? parseStep(bracketText!)
-        files.set(sensors.bracket!.path, file)
+        const slot = bracket.slot!
+        const along = dot(sub(slot.origin, bracket.seat.origin), bracket.seat.up)
+        const turned = dot(up, axisMeta.slide.travel) * p.facing * along < 0
+        const key = `${sensors.bracket!.path}#${turned}`
+        let file = files.get(key)
+        if (!file) {
+          file = parseStep(bracketText!)
+          if (turned) for (const name of bracket.screws ?? []) placePart(file, name, { r: identity.r, t: scale(bracket.seat.up, -2 * along) })
+          files.set(key, file)
+        }
         parts.push({ role: 'sensor', name: `${sel.sensing!.bracket!.model} (${SWITCH_NAMES[switches[i].role]})`, file, transform: mate(first.axisToWorld, seat, bracket.seat) })
         const onBracket = mate(identity, seat, bracket.seat)
-        const slot = bracket.slot!
-        const turned = dot(up, axisMeta.slide.travel) * p.facing < 0
-        const along = dot(sub(slot.origin, bracket.seat.origin), bracket.seat.up)
         const own = turned ? { ...slot, origin: sub(slot.origin, scale(bracket.seat.up, 2 * along)), up: scale(slot.up, -1) } : slot
         return { origin: apply(onBracket, own.origin), axis: rotate(onBracket, own.axis), up: rotate(onBracket, own.up) }
       })

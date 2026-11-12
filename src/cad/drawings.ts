@@ -46,8 +46,12 @@ export interface SensorMeta {
   seat: Frame
   /** bracket: its sensor slot's opening at mid length, where a switch's seat goes (`axis` / `up` as the seat's); an
    *  Omron bracket (with a lug): where the sensor's seat goes, its `seat` the face on the profile at the slot nuts'
-   *  middle (`axis` away from the profile, `up` along the travel) */
+   *  middle (`axis` away from the profile, `up` along the travel); either hole pair (`up` towards the bracket's
+   *  middle) */
   slot?: Frame
+  /** Omron bracket: the sensor's fixing screws (part names), filed at the `slot` hole pair; moved to the other pair
+   *  with the sensor */
+  screws?: string[]
   /** Omron sensor: mm from its seat along `up` to its optical axis (the switching point) */
   beam?: number
   /** switch: its cable stub cut short (the model's runs straight on through the next switch), by `stretchPart` cuts
