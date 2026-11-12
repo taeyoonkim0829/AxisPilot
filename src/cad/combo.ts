@@ -928,11 +928,13 @@ export async function comboParts(
       sensors.switches.map((d) => d.meta!.switchPoint ?? 0),
       sensors.switches.map((d) => d.meta!.length ?? 0),
     )
+    // the lug's middle off the slide centre along the travel (ELGD-BS slides), which the switches follow
+    const lugShift = dot(sub(seats.lug.origin, axisMeta.slide.origin), axisMeta.slide.travel)
     switches.forEach((s, i) => {
       const drawing = sensors.switches[i]
       const file = files.get(drawing.path) ?? parseStep(switchTexts[i])
       files.set(drawing.path, file)
-      const at = add(travelStart, scale(base.slide.travel, placed[i].end))
+      const at = add(travelStart, scale(base.slide.travel, placed[i].end + lugShift))
       parts.push({
         role: 'sensor',
         name: `${s.part.model} (${SWITCH_NAMES[s.role]})`,

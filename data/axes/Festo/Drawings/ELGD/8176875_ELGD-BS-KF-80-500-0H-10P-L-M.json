@@ -4,5 +4,6 @@
   "slide": { "origin": [0, 98.4, -119.5], "normal": [0, 1, 0], "travel": [0, 0, -1] },
   "stretch": { "part": "8176875 ELGD-BS-KF-80-500-0HL--M---(0-0-0-2-L---highh)", "axis": 2, "dir": -1, "range": [-720, -235], "move": [16261] },
   "profile": { "origin": [0, 0, -353], "normal": [0, -1, 0] },
-  "coupling": { "part": "EAMC-30-GB16-D12x10-A", "jaw": [0, 1, 0], "count": 3 }
+  "coupling": { "part": "EAMC-30-GB16-D12x10-A", "jaw": [0, 1, 0], "count": 3 },
+  "sensor": { "lug": { "origin": [40, 86.4, -119.5], "axis": [1, 0, 0], "up": [0, 1, 0] }, "slot": { "origin": [40, 65.4, -119.5], "axis": [1, 0, 0], "up": [0, 0, -1] } }
 }

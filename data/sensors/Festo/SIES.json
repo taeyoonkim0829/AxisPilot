@@ -14,9 +14,14 @@
         { "family": "ELGD", "variant": "", "size": 80, "drive": "belt" },
         { "family": "ELGD", "variant": "", "size": 120, "drive": "belt" },
         { "family": "ELGD", "variant": "WD", "size": 100, "drive": "belt" },
-        { "family": "ELGD", "variant": "WD", "size": 120, "drive": "belt" }
+        { "family": "ELGD", "variant": "WD", "size": 120, "drive": "belt" },
+        { "family": "ELGD", "variant": "", "size": 60, "drive": "spindle" },
+        { "family": "ELGD", "variant": "", "size": 80, "drive": "spindle" },
+        { "family": "ELGD", "variant": "", "size": 120, "drive": "spindle" },
+        { "family": "ELGD", "variant": "WD", "size": 100, "drive": "spindle" },
+        { "family": "ELGD", "variant": "WD", "size": 120, "drive": "spindle" }
       ],
-      "dataSource": "ELGD-TB / ELGD-TB-WD data sheets 2026/09, accessories (inductive proximity switch for T-slot, N/O, PNP, cable 7.5 m)"
+      "dataSource": "ELGD-TB / -TB-WD / -BS / -BS-WD data sheets 2026/09, accessories (inductive proximity switch for T-slot, N/O, PNP, cable 7.5 m)"
     },
     {
       "id": "SIES-8M-PO-24V-K-7.5-OE",
@@ -32,10 +37,15 @@
         { "family": "ELGD", "variant": "", "size": 80, "drive": "belt" },
         { "family": "ELGD", "variant": "", "size": 120, "drive": "belt" },
         { "family": "ELGD", "variant": "WD", "size": 100, "drive": "belt" },
-        { "family": "ELGD", "variant": "WD", "size": 120, "drive": "belt" }
+        { "family": "ELGD", "variant": "WD", "size": 120, "drive": "belt" },
+        { "family": "ELGD", "variant": "", "size": 60, "drive": "spindle" },
+        { "family": "ELGD", "variant": "", "size": 80, "drive": "spindle" },
+        { "family": "ELGD", "variant": "", "size": 120, "drive": "spindle" },
+        { "family": "ELGD", "variant": "WD", "size": 100, "drive": "spindle" },
+        { "family": "ELGD", "variant": "WD", "size": 120, "drive": "spindle" }
       ],
       "sameOutline": "SIES-8M-PS-24V-K-7.5-OE",
-      "dataSource": "ELGD-TB / ELGD-TB-WD data sheets 2026/09, accessories (inductive proximity switch for T-slot, N/C, PNP, cable 7.5 m)"
+      "dataSource": "ELGD-TB / -TB-WD / -BS / -BS-WD data sheets 2026/09, accessories (inductive proximity switch for T-slot, N/C, PNP, cable 7.5 m)"
     },
     {
       "id": "SIES-8M-NS-24V-K-7.5-OE",
@@ -51,10 +61,15 @@
         { "family": "ELGD", "variant": "", "size": 80, "drive": "belt" },
         { "family": "ELGD", "variant": "", "size": 120, "drive": "belt" },
         { "family": "ELGD", "variant": "WD", "size": 100, "drive": "belt" },
-        { "family": "ELGD", "variant": "WD", "size": 120, "drive": "belt" }
+        { "family": "ELGD", "variant": "WD", "size": 120, "drive": "belt" },
+        { "family": "ELGD", "variant": "", "size": 60, "drive": "spindle" },
+        { "family": "ELGD", "variant": "", "size": 80, "drive": "spindle" },
+        { "family": "ELGD", "variant": "", "size": 120, "drive": "spindle" },
+        { "family": "ELGD", "variant": "WD", "size": 100, "drive": "spindle" },
+        { "family": "ELGD", "variant": "WD", "size": 120, "drive": "spindle" }
       ],
       "sameOutline": "SIES-8M-PS-24V-K-7.5-OE",
-      "dataSource": "ELGD-TB / ELGD-TB-WD data sheets 2026/09, accessories (inductive proximity switch for T-slot, N/O, NPN, cable 7.5 m)"
+      "dataSource": "ELGD-TB / -TB-WD / -BS / -BS-WD data sheets 2026/09, accessories (inductive proximity switch for T-slot, N/O, NPN, cable 7.5 m)"
     },
     {
       "id": "SIES-8M-NO-24V-K-7.5-OE",
@@ -70,10 +85,15 @@
         { "family": "ELGD", "variant": "", "size": 80, "drive": "belt" },
         { "family": "ELGD", "variant": "", "size": 120, "drive": "belt" },
         { "family": "ELGD", "variant": "WD", "size": 100, "drive": "belt" },
-        { "family": "ELGD", "variant": "WD", "size": 120, "drive": "belt" }
+        { "family": "ELGD", "variant": "WD", "size": 120, "drive": "belt" },
+        { "family": "ELGD", "variant": "", "size": 60, "drive": "spindle" },
+        { "family": "ELGD", "variant": "", "size": 80, "drive": "spindle" },
+        { "family": "ELGD", "variant": "", "size": 120, "drive": "spindle" },
+        { "family": "ELGD", "variant": "WD", "size": 100, "drive": "spindle" },
+        { "family": "ELGD", "variant": "WD", "size": 120, "drive": "spindle" }
       ],
       "sameOutline": "SIES-8M-PS-24V-K-7.5-OE",
-      "dataSource": "ELGD-TB / ELGD-TB-WD data sheets 2026/09, accessories (inductive proximity switch for T-slot, N/C, NPN, cable 7.5 m)"
+      "dataSource": "ELGD-TB / -TB-WD / -BS / -BS-WD data sheets 2026/09, accessories (inductive proximity switch for T-slot, N/C, NPN, cable 7.5 m)"
     }
   ]
 }

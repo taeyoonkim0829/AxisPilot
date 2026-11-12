@@ -540,6 +540,38 @@ describe('combination', () => {
     expect(plus.hi[0]).toBeCloseTo(300 - 2 + 21 + 6.7, 1)
   }, 60000)
 
+  it('senses an ELGD-BS with the lug where its slide has the threads, off the slide centre, the switches following it', async () => {
+    const axis = axes.find((a) => a.id === 'ELGD-BS-KF-60-…5P')!
+    const sensing = sensingFor(axis, sensors, { sensorOutput: 'PNP', limitContact: 'NC', homeContact: null })!
+    const sel: ComboSelection = {
+      axis,
+      axisModel: 'ELGD-BS-KF-60-300-5P',
+      stroke: 300,
+      motor: motors.find((m) => m.model === 'EMMT-AS-60-S-HS')!,
+      gearbox: null,
+      kit: kits.find((k) => k.product === 'EAMM-A-T42-60P' && k.motorCode === '60P')!,
+      sensing,
+    }
+    const kitPath = allPaths.map((p) => p.slice(6)).find((p) => p.includes('_EAMM-A-T42-60P.stp'))!
+    const sensorPaths = allPaths.map((p) => p.slice(6)).filter((p) => p.startsWith('data/sensors/'))
+    const own = ['data/axes/Festo/Drawings/ELGD/8192255_ELGD-BS-KF-60-300-0H-5P.stp', kitPath, files[2], ...sensorPaths].map((p) => ({
+      ...parseDrawingPath(p)!,
+      url: p,
+      meta: metas[`../../${p.replace(/\.stp$/, '.json')}`] ?? null,
+    }))
+    const found = comboDrawings(sel, own)
+    expect(found.sensors).not.toBeNull()
+    const combo = await buildCombo(sel, found, { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
+    const { parts } = await meshBox(combo.step)
+    const lug = parts.find((p) => /8196827 EAPM-E24-60-SLS/.test(p.name))!
+    // ELGD-BS-60: the threads' middle 4.1 mm from the slide centre away from the drive (floor: drive at -x, travel +x)
+    const shift = (lug.lo[0] + lug.hi[0]) / 2
+    expect(Math.abs(shift)).toBeCloseTo(4.1, 0)
+    const [minus, plus] = parts.filter((p) => /SIES-8M/.test(p.name)).sort((a, b) => a.lo[0] - b.lo[0])
+    expect(minus.lo[0]).toBeCloseTo(shift + 2 - 21 - 6.7, 1)
+    expect(plus.hi[0]).toBeCloseTo(shift + 300 - 2 + 21 + 6.7, 1)
+  }, 60000)
+
   it('draws an ELGD ordered with direct mounting M from its own file, the threads under the profile kept at 100 mm', async () => {
     const axis = axes.find((a) => a.id === 'ELGD-TB-KF-60')!
     const sel: ComboSelection = {

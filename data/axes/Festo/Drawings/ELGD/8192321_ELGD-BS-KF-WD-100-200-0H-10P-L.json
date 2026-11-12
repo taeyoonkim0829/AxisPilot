@@ -4,5 +4,6 @@
   "slide": { "origin": [0, 70, -105], "normal": [0, 1, 0], "travel": [0, 0, -1] },
   "stretch": { "part": "8176878 ELGD-BS-KF-WD-100-200-0H---(highh)", "axis": 2, "dir": -1, "range": [-390, -206], "move": [14094] },
   "profile": { "origin": [0, 0, -193.55], "normal": [0, -1, 0] },
-  "coupling": { "part": "EAMC-30-GB16-D8x10-A", "jaw": [-1, 0, 0], "count": 3 }
+  "coupling": { "part": "EAMC-30-GB16-D8x10-A", "jaw": [-1, 0, 0], "count": 3 },
+  "sensor": { "lug": { "origin": [50, 59, -120], "axis": [1, 0, 0], "up": [0, 1, 0] }, "slot": { "origin": [50, 38, -105], "axis": [1, 0, 0], "up": [0, 0, -1] } }
 }

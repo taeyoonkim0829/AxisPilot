@@ -12,9 +12,14 @@
         { "family": "ELGD", "variant": "", "size": 80, "drive": "belt" },
         { "family": "ELGD", "variant": "", "size": 120, "drive": "belt" },
         { "family": "ELGD", "variant": "WD", "size": 100, "drive": "belt" },
-        { "family": "ELGD", "variant": "WD", "size": 120, "drive": "belt" }
+        { "family": "ELGD", "variant": "WD", "size": 120, "drive": "belt" },
+        { "family": "ELGD", "variant": "", "size": 60, "drive": "spindle" },
+        { "family": "ELGD", "variant": "", "size": 80, "drive": "spindle" },
+        { "family": "ELGD", "variant": "", "size": 120, "drive": "spindle" },
+        { "family": "ELGD", "variant": "WD", "size": 100, "drive": "spindle" },
+        { "family": "ELGD", "variant": "WD", "size": 120, "drive": "spindle" }
       ],
-      "dataSource": "ELGD-TB / ELGD-TB-WD data sheets 2026/09, accessories (switch lug for SIES-8M)"
+      "dataSource": "ELGD-TB / -TB-WD / -BS / -BS-WD data sheets 2026/09, accessories (switch lug for SIES-8M)"
     }
   ]
 }

@@ -3,5 +3,6 @@
   "drive": { "origin": [0, 77, 37.5], "axis": [0, 0, 1], "up": [0, 1, 0] },
   "slide": { "origin": [0, 126.5, -91.5], "normal": [0, 1, 0], "travel": [0, 0, -1] },
   "stretch": { "part": "8176876 ELGD-BS-KF-120-200-0H-----(0-0-0-2-L---highh)", "axis": 2, "dir": -1, "range": [-363, -178], "move": [13772] },
-  "profile": { "origin": [0, 0, -162.25], "normal": [0, -1, 0] }
+  "profile": { "origin": [0, 0, -162.25], "normal": [0, -1, 0] },
+  "sensor": { "lug": { "origin": [60, 113.5, -93.5], "axis": [1, 0, 0], "up": [0, 1, 0] }, "slot": { "origin": [60, 92, -91.5], "axis": [1, 0, 0], "up": [0, 0, -1] } }
 }
