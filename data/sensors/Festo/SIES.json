@@ -28,9 +28,12 @@
         { "family": "EGC", "variant": "", "size": 70, "drive": "spindle" },
         { "family": "EGC", "variant": "", "size": 80, "drive": "spindle" },
         { "family": "EGC", "variant": "", "size": 120, "drive": "spindle" },
-        { "family": "EGC", "variant": "", "size": 185, "drive": "spindle" }
+        { "family": "EGC", "variant": "", "size": 185, "drive": "spindle" },
+        { "family": "ELGT", "variant": "", "size": 90, "drive": "spindle" },
+        { "family": "ELGT", "variant": "", "size": 120, "drive": "spindle" },
+        { "family": "ELGT", "variant": "", "size": 160, "drive": "spindle" }
       ],
-      "dataSource": "ELGD-TB / -TB-WD / -BS / -BS-WD data sheets 2026/09, EGC-TB-KF / EGC-BS-KF data sheets 2026/10, accessories (inductive proximity switch for T-slot, N/O, PNP, cable 7.5 m)"
+      "dataSource": "ELGD-TB / -TB-WD / -BS / -BS-WD data sheets 2026/09, EGC-TB-KF / EGC-BS-KF data sheets 2026/10, ELGT-BS data sheet 2026/09, accessories (inductive proximity switch for T-slot, N/O, PNP, cable 7.5 m)"
     },
     {
       "id": "SIES-8M-PO-24V-K-7.5-OE",
@@ -60,10 +63,13 @@
         { "family": "EGC", "variant": "", "size": 70, "drive": "spindle" },
         { "family": "EGC", "variant": "", "size": 80, "drive": "spindle" },
         { "family": "EGC", "variant": "", "size": 120, "drive": "spindle" },
-        { "family": "EGC", "variant": "", "size": 185, "drive": "spindle" }
+        { "family": "EGC", "variant": "", "size": 185, "drive": "spindle" },
+        { "family": "ELGT", "variant": "", "size": 90, "drive": "spindle" },
+        { "family": "ELGT", "variant": "", "size": 120, "drive": "spindle" },
+        { "family": "ELGT", "variant": "", "size": 160, "drive": "spindle" }
       ],
       "sameOutline": "SIES-8M-PS-24V-K-7.5-OE",
-      "dataSource": "ELGD-TB / -TB-WD / -BS / -BS-WD data sheets 2026/09, EGC-TB-KF / EGC-BS-KF data sheets 2026/10, accessories (inductive proximity switch for T-slot, N/C, PNP, cable 7.5 m)"
+      "dataSource": "ELGD-TB / -TB-WD / -BS / -BS-WD data sheets 2026/09, EGC-TB-KF / EGC-BS-KF data sheets 2026/10, ELGT-BS data sheet 2026/09, accessories (inductive proximity switch for T-slot, N/C, PNP, cable 7.5 m)"
     },
     {
       "id": "SIES-8M-NS-24V-K-7.5-OE",
@@ -93,10 +99,13 @@
         { "family": "EGC", "variant": "", "size": 70, "drive": "spindle" },
         { "family": "EGC", "variant": "", "size": 80, "drive": "spindle" },
         { "family": "EGC", "variant": "", "size": 120, "drive": "spindle" },
-        { "family": "EGC", "variant": "", "size": 185, "drive": "spindle" }
+        { "family": "EGC", "variant": "", "size": 185, "drive": "spindle" },
+        { "family": "ELGT", "variant": "", "size": 90, "drive": "spindle" },
+        { "family": "ELGT", "variant": "", "size": 120, "drive": "spindle" },
+        { "family": "ELGT", "variant": "", "size": 160, "drive": "spindle" }
       ],
       "sameOutline": "SIES-8M-PS-24V-K-7.5-OE",
-      "dataSource": "ELGD-TB / -TB-WD / -BS / -BS-WD data sheets 2026/09, EGC-TB-KF / EGC-BS-KF data sheets 2026/10, accessories (inductive proximity switch for T-slot, N/O, NPN, cable 7.5 m)"
+      "dataSource": "ELGD-TB / -TB-WD / -BS / -BS-WD data sheets 2026/09, EGC-TB-KF / EGC-BS-KF data sheets 2026/10, ELGT-BS data sheet 2026/09, accessories (inductive proximity switch for T-slot, N/O, NPN, cable 7.5 m)"
     },
     {
       "id": "SIES-8M-NO-24V-K-7.5-OE",
@@ -126,10 +135,13 @@
         { "family": "EGC", "variant": "", "size": 70, "drive": "spindle" },
         { "family": "EGC", "variant": "", "size": 80, "drive": "spindle" },
         { "family": "EGC", "variant": "", "size": 120, "drive": "spindle" },
-        { "family": "EGC", "variant": "", "size": 185, "drive": "spindle" }
+        { "family": "EGC", "variant": "", "size": 185, "drive": "spindle" },
+        { "family": "ELGT", "variant": "", "size": 90, "drive": "spindle" },
+        { "family": "ELGT", "variant": "", "size": 120, "drive": "spindle" },
+        { "family": "ELGT", "variant": "", "size": 160, "drive": "spindle" }
       ],
       "sameOutline": "SIES-8M-PS-24V-K-7.5-OE",
-      "dataSource": "ELGD-TB / -TB-WD / -BS / -BS-WD data sheets 2026/09, EGC-TB-KF / EGC-BS-KF data sheets 2026/10, accessories (inductive proximity switch for T-slot, N/C, NPN, cable 7.5 m)"
+      "dataSource": "ELGD-TB / -TB-WD / -BS / -BS-WD data sheets 2026/09, EGC-TB-KF / EGC-BS-KF data sheets 2026/10, ELGT-BS data sheet 2026/09, accessories (inductive proximity switch for T-slot, N/C, NPN, cable 7.5 m)"
     }
   ]
 }

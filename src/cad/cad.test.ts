@@ -572,6 +572,37 @@ describe('combination', () => {
     expect(plus.hi[0]).toBeCloseTo(shift + 300 - 2 + 21 + 6.7, 1)
   }, 60000)
 
+  it('senses an ELGT-BS with the EAPM-L9 lug on the slide side and the switches in the profile slot [1]', async () => {
+    const sensing = sensingFor(selection(500).axis, sensors, { sensorOutput: 'PNP', limitContact: 'NC', homeContact: 'NO' })!
+    expect(sensing.lug?.partNumber).toBe('8119853')
+    const sel = { ...selection(500), sensing }
+    const sensorPaths = allPaths.map((p) => p.slice(6)).filter((p) => p.startsWith('data/sensors/'))
+    const own = [...files.slice(0, 3), ...sensorPaths].map((p) => ({ ...parseDrawingPath(p)!, url: p, meta: metas[`../../${p.replace(/\.stp$/, '.json')}`] ?? null }))
+    const found = comboDrawings(sel, own)
+    expect(found.sensors?.lug?.partNumber).toBe('8119853')
+    const combo = await buildCombo(sel, found, { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
+    const { parts } = await meshBox(combo.step)
+    // floor: travel +x, slide surface at z = 0; ELGT-BS-90: the lug's plate on the slide side 50 mm out, its two M3x6
+    // 10 mm down, its tongue joggled 4 mm in towards the profile side (45 mm out), 1 mm off it
+    const lug = parts.find((p) => /EAPM-L9-90-SLS---\(high_p1\)/.test(p.name))!
+    const side = Math.sign(lug.hi[1])
+    const [inner, outer] = side > 0 ? [lug.lo[1], lug.hi[1]] : [-lug.hi[1], -lug.lo[1]]
+    expect(inner).toBeCloseTo(46, 1)
+    expect(outer).toBeCloseTo(52, 1)
+    expect((lug.lo[0] + lug.hi[0]) / 2).toBeCloseTo(0, 0)
+    for (const s of parts.filter((p) => /M3x6/.test(p.name))) expect((s.lo[2] + s.hi[2]) / 2).toBeCloseTo(-10, 0)
+    // the switches flush with the profile side in the slot 46.5 mm down; the tongue 7.5 mm either side of the slide
+    // centre, switching point 6.7 mm behind the sensing end
+    const [minus, home, plus] = parts.filter((p) => /SIES-8M/.test(p.name)).sort((a, b) => a.lo[0] - b.lo[0])
+    for (const s of [minus, home, plus]) {
+      expect(side > 0 ? s.hi[1] : -s.lo[1]).toBeCloseTo(45, 0)
+      expect((s.lo[2] + s.hi[2]) / 2).toBeCloseTo(-46.5, 0)
+    }
+    expect(minus.lo[0]).toBeCloseTo(2 - 7.5 - 6.7, 1)
+    expect(home.lo[0]).toBeCloseTo(2 - 7.5 - 6.7 + 31.8, 1)
+    expect(plus.hi[0]).toBeCloseTo(500 - 2 + 7.5 + 6.7, 1)
+  }, 60000)
+
   it('senses an EGC with the SF-EGC-1 lug on the slide side and the switches in the tilted corner slot', async () => {
     const axis = axes.find((a) => a.id === 'EGC-80-...-TB-KF-GK')!
     const sensing = sensingFor(axis, sensors, { sensorOutput: 'PNP', limitContact: 'NC', homeContact: 'NO' })!

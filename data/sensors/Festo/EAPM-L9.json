@@ -1,0 +1,40 @@
+{
+  "items": [
+    {
+      "id": "EAPM-L9-90-SLS",
+      "maker": "Festo",
+      "role": "lug",
+      "model": "EAPM-L9-90-SLS",
+      "partNumber": "8119853",
+      "mass": 0.019,
+      "axes": [
+        { "family": "ELGT", "variant": "", "size": 90, "drive": "spindle" }
+      ],
+      "dataSource": "ELGT-BS data sheet 2026/09 p.22, 46 (switch lug EAPM-L9-...-SLS for sensing using SIES-8M in the profile slot [1], two M3x6 into the slide side); drawing from PARTdataManager"
+    },
+    {
+      "id": "EAPM-L9-120-SLS",
+      "maker": "Festo",
+      "role": "lug",
+      "model": "EAPM-L9-120-SLS",
+      "partNumber": "8119854",
+      "mass": 0.016,
+      "axes": [
+        { "family": "ELGT", "variant": "", "size": 120, "drive": "spindle" }
+      ],
+      "dataSource": "ELGT-BS data sheet 2026/09 p.22, 46 (switch lug EAPM-L9-...-SLS for sensing using SIES-8M in the profile slot [1], two M3x6 into the slide side); drawing from PARTdataManager"
+    },
+    {
+      "id": "EAPM-L9-160-SLS",
+      "maker": "Festo",
+      "role": "lug",
+      "model": "EAPM-L9-160-SLS",
+      "partNumber": "8119855",
+      "mass": 0.016,
+      "axes": [
+        { "family": "ELGT", "variant": "", "size": 160, "drive": "spindle" }
+      ],
+      "dataSource": "ELGT-BS data sheet 2026/09 p.22, 46 (switch lug EAPM-L9-...-SLS for sensing using SIES-8M in the profile slot [1], two M3x6 into the slide side); drawing from PARTdataManager"
+    }
+  ]
+}
