@@ -129,7 +129,7 @@ function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'sett
         </div>
       )}
       {sensing && (
-        <>
+        <div className="axis-options-row">
           <div className="filter-group">
             <span className="field-label">{t('센서 출력')}</span>
             <RadioGroup
@@ -157,7 +157,7 @@ function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'sett
               onChange={(v) => onSettings({ ...settings, homeContact: v === 'none' ? null : v })}
             />
           </div>
-        </>
+        </div>
       )}
     </div>
   )
