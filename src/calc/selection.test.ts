@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { axes, gearboxes, guides, kits, motors, shafts } from '../data'
 import type { Axis, AxisFamily, DriveKind, Gearbox, Motor } from '../data/types'
-import { axisOrder, curveAt, evaluateAxis, guideLoads, memberLoads, parallelLayout, selectAxes, G } from './axisSelection'
+import { axisOptions, axisOrder, curveAt, evaluateAxis, guideLoads, memberLoads, parallelLayout, selectAxes, G } from './axisSelection'
 import { evaluateDrive, gearboxOptionsFor, gearboxStatus, selectMotors } from './motorSelection'
 import { moveProfile } from './motionProfile'
 import { comboInputs, shaftTooShort } from '../ui/comboInputs'
@@ -185,6 +185,9 @@ describe('axis order options', () => {
     const next = Math.min(...lengths.filter((s) => s >= 1192))
     expect(e.order).toEqual({ model: `ELGD-TB-KF-80-${next}-0H-ZR-PU2`, partNumber: elgd.moduleNumber, stroke: next, modular: false })
     expect(e.checks.find((c) => c.label === '표준 스트로크')).toBeUndefined()
+    // EGC-80 GK with KL + KR: 500 mm lengthened by both slides goes up to 800, a standard stroke
+    const both = axisOrder(egc, 500, axisOptions(egc, { ...defaultSettings, additionalSlide: 'both' }), true)
+    expect(both).toEqual({ model: 'EGC-80-800-TB-KF-0H-GK-KL-KR', partNumber: egc.moduleNumber, stroke: 800, modular: false })
   })
 
   it('takes the entered centre spacing of the slides, at least the minimum', () => {
