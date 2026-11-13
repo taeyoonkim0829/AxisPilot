@@ -2673,8 +2673,26 @@ body {
   text-align: center;
 }
 
-.compare-spec .spec-other {
+.compare-spec .spec-other,
+.data-table td.data {
   text-align: left;
+}
+
+.data-table td.data {
+  font-family: var(--din);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 비교 제품 above, Festo 제품 below, split by a line */
+.compare .inputs-main section + section {
+  padding-top: 22px;
+  border-top: 1px solid var(--line-strong);
+}
+
+/* the gauge in Festo blue */
+.compare {
+  --gauge: #0091dc;
 }
 
 .gauge {
@@ -2689,8 +2707,7 @@ body {
 .gauge-fill {
   position: absolute;
   inset: 0 auto 0 0;
-  background: var(--accent-soft);
-  box-shadow: inset -2px 0 0 var(--accent);
+  background: var(--gauge);
 }
 
 .gauge-mark {
@@ -2714,6 +2731,10 @@ body {
   font-size: 14px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
+  /* a halo in the ground's colour, readable over the blue and over the empty track */
+  text-shadow:
+    0 0 3px rgb(var(--veil)),
+    0 0 6px rgb(var(--veil) / 0.8);
 }
 
 .gauge-none {

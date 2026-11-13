@@ -66,7 +66,7 @@ function CompareBar({ reference, festo }: { reference: { maker: string; model: s
   return (
     <div className="panel compare-bar">
       <div className="compare-bar-item">
-        <span className="compare-bar-role">{t('기준')} · {reference.maker}</span>
+        <span className="compare-bar-role">{t('비교 제품')} · {reference.maker}</span>
         <span className="compare-bar-model">{reference.model}</span>
         <span className="compare-bar-line">{reference.line}</span>
       </div>
@@ -75,7 +75,7 @@ function CompareBar({ reference, festo }: { reference: { maker: string; model: s
         <path d="M13 6l6 6-6 6" />
       </svg>
       <div className="compare-bar-item">
-        <span className="compare-bar-role">{t('대체')} · Festo</span>
+        <span className="compare-bar-role">{t('Festo 제품')}</span>
         <span className={`compare-bar-model${festo ? '' : ' sign-empty'}`}>{festo?.model ?? t('해당 제품 없음')}</span>
         {festo && <span className="compare-bar-line">{festo.line}</span>}
       </div>
@@ -83,7 +83,7 @@ function CompareBar({ reference, festo }: { reference: { maker: string; model: s
   )
 }
 
-/** The Festo value against the reference's: a 0–200% bar with the reference (100%) marked */
+/** The other maker's value against the Festo product's: a 0–200% bar with the Festo value (100%) marked */
 function Gauge({ ratio }: { ratio: number | null }) {
   const t = useT()
   if (ratio == null) return <span className="gauge-none muted">{t('수치 비교 없음')}</span>
@@ -113,7 +113,7 @@ function SpecTable({ rows, reference, festo }: { rows: SpecRow[]; reference: str
               <th className="num">
                 <span className="model">{reference}</span>
               </th>
-              <th className="gauge-head">{t('기준 대비 (기준 = 100%)')}</th>
+              <th className="gauge-head">{t('수치 비교')}</th>
               <th>
                 <span className="model">{festo}</span>
               </th>
@@ -127,7 +127,7 @@ function SpecTable({ rows, reference, festo }: { rows: SpecRow[]; reference: str
                 <td className="gauge-cell">
                   <Gauge ratio={r.ratio} />
                 </td>
-                <td className="spec-other">{cell(r.other, t(r.unit))}</td>
+                <td className="num spec-other">{cell(r.other, t(r.unit))}</td>
               </tr>
             ))}
           </tbody>
@@ -151,7 +151,8 @@ function CandidateTable<T extends { id: string }>({
   rows: T[]
   selected: string | null
   onSelect: (id: string) => void
-  columns: { head: string; cell: (r: T) => ReactNode; num?: boolean }[]
+  /** num: right-aligned numbers; data: left-aligned in the data face */
+  columns: { head: string; cell: (r: T) => ReactNode; num?: boolean; data?: boolean }[]
 }) {
   const t = useT()
   return (
@@ -178,7 +179,7 @@ function CandidateTable<T extends { id: string }>({
               {rows.map((r) => (
                 <tr key={r.id} className={r.id === selected ? 'selected' : ''} onClick={() => onSelect(r.id)} tabIndex={0} onKeyDown={(k) => k.key === 'Enter' && onSelect(r.id)}>
                   {columns.map((c) => (
-                    <td key={c.head} className={c.num ? 'num' : undefined}>
+                    <td key={c.head} className={c.num ? 'num' : c.data ? 'data' : undefined}>
                       {c.cell(r)}
                     </td>
                   ))}
@@ -224,7 +225,7 @@ function AxisCompare() {
       <aside className="inputs">
         <div className="panel inputs-main">
           <section>
-            <h2>{t('기준 제품 (3rd party)')}</h2>
+            <h2>{t('비교 제품')}</h2>
             <Select label={t('제조사')} value={maker} options={makers} onChange={setMaker} />
             <Select label={t('시리즈')} value={seriesNow} options={seriesList} onChange={setSeries} />
             <Select label={t('모델')} value={ref.id} options={models.map((a) => a.id)} onChange={setModelId} />
@@ -243,7 +244,7 @@ function AxisCompare() {
             <p className="field-hint">{t('리니어 모터 타입(RF)은 목록에 없습니다.')}</p>
           </section>
           <section>
-            <h2>{t('대체 제품 (Festo)')}</h2>
+            <h2>{t('Festo 제품')}</h2>
             <div className="field">
               <span className="field-label">{t('구동')}</span>
               <span>{t(ref.drive === 'spindle' ? '볼스크류' : '벨트')}</span>
@@ -252,7 +253,7 @@ function AxisCompare() {
               <span className="field-label">{t('시리즈')}</span>
               <ToggleGroup options={COMPARE_AXIS_FAMILIES} selected={families} onChange={setFamilies} />
             </div>
-            <ToggleButton label={t('기준 스트로크·속도 이상만')} checked={atLeast} onChange={setAtLeast} />
+            <ToggleButton label={t('비교 제품 스트로크·속도 이상만')} checked={atLeast} onChange={setAtLeast} />
           </section>
         </div>
       </aside>
@@ -263,7 +264,7 @@ function AxisCompare() {
         />
         <CandidateTable
           title={t('Festo 대체 제품')}
-          note={t('제품 데이터 · 기준과 가까운 순 · {n}개', { n: list.length })}
+          note={t('제품 데이터 · 비교 제품과 가까운 순 · {n}개', { n: list.length })}
           rows={list}
           selected={festo?.id ?? null}
           onSelect={setPick}
@@ -276,7 +277,7 @@ function AxisCompare() {
               : [{ head: t('피드 상수'), num: true, cell: (a: Axis) => (a.feedConstant ? `${fmt(a.feedConstant)} mm/rev` : '—') }]),
             { head: t('최대 이송력'), num: true, cell: (a) => (a.maxFeedForce ? `${fmt(a.maxFeedForce, 0)} N` : '—') },
             { head: 'Fy / Fz', num: true, cell: (a) => (a.FyMax != null && a.FzMax != null ? `${fmt(a.FyMax, 0)} / ${fmt(a.FzMax, 0)} N` : '—') },
-            { head: t('속도 (기준 대비)'), num: true, cell: (a) => pct(a.maxSpeed / ref.maxSpeed) },
+            { head: t('속도 비교'), num: true, cell: (a) => pct(ref.maxSpeed / a.maxSpeed) },
           ]}
         />
         {festo && <SpecTable rows={axisSpecRows(ref, festo)} reference={ref.model} festo={festo.model} />}
@@ -315,7 +316,7 @@ function MotorCompare() {
       <aside className="inputs">
         <div className="panel inputs-main">
           <section>
-            <h2>{t('기준 제품 (3rd party)')}</h2>
+            <h2>{t('비교 제품')}</h2>
             <Select label={t('제조사')} value={maker} options={[...thirdPartyMakers]} onChange={setMaker} />
             <Select label={t('시리즈')} value={familyNow} options={familyList} onChange={setFamily} />
             <Select label={t('모델')} value={ref.id} options={models.map((m) => m.id)} onChange={setModelId} text={(id) => models.find((m) => m.id === id)?.model ?? id} />
@@ -329,7 +330,7 @@ function MotorCompare() {
             />
           </section>
           <section>
-            <h2>{t('대체 제품 (Festo)')}</h2>
+            <h2>{t('Festo 제품')}</h2>
             <div className="field">
               <span className="field-label">{t('시리즈')}</span>
               <ToggleGroup options={festoFamilies} selected={families} onChange={setFamilies} />
@@ -338,7 +339,7 @@ function MotorCompare() {
               <span className="field-label">{t('전원')}</span>
               <RadioGroup options={supplies} value={supply} onChange={setSupply} label={(s) => (s === 'all' ? t('전체') : s)} />
             </div>
-            <ToggleButton label={t('기준과 같은 출력대')} checked={samePower} onChange={setSamePower} />
+            <ToggleButton label={t('비교 제품과 같은 출력대')} checked={samePower} onChange={setSamePower} />
             <ToggleButton label={t('같은 인터페이스 코드만 ({code})', { code: ref.interfaceCode ?? '—' })} checked={sameInterface} onChange={setSameInterface} />
           </section>
         </div>
@@ -347,7 +348,7 @@ function MotorCompare() {
         <CompareBar reference={{ maker: ref.maker, model: ref.model, line: motorLine(ref) }} festo={festo ? { model: festo.model, line: motorLine(festo) } : null} />
         <CandidateTable
           title={t('Festo 대체 제품')}
-          note={t('제품 데이터 · 기준과 가까운 순 · {n}개', { n: list.length })}
+          note={t('제품 데이터 · 비교 제품과 가까운 순 · {n}개', { n: list.length })}
           rows={list}
           selected={festo?.id ?? null}
           onSelect={setPick}
@@ -358,9 +359,10 @@ function MotorCompare() {
             { head: t('최대 토크'), num: true, cell: (m) => `${fmt(m.peakTorque)} Nm` },
             { head: t('최고 회전수'), num: true, cell: (m) => `${fmt(m.maxSpeed, 0)} rpm` },
             { head: t('회전자 관성'), num: true, cell: (m) => `${fmt(m.inertia, 3)} kg·cm²` },
-            { head: t('전원'), cell: (m) => supplyOf(m) ?? '—' },
+            { head: t('전원'), data: true, cell: (m) => supplyOf(m) ?? '—' },
             {
               head: t('인터페이스'),
+              data: true,
               cell: (m) => <span className={m.interfaceCode === ref.interfaceCode ? undefined : 'warn-text'}>{m.interfaceCode ?? '—'}</span>,
             },
           ]}

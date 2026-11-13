@@ -23,7 +23,7 @@ describe('제품 비교', () => {
     expect(list[0].spindlePitch).toBe(20)
     const elgt = axes.find((a) => a.id === 'ELGT-BS-120-…20P')!
     const rows = axisSpecRows(rs, elgt)
-    expect(rows.find((r) => r.label === '최대 스트로크')!.ratio).toBeCloseTo(1.1)
+    expect(rows.find((r) => r.label === '최대 스트로크')!.ratio).toBeCloseTo(1000 / 1100)
     expect(rows.find((r) => r.label === '볼스크류 리드')!.ratio).toBe(1)
     // a payload in kg is not put on one scale with forces in N
     expect(rows.find((r) => r.label === '하중 정격')!.ratio).toBeNull()
@@ -38,7 +38,7 @@ describe('제품 비교', () => {
     expect(ac400.every((m) => supplyOf(m) === 'AC 380–480 V')).toBe(true)
     const emmt = motors.find((m) => m.model === 'EMMT-AS-80-S-HS')!
     const rows = motorSpecRows(ref, emmt)
-    expect(rows.find((r) => r.label === '최대 토크')!.ratio).toBeCloseTo(2.8 / 3.75)
+    expect(rows.find((r) => r.label === '최대 토크')!.ratio).toBeCloseTo(3.75 / 2.8)
     expect(rows.find((r) => r.label === '인터페이스')).toMatchObject({ reference: '80PA', other: '80P', ratio: null })
   })
 })
