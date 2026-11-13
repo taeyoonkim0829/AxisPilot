@@ -535,16 +535,16 @@ describe('combination', () => {
     // sensing end, the lug reaching 21 mm either side of the slide centre:
     // - limit: switching point at 2 - 21, so the lug's edge reaches it with the slide centre 2 mm from the start, the
     //   sensing end beyond it towards the start end, body and cable towards the middle; + limit likewise at 300 - 2;
-    //   home right behind the - limit (31.8 mm body), its mirror image (the cables facing each other)
+    //   home behind the - limit (31.8 mm body + 10 mm cable stub each), its mirror image (the stubs meeting)
     for (const s of parts.filter((p) => /SIES-8M/.test(p.name))) {
       expect((s.lo[2] + s.hi[2]) / 2).toBeCloseTo(-32, 0)
       expect(side > 0 ? s.hi[1] : -s.lo[1]).toBeCloseTo(30, 0)
-      // the 130 mm cable stub cut to 4 mm, so it ends inside the next switch's body
-      expect(s.hi[0] - s.lo[0]).toBeCloseTo(31.8 + 4, 1)
+      // the 130 mm cable stub cut to 10 mm
+      expect(s.hi[0] - s.lo[0]).toBeCloseTo(31.8 + 10, 1)
     }
     const [minus, home, plus] = switchEnds(combo, [0, 4.6, 0])
     expect(minus).toBeCloseTo(2 - 21 - 6.7, 1)
-    expect(home).toBeCloseTo(2 - 21 - 6.7 + 2 * 31.8, 1)
+    expect(home).toBeCloseTo(2 - 21 - 6.7 + 2 * (31.8 + 10), 1)
     expect(plus).toBeCloseTo(300 - 2 + 21 + 6.7, 1)
     // 센서 취부 방향: on the profile's other side, lug and switches turned (not mirrored), where they were along the travel
     const choice = sensorSides(found.axis!.meta as AxisMeta)!
@@ -623,7 +623,7 @@ describe('combination', () => {
     }
     const [minus, home, plus] = switchEnds(combo, [0, 4.6, 0])
     expect(minus).toBeCloseTo(2 - 7.5 - 6.7, 1)
-    expect(home).toBeCloseTo(2 - 7.5 - 6.7 + 2 * 31.8, 1)
+    expect(home).toBeCloseTo(2 - 7.5 - 6.7 + 2 * (31.8 + 10), 1)
     expect(plus).toBeCloseTo(500 - 2 + 7.5 + 6.7, 1)
   }, 60000)
 
@@ -753,7 +753,7 @@ describe('combination', () => {
     }
     const [minus, home, plus] = switchEnds(combo, [0, 4.6, 0])
     expect(minus).toBeCloseTo(2 - 35 - 6.7, 1)
-    expect(home).toBeCloseTo(2 - 35 - 6.7 + 2 * 31.8, 1)
+    expect(home).toBeCloseTo(2 - 35 - 6.7 + 2 * (31.8 + 10), 1)
     expect(plus).toBeCloseTo(500 - 2 + 35 + 6.7, 1)
     // EGC-BS: its file has the slide at the end of the travel (past the profile's middle along `travel`), so the
     // travel starts a stroke back from it: the switches on the profile, not beyond its end (floor: travel +x)
@@ -1030,8 +1030,8 @@ describe('combination', () => {
     expect(home - plus).toBeCloseTo(2 * 27 - 0.7, 1)
     for (const s of parts.filter((p) => /SMT-8M-A/.test(p.name))) {
       expect(s.hi[2]).toBeCloseTo(37.25 + 5.5 - 0.4, 1)
-      // the 90 mm cable stub cut to 8 mm
-      expect(s.hi[0] - s.lo[0]).toBeCloseTo(26.3 + 8, 1)
+      // the 90 mm cable stub cut to 10 mm
+      expect(s.hi[0] - s.lo[0]).toBeCloseTo(26.3 + 10, 1)
     }
     const brackets = parts.filter((p) => /SMB-8-FENG/.test(p.name)).sort((a, b) => a.lo[0] - b.lo[0])
     expect(brackets).toHaveLength(3)

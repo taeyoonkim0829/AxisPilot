@@ -2,5 +2,6 @@
   "seat": { "origin": [0, 4.8, 26.3], "axis": [0, 1, 0], "up": [0, 0, 1] },
   "length": 26.3,
   "without": ["1247168 ASCF-M-23-S DM 2.1-3.4"],
-  "trim": { "part": "(part)", "axis": 2, "dir": -1, "cuts": [{ "range": [-89.5, -80.5], "by": 8 }, { "range": [-79.5, -3.5], "by": 74 }] }
+  "trim": { "part": "(part)", "axis": 2, "dir": -1, "cuts": [{ "range": [-89.5, -80.5], "by": 8 }, { "range": [-79.5, -3.5], "by": 72 }] },
+  "cable": 10
 }

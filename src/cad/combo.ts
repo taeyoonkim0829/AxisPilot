@@ -1069,7 +1069,8 @@ export async function comboParts(
         travel,
         lugMeta.edge ?? 0,
         sensors.switches.map((d, i) => (bracket ? beamFrom(i) : (d.meta!.switchPoint ?? 0))),
-        bracket ? lengths.map(() => bracket.length ?? 0) : lengths,
+        // a switch with its cable stub: the home switch clear of the − limit's, the stubs meeting
+        bracket ? lengths.map(() => bracket.length ?? 0) : sensors.switches.map((d, i) => lengths[i] + (d.meta!.cable ?? 0)),
         bracket != null,
         !!seats.limitsInwards,
       )
