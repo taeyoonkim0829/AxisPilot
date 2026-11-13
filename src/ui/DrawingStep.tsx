@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { AxisEvaluation } from '../calc/axisSelection'
+import { bracketCount, type AxisEvaluation } from '../calc/axisSelection'
 import type { DriveEvaluation } from '../calc/motorSelection'
 import type { Requirements } from '../calc/types'
 import {
@@ -257,11 +257,10 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
             ? (() => {
                 const sensing = selection.sensing
                 const missing = { warn: !found.sensors, note: found.sensors ? null : t('도면이 없어 조합 도면에서 뺐습니다') }
-                const n = sensing.switches.length
                 return [
                   ...(sensing.lug ? [{ role: 'sensor' as const, label: t('센서 러그'), model: sensing.lug.model, drawing: found.sensors?.lug ?? null, ...missing }] : []),
                   ...(sensing.bracket
-                    ? [{ role: 'sensor' as const, label: t('센서 브라켓'), model: `${n} × ${sensing.bracket.model}`, drawing: found.sensors?.bracket ?? null, ...missing }]
+                    ? [{ role: 'sensor' as const, label: t('센서 브라켓'), model: `${bracketCount(sensing)} × ${sensing.bracket.model}`, drawing: found.sensors?.bracket ?? null, ...missing }]
                     : []),
                   ...[...new Set(sensing.switches.map((s) => s.part))].map((part) => {
                     const roles = sensing.switches.filter((s) => s.part === part)

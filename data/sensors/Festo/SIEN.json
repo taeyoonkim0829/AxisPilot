@@ -1,0 +1,87 @@
+{
+  "items": [
+    {
+      "id": "SIEN-M8B-PS-K-L",
+      "maker": "Festo",
+      "role": "sensor",
+      "systems": ["Festo M8"],
+      "model": "SIEN-M8B-PS-K-L",
+      "partNumber": "150386",
+      "output": "PNP",
+      "contact": "NO",
+      "mass": null,
+      "axes": [
+        { "family": "EGC", "variant": "HD", "size": 125, "drive": "belt" },
+        { "family": "EGC", "variant": "HD", "size": 160, "drive": "belt" },
+        { "family": "EGC", "variant": "HD", "size": 220, "drive": "belt" },
+        { "family": "EGC", "variant": "HD", "size": 125, "drive": "spindle" },
+        { "family": "EGC", "variant": "HD", "size": 160, "drive": "spindle" },
+        { "family": "EGC", "variant": "HD", "size": 220, "drive": "spindle" }
+      ],
+      "dataSource": "EGC-HD-TB data sheet 2026/10 p.31, 34, EGC-HD-BS p.35, 38 (inductive proximity switch M8, round design, cable 2.5 m)"
+    },
+    {
+      "id": "SIEN-M8B-NS-K-L",
+      "maker": "Festo",
+      "role": "sensor",
+      "systems": ["Festo M8"],
+      "model": "SIEN-M8B-NS-K-L",
+      "partNumber": "150384",
+      "output": "NPN",
+      "contact": "NO",
+      "mass": null,
+      "axes": [
+        { "family": "EGC", "variant": "HD", "size": 125, "drive": "belt" },
+        { "family": "EGC", "variant": "HD", "size": 160, "drive": "belt" },
+        { "family": "EGC", "variant": "HD", "size": 220, "drive": "belt" },
+        { "family": "EGC", "variant": "HD", "size": 125, "drive": "spindle" },
+        { "family": "EGC", "variant": "HD", "size": 160, "drive": "spindle" },
+        { "family": "EGC", "variant": "HD", "size": 220, "drive": "spindle" }
+      ],
+      "sameOutline": "SIEN-M8B-PS-K-L",
+      "dataSource": "EGC-HD-TB data sheet 2026/10 p.31, 34, EGC-HD-BS p.35, 38 (inductive proximity switch M8, round design, cable 2.5 m)"
+    },
+    {
+      "id": "SIEN-M8B-PO-K-L",
+      "maker": "Festo",
+      "role": "sensor",
+      "systems": ["Festo M8"],
+      "model": "SIEN-M8B-PO-K-L",
+      "partNumber": "150390",
+      "output": "PNP",
+      "contact": "NC",
+      "mass": null,
+      "axes": [
+        { "family": "EGC", "variant": "HD", "size": 125, "drive": "belt" },
+        { "family": "EGC", "variant": "HD", "size": 160, "drive": "belt" },
+        { "family": "EGC", "variant": "HD", "size": 220, "drive": "belt" },
+        { "family": "EGC", "variant": "HD", "size": 125, "drive": "spindle" },
+        { "family": "EGC", "variant": "HD", "size": 160, "drive": "spindle" },
+        { "family": "EGC", "variant": "HD", "size": 220, "drive": "spindle" }
+      ],
+      "sameOutline": "SIEN-M8B-PS-K-L",
+      "dataSource": "EGC-HD-TB data sheet 2026/10 p.31, 34, EGC-HD-BS p.35, 38 (inductive proximity switch M8, round design, cable 2.5 m)"
+    },
+    {
+      "id": "SIEN-M8B-NO-K-L",
+      "maker": "Festo",
+      "role": "sensor",
+      "systems": ["Festo M8"],
+      "model": "SIEN-M8B-NO-K-L",
+      "partNumber": "150388",
+      "output": "NPN",
+      "contact": "NC",
+      "mass": null,
+      "axes": [
+        { "family": "EGC", "variant": "HD", "size": 125, "drive": "belt" },
+        { "family": "EGC", "variant": "HD", "size": 160, "drive": "belt" },
+        { "family": "EGC", "variant": "HD", "size": 220, "drive": "belt" },
+        { "family": "EGC", "variant": "HD", "size": 125, "drive": "spindle" },
+        { "family": "EGC", "variant": "HD", "size": 160, "drive": "spindle" },
+        { "family": "EGC", "variant": "HD", "size": 220, "drive": "spindle" }
+      ],
+      "sameOutline": "SIEN-M8B-PS-K-L",
+      "dataSource": "EGC-HD-TB data sheet 2026/10 p.31, 34, EGC-HD-BS p.35, 38 (inductive proximity switch M8, round design, cable 2.5 m)"
+    }
+  ]
+}

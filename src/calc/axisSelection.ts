@@ -125,7 +125,7 @@ export function sensingFor(
   const maker = settings.sensorMaker ?? 'Festo'
   // the switches of the chosen maker, the lug and bracket serving them
   const fits = (s: SensorPart) =>
-    (s.role === 'sensor' ? s.maker === maker : (s.systems ?? ['Festo']).includes(maker)) &&
+    (s.systems ?? [s.role === 'sensor' ? s.maker : 'Festo']).includes(maker) &&
     s.axes.some((a) => a.family === axis.family && a.variant === axis.variant && a.size === axis.size && a.drive === axis.drive)
   const lug = sensors.find((s) => s.role === 'lug' && fits(s)) ?? null
   const bracket = sensors.find((s) => s.role === 'bracket' && fits(s)) ?? null
@@ -144,6 +144,9 @@ export function sensingFor(
     ],
   }
 }
+
+/** How many sensor brackets the sensing takes: one per switch, or one per axis end (`perEnd`, HWS-EGC) */
+export const bracketCount = (sensing: Sensing) => (sensing.bracket?.perEnd ? 2 : sensing.switches.length)
 
 const switchModels = (sensing: Sensing) => [...new Set(sensing.switches.map((s) => s.part.model))].join(' + ')
 

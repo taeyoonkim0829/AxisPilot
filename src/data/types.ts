@@ -501,8 +501,10 @@ export interface SensorPart {
   id: string
   maker: SensorMaker
   role: 'lug' | 'sensor' | 'bracket'
-  /** lug / bracket: the switches' makers it serves (`Settings.sensorMaker`); default Festo */
+  /** the sensing systems (`Settings.sensorMaker`) it belongs to; default: a switch its maker, a lug / bracket Festo */
   systems?: SensorMaker[]
+  /** bracket: one per axis end, holding the switches there (HWS-EGC), instead of one per switch */
+  perEnd?: boolean
   model: string
   partNumber: string
   /** proximity switch: switching output and contact (N/O, N/C); no contact = either by wiring (Omron light-ON /
@@ -519,8 +521,9 @@ export interface SensorPart {
   dataSource: string
 }
 export type SensorOutput = 'PNP' | 'NPN'
-/** Festo's own switches, or Omron EE-SX674 photomicrosensors on a Festo sensor bracket (ELGD, ELGT-BS) */
-export type SensorMaker = 'Festo' | 'Omron'
+/** Festo's own switches, Omron EE-SX674 photomicrosensors on a Festo sensor bracket (ELGD, ELGT), or Festo's round
+ *  M8 switches SIEN-M8B on the sensor bracket HWS-EGC (EGC-HD, lug SF-EGC-HD-2) */
+export type SensorMaker = 'Festo' | 'Omron' | 'Festo M8'
 export type SensorContact = 'NO' | 'NC'
 
 /**

@@ -1,4 +1,4 @@
-import type { AxisEvaluation } from '../calc/axisSelection'
+import { bracketCount, type AxisEvaluation } from '../calc/axisSelection'
 import type { KitEvaluation } from '../calc/kitSelection'
 import { gearboxStatus, type DriveEvaluation } from '../calc/motorSelection'
 import { worstStatus, type Status } from '../calc/types'
@@ -71,12 +71,12 @@ export function partRows(
         ? ([[t('LM 가이드'), '—', t('별도 선정 (참고값: 3장)'), null, layout.guides, null]] as SelectionRow[])
         : []),
     ...(axis.shaft ? ([[t('연결축'), 'Festo', axis.shaft.model, axis.shaft.shaft.partNumber, 1, null]] as SelectionRow[]) : []),
-    // one lug per axis, a bracket per switch; the proximity switches by model (limit switches, home switch)
+    // one lug per axis, a bracket per switch (HWS-EGC: per axis end); the proximity switches by model (limit switches, home switch)
     ...(axis.sensing
       ? ([
           ...(axis.sensing.lug ? [[t('센서 러그'), 'Festo', axis.sensing.lug.model, axis.sensing.lug.partNumber, nAxes, null]] : []),
           ...(axis.sensing.bracket
-            ? [[t('센서 브라켓'), 'Festo', axis.sensing.bracket.model, axis.sensing.bracket.partNumber, nAxes * axis.sensing.switches.length, null]]
+            ? [[t('센서 브라켓'), 'Festo', axis.sensing.bracket.model, axis.sensing.bracket.partNumber, nAxes * bracketCount(axis.sensing), null]]
             : []),
           ...[...new Set(axis.sensing.switches.map((s) => s.part))].map((part): SelectionRow => {
             const roles = axis.sensing!.switches.filter((s) => s.part === part)

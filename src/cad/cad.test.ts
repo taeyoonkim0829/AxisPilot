@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest'
 import { axes, gearboxes, kits, motors, sensors, shafts } from '../data'
-import { sensingFor } from '../calc/axisSelection'
+import { bracketCount, sensingFor } from '../calc/axisSelection'
 import {
   buildCombo,
   placeCoupling,
@@ -883,6 +883,28 @@ describe('combination', () => {
     expect(minus).toBeCloseTo(2 - 75 + 6.7, 1)
     expect(home).toBeCloseTo(minus, 1)
     expect(plus).toBeCloseTo(500 - 2 + 75 - 6.7, 1)
+    // Festo M8: the round SIEN-M8B upright in two HWS-EGC-M5 brackets (one per end, in the profile's mounting slot
+    // 44 mm down), under the SF-EGC-HD-2 lug's flag (7.25 mm above its seat 12 mm down), sensing faces 1 mm below it;
+    // the switch axes where the flag's ends (75 mm either side) are with the slide 2 mm from the ends, home 20 mm in
+    const m8 = sensingFor(axis, sensors, { sensorOutput: 'PNP', limitContact: 'NC', homeContact: 'NO', sensorMaker: 'Festo M8' })!
+    expect([m8.lug?.partNumber, m8.bracket?.partNumber, ...m8.switches.map((s) => s.part.partNumber)]).toEqual(['570030', '558057', '150390', '150390', '150386'])
+    expect(bracketCount(m8)).toBe(2)
+    const m8Sel = { ...sel, sensing: m8 }
+    const m8Found = comboDrawings(m8Sel, own)
+    expect(m8Found.sensors?.bracket?.partNumber).toBe('558057')
+    const round = await buildCombo(m8Sel, m8Found, { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
+    expect(round.parts.filter((p) => /HWS-EGC-M5/.test(p.name))).toHaveLength(2)
+    const m8Parts = (await meshBox(round.step)).parts
+    const flagUnder = -12 + 7.25
+    const bodies = m8Parts.filter((p) => /SIEN-M8B-P.-K-Lp/.test(p.name)).sort((a, b) => a.lo[0] - b.lo[0])
+    expect(bodies).toHaveLength(3)
+    for (const b of bodies) expect(b.hi[2]).toBeCloseTo(flagUnder - 1, 1)
+    expect(bodies.map((b) => Math.round((b.lo[0] + b.hi[0]) / 2))).toEqual([2 - 75, 2 - 75 + 20, 500 - 2 + 75])
+    const m8Profile = m8Parts.find((p) => /EGC-HD-125-TB-500/.test(p.name))!
+    for (const b of m8Parts.filter((p) => /HWS-EGC/.test(p.name))) {
+      expect(b.lo[0]).toBeGreaterThan(m8Profile.lo[0])
+      expect(b.hi[0]).toBeLessThan(m8Profile.hi[0])
+    }
   }, 60000)
 
   it('draws an ELGD ordered with direct mounting M from its own file, the threads under the profile kept at 100 mm', async () => {

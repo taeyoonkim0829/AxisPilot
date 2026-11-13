@@ -66,6 +66,16 @@ export interface SensorMeta {
   withBracket?: Pick<SensorMeta, 'seat' | 'without' | 'move'>
   /** lug: mm from its centre to its ends along the travel (it covers a switch within) */
   edge?: number
+  /** lug sensed from below (SF-EGC-HD-2): mm from its seat along `up` to its flag's underside */
+  flag?: number
+  /** bracket holding round switches (HWS-EGC, one per axis end): its seat the face on the profile at the slot nuts'
+   *  middle (`axis` away from the profile, `up` along its length), `hole` the middle hole's axis on top of its shelf
+   *  (`axis` up through it), `holes` mm along `up` from the middle hole to each */
+  hole?: Frame
+  holes?: number[]
+  /** round switch: its clamping nuts (part name), stacked `height` mm deep at its sensing face in the file; moved down
+   *  to sit on the bracket's shelf */
+  nuts?: { part: string; height: number }
   /** switch: mm from its sensing end to its switching point (the mark on its top face) / to its cable end;
    *  bracket: its length along the travel */
   switchPoint?: number

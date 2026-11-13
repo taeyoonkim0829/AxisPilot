@@ -1,4 +1,4 @@
-import type { Sensing, SwitchRole } from '../calc/axisSelection'
+import { bracketCount, type Sensing, type SwitchRole } from '../calc/axisSelection'
 import type { Mounting, Requirements } from '../calc/types'
 import type { Axis, AxisMounting, Gearbox, GuideUnit, Kit, Motor, SensorPart } from '../data/types'
 import { assemble, sourceNotice, type AssemblyPart } from './assemble'
@@ -98,7 +98,7 @@ export function comboDrawings(sel: ComboSelection, all?: Drawing[]): ComboDrawin
     sensors:
       sel.sensing &&
       (lug || !sel.sensing.lug) &&
-      (bracket?.meta?.slot || !sel.sensing.bracket) &&
+      (bracket?.meta?.slot || bracket?.meta?.hole || !sel.sensing.bracket) &&
       switches.every((d) => d != null) &&
       axis?.meta?.sensor &&
       !!lug === !!axis.meta.sensor.lug
@@ -581,6 +581,8 @@ export function assemblyWarnings(options: ComboOptions, parallel: boolean, cylin
 
 /** mm: a limit switch switches this far before the hardware limit (the end of the travel), protecting the machine */
 export const LIMIT_MARGIN = 2
+/** mm from a round switch's sensing face to the lug's flag above it (SIEN-M8B: 1.5 mm switching distance) */
+const SENSING_GAP = 1
 
 const SWITCH_NAMES: Record<SwitchRole, string> = { limitMinus: '-LIMIT', limitPlus: '+LIMIT', home: 'HOME' }
 
@@ -1064,7 +1066,7 @@ export async function comboParts(
         const beam = add(slot!.origin, scale(slot!.up, sensors.switches[i].meta!.beam ?? 0))
         return length / 2 - Math.abs(dot(sub(beam, seat.origin), seat.up))
       }
-      const placed = switchPlacements(
+      const placed = () => switchPlacements(
         switches.map((s) => s.role),
         travel,
         lugMeta.edge ?? 0,
@@ -1075,7 +1077,48 @@ export async function comboParts(
       )
       // the lug's middle off the slide centre along the travel (ELGD-BS slides), which the switches follow
       const lugShift = dot(sub(seats.lug.origin, axisMeta.slide.origin), axisMeta.slide.travel)
-      slots = placed.map((p, i) => {
+      // round switches (HWS-EGC on EGC-HD, lug SF-EGC-HD-2): a bracket at each end, its slot nuts in the profile's
+      // mounting slot (`sensor.bracket`), the switches upright in its shelf's holes, sensing faces SENSING_GAP below
+      // the lug's flag: each limit in its bracket's outer hole, its axis where the flag's end is with the slide
+      // LIMIT_MARGIN from that end of the travel; home in the − bracket's next hole in
+      const round = (() => {
+        const { hole, holes } = bracket ?? {}
+        if (!hole || !holes || !seats.bracket) return null
+        const n = axisMeta.slide.normal
+        const nuts = seats.bracket
+        // the bracket's shelf up: its file y (= seat up × axis) along the slide normal
+        const up = cross(nuts.axis, n)
+        const along = dot(up, base.slide.travel)
+        const order = [...holes].sort((a, b) => a * along - b * along)
+        const edge = lugMeta.edge ?? 0
+        const flag = dot(from(seats.lug!, slide.origin).origin, n) + (lugMeta.flag ?? 0)
+        const at = (end: '-' | '+') => {
+          const [limit, home] = end === '-' ? [order[0], order[1]] : [order[order.length - 1], order[order.length - 2]]
+          const point = end === '-' ? LIMIT_MARGIN - edge : travel - LIMIT_MARGIN + edge
+          const seat = from(nuts, add(travelStart, scale(base.slide.travel, point + lugShift - limit * along)), up)
+          const onBracket = mate(identity, seat, bracket!.seat)
+          const file = files.get(sensors.bracket!.path) ?? parseStep(bracketText!)
+          files.set(sensors.bracket!.path, file)
+          parts.push({ role: 'sensor', name: `${sel.sensing!.bracket!.model} (${end})`, file, transform: mate(first.axisToWorld, seat, bracket!.seat) })
+          const face = (h: number) => {
+            const p = apply(onBracket, add(hole.origin, scale(bracket!.seat.up, h)))
+            const out = flag - SENSING_GAP - dot(p, n)
+            // the switch's clamping nuts (stacked at its face in the file) moved down onto the shelf
+            sensors.switches.forEach((d, i) => {
+              if (files.has(d.path) || !d.meta?.nuts) return
+              const f = parseStep(switchTexts[i])
+              placePart(f, d.meta.nuts.part, { r: identity.r, t: scale(d.meta.seat.axis, d.meta.nuts.height - out) })
+              files.set(d.path, f)
+            })
+            return { origin: add(p, scale(n, out)), axis: n, up: base.slide.travel }
+          }
+          return { limit: face(limit), home: face(home) }
+        }
+        const minus = at('-')
+        const plus = at('+')
+        return switches.map((s) => (s.role === 'limitMinus' ? minus.limit : s.role === 'limitPlus' ? plus.limit : minus.home))
+      })()
+      slots = round ?? placed().map((p, i) => {
         if (!bracket) return from(seats.slot, add(travelStart, scale(base.slide.travel, p.end + lugShift)), scale(seats.slot.up, p.facing))
         // the bracket's slot nuts in its slot, upright (its seat's `up` × `axis` downwards, the bracket cannot be
         // turned end for end), its centre half its length behind `end`; the sensor on the hole pair at the end
@@ -1145,7 +1188,7 @@ export async function comboParts(
           parts.push({ role: 'sensor', name: `${sensors.fixing.model} (${SWITCH_NAMES[s.role]})`, file: screw, transform: mate(transform, { origin: at, axis: fixing.axis, up: fixing.up }, sensors.fixing.meta.seat) })
       }
     })
-    name += ` + ${sel.sensing!.lug ? `${sel.sensing!.lug.model} + ` : ''}${switches.length} × ${[...new Set(switches.map((s) => s.part.model))].join(' / ')}${sensors.bracket ? ` + ${switches.length} × ${sel.sensing!.bracket!.model}` : ''}`
+    name += ` + ${sel.sensing!.lug ? `${sel.sensing!.lug.model} + ` : ''}${switches.length} × ${[...new Set(switches.map((s) => s.part.model))].join(' / ')}${sensors.bracket ? ` + ${bracketCount(sel.sensing!)} × ${sel.sensing!.bracket!.model}` : ''}`
   }
   // Second axis of a twin arrangement at +y (the COG's lateral direction), by default the mirror image of the
   // first (`mirroredDrive`; a slide standing out to one side drawn mirrored, `mirrorAxis`), with its own drive train

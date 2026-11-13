@@ -56,6 +56,11 @@ function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'sett
   const mountings: ('standard' | AxisMounting)[] = settings.drives.includes('spindle') ? ['standard', 'M', 'M7'] : ['standard', 'M']
   // position sensing (ELGD, ELGT-BS, EGC, ESBF): the switches' output and contacts
   const sensing = settings.sensors && (elgd || (['ELGT', 'EGC', 'ESBF'] as const).some((f) => settings.families.includes(f)))
+  const sensorMakers: SensorMaker[] = [
+    'Festo',
+    ...(elgd || settings.families.includes('ELGT') ? (['Omron'] as const) : []),
+    ...(settings.families.includes('EGC') ? (['Festo M8'] as const) : []),
+  ]
   if (choices.length === 0 && shown.length === 0 && !elgd && !sensing) return null
   const mounting = settings.axisMounting && mountings.includes(settings.axisMounting) ? settings.axisMounting : 'standard'
   const sides: AdditionalSlideSide[] = choices.some((a) => a.additionalSlide!.both) ? ['none', 'left', 'right', 'both'] : ['none', 'left', 'right']
@@ -130,14 +135,14 @@ function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'sett
       )}
       {sensing && (
         <div className="axis-options-row">
-          {/* Omron EE-SX674 on a Festo sensor bracket: ELGD and ELGT-BS */}
-          {(elgd || settings.families.includes('ELGT')) && (
+          {/* Omron EE-SX674 on a Festo sensor bracket: ELGD and ELGT; Festo's round SIEN-M8B on HWS-EGC: EGC-HD */}
+          {sensorMakers.length > 1 && (
             <div className="filter-group">
               <span className="field-label">{t('센서 제조사')}</span>
               <RadioGroup
-                options={['Festo', 'Omron'] as SensorMaker[]}
+                options={sensorMakers}
                 value={settings.sensorMaker}
-                label={(v) => v}
+                label={(v) => (v === 'Festo M8' ? t('Festo M8 (원형)') : v)}
                 onChange={(sensorMaker) => onSettings({ ...settings, sensorMaker })}
               />
             </div>

@@ -195,6 +195,7 @@ export const en: Record<string, string> = {
   '센서 러그': 'Switch lug',
   '센서 브라켓': 'Sensor bracket',
   '센서 제조사': 'Sensor maker',
+  'Festo M8 (원형)': 'Festo M8 (round)',
   '센서 장착 구간': 'Sensor mounting area',
   '센서 브라켓 {n}개가 장착 구간 (L1 ~ L2)에 들어가지 않음: 스트로크 {stroke} mm 이상 필요': '{n} sensor brackets do not fit the mounting area (L1 to L2): stroke of at least {stroke} mm needed',
   '근접 센서': 'Proximity switch',
