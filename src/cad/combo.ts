@@ -749,7 +749,8 @@ export async function buildCombo(
     slideCentre: [0, 0, 0],
     axisStroke: c.axisStroke,
     stretch: c.stretch,
-    stroke: { from: c.slide.origin, to: add(c.slide.origin, scale(c.slide.up, sel.stroke)), length: sel.stroke },
+    // from the slide as drawn along its travel, or back from the end of the travel (`atEnd`)
+    stroke: { from: c.slide.origin, to: add(c.slide.origin, scale(c.slide.up, c.atEnd ? -sel.stroke : sel.stroke)), length: sel.stroke },
   }
 }
 
@@ -775,6 +776,8 @@ export interface ComboParts {
   mainOffsets: Vec3[]
   /** mm along the travel (`slide.up`) from the middle of the profile to the slide as drawn: 0 when centred */
   slideOffset: number
+  /** the slide drawn at the end of its travel (the file has it there), not at the start */
+  atEnd: boolean
 }
 
 export async function comboParts(
@@ -841,9 +844,13 @@ export async function comboParts(
       base = { ...base, slide: { ...base.slide, origin: add(base.slide.origin, scale(t, centre)) } }
     }
   }
-  // the main slide's centre at the start and the end of its travel (the group travels the stroke less its span)
-  const travelStart = add(base.slide.origin, mainOffset)
-  const travelEnd = add(travelStart, scale(base.slide.travel, sel.stroke - (extra ?? []).reduce((sum, s) => sum + s.pitch, 0)))
+  // the main slide's centre at the start and the end of its travel (the group travels the stroke less its span); a
+  // file with its slide at the end of the travel (EGC-BS: past the profile's middle along `travel`) starts a stroke back
+  // (an ESBF's rod end, its `slide`, lies past the body's middle retracted)
+  const travelLength = sel.stroke - (extra ?? []).reduce((sum, s) => sum + s.pitch, 0)
+  const atEnd = sel.axis.family !== 'ESBF' && dot(sub(base.slide.origin, middle), base.slide.travel) > 0
+  const travelStart = add(add(base.slide.origin, mainOffset), scale(base.slide.travel, atEnd ? -travelLength : 0))
+  const travelEnd = add(travelStart, scale(base.slide.travel, travelLength))
   // the slide (with additional slides the group) in the middle of the profile, i.e. of its travel, on request; a
   // slide that is no part of its own (Creo exports) stays where the file has it
   let slideOffset = dot(sub(base.slide.origin, middle), base.slide.travel)
@@ -1204,5 +1211,6 @@ export async function comboParts(
     patternOffsets,
     mainOffsets,
     slideOffset,
+    atEnd: atEnd && !(options.slideCentred && slideOffset === 0),
   }
 }

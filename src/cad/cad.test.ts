@@ -755,6 +755,40 @@ describe('combination', () => {
     expect(minus).toBeCloseTo(2 - 35 - 6.7, 1)
     expect(home).toBeCloseTo(2 - 35 - 6.7 + 2 * 31.8, 1)
     expect(plus).toBeCloseTo(500 - 2 + 35 + 6.7, 1)
+    // EGC-BS: its file has the slide at the end of the travel (past the profile's middle along `travel`), so the
+    // travel starts a stroke back from it: the switches on the profile, not beyond its end (floor: travel +x)
+    const bs: ComboSelection = {
+      ...sel,
+      axis: axes.find((a) => a.id === 'EGC-80-...-BS-10P-KF-GK')!,
+      axisModel: 'EGC-80-500-BS-10P-KF-0H-ML-GK',
+      motor: motors.find((m) => m.model === 'EMMT-AS-80-S-HS')!,
+      kit: kits.find((k) => k.product === 'EAMM-A-S48-80P')!,
+    }
+    const bsFound = comboDrawings(
+      bs,
+      [
+        'data/axes/Festo/Drawings/EGC/3013536_EGC-80-500-BS-10P-KF-0H-ML-GK.stp',
+        'data/kits/Festo/Drawings/EAMM-A/8197480_EAMM-A-S48-80P.stp',
+        'data/motors/Festo/Drawings/EMMT-AS/5255429_EMMT-AS-80-S-HS-RS.stp',
+        ...sensorPaths,
+      ].map((p) => ({ ...parseDrawingPath(p)!, url: p, meta: metas[`../../${p.replace(/\.stp$/, '.json')}`] ?? null })),
+    )
+    expect(bsFound.missing).toEqual([])
+    const bsCombo = await buildCombo(bs, bsFound, { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
+    const ends = switchEnds(bsCombo, [0, 4.6, 0])
+    const bsParts = (await meshBox(bsCombo.step)).parts
+    const profile = bsParts.find((p) => /EGC-80-BS65678GK0/.test(p.name))!
+    // the slide drawn at one end: the switches 2 mm inside the travel either end, all on the profile
+    expect(Math.abs(ends[2] - ends[0])).toBeCloseTo(500 - 4 + 2 * (35 + 6.7), 1)
+    for (const s of bsParts.filter((p) => /SIES-8M/.test(p.name))) {
+      expect(s.lo[0]).toBeGreaterThan(profile.lo[0])
+      expect(s.hi[0]).toBeLessThan(profile.hi[0])
+    }
+    // the stroke dimension from the slide towards the profile's middle
+    const stroke = bsCombo.stroke!
+    expect(Math.abs(stroke.to[0] - stroke.from[0])).toBeCloseTo(500, 1)
+    expect(Math.min(stroke.from[0], stroke.to[0])).toBeGreaterThan(profile.lo[0])
+    expect(Math.max(stroke.from[0], stroke.to[0])).toBeLessThan(profile.hi[0])
   }, 60000)
 
   it('draws an ELGD ordered with direct mounting M from its own file, the threads under the profile kept at 100 mm', async () => {
