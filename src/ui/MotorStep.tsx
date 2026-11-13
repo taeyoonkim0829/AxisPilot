@@ -62,7 +62,6 @@ export function MotorStep({ results, selected, onSelect, settings, onSettings, l
     toggle,
   } = useSort(showFailed ? results : passing, {
     status: (d) => statusRank[d.status],
-    maker: (d) => d.motor.maker,
     model: (d) => lengthOrdered(d.motor.model),
     power: (d) => d.motor.ratedPower,
     gearbox: (d) => d.gearbox?.ratio ?? 1,
@@ -147,9 +146,6 @@ export function MotorStep({ results, selected, onSelect, settings, onSettings, l
                 <SortTh id="status" {...th}>
                   {t('판정')}
                 </SortTh>
-                <SortTh id="maker" {...th}>
-                  {t('메이커')}
-                </SortTh>
                 <SortTh id="model" {...th}>
                   {t('모델명')}
                 </SortTh>
@@ -195,7 +191,6 @@ export function MotorStep({ results, selected, onSelect, settings, onSettings, l
                     <td>
                       <StatusBadge status={d.status} />
                     </td>
-                    <td>{d.motor.maker}</td>
                     <td className="model">
                       {d.motor.model}
                       {d.motor.brake && <span className="tag">{t('브레이크')}</span>}
