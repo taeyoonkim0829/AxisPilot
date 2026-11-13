@@ -2410,14 +2410,25 @@ body {
   height: 100%;
   margin: 0 auto;
   padding: 0 24px;
-  display: flex;
+  /* the workspace's columns: the logo centred over the 320px input column, the menus from the results column's
+     left edge, the switches at the right */
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 32px;
+  column-gap: 20px;
 }
 
 .app-logo {
   display: flex;
-  flex: none;
+  justify-self: center;
+}
+
+@media (max-width: 1000px) {
+  .app-header-inner {
+    display: flex;
+    gap: 24px;
+    padding: 0 16px;
+  }
 }
 
 .app-logo img {
@@ -2690,7 +2701,7 @@ body {
   border-top: 1px solid var(--line-strong);
 }
 
-/* the gauge in Festo blue */
+/* the gauge's Festo side in Festo blue */
 .compare {
   --gauge: #0091dc;
 }
@@ -2700,14 +2711,16 @@ body {
   display: block;
   height: 22px;
   border-radius: 6px;
-  background: rgb(var(--ov) / 0.08);
+  /* the Festo side (beyond the compared product's share) in Festo blue */
+  background: var(--gauge);
   overflow: hidden;
 }
 
 .gauge-fill {
   position: absolute;
   inset: 0 auto 0 0;
-  background: var(--gauge);
+  /* the compared product's share, neutral and opaque over the blue */
+  background: linear-gradient(rgb(var(--ov) / 0.14), rgb(var(--ov) / 0.14)), var(--surface-solid);
 }
 
 .gauge-mark {
