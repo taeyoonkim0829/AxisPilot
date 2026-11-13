@@ -23,7 +23,7 @@
 // on the ESBF's front flange (`mount`), the yoke plate's front face (`yoke`), the guide rods' length change behind the
 // housing. ESBF axes also get `front` (the front flange face, largest +z face of the cylinder profile at its front),
 // where the EAGF sits; `--front` adds it to existing ESBF JSONs.
-// Position sensing (`--sensor`, ELGD-TB / -BS, ELGT-BS and EGC-TB-KF / -BS-KF JSONs; `ELGT_SENSOR_SEATS`, `EGC_SENSOR_SEATS`): `sensor.lug`, the switch lug's seat on the slide's side face
+// Position sensing (`--sensor`, ELGD-TB / -BS, ELGT-BS, EGC-TB-KF / -BS-KF and EGC-HD JSONs; `ELGT_SENSOR_SEATS`, `EGC_SENSOR_SEATS`, `EGC_HD_SENSOR_SEATS`): `sensor.lug`, the switch lug's seat on the slide's side face
 // (the middle of its two M3 threads, `axis` out of the face, `up` = slide normal), and `sensor.slot`, the SIES-8M slot
 // at the face (its centre, beside the slide centre, `up` = travel), from `SENSOR_SEATS` (measured on the STEP models).
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
@@ -846,6 +846,12 @@ const ESBF_SLOT_TOP = { 32: 22.25, 40: 26.75, 50: 31.75, 63: 37.25, 80: 46.25, 1
  *  side (measured on the STEP models; GK, GV and BS slides alike). The sensor slot (data sheet profile [1]) lies in the
  *  profile's upper corner face, tilted 25° from vertical, its opening's centre 2.6 mm out from and 4.22 mm below
  *  that end at every size */
+/** EGC-HD-TB / -BS size → mm from the slide surface centre along travel × normal: the slide's side face with the
+ *  switch lug SF-EGC-HD-1's two threads (their middle on the slide centre), their depth below the surface, and the
+ *  sensor slot's opening centre out from the middle and below the surface (the upper corner slot, tilted 25° like
+ *  EGC's, its 5.2 mm neck's middle + 1.12 mm along the slot axis as on EGC; measured on the STEP models, the
+ *  profile symmetric, TB and BS slides alike) */
+const EGC_HD_SENSOR_SEATS = { 125: [60, 12, 58.15, 29.33], 160: [75.35, 16.5, 78.75, 40.32], 220: [102.1, 26.6, 106.5, 55.26] }
 const EGC_SENSOR_SEATS = { 50: [15, 7.2, 13.5, 15.13], 70: [24.1, 11.7, 19.7, 24.41], 80: [31.6, 16, 24, 31.44], 120: [48, 24.5, 35.8, 47.71], 185: [77, 35.2, 48.5, 77.31] }
 /** ELGT-BS size → mm from the slide surface centre along travel × normal: the slide's side face with the switch lug
  *  EAPM-L9-…-SLS's two M3 threads (their middle on the slide centre), their depth, the profile's side face with the
@@ -883,6 +889,23 @@ for (const file of files) {
       slot: { origin: at(slotSide, slot), axis: lateral, up: t },
       bracket: { origin: at(slotSide, bracket), axis: lateral, up: t },
     }
+    if (dryRun) console.log(out, JSON.stringify(sensor))
+    else writeFileSync(out, format({ ...old, sensor }))
+    written++
+    continue
+  }
+  const hdSize = sensorOnly && /_EGC-HD-(\d+)-\d+-(?:TB|BS-\d+P)-/.exec(file)?.[1]
+  if (hdSize) {
+    if (!existsSync(out) || !EGC_HD_SENSOR_SEATS[hdSize]) continue
+    const old = JSON.parse(readFileSync(out, 'utf8'))
+    if (old.sensor && !force) continue
+    const [side, lug, slotOut, slotDown] = EGC_HD_SENSOR_SEATS[hdSize]
+    const { origin: o, normal: n, travel: t } = old.slide
+    const lateral = [t[1] * n[2] - t[2] * n[1], t[2] * n[0] - t[0] * n[2], t[0] * n[1] - t[1] * n[0]]
+    const at = (out, down) => o.map((v, i) => fixed(v + out * lateral[i] - down * n[i]))
+    const { tilt } = EGC_SLOT
+    const slotAxis = lateral.map((v, i) => unitFixed(Math.cos(tilt) * v + Math.sin(tilt) * n[i]))
+    const sensor = { lug: { origin: at(side, lug), axis: lateral, up: n }, slot: { origin: at(slotOut, slotDown), axis: slotAxis, up: t } }
     if (dryRun) console.log(out, JSON.stringify(sensor))
     else writeFileSync(out, format({ ...old, sensor }))
     written++

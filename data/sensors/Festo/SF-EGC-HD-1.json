@@ -1,0 +1,43 @@
+{
+  "items": [
+    {
+      "id": "SF-EGC-HD-1-125",
+      "maker": "Festo",
+      "role": "lug",
+      "model": "SF-EGC-HD-1-125",
+      "partNumber": "570027",
+      "mass": 0.07,
+      "axes": [
+        { "family": "EGC", "variant": "HD", "size": 125, "drive": "belt" },
+        { "family": "EGC", "variant": "HD", "size": 125, "drive": "spindle" }
+      ],
+      "dataSource": "EGC-HD-TB data sheet 2026/10 p.30, EGC-HD-BS p.34 (switch lug SF-EGC-HD-1 for sensing via SIES-8M, screwed to the slide side with two screws); drawing from PARTdataManager"
+    },
+    {
+      "id": "SF-EGC-HD-1-160",
+      "maker": "Festo",
+      "role": "lug",
+      "model": "SF-EGC-HD-1-160",
+      "partNumber": "1645872",
+      "mass": 0.16,
+      "axes": [
+        { "family": "EGC", "variant": "HD", "size": 160, "drive": "belt" },
+        { "family": "EGC", "variant": "HD", "size": 160, "drive": "spindle" }
+      ],
+      "dataSource": "EGC-HD-TB data sheet 2026/10 p.30, EGC-HD-BS p.34 (switch lug SF-EGC-HD-1 for sensing via SIES-8M, screwed to the slide side with two screws); drawing from PARTdataManager"
+    },
+    {
+      "id": "SF-EGC-HD-1-220",
+      "maker": "Festo",
+      "role": "lug",
+      "model": "SF-EGC-HD-1-220",
+      "partNumber": "1645866",
+      "mass": 0.31,
+      "axes": [
+        { "family": "EGC", "variant": "HD", "size": 220, "drive": "belt" },
+        { "family": "EGC", "variant": "HD", "size": 220, "drive": "spindle" }
+      ],
+      "dataSource": "EGC-HD-TB data sheet 2026/10 p.30, EGC-HD-BS p.34 (switch lug SF-EGC-HD-1 for sensing via SIES-8M, screwed to the slide side with two screws); drawing from PARTdataManager"
+    }
+  ]
+}
