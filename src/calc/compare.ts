@@ -3,19 +3,19 @@ import type { Axis, AxisFamily, Motor, ThirdPartyAxis } from '../data/types'
 /**
  * 제품 비교: another maker's product (the reference) against the Festo products that could replace it, on their
  * data alone (no sizing calculation). Candidates are sorted by how close their main data are to the reference's
- * (sum of |log ratio| over the compared values), spec rows give the reference's value against the Festo product's
+ * (sum of |log ratio| over the compared values), spec rows give the Festo product's value against the reference's
  * (= 100%).
  */
 
-/** One row of the side by side table: numbers (with the ratio reference / other: the other maker's value against
- *  the Festo product's, which is 100%) or texts where they cannot be put on one scale (a payload in kg against
+/** One row of the side by side table: numbers (with the ratio other / reference: the Festo product's value against
+ *  the compared product's, which is 100%) or texts where they cannot be put on one scale (a payload in kg against
  *  forces in N) */
 export interface SpecRow {
   label: string
   unit: string
   reference: number | string | null
   other: number | string | null
-  /** reference / other (Festo = 100%); null where either is missing or not a number */
+  /** other / reference (compared product = 100%); null where either is missing or not a number */
   ratio: number | null
 }
 
@@ -24,7 +24,7 @@ const row = (label: string, unit: string, reference: number | string | null, oth
   unit,
   reference,
   other,
-  ratio: typeof reference === 'number' && typeof other === 'number' && other > 0 ? reference / other : null,
+  ratio: typeof reference === 'number' && typeof other === 'number' && reference > 0 ? other / reference : null,
 })
 
 /** |log| of the ratio, so twice and half are as far off; missing values count as far */

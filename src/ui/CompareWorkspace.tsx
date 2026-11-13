@@ -83,14 +83,13 @@ function CompareBar({ reference, festo }: { reference: { maker: string; model: s
   )
 }
 
-/** The other maker's value against the Festo product's: a 0–200% bar with the Festo value (100%) marked */
+/** The Festo product's value against the compared product's (= 100%): a 0–200% bar, the Festo share in blue from the right */
 function Gauge({ ratio }: { ratio: number | null }) {
   const t = useT()
   if (ratio == null) return <span className="gauge-none muted">{t('수치 비교 없음')}</span>
   return (
     <span className="gauge">
       <span className="gauge-fill" style={{ width: `${(Math.min(ratio, 2) / 2) * 100}%` }} />
-      <span className="gauge-mark" />
       <span className="gauge-text">{pct(ratio)}</span>
     </span>
   )
@@ -277,7 +276,7 @@ function AxisCompare() {
               : [{ head: t('피드 상수'), num: true, cell: (a: Axis) => (a.feedConstant ? `${fmt(a.feedConstant)} mm/rev` : '—') }]),
             { head: t('최대 이송력'), num: true, cell: (a) => (a.maxFeedForce ? `${fmt(a.maxFeedForce, 0)} N` : '—') },
             { head: 'Fy / Fz', num: true, cell: (a) => (a.FyMax != null && a.FzMax != null ? `${fmt(a.FyMax, 0)} / ${fmt(a.FzMax, 0)} N` : '—') },
-            { head: t('속도 비교'), num: true, cell: (a) => pct(ref.maxSpeed / a.maxSpeed) },
+            { head: t('속도 비교'), num: true, cell: (a) => pct(a.maxSpeed / ref.maxSpeed) },
           ]}
         />
         {festo && <SpecTable rows={axisSpecRows(ref, festo)} reference={ref.model} festo={festo.model} />}
