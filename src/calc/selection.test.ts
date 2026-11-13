@@ -152,6 +152,11 @@ describe('axis order options', () => {
     const strokeCheck = (stroke: number, s: typeof defaultSettings = settings) => evaluateAxis(elgd, { ...req, stroke }, s)!.checks.find((c) => c.label === '스트로크')!
     expect(strokeCheck(1500).status).toBe('fail')
     expect(strokeCheck(1500, defaultSettings).status).toBe('ok')
+    // the data sheets' working stroke for -M / -L-M: 1400 (ELGD-TB-120-L 1370)
+    const tb120L = axes.find((a) => a.id === 'ELGD-TB-KF-120-…-L')!
+    const tbCheck = (stroke: number) => evaluateAxis(tb120L, { ...req, stroke }, settings)!.checks.find((c) => c.label === '스트로크')!
+    expect(tbCheck(1370).status).not.toBe('fail')
+    expect(tbCheck(1371).status).toBe('fail')
     const screw = axes.find((a) => a.id === 'ELGD-BS-KF-80-…5P')!
     expect(evaluateAxis(screw, { ...req, velocity: 0.2 }, { ...defaultSettings, axisMounting: 'M7' })!.order!.model).toBe('ELGD-BS-KF-80-1000-0H-5P-M7')
   })
