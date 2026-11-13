@@ -86,13 +86,11 @@ function CompareBar({ reference, festo }: { reference: { maker: string; model: s
 /** The Festo value against the reference's: a 0–200% bar with the reference (100%) marked */
 function Gauge({ ratio }: { ratio: number | null }) {
   const t = useT()
-  if (ratio == null) return <span className="muted">{t('수치 비교 없음')}</span>
+  if (ratio == null) return <span className="gauge-none muted">{t('수치 비교 없음')}</span>
   return (
     <span className="gauge">
-      <span className="gauge-track">
-        <span className="gauge-fill" style={{ width: `${(Math.min(ratio, 2) / 2) * 100}%` }} />
-        <span className="gauge-mark" />
-      </span>
+      <span className="gauge-fill" style={{ width: `${(Math.min(ratio, 2) / 2) * 100}%` }} />
+      <span className="gauge-mark" />
       <span className="gauge-text">{pct(ratio)}</span>
     </span>
   )
@@ -112,13 +110,13 @@ function SpecTable({ rows, reference, festo }: { rows: SpecRow[]; reference: str
           <thead>
             <tr>
               <th>{t('항목')}</th>
-              <th>
-                {t('기준')} <span className="model">{reference}</span>
+              <th className="num">
+                <span className="model">{reference}</span>
               </th>
+              <th className="gauge-head">{t('기준 대비 (기준 = 100%)')}</th>
               <th>
-                {t('대체')} <span className="model">{festo}</span>
+                <span className="model">{festo}</span>
               </th>
-              <th>{t('기준 대비 (기준 = 100%)')}</th>
             </tr>
           </thead>
           <tbody>
@@ -126,10 +124,10 @@ function SpecTable({ rows, reference, festo }: { rows: SpecRow[]; reference: str
               <tr key={r.label}>
                 <td>{t(r.label)}</td>
                 <td className="num">{cell(r.reference, t(r.unit))}</td>
-                <td className="num">{cell(r.other, t(r.unit))}</td>
-                <td>
+                <td className="gauge-cell">
                   <Gauge ratio={r.ratio} />
                 </td>
+                <td className="spec-other">{cell(r.other, t(r.unit))}</td>
               </tr>
             ))}
           </tbody>
