@@ -2,6 +2,5 @@
   "seat": { "origin": [0, 4.6, 0], "axis": [0, 1, 0], "up": [0, 0, 1] },
   "switchPoint": 6.7,
   "length": 31.8,
-  "trim": { "part": "(SEN)", "axis": 2, "dir": -1, "cuts": [{ "range": [-161.3, -112.3], "by": 48 }, { "range": [-111.3, -32.3], "by": 72 }] },
-  "cable": 10
+  "trim": { "part": "(SEN)", "axis": 2, "dir": -1, "cuts": [{ "range": [-161.3, -112.3], "by": 48 }, { "range": [-111.3, -32.3], "by": 72 }] }
 }

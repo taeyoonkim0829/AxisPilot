@@ -589,10 +589,10 @@ const SWITCH_NAMES: Record<SwitchRole, string> = { limitMinus: '-LIMIT', limitPl
  * travelling towards +): `end` = the switch's sensing end, `facing` = the way that end points (±1 along the travel).
  * The lug (reaching `edge` mm either side of the slide centre) covers a switch whose switching point (`point` mm
  * behind its sensing end) lies under it. Limit switches switch `LIMIT_MARGIN` before the end of the travel when the
- * lug comes in from the middle, their sensing ends towards the axis ends and their bodies and cables towards the
- * middle (the model's cable stub would run through the heads). The home switch lies right behind the − limit
- * (`length` mm, sensing end to cable end, or its bracket) towards +, as its mirror image: their cables (Omron:
- * connectors) face each other instead of the limit's running into the home switch.
+ * lug comes in from the middle. The + limit's sensing end points to the axis end, its body and cable towards the
+ * middle; the − limit's points to the middle, its cable towards the axis end, and the home switch lies sensing end to
+ * sensing end with it towards +, so both cables lead away from the pair (as the user set it).
+ * (`length` mm, sensing end to cable end, or its bracket: only the Omron cases use it.)
  * `outwards` (Omron sensors on brackets, `end` = the bracket's end at the sensor, connector pointing the other way):
  * the limits on their brackets' inner ends, connectors towards the axis ends; home back to back with the − limit on
  * the next bracket inwards, its connector towards +. `limitsInwards` (axis JSON `sensor.limitsInwards`, ELGD-60): the
@@ -632,14 +632,14 @@ export function switchPlacements(
           : { end: inner, facing: -1 as const },
     )
   }
-  // the − limit's switching point at LIMIT_MARGIN − edge, its sensing end beyond it towards −
-  const minusEnd = LIMIT_MARGIN - edge - (minus >= 0 ? point[minus] : 0)
+  // the − limit's switching point at LIMIT_MARGIN − edge, its sensing end beyond it towards +, home's against it
+  const minusEnd = LIMIT_MARGIN - edge + (minus >= 0 ? point[minus] : 0)
   return roles.map((role, i) =>
     role === 'limitMinus'
-      ? { end: minusEnd, facing: -1 as const }
+      ? { end: minusEnd, facing: 1 as const }
       : role === 'limitPlus'
         ? { end: travel - LIMIT_MARGIN + edge + point[i], facing: 1 as const }
-        : { end: minusEnd + (minus >= 0 ? length[minus] : 0) + length[i], facing: 1 as const },
+        : { end: minusEnd, facing: -1 as const },
   )
 }
 
@@ -1069,8 +1069,7 @@ export async function comboParts(
         travel,
         lugMeta.edge ?? 0,
         sensors.switches.map((d, i) => (bracket ? beamFrom(i) : (d.meta!.switchPoint ?? 0))),
-        // a switch with its cable stub: the home switch clear of the − limit's, the stubs meeting
-        bracket ? lengths.map(() => bracket.length ?? 0) : sensors.switches.map((d, i) => lengths[i] + (d.meta!.cable ?? 0)),
+        bracket ? lengths.map(() => bracket.length ?? 0) : lengths,
         bracket != null,
         !!seats.limitsInwards,
       )

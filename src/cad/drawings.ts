@@ -70,8 +70,6 @@ export interface SensorMeta {
    *  bracket: its length along the travel */
   switchPoint?: number
   length?: number
-  /** switch: mm its cable stub reaches beyond the body after `trim` (a switch beside it keeps clear of it) */
-  cable?: number
   without?: string[]
   move?: { parts: string[]; by: Vec3 }
 }
