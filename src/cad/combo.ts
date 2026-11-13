@@ -589,9 +589,9 @@ const SWITCH_NAMES: Record<SwitchRole, string> = { limitMinus: '-LIMIT', limitPl
  * travelling towards +): `end` = the switch's sensing end, `facing` = the way that end points (±1 along the travel).
  * The lug (reaching `edge` mm either side of the slide centre) covers a switch whose switching point (`point` mm
  * behind its sensing end) lies under it. Limit switches switch `LIMIT_MARGIN` before the end of the travel when the
- * lug comes in from the middle. The + limit's sensing end points to the axis end, its body and cable towards the
- * middle; the − limit's points to the middle, its cable towards the axis end, and the home switch lies sensing end to
- * sensing end with it towards +, so both cables lead away from the pair (as the user set it).
+ * lug comes in from the middle, their sensing ends towards the middle and their cables towards the axis ends; the
+ * home switch lies sensing end to sensing end with the − limit towards +, its cable towards + (as the user set it:
+ * the cables lead away from the pair).
  * (`length` mm, sensing end to cable end, or its bracket: only the Omron cases use it.)
  * `outwards` (Omron sensors on brackets, `end` = the bracket's end at the sensor, connector pointing the other way):
  * the limits on their brackets' inner ends, connectors towards the axis ends; home back to back with the − limit on
@@ -638,7 +638,7 @@ export function switchPlacements(
     role === 'limitMinus'
       ? { end: minusEnd, facing: 1 as const }
       : role === 'limitPlus'
-        ? { end: travel - LIMIT_MARGIN + edge + point[i], facing: 1 as const }
+        ? { end: travel - LIMIT_MARGIN + edge - point[i], facing: -1 as const }
         : { end: minusEnd, facing: -1 as const },
   )
 }
@@ -648,8 +648,8 @@ export function switchPlacements(
  * (rod end) towards the drive end (`body` mm long): `end` = the switch's sensing end, `facing` = the way it points
  * (+1 towards the front). Each switch is centred in a mounting `pitch[i]` mm long (its bracket); the mountings stay
  * within the sensor area (`area` = [L1 from the front, L2 from the drive end]): the − limit's at L1, the + limit's at
- * L2, cables towards the middle, the home switch's right behind the + limit (the motor end) towards −, as its mirror
- * image (their cables facing each other).
+ * L2, cables towards the body ends; the home switch's right beside the + limit's (the motor end) towards −, sensing
+ * end to sensing end with it, its cable towards the front (as the user set it: the cables lead away from the pair).
  */
 export function bodySwitchPlacements(
   roles: SwitchRole[],
@@ -663,10 +663,10 @@ export function bodySwitchPlacements(
   const plusMount = body - area[1]
   return roles.map((role, i) =>
     role === 'limitMinus'
-      ? { end: area[0] + inset(i), facing: 1 as const }
+      ? { end: area[0] + inset(i) + length[i], facing: -1 as const }
       : role === 'limitPlus'
-        ? { end: plusMount - inset(i), facing: -1 as const }
-        : { end: plusMount - (plus >= 0 ? pitch[plus] : 0) - pitch[i] + inset(i), facing: 1 as const },
+        ? { end: plusMount - inset(i) - length[i], facing: 1 as const }
+        : { end: plusMount - (plus >= 0 ? pitch[plus] : 0) - inset(i), facing: -1 as const },
   )
 }
 
