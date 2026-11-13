@@ -24,7 +24,6 @@ import singleImage from '../../images/parallel_single.webp'
 import twinMotorImage from '../../images/parallel_twinMotor.webp'
 import twinShaftImage from '../../images/parallel_twinShaft.webp'
 import { ConfigCards, CountField, HelpTip, NumberField, RadioGroup } from './common'
-import { ModeSwitch, type AppMode } from './ModeSwitch'
 import { fmt, kgf, mountingLabel, parallelModeLabel, pressDirectionLabel } from './format'
 
 const parallelModeHint: Record<ParallelMode, string> = {
@@ -65,13 +64,11 @@ interface Props {
   settings: Settings
   onReq: (req: Requirements) => void
   onSettings: (settings: Settings) => void
-  mode: AppMode
-  onMode: (mode: AppMode) => void
   /** family of the selected axis: an ELGT has no guide axis */
   axisFamily?: string
 }
 
-export function InputPanel({ req, settings, onReq, onSettings, mode, onMode, axisFamily }: Props) {
+export function InputPanel({ req, settings, onReq, onSettings, axisFamily }: Props) {
   const t = useT()
   const set = <K extends keyof Requirements>(key: K, value: Requirements[K]) => onReq({ ...req, [key]: value })
   const setCog = (axis: 'x' | 'y' | 'z', value: number) => onReq({ ...req, cog: { ...req.cog, [axis]: value } })
@@ -135,7 +132,6 @@ export function InputPanel({ req, settings, onReq, onSettings, mode, onMode, axi
   return (
     <aside className="inputs">
       <div className="panel inputs-main">
-        <ModeSwitch mode={mode} onMode={onMode} />
         <section>
           <h2>{t('사용 조건')}</h2>
           <div className="field">

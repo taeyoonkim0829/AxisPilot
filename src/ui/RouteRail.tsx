@@ -3,8 +3,7 @@ import type { AxisEvaluation } from '../calc/axisSelection'
 import type { DriveEvaluation } from '../calc/motorSelection'
 import type { Check, Status } from '../calc/types'
 import { MOTOR_MAX_LABEL, type KitEvaluation } from '../calc/kitSelection'
-import { koSubjectParticle, langSwitchLabel, useT, type Lang } from '../i18n'
-import { useTheme } from './theme'
+import { koSubjectParticle, useT, type Lang } from '../i18n'
 import { pct, statusLabel } from './format'
 
 interface Props {
@@ -16,7 +15,6 @@ interface Props {
   /** true while the PDF is being made */
   exporting: boolean
   lang: Lang
-  onLang: (lang: Lang) => void
   /** 감속기 사용: the gearbox is step 3 and the kit 4; without it the kit is 3 */
   gearbox?: boolean
   /** Gantry: the X/Y/Z axis row above the open axis's signs */
@@ -108,9 +106,8 @@ function Sign({
   )
 }
 
-export function RouteRail({ axis, drive, kit, gearbox = true, onExport, exporting, lang, onLang, axes, missing: required }: Props) {
+export function RouteRail({ axis, drive, kit, gearbox = true, onExport, exporting, lang, axes, missing: required }: Props) {
   const t = useT()
-  const [theme, toggleTheme] = useTheme()
   const stepIds = stepIdsOf(gearbox)
   const active = useActiveStep(stepIds.join())
   const scrolled = useScrolled()
@@ -128,10 +125,6 @@ export function RouteRail({ axis, drive, kit, gearbox = true, onExport, exportin
   return (
     <>
       <div className={`rail-veil${scrolled ? ' on' : ''}`} aria-hidden />
-      {/* home = the top of the single axis screen, an empty hash (App's useMode); the inputs stay */}
-      <a className="page-brand" href="#" title={t('홈으로')}>
-        <img src={`${import.meta.env.BASE_URL}${theme === 'light' ? 'axispilot-logo.svg' : 'axispilot-logo-dark.svg'}`} alt="AxisPilot" width={171} height={32} />
-      </a>
       <header className={`rail${scrolled ? ' over' : ''}`}>
         <div className="rail-inner">
           <div className="rail-main">
@@ -182,17 +175,6 @@ export function RouteRail({ axis, drive, kit, gearbox = true, onExport, exportin
           <div className="rail-actions">
             <button type="button" className="rail-action" onClick={exportClick} disabled={exporting}>
               {exporting ? t('PDF 생성 중…') : t('PDF로 내보내기')}
-            </button>
-            <button
-              type="button"
-              className="rail-action"
-              lang={lang === 'ko' ? 'en' : 'ko'}
-              onClick={() => onLang(lang === 'ko' ? 'en' : 'ko')}
-            >
-              {langSwitchLabel[lang]}
-            </button>
-            <button type="button" className="rail-action" onClick={toggleTheme}>
-              {t(theme === 'light' ? '다크 모드' : '라이트 모드')}
             </button>
           </div>
           <dialog ref={dialog} className="notice" aria-labelledby="notice-title">

@@ -55,8 +55,10 @@
 
   --radius: 8px;
   --rail-h: 100px;
-  /* the floating rail's distance from the top */
-  --rail-top: 12px;
+  /* the page header (제품 선정 / 제품 비교), sticky at the top */
+  --header-h: 64px;
+  /* the floating rail's distance from the top: below the header */
+  --rail-top: calc(var(--header-h) + 12px);
   --sans: 'Pretendard Variable', Pretendard, 'Malgun Gothic', 'Apple SD Gothic Neo', system-ui, sans-serif;
   --din: 'Barlow Semi Condensed', 'Pretendard Variable', Pretendard, 'Malgun Gothic', sans-serif;
 
@@ -738,7 +740,7 @@ h3 {
   width: 100%;
   max-width: 1600px;
   margin: 0 auto;
-  padding: 20px 24px;
+  padding: 12px 24px 20px;
   display: grid;
   grid-template-columns: 320px minmax(0, 1fr);
   gap: 20px;
@@ -783,10 +785,10 @@ h3 {
 
 .inputs {
   position: sticky;
-  top: calc(var(--rail-top) + var(--rail-h) + 20px);
+  top: var(--rail-top);
   /* above the scroll veil, which reaches over its top */
   z-index: 10;
-  max-height: calc(100vh - var(--rail-top) - var(--rail-h) - 40px);
+  max-height: calc(100vh - var(--rail-top) - 20px);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -986,19 +988,6 @@ h3 {
 .segmented button.active {
   background: var(--sign);
   color: var(--sign-ink);
-  font-weight: 600;
-}
-
-/* Screen switch (단축 / 조합축 선정) at the top of the first input box */
-.inputs .mode-switch {
-  flex-shrink: 0;
-}
-
-.mode-switch button {
-  /* two equal halves whatever the label length */
-  flex: 1 1 0;
-  min-width: 0;
-  padding: 10px 14px;
   font-weight: 600;
 }
 
@@ -2174,10 +2163,9 @@ body {
   pointer-events: none;
 }
 
-/* the rail floats: inset from the edges, rounded, the workspace's width */
+/* the rail floats at the top of the results column, as wide as its panels, rounded like them */
 .app .rail {
   top: var(--rail-top);
-  margin: var(--rail-top) max(24px, calc((100% - 1552px) / 2)) 0;
   background: var(--glass-rail);
   overflow: hidden;
 }
@@ -2186,35 +2174,6 @@ body {
   .app .rail {
     position: relative;
     top: 0;
-    margin: 12px 16px 0;
-  }
-}
-
-/* The logo stands on its own: beside the rail over the input column, fixed like the rail; above the stacked rail,
-   centred, on narrow screens. */
-.page-brand {
-  position: fixed;
-  top: var(--rail-top);
-  left: max(24px, calc((100% - 1552px) / 2));
-  z-index: 10;
-  width: 320px;
-  height: var(--rail-h);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.page-brand img {
-  height: 35px;
-  width: auto;
-}
-
-@media (max-width: 1000px) {
-  .page-brand {
-    position: static;
-    width: auto;
-    height: auto;
-    padding: 20px 16px 4px;
   }
 }
 
@@ -2255,17 +2214,8 @@ body {
   .app .rail-inner {
     padding: 0 16px 0 0;
   }
-
-  /* over the results column only (320px input column + 20px gap), as wide as its panels */
-  .app .rail {
-    margin-left: calc(max(24px, calc((100% - 1552px) / 2)) + 340px);
-  }
 }
 
-/* three buttons stacked in the rail's height */
-.app .rail-actions .rail-action {
-  padding-block: 3px;
-}
 
 .app .rail-actions {
   border-left-color: var(--line);
@@ -2436,4 +2386,325 @@ body {
   background: var(--surface-solid);
   -webkit-backdrop-filter: blur(var(--glass-blur));
   backdrop-filter: blur(var(--glass-blur));
+}
+
+/* ---------- page header: logo, 제품 선정 / 제품 비교 menus, language and theme ---------- */
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  height: var(--header-h);
+  background: rgb(var(--veil) / 0.72);
+  border-bottom: 1px solid var(--line);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
+}
+
+:root[data-theme='light'] .app-header {
+  background: rgb(255 255 255 / 0.7);
+}
+
+.app-header-inner {
+  max-width: 1600px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.app-logo {
+  display: flex;
+  flex: none;
+}
+
+.app-logo img {
+  height: 28px;
+  width: auto;
+}
+
+.app-nav {
+  display: flex;
+  align-self: stretch;
+  gap: 4px;
+}
+
+.nav-menu {
+  position: relative;
+  display: flex;
+}
+
+.nav-menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+  transition: color 160ms ease-out;
+}
+
+.nav-menu-btn:hover,
+.nav-menu.current .nav-menu-btn {
+  color: var(--text);
+}
+
+/* the open screen's menu: accent underline (yellow stays the selection route's) */
+.nav-menu.current .nav-menu-btn {
+  border-bottom-color: var(--accent);
+}
+
+.nav-menu-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.25;
+}
+
+.nav-menu-label {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.nav-menu.current .nav-menu-label {
+  font-weight: 700;
+}
+
+.nav-menu-sub {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.nav-menu-btn[aria-expanded='true'] .nav-menu-chevron {
+  transform: rotate(180deg);
+}
+
+.nav-menu-chevron {
+  transition: transform 160ms ease-out;
+}
+
+.nav-menu-list {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 220px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  background: var(--surface-solid);
+  box-shadow: 0 24px 48px -12px rgb(var(--shade) / calc(0.8 * var(--shade-k)));
+}
+
+.nav-menu-list button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.nav-menu-list button:hover,
+.nav-menu-list button.active {
+  background: rgb(var(--ov) / 0.1);
+}
+
+.nav-menu-list button.active {
+  font-weight: 700;
+}
+
+.nav-menu-list svg {
+  color: var(--accent);
+}
+
+.app-tools {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: rgb(var(--ov) / 0.06);
+  color: var(--text);
+  font-family: var(--din);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 160ms ease-out;
+}
+
+.icon-btn:hover {
+  background: rgb(var(--ov) / 0.14);
+}
+
+@media (max-width: 640px) {
+  .app-header-inner {
+    gap: 12px;
+    padding: 0 12px;
+  }
+
+  .app-logo img {
+    height: 22px;
+  }
+
+  .nav-menu-btn {
+    padding: 0 8px;
+  }
+
+  .nav-menu-sub {
+    display: none;
+  }
+}
+
+/* ---------- 제품 비교 ---------- */
+
+.field-select {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-family: var(--din);
+  font-size: 16px;
+  outline: none;
+}
+
+.field-select option {
+  background: var(--surface-solid);
+  color: var(--text);
+}
+
+.compare-facts {
+  margin: 0;
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.compare-facts div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.compare-facts dt {
+  color: var(--muted);
+}
+
+.compare-facts dd {
+  margin: 0;
+  font-family: var(--din);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.compare-bar {
+  min-height: var(--rail-h);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.compare-bar-item {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.compare-bar-role {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.compare-bar-model {
+  font-family: var(--din);
+  font-size: 22px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.compare-bar-line {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.compare-bar-arrow {
+  flex: none;
+  color: var(--muted);
+}
+
+/* the Festo value against the reference's (= 100%, the mark in the middle), 0 to 200% */
+.gauge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 220px;
+}
+
+.gauge-track {
+  position: relative;
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  background: rgb(var(--ov) / 0.08);
+}
+
+.gauge-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 4px;
+  background: var(--accent);
+}
+
+.gauge-mark {
+  position: absolute;
+  left: 50%;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  background: var(--text);
+}
+
+.gauge-text {
+  width: 44px;
+  text-align: right;
+  font-family: var(--din);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* the Festo series and supply choices wrap inside the 320px input box */
+.compare .inputs .segmented {
+  flex-wrap: wrap;
+  max-width: 100%;
 }

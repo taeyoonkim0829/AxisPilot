@@ -286,6 +286,25 @@ Drawings: `adapters/Custom/Drawings/<id>_<model>.stp` (beam coordinates: x along
 
 EGC bracket drawings (`<id>_<model>.stp`, one per hand; one PDF per pair, the -ML drawn): origin on the base slide's hole pattern centre on the slide surface; angle brackets: z up from the slide, x from the wall towards the carried axis's slide side, -ML wall reaching +y (-MR mirrored); plates: x out of the plate (back face on the base slide at x = 0), z along the carried travel. Frame JSON as for the Festo kits: `base` on the pattern centre (`axis` into the bracket, `up` = x / y), `carried` on the carried profile's underside on its centreline (angle: wall face at the ledge height + half the profile width, middle of the slot nut screws, `up` along the reach; plates: front face centre, `up` = z). The app places them on the slide's `pattern` (axis frame JSONs).
 
+## Other makers' axes (`thirdPartyAxes/Robostar/RS.json`, `RC.json`, `RJ.json`, `RK.json`)
+
+The axes another maker offers, compared with Festo's on 제품 비교 > 직교 축 (catalog data only, no calculation). Robostar: the Linear Actuator Catalog (file `E-Drive/Robostar/Linear Actuator Catalog_261114.pdf`), its series specification tables read with markitdown: RS, RC and RJ ball screw axes (one item per model, e.g. `RS-120-X20SS`: base width 120, X axis use, speed code 20 = 1000 mm/s, SS straight / PR (L) parallel right or left / PB parallel bottom, `(Long)` long stroke versions) and the belt types (RK, RS-175/210-BSA, RJ-…-BSA/BSB). The linear motor type RF is left out. Six table rows had blank cells (RC-125-Y10PR (L), RC-150-X20SS, RC-220-X20PR (L), RC-220-Z10SS, RJ-120-Z10PR (L), RJ-140-X10PR (L)): they take the values of the model with the same base, axis use and lead (noted in `dataSource`). The summary tables differ from some model pages (RS-120-X10SS: 60 / 50 kg in the table, 70 / 50 kg on its page); the table values are used.
+
+| Field | Meaning |
+|---|---|
+| `series`, `base`, `model` | RS / RC / RJ / RK; base = series + width (`RS-120`); model as in the catalog |
+| `drive` | `spindle` (ball screw) or `belt` |
+| `axisUse` | X (base), Y, Z (vertical): the use the payload rating is for (ball screw only) |
+| `layout` | motor arrangement: SS, PR, PB, PL (ball screw only) |
+| `long` | the long stroke version (larger screw, lower speed) |
+| `strokeMin`, `strokeMax` | mm |
+| `maxSpeed` | m/s |
+| `payload` | kg at 0.3 G and 0.5 G (ball screw) |
+| `maxPayload` | kg (belt) |
+| `motorPower`, `brake` | W of the built-in AC servo motor; with brake (Z axes) |
+| `screwDiameter`, `screwLead`, `screwClass` | mm, mm, accuracy class (C7S, C10S) |
+| `belt` | belt type (belt axes) |
+
 ## Drawings (`<kind>/<maker>/Drawings/…/<partNumber>_<model>.stp`)
 
 Manufacturer CAD models (STEP) for step 5 (조합 도면), next to the product data of their kind (`axes`, `motors`, `gearboxes`, `kits`, `shafts`, `adapters`, `guides`); subfolders below `Drawings/` are free. The file name is `<partNumber>_<model>` as Festo's CAD download names it (`8124427_ELGT-BS-90-500-20P.stp`), or the maker's own name, read as the model up to the first `_` in upper case (Mitsubishi `hg-kr13b_.stp` = HG-KR13B, `hg-ak0136_b_.stp` = HG-AK0136, `hk-kt13wb_.stp` = HK-KT13WB, which matches the data's `HK-KT13WB (200V)`: a voltage class in brackets is left out when matching; `(4)` stands for both names, `hg-jr12k1(4)_.stp` = HG-JR12K1 and HG-JR12K14). Only STEP files are read; the DWG/DXF/IGES/ZIP downloads may sit next to them but are not committed (`.gitignore`). The files are copied unchanged into the assembly (the CADENAS files carry `License CC BY-ND 4.0`; the exported STEP repeats it in its header). Each STEP file has a JSON file of the same name with its mating frames, in the file's own coordinates (mm). A frame is `{ "origin": [x, y, z], "axis": [x, y, z], "up": [x, y, z] }`: `axis` points from the axis side towards the motor side, `up` is perpendicular to it and is turned onto the parent's `up` (motor connector, kit and axis "up" line up).

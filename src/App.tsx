@@ -12,7 +12,9 @@ import { GantryWorkspace, type GantryState } from './ui/GantryWorkspace'
 import { InputPanel } from './ui/InputPanel'
 import type { ProfileView } from './ui/ProfileChart'
 import { Report } from './ui/Report'
-import type { AppMode } from './ui/ModeSwitch'
+import { modeHash, type AppMode } from './ui/ModeSwitch'
+import { AppHeader } from './ui/AppHeader'
+import { CompareWorkspace } from './ui/CompareWorkspace'
 import { RouteRail } from './ui/RouteRail'
 import { useReportExport } from './ui/useReportExport'
 import type { Shared, SingleShare } from './share'
@@ -36,13 +38,11 @@ interface Inputs {
   setReq: (req: Requirements) => void
   setSettings: (settings: Settings) => void
   lang: Lang
-  setLang: (lang: Lang) => void
-  mode: AppMode
-  setMode: (mode: AppMode) => void
 }
 
-/** The screen from the address: #gantry = gantry, else the single axis. */
-const modeFromHash = (): AppMode => (window.location.hash === '#gantry' ? 'gantry' : 'single')
+/** The screen from the address (`modeHash`: #gantry, #compare-axis, #compare-motor), else the single axis. */
+const modeFromHash = (): AppMode =>
+  (Object.keys(modeHash) as AppMode[]).find((m) => modeHash[m] && `#${modeHash[m]}` === window.location.hash) ?? 'single'
 
 function useMode(initial?: AppMode): [AppMode, (mode: AppMode) => void] {
   const [mode, setModeState] = useState<AppMode>(initial ?? modeFromHash)
@@ -52,7 +52,7 @@ function useMode(initial?: AppMode): [AppMode, (mode: AppMode) => void] {
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
   const setMode = (next: AppMode) => {
-    window.location.hash = next === 'gantry' ? 'gantry' : ''
+    window.location.hash = modeHash[next]
     track('screen_switch', { screen: next })
     setModeState(next)
     window.scrollTo(0, 0)
@@ -72,13 +72,18 @@ export default function App({ shared = null }: { shared?: Shared | null }) {
   // Both screens keep their inputs while the other one is shown.
   const [gantry, setGantry] = useState<GantryInputs>(gantryShared?.gantry ?? defaultGantry)
   const [gantrySettings, setGantrySettings] = useState<GantrySettings>(gantryShared?.gantrySettings ?? initialGantrySettings)
-  const inputs: Inputs = { req, settings, setReq, setSettings, lang, setLang, mode, setMode }
-  const gantryState: GantryState = { gantry, setGantry, gantrySettings, setGantrySettings, lang, setLang, mode, setMode }
+  const inputs: Inputs = { req, settings, setReq, setSettings, lang }
+  const gantryState: GantryState = { gantry, setGantry, gantrySettings, setGantrySettings, lang }
 
   // A failing calculation or chart must not blank the page: the inputs stay, and editing one retries.
   return (
     <LangProvider value={lang}>
-      {mode === 'single' ? (
+      <AppHeader mode={mode} onMode={setMode} lang={lang} onLang={setLang} />
+      {mode === 'compareAxis' || mode === 'compareMotor' ? (
+        <ErrorBoundary key={mode} resetKeys={[lang]} fallback={(error, retry) => <ErrorPanel error={error} retry={retry} />}>
+          <CompareWorkspace kind={mode === 'compareAxis' ? 'axis' : 'motor'} />
+        </ErrorBoundary>
+      ) : mode === 'single' ? (
         <ErrorBoundary key="single" resetKeys={[req, settings, lang]} fallback={(error, retry) => <Fallback {...inputs} error={error} retry={retry} />}>
           <Workspace {...inputs} shared={single} />
         </ErrorBoundary>
@@ -96,13 +101,13 @@ export default function App({ shared = null }: { shared?: Shared | null }) {
 }
 
 /** The page after an error: the inputs and an error notice in place of the results. */
-function Fallback({ req, settings, setReq, setSettings, lang, setLang, mode, setMode, error, retry }: Inputs & { error: Error; retry: () => void }) {
+function Fallback({ req, settings, setReq, setSettings, lang, error, retry }: Inputs & { error: Error; retry: () => void }) {
   return (
     <div className="app">
-      <RouteRail axis={null} drive={null} kit={null} onExport={() => {}} exporting={false} lang={lang} onLang={setLang} />
       <main className="layout">
-        <InputPanel req={req} settings={settings} onReq={setReq} onSettings={setSettings} mode={mode} onMode={setMode} />
+        <InputPanel req={req} settings={settings} onReq={setReq} onSettings={setSettings} />
         <div className="results">
+          <RouteRail axis={null} drive={null} kit={null} onExport={() => {}} exporting={false} lang={lang} />
           <ErrorPanel error={error} retry={retry} />
           <Footer />
         </div>
@@ -111,13 +116,13 @@ function Fallback({ req, settings, setReq, setSettings, lang, setLang, mode, set
   )
 }
 
-function GantryFallback({ gantry, setGantry, gantrySettings, setGantrySettings, lang, setLang, mode, setMode, error, retry }: GantryState & { error: Error; retry: () => void }) {
+function GantryFallback({ gantry, setGantry, gantrySettings, setGantrySettings, lang, error, retry }: GantryState & { error: Error; retry: () => void }) {
   return (
     <div className="app">
-      <RouteRail axis={null} drive={null} kit={null} onExport={() => {}} exporting={false} lang={lang} onLang={setLang} />
       <main className="layout">
-        <GantryInputPanel gantry={gantry} onGantry={setGantry} settings={gantrySettings} onSettings={setGantrySettings} mode={mode} onMode={setMode} />
+        <GantryInputPanel gantry={gantry} onGantry={setGantry} settings={gantrySettings} onSettings={setGantrySettings} />
         <div className="results">
+          <RouteRail axis={null} drive={null} kit={null} onExport={() => {}} exporting={false} lang={lang} />
           <ErrorPanel error={error} retry={retry} />
           <Footer />
         </div>
@@ -150,7 +155,7 @@ function ErrorPanel({ error, retry }: { error: Error; retry: () => void }) {
   )
 }
 
-function Workspace({ req, settings, setReq, setSettings, lang, setLang, mode, setMode, shared }: Inputs & { shared: SingleShare | null }) {
+function Workspace({ req, settings, setReq, setSettings, lang, shared }: Inputs & { shared: SingleShare | null }) {
   const [picks, setPicks] = useState<Picks>(shared?.picks ?? noPicks)
   // Motion profile view (왕복 / 전진 / 복귀); the PDF prints the same view
   const [profileView, setProfileView] = useState<ProfileView>(shared?.profileView ?? 'cycle')
@@ -175,27 +180,18 @@ function Workspace({ req, settings, setReq, setSettings, lang, setLang, mode, se
   return (
     <>
       <div className="app">
-        <RouteRail
-          axis={selectedAxis}
-          drive={selectedDrive}
-          kit={selectedKitEval}
-          gearbox={settings.useGearbox}
-          onExport={startExport}
-          exporting={exporting}
-          lang={lang}
-          onLang={setLang}
-        />
         <main className="layout">
-          <InputPanel
-            req={req}
-            settings={settings}
-            onReq={setReq}
-            onSettings={setSettings}
-            mode={mode}
-            onMode={setMode}
-            axisFamily={selectedAxis?.axis.family}
-          />
+          <InputPanel req={req} settings={settings} onReq={setReq} onSettings={setSettings} axisFamily={selectedAxis?.axis.family} />
           <div className="results">
+            <RouteRail
+              axis={selectedAxis}
+              drive={selectedDrive}
+              kit={selectedKitEval}
+              gearbox={settings.useGearbox}
+              onExport={startExport}
+              exporting={exporting}
+              lang={lang}
+            />
             <AxisSteps
               sel={sel}
               req={deferredReq}

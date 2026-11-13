@@ -16,7 +16,6 @@ import yzImage from '../../images/help_gantry_yz.webp'
 import zProfileImage from '../../images/help_zmode_profile.svg'
 import zSlideImage from '../../images/help_zmode_slide.svg'
 import { ConfigCards, HelpTip, NumberField, RadioGroup } from './common'
-import { ModeSwitch, type AppMode } from './ModeSwitch'
 import { fmt, mountingLabel } from './format'
 import { DetailSettings, ParallelSection } from './InputPanel'
 import { accelTimeFor, sCurveShare } from '../calc/motionProfile'
@@ -59,13 +58,11 @@ interface Props {
   onGantry: (g: GantryInputs) => void
   settings: GantrySettings
   onSettings: (s: GantrySettings) => void
-  mode: AppMode
-  onMode: (mode: AppMode) => void
   /** two base axes: the spacing the calculation uses, set to fit the gantry kits */
   baseSpacing?: { entered: number; used: number }
 }
 
-export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode, onMode, baseSpacing }: Props) {
+export function GantryInputPanel({ gantry, onGantry, settings, onSettings, baseSpacing }: Props) {
   const t = useT()
   const chain = gantryChain(gantry.config)
   // the base axis can be a parallel arrangement (X, or Y in yz); the axis it carries
@@ -92,7 +89,6 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, mode,
   return (
     <aside className="inputs">
       <div className="panel inputs-main">
-        <ModeSwitch mode={mode} onMode={onMode} />
         <section>
           <h2>
             {t('조합축 구성')}

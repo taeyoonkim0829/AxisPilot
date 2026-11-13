@@ -578,3 +578,44 @@ export interface GuideUnit {
   Iz: number | null
   dataSource: string
 }
+
+/**
+ * Another maker's linear axis (data/thirdPartyAxes), compared with Festo's on 제품 비교 > 직교 축: catalog
+ * specifications only, no calculation. Ball screw axes carry `payload` (kg at 0.3 G / 0.5 G, the catalog's rating
+ * for the axis use `axisUse`: X base, Y carried, Z vertical), belt axes `maxPayload`. The motor is part of the axis.
+ */
+export interface ThirdPartyAxis {
+  id: string
+  maker: 'Robostar'
+  /** RS, RC, RJ, RK */
+  series: string
+  /** model base (series + width), e.g. RS-120 */
+  base: string
+  model: string
+  drive: 'spindle' | 'belt'
+  /** catalog axis use the payload rating is for; null for belt axes */
+  axisUse: 'X' | 'Y' | 'Z' | null
+  /** motor arrangement: SS straight, PR (L) parallel right / left, PB parallel bottom; null for belt axes */
+  layout: 'SS' | 'PR' | 'PB' | 'PL' | null
+  /** the long stroke version (larger screw, lower speed) */
+  long: boolean
+  /** mm */
+  strokeMin: number
+  strokeMax: number
+  /** m/s */
+  maxSpeed: number
+  /** kg at 0.3 G and 0.5 G acceleration (ball screw) */
+  payload: [number, number] | null
+  /** kg (belt) */
+  maxPayload: number | null
+  /** W, the AC servo motor built in */
+  motorPower: number
+  brake: boolean
+  /** mm */
+  screwDiameter: number | null
+  screwLead: number | null
+  /** ball screw accuracy class, e.g. C7S */
+  screwClass: string | null
+  belt: string | null
+  dataSource: string
+}

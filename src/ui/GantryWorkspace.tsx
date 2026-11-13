@@ -14,7 +14,6 @@ import { GantryDrawing } from './GantryDrawing'
 import { GantryInputPanel } from './GantryInputPanel'
 import type { ProfileView } from './ProfileChart'
 import { GantryOverview, Report } from './Report'
-import type { AppMode } from './ModeSwitch'
 import { RouteRail } from './RouteRail'
 import { useReportExport } from './useReportExport'
 import type { GantryShare } from '../share'
@@ -25,9 +24,6 @@ export interface GantryState {
   gantrySettings: GantrySettings
   setGantrySettings: (s: GantrySettings) => void
   lang: Lang
-  setLang: (lang: Lang) => void
-  mode: AppMode
-  setMode: (mode: AppMode) => void
 }
 
 const perAxis = <T,>(value: T): Record<GantryAxis, T> => ({ x: value, y: value, z: value })
@@ -40,9 +36,6 @@ export function GantryWorkspace({
   gantrySettings,
   setGantrySettings,
   lang,
-  setLang,
-  mode,
-  setMode,
   shared = null,
 }: GantryState & { shared?: GantryShare | null }) {
   const t = useT()
@@ -127,39 +120,36 @@ export function GantryWorkspace({
   return (
     <>
       <div className="app gantry">
-        <RouteRail
-          axis={sel?.selectedAxis ?? null}
-          drive={sel?.selectedDrive ?? null}
-          kit={sel?.selectedKitEval ?? null}
-          gearbox={gantrySettings[active].useGearbox}
-          onExport={startExport}
-          exporting={exporting}
-          lang={lang}
-          onLang={setLang}
-          axes={
-            <RailAxes
-              results={results}
-              order={order}
-              active={active}
-              onTab={(a) => {
-                setTab(a)
-                setDrawingTab(null)
-              }}
-            />
-          }
-          missing={unselected}
-        />
         <main className="layout">
           <GantryInputPanel
             gantry={gantry}
             onGantry={setGantry}
             settings={gantrySettings}
             onSettings={setGantrySettings}
-            mode={mode}
-            onMode={setMode}
             baseSpacing={results.find((r) => r.spacing)?.spacing}
           />
           <div className="results">
+            <RouteRail
+              axis={sel?.selectedAxis ?? null}
+              drive={sel?.selectedDrive ?? null}
+              kit={sel?.selectedKitEval ?? null}
+              gearbox={gantrySettings[active].useGearbox}
+              onExport={startExport}
+              exporting={exporting}
+              lang={lang}
+              axes={
+                <RailAxes
+                  results={results}
+                  order={order}
+                  active={active}
+                  onTab={(a) => {
+                    setTab(a)
+                    setDrawingTab(null)
+                  }}
+                />
+              }
+              missing={unselected}
+            />
             <CarriedLoad result={current} />
             {current.req && sel ? (
               <AxisSteps

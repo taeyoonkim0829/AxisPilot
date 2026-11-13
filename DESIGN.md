@@ -106,7 +106,7 @@ It is an operating tool, so the world contributes only type, palette, density an
 Restrained workspace on a ground lit in three colours, dark or light: the app starts on the system's setting and the switch under the language button overrides it. The light theme (`:root[data-theme='light']`, frost: ground #e4edf5, text #12202e, accent #0277b5, white glass) takes darker verdict colours for contrast. The PDF report keeps its own light tokens in both (below).
 
 ### Primary
-- **Accent** (#38bdf8): input focus, links, the motion profile trace. No button is filled: PDF로 내보내기 is clear glass like the language switch below it. The logo's teal is not a UI colour: green tones are reserved for verdicts.
+- **Accent** (#38bdf8): input focus, links, the motion profile trace. No button is filled: PDF로 내보내기 is clear glass. The logo's teal is not a UI colour: green tones are reserved for verdicts.
 - **Sign Blue** (#0a5a8a): solid marks that need white text (notice dialog head, its OK button; guidance sits behind a `?` beside its title, `HelpTip`, in the same dialog, live values stay under the field). Deep variant (#08486f) for hover.
 
 ### Secondary
@@ -137,7 +137,7 @@ The calculation report (`.report-stage`) is white paper and keeps the light toke
 **Character:** Korean text in a neutral workhorse sans; every figure and part number in a narrow road-sign face so long codes fit and columns align.
 
 ### Hierarchy
-- **Logo** (`.page-brand`, 35px high): the AxisPilot logo on its own, outside the rail, its dark-background version (`axispilot-logo-dark.svg`) in both themes because the page is dark. Above 1000px it is fixed like the rail, beside it over the 320px condition column (centred on it and in the rail's height, above the scroll veil); at 1000px and below (the rail stacks into a column at the top of the page) it stands above the rail, centred (20px above, 4px below), and the rail sits 16px above the mode switch, the same space as below it.
+- **Page header** (`.app-header`, 64px, sticky at the top, veil-tinted glass with a bottom line): the logo (28px high, the theme's version) as the home link, the menus 제품 선정 / 제품 비교 (15px, the open one 700 with its screen's name in 11px muted under it and a 3px accent underline: yellow stays the route's), each opening a dropdown (`.nav-menu-list`: solid surface, 14px radius, items 14px with a check on the open screen), and on the right the language (EN / KO, data face) and theme (sun / moon) as 40px square icon buttons (`.icon-btn`).
 - **Sign value** (600, 20px, 1.15): part numbers on the rail.
 - **Step title** (650, 17px): panel headings.
 - **Body** (400, 14px, 1.5): labels, notes, Korean copy.
@@ -149,7 +149,7 @@ The calculation report (`.report-stage`) is white paper and keeps the light toke
 
 ## Layout
 
-A floating sticky rail (100px high, 12px from the top, `--rail-top`, over the results column only, as wide as its panels, rounded like them; the logo beside it over the condition column) over a centered 1600px workspace: a 320px sticky condition panel on the left and the results column on the right (axis step, motion profile, motor, gearbox, kit), 20px gaps. The condition panel is a sticky box starting 20px below the rail that scrolls on its own (`.inputs`); the results scroll with the page, so the wheel works anywhere, and pass under the rail: once the page has scrolled, a veil (`.rail-veil`: fixed from the window top to 48px below the rail, blur 14px, navy 55% → 35%, full blur to 20px below the rail (the condition panel's sticky top), fading out over the last 28px; the sticky condition panel, z-index 10, stays above it) blurs what is under and around the rail, and the rail's own glass blurs 1.5× harder (`.rail.over`); the footer ends the results column; a click on a route box scrolls the page to the step, stopping below the rail. Below 1280px the rail drops its brand block; below 1000px the rail becomes static, signs go 2×2 (1 column under 560px) and the layout stacks.
+Below the page header, a floating sticky rail (100px high, 12px below the header, `--rail-top`, at the top of the results column, as wide as its panels, rounded like them; the input column level with it); the logo beside it over the condition column) over a centered 1600px workspace: a 320px sticky condition panel on the left and the results column on the right (axis step, motion profile, motor, gearbox, kit), 20px gaps. The condition panel is a sticky box starting 20px below the rail that scrolls on its own (`.inputs`); the results scroll with the page, so the wheel works anywhere, and pass under the rail: once the page has scrolled, a veil (`.rail-veil`: fixed from the window top to 48px below the rail, blur 14px, navy 55% → 35%, full blur to 20px below the rail (the condition panel's sticky top), fading out over the last 28px; the sticky condition panel, z-index 10, stays above it) blurs what is under and around the rail, and the rail's own glass blurs 1.5× harder (`.rail.over`); the footer ends the results column; a click on a route box scrolls the page to the step, stopping below the rail. Below 1280px the rail drops its brand block; below 1000px the rail becomes static, signs go 2×2 (1 column under 560px) and the layout stacks.
 
 PDF export (PDF로 내보내기) renders a separate report (`Report.tsx`, mounted off screen at A4 content width, 703px) to a PDF that opens in a new tab: six chapters, each on a new page, with a sign-blue chapter bar, label/value spec tables and the check tables. The report always uses the light tokens. Chapter 1's meta line ends in `.report-link` (웹에서 이 계산 열기: accent colour, underlined), which the PDF makes a link to the same calculation on the web.
 
@@ -192,3 +192,7 @@ Rounded glass: panels and the rail 20px (`--panel-radius`), inputs and buttons 1
 - **Don't** use yellow for anything except the selected route.
 - **Don't** add cards, kickers or decorative icons to the workspace; the rail is the only expressive element.
 - **Don't** add motion beyond 120–200ms state transitions.
+
+## 제품 비교
+
+The same two columns: the reference product (maker, series and model selects, `.field-select` in a `.field-input`, its data as a label / value list `.compare-facts`) and the Festo filters on the left; on the right the pair (`.compare-bar`, the rail's height: role 12px muted, model 22px data face, an arrow between), the candidates table (a row picks, the picked row in the selected style) and 사양 비교 (항목 · 기준 · 대체 · gauge). **Gauge** (`.gauge`): the Festo value against the reference's, a 0–200% track (8px, rounded) filled in the accent colour with a 2px mark at 100% and the percentage in the data face; rows that are not on one scale say 수치 비교 없음 in muted text.
