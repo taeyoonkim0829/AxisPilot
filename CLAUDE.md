@@ -8,7 +8,7 @@ Talk to the user in Korean, always: every reply, question, progress note, summar
 
 ## Reading documents
 
-Read PDF files (data sheets, catalogs, manuals) with the markitdown skill.
+Read PDF files (data sheets, catalogs, manuals) with the markitdown skill: the plain conversion only, `uvx --no-config --from "markitdown[pdf]" markitdown <file>.pdf > <scratch>.md`, then search the Markdown (its tables keep the columns). Not its AI image descriptions (`convert_with_ai.py`, OpenRouter): they send the document to an outside service.
 
 ## Project status
 
