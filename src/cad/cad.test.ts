@@ -632,6 +632,46 @@ describe('combination', () => {
     expect(plus).toBeCloseTo(500 - 2 + 7.5 - 6.7, 1)
   }, 60000)
 
+  it('senses an ELGT-TB-…-CS like an ELGT-BS of the size (the same slide and profile): EAPM-L9 lug, switches in slot [1]', async () => {
+    const axis = axes.find((a) => a.model === 'ELGT-TB-120')!
+    const sensing = sensingFor(axis, sensors, { sensorOutput: 'PNP', limitContact: 'NC', homeContact: 'NO' })!
+    expect(sensing.lug?.partNumber).toBe('8119854')
+    expect(sensingFor(axes.find((a) => a.model === 'ELGT-TB-160')!, sensors, { sensorOutput: 'PNP', limitContact: 'NC', homeContact: null, sensorMaker: 'Omron' })?.bracket?.model).toBe('EAPM-L9-SHE')
+    const sel: ComboSelection = {
+      axis,
+      axisModel: 'ELGT-TB-120-300-CS',
+      stroke: 300,
+      motor: motors.find((m) => m.model === 'EMMT-AS-60-S-HS')!,
+      gearbox: null,
+      kit: kits.find((k) => k.product === 'EAMM-A-N48-60P')!,
+      sensing,
+    }
+    const sensorPaths = allPaths.map((p) => p.slice(6)).filter((p) => p.startsWith('data/sensors/'))
+    const own = ['data/axes/Festo/Drawings/ELGT/TB/8195618_ELGT-TB-120-300-CS.stp', 'data/kits/Festo/Drawings/EAMM-A/8197468_EAMM-A-N48-60P.stp', files[2], ...sensorPaths].map(
+      (p) => ({ ...parseDrawingPath(p)!, url: p, meta: metas[`../../${p.replace(/\.stp$/, '.json')}`] ?? null }),
+    )
+    const found = comboDrawings(sel, own)
+    expect(found.sensors?.lug?.partNumber).toBe('8119854')
+    const combo = await buildCombo(sel, found, { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
+    const { parts } = await meshBox(combo.step)
+    // floor: travel +x, slide surface at z = 0; as on ELGT-BS-120: the lug's two M3x6 18 mm down on the slide side
+    // (66 mm out), the switches flush with the profile side (65 mm out) in slot [1] 33.5 mm down
+    for (const s of parts.filter((p) => /M3x6/.test(p.name))) expect((s.lo[2] + s.hi[2]) / 2).toBeCloseTo(-18, 0)
+    const switches = parts.filter((p) => /SIES-8M/.test(p.name))
+    expect(switches).toHaveLength(3)
+    for (const s of switches) {
+      expect(Math.max(s.hi[1], -s.lo[1])).toBeCloseTo(65, 0)
+      expect((s.lo[2] + s.hi[2]) / 2).toBeCloseTo(-33.5, 0)
+      // beside the slide (135 mm long) at either end of the travel, clear of the heads
+      expect(s.lo[0]).toBeGreaterThan(-67.5)
+      expect(s.hi[0]).toBeLessThan(300 + 67.5)
+    }
+    const [minus, home, plus] = switchEnds(combo, [0, 4.6, 0])
+    expect(minus).toBeCloseTo(2 - 7.5 + 6.7, 1)
+    expect(home).toBeCloseTo(minus, 1)
+    expect(plus).toBeCloseTo(300 - 2 + 7.5 - 6.7, 1)
+  }, 120000)
+
   it('mounts Omron EE-SX674 sensors on their brackets, the lug passing through their slots (ELGD, ELGT-BS)', async () => {
     // floor: travel +x, slide surface at z = 0. The sensors upright on their brackets (one each), the lug's tongue
     // reaching into their 5 mm slots (9 mm deep) between the arms; the optical axis (7 mm along the sensor from its

@@ -2,5 +2,6 @@
   "stroke": 400,
   "drive": { "origin": [66, 1, 44], "axis": [1, 0, 0], "up": [0, 1, 0] },
   "slide": { "origin": [0, 46, -86.5], "normal": [0, 1, 0], "travel": [0, 0, -1] },
-  "profile": { "origin": [0, -44, -286.5], "normal": [0, -1, 0] }
+  "profile": { "origin": [0, -44, -286.5], "normal": [0, -1, 0] },
+  "sensor": { "lug": { "origin": [66, 28, -86.5], "axis": [1, 0, 0], "up": [0, 1, 0] }, "slot": { "origin": [65, 12.5, -86.5], "axis": [1, 0, 0], "up": [0, 0, -1] }, "bracket": { "origin": [65, -10, -86.5], "axis": [1, 0, 0], "up": [0, 0, -1] } }
 }

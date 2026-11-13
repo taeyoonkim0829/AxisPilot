@@ -21,7 +21,9 @@
         { "family": "ELGD", "variant": "WD", "size": 120, "drive": "spindle" },
         { "family": "ELGT", "variant": "", "size": 90, "drive": "spindle" },
         { "family": "ELGT", "variant": "", "size": 120, "drive": "spindle" },
-        { "family": "ELGT", "variant": "", "size": 160, "drive": "spindle" }
+        { "family": "ELGT", "variant": "", "size": 120, "drive": "belt" },
+        { "family": "ELGT", "variant": "", "size": 160, "drive": "spindle" },
+        { "family": "ELGT", "variant": "", "size": 160, "drive": "belt" }
       ],
       "dataSource": "Omron EE-SX674 (NPN output) of the EE-SX674 series photomicrosensor (slot type, 5 mm slot, connector, light-ON / dark-ON by wiring), the third-party sensor the ELGD-TB / -BS / -WD data sheets 2026/09 (with sensor bracket EAPM-E24-60-SHO and switch lug EAPM-E24-60-SLS) and the ELGT-BS data sheet 2026/09 p.47 (with sensor bracket EAPM-L9-SHE and switch lug EAPM-L9-...-SLE) name; not supplied by Festo; STEP from Omron"
     },
@@ -46,7 +48,9 @@
         { "family": "ELGD", "variant": "WD", "size": 120, "drive": "spindle" },
         { "family": "ELGT", "variant": "", "size": 90, "drive": "spindle" },
         { "family": "ELGT", "variant": "", "size": 120, "drive": "spindle" },
-        { "family": "ELGT", "variant": "", "size": 160, "drive": "spindle" }
+        { "family": "ELGT", "variant": "", "size": 120, "drive": "belt" },
+        { "family": "ELGT", "variant": "", "size": 160, "drive": "spindle" },
+        { "family": "ELGT", "variant": "", "size": 160, "drive": "belt" }
       ],
       "dataSource": "Omron EE-SX674P (PNP output) of the EE-SX674 series photomicrosensor (slot type, 5 mm slot, connector, light-ON / dark-ON by wiring), the third-party sensor the ELGD-TB / -BS / -WD data sheets 2026/09 (with sensor bracket EAPM-E24-60-SHO and switch lug EAPM-E24-60-SLS) and the ELGT-BS data sheet 2026/09 p.47 (with sensor bracket EAPM-L9-SHE and switch lug EAPM-L9-...-SLE) name; not supplied by Festo; STEP from Omron"
     }

@@ -875,7 +875,8 @@ for (const file of files) {
     written++
     continue
   }
-  const elgtSize = sensorOnly && /_ELGT-BS-(\d+)-\d+-\d+P\.stp$/i.exec(file)?.[1]
+  // ELGT-TB-…-CS: the slide and profile are ELGT-BS's (sections and slide threads compared on the STEP models)
+  const elgtSize = sensorOnly && /_ELGT-(?:BS-(\d+)-\d+-\d+P|TB-(\d+)-\d+-CS)\.stp$/i.exec(file)?.slice(1).find(Boolean)
   if (elgtSize) {
     if (!existsSync(out) || !ELGT_SENSOR_SEATS[elgtSize]) continue
     const old = JSON.parse(readFileSync(out, 'utf8'))
