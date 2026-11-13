@@ -142,7 +142,7 @@ export interface ComboOptions {
   /** the slide drawn in the middle of the profile (the middle of its travel) instead of at the start position; the
    *  gantry drawing's Y axis */
   slideCentred?: boolean
-  /** EAGF on an ESBF: its guide rods above and below the cylinder (default) or left and right; drawing only, the
+  /** EAGF on an ESBF: its guide rods left and right of the cylinder (default) or above and below; drawing only, the
    *  data sheet loads are the same both ways (Fy = Fz, My = Mz) */
   guideRods?: GuideRods
   /** The side the position sensing goes on (`sensorSides`); null = as the axis JSON's seats put it */
@@ -567,7 +567,7 @@ export function assemblyWarnings(options: ComboOptions, parallel: boolean, cylin
           ? '모터 커넥터가 실린더 쪽을 향합니다. 실린더 본체 및 EAGF 가이드 하우징·로드와의 간섭을 확인하세요.'
           : '모터 커넥터가 실린더 쪽을 향합니다. 실린더 본체와의 간섭을 확인하세요.',
       )
-    const rods: Side[] = options.guideRods === 'leftRight' ? ['left', 'right'] : ['up', 'down']
+    const rods: Side[] = options.guideRods === 'upDown' ? ['up', 'down'] : ['left', 'right']
     if (cylinder.eagf && rods.includes(options.kitSide))
       warnings.push('모터가 EAGF 가이드 로드 쪽에 있어 가이드 하우징·로드와 간섭할 수 있습니다. 키트 조립 방향이나 가이드 방향을 바꾸세요.')
     return warnings
@@ -1010,7 +1010,7 @@ export async function comboParts(
       const front = {
         ...f,
         origin: stretch !== 0 && axisMeta.stretch ? stretchedOrigin(f.origin, axisMeta.stretch, stretch) : f.origin,
-        up: options.guideRods === 'leftRight' ? cross(f.axis, f.up) : f.up,
+        up: options.guideRods === 'upDown' ? f.up : cross(f.axis, f.up),
       }
       const transform = mate(axisToWorld, front, { ...meta.mount, origin: at(meta.mount.origin) })
       parts.push({ role: 'guide', name: guide.model, file, transform })

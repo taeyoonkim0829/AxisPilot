@@ -486,7 +486,7 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
                       twinAssembly ? '모터 조립 방향 (첫 번째 축, 커넥터)' : '모터 조립 방향 (커넥터)',
                       t(sideLabel[connectorSide(assembly, kit.type === 'parallel')]),
                     ],
-                    ...(cylinder?.eagf ? ([['가이드 방향 (EAGF 로드 위치)', t(rodsLabel[assembly.guideRods ?? 'upDown'])]] as Row[]) : []),
+                    ...(cylinder?.eagf ? ([['가이드 방향 (EAGF 로드 위치)', t(rodsLabel[assembly.guideRods ?? 'leftRight'])]] as Row[]) : []),
                     ...(twinAssembly && kit.type === 'parallel'
                       ? ([['키트 조립 방향 (두 번째 축, 모터 위치)', t(sideLabel[twinAssembly.kitSide])]] as Row[])
                       : []),
