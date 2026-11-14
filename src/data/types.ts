@@ -60,6 +60,9 @@ export interface Axis {
   MxMax: number | null
   MyMax: number | null
   MzMax: number | null
+  /** mm, distance from the slide surface to the centre of the guide, which the forces and torques refer to (data
+   *  sheet dimension x: ELGT, ELGD); absent = they refer to the slide surface (EGC) */
+  guideCentre?: number
   Iy: number | null
   Iz: number | null
   baseLength: number | null

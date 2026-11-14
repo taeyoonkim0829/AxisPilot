@@ -25,7 +25,7 @@ function example() {
   const samples = new Map<string, unknown>()
   for (const x of a.samples) samples.set(`${x.dir}|${x.torque.toFixed(4)}`, { a: x.a, dir: x.dir, force: x.force, torque: x.torque })
   return {
-    axis: { order: a.order, feed: a.feed, inertia: a.inertia, movingMass: a.movingMass, axisMass: a.axisMass, cycle: a.cycleTime, fv: a.guideFv, T0: a.noLoadTorque, J0: ax.inertiaJ0, JH: ax.inertiaJHPerMeter, JL: ax.inertiaJLPerKg, slideMass: ax.slideMass, Fz: ax.FzMax, Mx: ax.MxMax, My: ax.MyMax, Mz: ax.MzMax, Iy: ax.Iy, base: ax.baseLength, Ca: ax.screwDynamicLoadRating, Fx: ax.maxFeedForce, vmax: ax.maxSpeed },
+    axis: { order: a.order, feed: a.feed, inertia: a.inertia, movingMass: a.movingMass, axisMass: a.axisMass, cycle: a.cycleTime, fv: a.guideFv, T0: a.noLoadTorque, J0: ax.inertiaJ0, JH: ax.inertiaJHPerMeter, JL: ax.inertiaJLPerKg, slideMass: ax.slideMass, Fz: ax.FzMax, Mx: ax.MxMax, My: ax.MyMax, Mz: ax.MzMax, xg: ax.guideCentre ?? 0, Iy: ax.Iy, base: ax.baseLength, Ca: ax.screwDynamicLoadRating, Fx: ax.maxFeedForce, vmax: ax.maxSpeed },
     profile: { accelTime: a.profile.accelTime, accelDistance: a.profile.accelDistance, moveTime: a.profile.moveTime },
     checks: a.checks,
     info: a.info,

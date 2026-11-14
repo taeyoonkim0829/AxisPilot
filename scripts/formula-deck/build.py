@@ -73,8 +73,10 @@ same(Tax['acc'], got[2]['torque']); same(Tax['run'], got[0]['torque']); same(Tax
 same(F['acc'], check('이송력 Fx', ex['checks'])['value'])
 
 Fz, Ft = m * G, m * a_
+# the data sheet's torques refer to the centre of the guide, xg below the slide surface
+zg = z + ax['xg'] / 1000
 Mx = y * Fz
-My = x * Fz + z * Ft
+My = x * Fz + zg * Ft
 Mz = y * Ft
 rates = [('Fz', Fz, ax['Fz'], 'N'), ('Mx', Mx, ax['Mx'], 'Nm'), ('My', My, ax['My'], 'Nm'), ('Mz', Mz, ax['Mz'], 'Nm')]
 fv = sum(r[1] / r[2] for r in rates)
@@ -404,7 +406,7 @@ s.text(0.85, 2.05, 5.4, 2.4, [
     f'F_{{z}} = m·g = {m:.3f} × 9.81 = {Fz:.1f} N',
     f'F_{{t}} = m·a = {m:.3f} × 2 = {Ft:.1f} N',
     f'M_{{x}} = y·F_{{z}} = 0.03 × {Fz:.1f} = {Mx:.2f} Nm',
-    f'M_{{y}} = x·F_{{z}} + z·F_{{t}} = {x * Fz:.2f} + {z * Ft:.2f} = {My:.2f} Nm',
+    f'M_{{y}} = x·F_{{z}} + (z + x_{{G}})·F_{{t}} = {x * Fz:.2f} + {zg * Ft:.2f} = {My:.2f} Nm',
     f'M_{{z}} = y·F_{{t}} = 0.03 × {Ft:.1f} = {Mz:.2f} Nm',
 ], 15, 'tx1', math_=True, after=5)
 rows = [['항목', '하중', '허용값', '비율']]
@@ -518,7 +520,7 @@ s = Slide('값을 바꾸면 달라지는 결과: 어느 항목이 먼저 걸리�
 rows = [['바꾼 값', '달라지는 계산', '결과', '판정', '대응']]
 rows.append(['부하 15 → 25 kg', f'J = {ax["J0"]} + {ax["JH"]} × 0.5 + {ax["JL"]} × 25 = {(ax["J0"] + ax["JH"] * S + ax["JL"] * 25):.3f}', f'관성비 {w["m25"]["ratio"]:.1f} > {mo["allow"]}', '불합격', f'{motorM["motor"]}: 관성비 {motorM["ratio"]:.1f}, 적합'])
 rows.append(['스트로크 500 → 1000 mm', '스크류가 길어져 속도-스트로크 선도의 한계가 내려감', f'한계 {w["s1000"]["bad"][0][2]:.2f} m/s < 0.5 m/s', '불합격', '속도를 낮추거나 스핀들 서포트, 더 큰 축 검토'])
-rows.append(['무게중심 X 200, Z 200 mm', 'M_{y} = 0.2 × F_{z} + 0.2 × F_{t}, 오프셋만큼 모멘트 증가', f'fv {w["x200z200"]["fv"]:.2f}', '적합', '적합이지만 여유가 적음, 수명 감소에 유의'])
+rows.append(['무게중심 X 200, Z 200 mm', 'M_{y} = 0.2 × F_{z} + (0.2 + x_{G}) × F_{t}, 오프셋만큼 모멘트 증가', f'fv {w["x200z200"]["fv"]:.2f}', '적합', '적합이지만 여유가 적음, 수명 감소에 유의'])
 rows.append(['설치 바닥 → 수직', '무게 m·g가 등속 구간에도 걸림 (상승)', f'등속 토크 {w["vertical"]["bad"][0][1]:.2f} > {mo["rated"]} Nm', '경고', '정격이 더 큰 모터 또는 감속기 검토'])
 s.table(0.6, 1.5, [2.45, 4.05, 2.2, 0.85, 2.6], rows, rowh=0.72, size=13, status_col=3, align={3: 'ctr'})
 s.card(0.6, 5.3, 12.15, 0.95, dark=True, name='맺음')

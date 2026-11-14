@@ -19,7 +19,7 @@ Each file is `{ "items": [ ... ] }`. A new file in the right folder is picked up
 | `speedCurve` | ball screw axes: `[working stroke mm, max. speed m/s]` points, interpolated linearly at the built stroke. Read from the vector paths of the data sheet curves "Speed v as a function of working stroke l" (ELGT-BS p.11, ELGD-BS p.17, ELGD-BS-WD p.13, EGC-BS p.19, EGC-HD-BS p.17, ESBF 203032 p.14), calibrated on the tick labels or, where those are outlines, on the grid frame, and thinned to points within 0.4 % of the curve. The curve without ball screw support (`-SU`) is the axis's; the one with it is `spindleSupport.speedCurve`. The flat part is scaled to `maxSpeed` (the curves are within 1.5 %, ESBF-BS-100-5P 4 %). Long slides shift the curve by the documented stroke reduction: ELGD-…-L 42/78/101 mm (sizes 60/80/120), EGC GV 100 mm; ELGD-WD comes with the long slide and its curve applies as drawn |
 | `maxWorkingLoad` | kg |
 | `maxFeedForce`, `maxShaftRadialForce`, `shaftRadialForce5000km`, `shaftRadialForce10000km` | N |
-| `noLoadTorque`, `maxDrivingTorque` | Nm (`maxDrivingTorque` is empty for spindle axes; ELGD-BS: at max. travel speed without ball screw support, ELGD-BS p.6) |
+| `noLoadTorque`, `maxDrivingTorque` | Nm (`maxDrivingTorque` is empty for spindle axes; ELGD-BS: at max. travel speed without ball screw support, ELGD-BS p.6; EGC-BS: at max. travel speed, data sheet 2026/10 p.11: 0.24 / 0.55 / 0.6 / 1.33 / 1.64 / 4.4) |
 | `spindleSupport` | ball screw support, ordered with the axis step's 스핀들 서포트 switch (`Settings.spindleSupport`): `typeCode` with its code after the pitch (ELGD-BS(-WD) `-SU`, EGC-BS / EGC-HD-BS `-S`; configured, so the module number), `minStroke` (EGC: offered only above it, p.49: GK/GP 705/780/883/1224, GV/GQ 605/680/783/1124 mm; EGC-HD 605/680/783), `noLoadTorque` (ELGD-BS: "with ball screw support" at max. travel speed; EGC gives none, "higher values possible", noted on 구동 토크) and `speedCurve`: ELGD-BS(-WD) the -SU curves of the same charts as `speedCurve`, read from the vector paths the same way (long slide shifted likewise); EGC the max. speed at every stroke ("enables maximum travel speed with all stroke lengths"). ELGT-BS has none |
 | `maxSpeed` / `maxAcceleration` | m/s / m/s² |
 | `repeatability` | ±mm |
@@ -32,8 +32,9 @@ Each file is `{ "items": [ ... ] }`. A new file in the right folder is picked up
 | `beltPitch`, `pulleyDiameter` (effective), `spindleDiameter`, `pulleyWidth` | mm |
 | `beltTensileStress` | % |
 | `feedConstant` (belt), `spindlePitch` | mm/rev |
-| `inertiaJ0` / `inertiaJHPerMeter` / `inertiaJLPerKg` | kg·cm² / kg·cm² per m stroke / kg·cm² per kg payload |
+| `inertiaJ0` / `inertiaJHPerMeter` / `inertiaJLPerKg` | kg·cm² / kg·cm² per m stroke / kg·cm² per kg payload. EGC-BS-KF: `inertiaJ0` = JO + JW of the first slide (its data sheet's J = JO + ΣJW + …, "all slides, including the first slide"). ELGD-TB-KF-80-…-L `inertiaJLPerKg` 4.6161 as the standard slide's (the data sheet prints 431.61 kg mm²/kg, but JL = (feed constant / 2π)² is the same for both slides) |
 | `FxMax`, `FyMax`, `FzMax` / `MxMax`, `MyMax`, `MzMax` | N / Nm |
+| `guideCentre` | mm, distance from the slide surface to the centre of the guide (data sheet "Dimension x"), where the data sheet's forces and torques refer to the centre of the guide: ELGT-BS 66 / 48 / 57.5 (sizes 90 / 120 / 160; ELGT-TB-…-CS takes its size's: the same slide and profile), ELGD-TB 49 / 62 / 80, ELGD-BS 60 / 62 / 80, ELGD-…-WD 47 / 51. The guide loads take the payload COG's z from there (`guideLoads`). Absent on EGC and EGC-HD (their values refer to the slide surface) and ESBF |
 | `Iy`, `Iz` | mm⁴ |
 | `baseLength` (at 0 stroke), `slideLength`, `allowableDeflection` | mm; ELGT-BS `baseLength` (drive flange to the far end) measured on the CAD models (ELGD's data sheet value matches its model the same way) |
 | `screwDynamicLoadRating` | N |
@@ -63,7 +64,7 @@ ESBF (`ESBF.json`, electric cylinder with piston rod and plain-bearing guide): b
 | `ratedPower` | W |
 | `ratedTorque`, `peakTorque`, `standstillTorque`, `brakeHoldingTorque` | Nm |
 | `ratedSpeed`, `maxSpeed` | rpm |
-| `torqueConstant` | Nm/A |
+| `torqueConstant` | Nm/A, torque per motor current (drive selection). Festo EMMT-AS / -EC and EMMH-AS: the data sheet's "Motor constant" row, not its "Standstill torque constant" (12 % higher): the currents of Festo's Electric Motion Sizing follow the motor constant |
 | `windingResistance` / `windingInductance` | Ω / mH |
 | `inertia` | kg·cm², **including the brake** for brake models |
 | `inertiaWithoutBrake`, `brakeInertia` | kg·cm² |

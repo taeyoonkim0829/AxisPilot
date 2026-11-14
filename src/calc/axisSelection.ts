@@ -479,14 +479,14 @@ function slideForces(req: Requirements, mass: number, accel: number) {
  * from forces in the travel direction (inertial force, and the weight on a vertical axis); with one axis that yaw
  * acts about the axis and is shared by the guides. One member: `guideLoads`.
  */
-export function memberLoads(req: Requirements, mass: number, accel: number, layout: ParallelLayout): GuideLoads[] {
+export function memberLoads(req: Requirements, mass: number, accel: number, layout: ParallelLayout, guideCentre = 0): GuideLoads[] {
   const n = layout.positions.length
   const x = Math.abs(req.cog.x) / 1000
   const y = req.cog.y / 1000
-  const z = Math.abs(req.cog.z) / 1000
+  const z = Math.abs(req.cog.z + guideCentre) / 1000
   if (n === 1) {
     // the member at its position; a pushing drive beside it leaves it the yaw of the travel forces about the drive
-    const one = guideLoads({ ...req, cog: { ...req.cog, y: req.cog.y - layout.positions[0] * 1000 } }, mass, accel)
+    const one = guideLoads({ ...req, cog: { ...req.cog, y: req.cog.y - layout.positions[0] * 1000 } }, mass, accel, guideCentre)
     if (layout.pushY == null) return [one]
     const f = slideForces(req, mass, accel)
     return [{ ...one, Mz: x * f.lateral + Math.abs(y - layout.pushY) * f.travel }]
@@ -533,11 +533,15 @@ const LM_LOAD_LABELS: [keyof GuideLoads, string, string][] = [
   ['Mz', 'LM 가이드 모멘트 Mz', 'Nm'],
 ]
 
-/** Static + inertial guide loads from the payload centre of gravity (N, Nm). */
-export function guideLoads(req: Requirements, mass: number, accel: number): GuideLoads {
+/**
+ * Static + inertial guide loads from the payload centre of gravity (N, Nm). The COG's z is measured from the slide
+ * surface; where the data sheet's forces and torques refer to the centre of the guide (ELGT, ELGD), `guideCentre`
+ * [mm] below the surface, the lever of the forces along the surface is that much longer.
+ */
+export function guideLoads(req: Requirements, mass: number, accel: number, guideCentre = 0): GuideLoads {
   const x = Math.abs(req.cog.x) / 1000
   const y = Math.abs(req.cog.y) / 1000
-  const z = Math.abs(req.cog.z) / 1000
+  const z = Math.abs(req.cog.z + guideCentre) / 1000
   const f = slideForces(req, mass, accel)
   return {
     Fy: f.lateral,
@@ -625,7 +629,9 @@ export function evaluateAxis(
     ? [...forwardMoves.map(() => 0), ...back.phases.map(() => 1), ...dwell.map(() => -1)]
     : [...forwardMoves.map(() => 0), ...dwell.map(() => -1), ...back.phases.map(() => 1)]
   const cycleTime = phases.reduce((t, p) => t + p.duration, 0)
-  const peakVelocity = Math.max(fwd.peakVelocity, press?.profile.peakVelocity ?? 0)
+  // the return covers the whole stroke: with a short approach before a press move it is the faster move
+  const peakVelocity = Math.max(fwd.peakVelocity, back.peakVelocity, press?.profile.peakVelocity ?? 0)
+  const peakAcceleration = Math.max(fwd.peakAcceleration, back.peakAcceleration, press?.profile.peakAcceleration ?? 0)
 
   const vertical = req.mounting === 'vertical'
   const efficiency = settings.efficiency[axis.drive]
@@ -736,7 +742,7 @@ export function evaluateAxis(
         ? { ...check('스트로크', req.stroke, maxStrokeOf(axis, options), 'mm'), note: '취부 방식 {code}의 최대 스트로크', noteArgs: { code: options.mounting } }
         : check('스트로크', req.stroke, axis.maxStroke, 'mm'),
     speedCheck(ordered, peakVelocity, builtStroke, support != null),
-    check('가속도', fwd.peakAcceleration, axis.maxAcceleration, 'm/s²'),
+    check('가속도', peakAcceleration, axis.maxAcceleration, 'm/s²'),
     feedForceCheck(axis, peakForce, builtStroke),
   ]
   // 구동 토크 only where the data sheet gives a max. driving torque (the ball screw axes give none: left out)
@@ -821,7 +827,7 @@ export function evaluateAxis(
   // axis is checked.
   const systemMass = req.payload + layout.axes * moved + layout.guideMass
   const loadReq = req.movingProfile ? { ...req, cog: movingProfileCog(req, axis, profile, driveMass) } : req
-  const members = memberLoads(loadReq, systemMass, fwd.peakAcceleration, layout)
+  const members = memberLoads(loadReq, systemMass, peakAcceleration, layout, axis.guideCentre ?? 0)
   // Additional slides: the payload plate spans all slides of the axis, centred on the payload's x reference.
   // (ZL / KL on one side of the slide, ZR / KR on the other). A gantry kit sits on the main slide alone.
   const offsets = [0, ...(options?.slides ?? []).map((code, i) => (code === extra?.left ? -1 : 1) * options!.pitches[i])]
@@ -848,8 +854,8 @@ export function evaluateAxis(
     // The EAGF carries the payload and its own moving mass at the rod fully extended
     if (cylinderGuide) {
       const total = req.payload + cylinderGuide.movingMass
-      const unit = eagfLoads(cylinderGuide, req.payload, req.cog, req.stroke, slideForces(req, total, fwd.peakAcceleration))
-      checks.push(...guideChecks(cylinderGuide, unit, peakVelocity, fwd.peakAcceleration))
+      const unit = eagfLoads(cylinderGuide, req.payload, req.cog, req.stroke, slideForces(req, total, peakAcceleration))
+      checks.push(...guideChecks(cylinderGuide, unit, peakVelocity, peakAcceleration))
       guideUnitFv = guideFv(unit, cylinderGuide.guide)
     }
   } else {
@@ -869,7 +875,7 @@ export function evaluateAxis(
     const unit = members
       .filter((_, i) => !layout.isAxis[i])
       .reduce((a, b) => (guideFv(b, guideAxis.guide) > guideFv(a, guideAxis.guide) ? b : a))
-    checks.push(...guideChecks(guideAxis, unit, peakVelocity, fwd.peakAcceleration))
+    checks.push(...guideChecks(guideAxis, unit, peakVelocity, peakAcceleration))
     guideUnitFv = guideFv(unit, guideAxis.guide)
   }
 

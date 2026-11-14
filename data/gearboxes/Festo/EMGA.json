@@ -11,7 +11,8 @@
       "flangeSize": 40,
       "compatibleMotors": [
         "EMMT-AS-40",
-        "EMMT-EC-40"
+        "EMMT-EC-40",
+        "EMMB-AS-40"
       ],
       "continuousTorque": 11,
       "maxTorque": 17.6,
@@ -38,7 +39,8 @@
       "flangeSize": 40,
       "compatibleMotors": [
         "EMMT-AS-40",
-        "EMMT-EC-40"
+        "EMMT-EC-40",
+        "EMMB-AS-40"
       ],
       "continuousTorque": 14,
       "maxTorque": 22,
@@ -65,7 +67,8 @@
       "flangeSize": 40,
       "compatibleMotors": [
         "EMMT-AS-40",
-        "EMMT-EC-40"
+        "EMMT-EC-40",
+        "EMMB-AS-40"
       ],
       "continuousTorque": 6,
       "maxTorque": 10,
@@ -145,7 +148,8 @@
       "gearType": "planetary",
       "flangeSize": 60,
       "compatibleMotors": [
-        "EMMT-AS-60"
+        "EMMT-AS-60",
+        "EMMB-AS-60"
       ],
       "continuousTorque": 28,
       "maxTorque": 45,
@@ -171,7 +175,8 @@
       "gearType": "planetary",
       "flangeSize": 60,
       "compatibleMotors": [
-        "EMMT-AS-60"
+        "EMMT-AS-60",
+        "EMMB-AS-60"
       ],
       "continuousTorque": 40,
       "maxTorque": 64,
@@ -275,7 +280,8 @@
       "gearType": "planetary",
       "flangeSize": 80,
       "compatibleMotors": [
-        "EMMT-AS-80"
+        "EMMT-AS-80",
+        "EMMB-AS-80"
       ],
       "continuousTorque": 85,
       "maxTorque": 136,
@@ -301,7 +307,8 @@
       "gearType": "planetary",
       "flangeSize": 80,
       "compatibleMotors": [
-        "EMMT-AS-80"
+        "EMMT-AS-80",
+        "EMMB-AS-80"
       ],
       "continuousTorque": 110,
       "maxTorque": 176,
