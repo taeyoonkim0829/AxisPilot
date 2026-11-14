@@ -23,7 +23,7 @@ describe('deflection', () => {
     const L = 1000
     const EI = 70000 * 631000
     const length = 500 + 230 // stroke + base length
-    const point = infoOf(ev, '이동 질량 (부하 + 슬라이드)').value * 9.81
+    const point = infoOf(ev, '이동 질량').value * 9.81
     const self = infoOf(ev, '축 질량').value * 9.81 * (L / length > 1 ? 1 : L / length)
     const expected = (point * L ** 3) / (48 * EI) + (5 * self * L ** 3) / (384 * EI)
     expect(checkOf(ev.checks, '처짐')!.value).toBeCloseTo(expected, 6)

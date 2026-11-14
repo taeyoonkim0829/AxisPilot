@@ -897,20 +897,20 @@ export function evaluateAxis(
 
   const info: InfoItem[] = [
     {
-      label: '이동 질량 (부하 + 슬라이드)',
+      label: '이동 질량',
       value: mass,
       unit: 'kg',
       ...(layout.axes > 1
-        ? { note: '축 1개당, 부하 분담 {share}%', noteArgs: { share: Math.round(share * 100) } }
+        ? { note: '부하 + 슬라이드, 축 1개당, 부하 분담 {share}%', noteArgs: { share: Math.round(share * 100) } }
         : guideAxis
-          ? { note: '가이드 축 {mass} kg 포함', noteArgs: { mass: round1(layout.guideMass) } }
+          ? { note: '부하 + 슬라이드, 가이드 축 {mass} kg 포함', noteArgs: { mass: round1(layout.guideMass) } }
           : layout.guides > 0
-          ? { note: 'LM 가이드 {mass} kg 포함', noteArgs: { mass: layout.guideMass } }
+          ? { note: '부하 + 슬라이드, LM 가이드 {mass} kg 포함', noteArgs: { mass: layout.guideMass } }
           : cylinderGuide
-          ? { note: '{model} {mass} kg 포함', noteArgs: { model: cylinderGuide.model, mass: round1(cylinderGuide.movingMass) } }
+          ? { note: '부하 + 슬라이드, {model} {mass} kg 포함', noteArgs: { model: cylinderGuide.model, mass: round1(cylinderGuide.movingMass) } }
           : req.movingProfile
             ? { note: '프로파일 이동: 축 프로파일 {profile} kg + 구동부 {drive} kg', noteArgs: { profile: round1(profile), drive: round1(driveMass) } }
-            : {}),
+            : { note: '부하 + 슬라이드' }),
     },
     { label: '축 질량', value: mAxis, unit: 'kg' },
     ...(extra
@@ -932,7 +932,7 @@ export function evaluateAxis(
           },
         ]
       : []),
-    { label: '축 관성 모멘트 (구동축 기준)', value: trainInertia, unit: 'kg·cm²', ...(shaft ? { note: '2축 + 연결축' } : {}) },
+    { label: '축 관성 모멘트', value: trainInertia, unit: 'kg·cm²', note: shaft ? '구동축 기준, 2축 + 연결축' : '구동축 기준' },
   ]
   if (ksk)
     info.push({

@@ -253,8 +253,15 @@ export const en: Record<string, string> = {
   '지지 간격 {span} mm 기준': 'For a support spacing of {span} mm',
   '지지 간격 {span} mm 기준 — 중간 지지 추가 또는 지지 간격 입력 검토':
     'For a support spacing of {span} mm — consider an intermediate support or enter the support spacing',
-  '이동 질량 (부하 + 슬라이드)': 'Moving mass (payload + slide)',
-  '축 관성 모멘트 (구동축 기준)': 'Axis inertia (drive shaft)',
+  '이동 질량': 'Moving mass',
+  '부하 + 슬라이드': 'payload + slide',
+  '축 관성 모멘트': 'Axis inertia',
+  '구동축 기준': 'at the drive shaft',
+  '구동축 기준, 2축 + 연결축': 'at the drive shaft, both axes + connecting shaft',
+  '부하 + 슬라이드, 축 1개당, 부하 분담 {share}%': 'payload + slide, per axis, load share {share}%',
+  '부하 + 슬라이드, LM 가이드 {mass} kg 포함': 'payload + slide, incl. LM guides {mass} kg',
+  '부하 + 슬라이드, 가이드 축 {mass} kg 포함': 'payload + slide, incl. guide axes {mass} kg',
+  '부하 + 슬라이드, {model} {mass} kg 포함': 'payload + slide, incl. {model} {mass} kg',
   '가이드 예상 수명': 'Expected guide life',
   '볼스크류 예상 수명': 'Expected ball screw life',
   '약 {years}년': 'about {years} years',
@@ -724,12 +731,8 @@ export const en: Record<string, string> = {
   '모터 쪽 축의 구동축이 두 축의 토크를 전달합니다': "The motor-side axis's drive shaft transmits the torque of both axes",
   '모터 쪽 축의 구동축이 두 축의 토크를 전달합니다. 허용 여부를 Festo에 확인하세요':
     "The motor-side axis's drive shaft transmits the torque of both axes. Check with Festo whether this is allowed",
-  '축 1개당, 부하 분담 {share}%': 'per axis, load share {share}%',
-  'LM 가이드 {mass} kg 포함': 'incl. LM guides {mass} kg',
   '모터 구동 이동 질량 (2축 합계)': 'Moving mass at the motor (both axes)',
   '{model}이 부하를 받음 — 검토 생략': '{model} carries the load — not checked',
-  '가이드 축 {mass} kg 포함': 'incl. guide axes {mass} kg',
-  '{model} {mass} kg 포함': 'incl. {model} {mass} kg',
   '가이드 축': 'Guide axis',
   '가이드 유닛': 'Guide unit',
   '{model}, 주문번호 {partNumber}, 1개 {mass} kg (이동 질량 {moving} kg)': '{model}, part no. {partNumber}, {mass} kg each (moving mass {moving} kg)',
@@ -774,7 +777,6 @@ export const en: Record<string, string> = {
   'LM 가이드': 'LM guide',
   '별도 선정 (참고값: 3장)': 'Selected separately (reference values: chapter 3)',
   '수량': 'Qty',
-  '2축 + 연결축': 'both axes + connecting shaft',
 
   // Gantry screen
   '단축 선정': 'Single axis',
