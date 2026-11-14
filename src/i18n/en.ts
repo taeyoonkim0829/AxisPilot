@@ -205,7 +205,6 @@ export const en: Record<string, string> = {
   'Festo 대체 제품': 'Festo replacements',
   '가반 질량 0.3G / 0.5G': 'Payload 0.3 G / 0.5 G',
   '같은 인터페이스 코드만 ({code})': 'Same interface code only ({code})',
-  '리니어 모터 타입(RF)은 목록에 없습니다.': 'Linear motor types (RF) are not listed.',
   '모델': 'Model',
   '볼스크류 리드': 'Ball screw lead',
   '볼스크류 직경': 'Ball screw diameter',

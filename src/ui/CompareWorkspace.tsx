@@ -242,7 +242,6 @@ function AxisCompare() {
                 ...(ref.axisUse ? ([[t('축 용도'), ref.axisUse]] as [string, ReactNode][]) : []),
               ]}
             />
-            <p className="field-hint">{t('리니어 모터 타입(RF)은 목록에 없습니다.')}</p>
           </section>
           <section>
             <h2>{t('Festo 제품')}</h2>
