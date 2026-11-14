@@ -148,6 +148,7 @@ Siemens (`MOTION-CONNECT.json`, `controller` = the drive family `S210` or `V90`)
 | `torsionalStiffness` | Nm/arcmin |
 | `inertia` | kg·cm², at the input (motor) side |
 | `efficiency` | % |
+| `idleTorque` | Nm at the input (motor) side, the gearbox's own running torque, added against the motion while it turns (`motorTorqueFn`). Not in Festo's data sheet: derived from Festo's Electric Motion Sizing reports (Ref folder, 2026-11-14), the torque Festo's tool adds above J·α + the axis no-load torque, one report per size: EMGA-40-P 0.09 (EGC-50-TB, i = 5; the ELGD-WD report with i = 8 gives 0.065), -60-P 0.12 (EGC-120-TB, i = 5), -80-P 0.25 (EGC-185-TB, i = 8), -120-P 0.14 (EGC-185-BS, i = 3; its peak gives 0.07), the larger of the values from peak and rms torque, taken for every ratio of the size. Absent on EMGA-160 and the right-angle EMGA-…-A (no report) and on the other makers' gearboxes |
 | `driveCode` | interface code at the input (motor) side; equals the motor's `interfaceCode`, e.g. `60P`. Apex: taken from `compatibleMotors` (HF-KP = HG-KR codes, HF-SP = HG-SR codes); `null` where `compatibleMotors` is `null` |
 
 Apex `compatibleMotors` lists each HF-KP / HF-SP code together with the HG-KR / HG-SR code of the same size (`KP13` + `KR13`, `SP102` + `SR102`): HG-KR has HF-KP's mounting interface and HG-SR has HF-SP's (confirmed by the user), so both series get the same gearboxes.

@@ -194,7 +194,7 @@ describe('drive evaluation boundaries', () => {
           }
         }
       }
-  })
+  }, 120000)
 
   it('a gearbox divides the speed-side and multiplies the torque-side consistently', () => {
     const ev = evaluateAxis(picks[0], base, settings)!

@@ -35,10 +35,11 @@ export function motorTorqueFn(axisEval: AxisEvaluation, motor: Motor, gearbox: G
   const efficiency = axisEval.efficiency * (gearbox?.efficiency ? gearbox.efficiency / 100 : 1)
   // kg·m²: rotor (incl. brake) + gearbox input + coupling, all on the motor shaft
   const motorSideInertia = (motor.inertia + (gearbox?.inertia ?? 0) + settings.couplingInertia) * 1e-4
+  const idle = gearbox?.idleTorque ?? 0
   return (s: ShaftState) => {
     const loadTorque = s.torque / ratio
     let motorLoadTorque = loadTorque
-    if (s.dir !== 0) motorLoadTorque = s.torque * s.omega >= 0 ? loadTorque / efficiency : loadTorque * efficiency
+    if (s.dir !== 0) motorLoadTorque = (s.torque * s.omega >= 0 ? loadTorque / efficiency : loadTorque * efficiency) + idle * Math.sign(s.omega)
     return motorLoadTorque + motorSideInertia * s.alpha * ratio
   }
 }

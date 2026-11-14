@@ -308,6 +308,8 @@ export interface Gearbox {
   inertia: number
   /** % */
   efficiency: number | null
+  /** Nm at the input (motor) side, against the motion while it turns (Festo EMGA planetary, from Festo's sizing tool); absent = not modelled */
+  idleTorque?: number
   /** mechanical interface code for mounting kits, at the output (axis) side; null when unknown */
   interfaceCode: string | null
   /** interface code at the drive (motor) side; equals the motor's interfaceCode. null when unknown (all Apex for now) */
