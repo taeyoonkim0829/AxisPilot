@@ -1,8 +1,8 @@
 // The app's sizing against Festo's Electric Motion Sizing reports (2026-11-14, folder Ref): the same axis, motor,
 // gearbox and kit under the same motion. The app keeps the Excel's friction term (μ·m·g) and drive efficiency on top
 // of the data sheet no-load torque, so its torques sit at or above Festo's; `peak` / `rms` hold each case's ratio to
-// Festo's value. Known gaps, not asserted: EGC guide utilisation (Festo 96 %, the app 58 %: the data sheet refers the
-// torques to the slide surface, Festo's tool evidently takes a longer lever) and the idle torque of a gearbox on a
+// Festo's value. Known gaps: EGC guide utilisation (Festo 96 %, the app 84 % with the spindle axis depth in the lever;
+// the data sheet refers the torques to the slide surface, which gives 58 %) and the idle torque of a gearbox on a
 // small motor (no data: the ELGD case's rms is 18 % under Festo's).
 import { describe, expect, it } from 'vitest'
 import { axes, brakingResistors, cables, controllers, gearboxes, kits, motors } from '../data'
@@ -216,7 +216,9 @@ describe('Festo Electric Motion Sizing reports', () => {
       // motor current per torque
       within(r.controller!.peakCurrent / r.drive.peakTorque, f.current / f.peak, 0.04, 'current per torque')
       // the guide: at or above Festo's where the data sheet gives the guide centre
-      if (f.guideMax != null && r.ev.axis.guideCentre != null) expect(r.ev.guideFv).toBeGreaterThanOrEqual(f.guideMax - 0.005)
+      // EGC: the spindle axis depth as lever gives 84 %, Festo 96 % (58 % at the slide surface the data sheet names)
+      const guideMin = r.ev.axis.family === 'EGC' ? 0.8 : (f.guideMax ?? 0) - 0.005
+      if (f.guideMax != null && r.ev.axis.guideCentre != null) expect(r.ev.guideFv).toBeGreaterThanOrEqual(guideMin)
       // ball screw life: Festo's is the data sheet's (fw = 1), the app's has the press-in coefficient
       const life = r.ev.info.find((i) => i.label === '볼스크류 예상 수명')?.value
       if (c.moves && life != null) within(life * PRESS_LOAD_FACTOR ** 3, f.lifeKm!, 0.015, 'screw life')
