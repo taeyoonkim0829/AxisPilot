@@ -208,6 +208,7 @@ export const en: Record<string, string> = {
   '모델': 'Model',
   '볼스크류 리드': 'Ball screw lead',
   '볼스크류 직경': 'Ball screw diameter',
+  '볼스크류 피치': 'Ball screw pitch',
   '사양 비교': 'Specifications compared',
   '서보': 'servo',
   '수치 비교 없음': 'No numeric comparison',

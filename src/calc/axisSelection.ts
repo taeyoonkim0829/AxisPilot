@@ -913,6 +913,12 @@ export function evaluateAxis(
             : { note: '부하 + 슬라이드' }),
     },
     { label: '축 질량', value: mAxis, unit: 'kg' },
+    ...(axis.drive === 'spindle' && axis.spindleDiameter != null && axis.spindlePitch != null
+      ? [
+          { label: '볼스크류 직경', value: axis.spindleDiameter, unit: 'mm' },
+          { label: '볼스크류 피치', value: axis.spindlePitch, unit: 'mm' },
+        ]
+      : []),
     ...(extra
       ? [
           {
