@@ -265,7 +265,7 @@ describe('torque calculation', () => {
     const settings = { ...defaultSettings, friction: { spindle: 0, belt: 0 } }
     const axis: Axis = { ...spindle, noLoadTorque: 0 }
     const ev = evaluateAxis(axis, baseReq, settings)!
-    const motor = { ...motors[0], inertia: 1, peakTorque: 100, ratedTorque: 100 } as Motor
+    const motor = { ...motors[0], inertia: 1, peakTorque: 100, ratedTorque: 100, frictionPerRpm: undefined } as Motor
     const drive = evaluateDrive(ev, motor, null, settings)
 
     const alpha = 5 * ((2 * Math.PI) / (axis.spindlePitch! / 1000))

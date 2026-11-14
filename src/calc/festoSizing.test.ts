@@ -1,8 +1,8 @@
 // The app's sizing against Festo's Electric Motion Sizing reports (2026-11-14, folder Ref): the same axis, motor,
 // gearbox and kit under the same motion. The app keeps the Excel's friction term (μ·m·g) and drive efficiency on top
 // of the data sheet no-load torque, so its torques sit at or above Festo's; `peak` / `rms` hold each case's ratio to
-// Festo's value: about 1.3 to 1.5 on the small motors, where μ·m·g weighs most. The EMGA idle torque comes from these
-// reports (`Gearbox.idleTorque`, one per size): without friction and efficiency the app gives Festo's torques.
+// Festo's value: about 1.3 to 1.5 on the small motors, where μ·m·g weighs most. The EMGA idle torque (`Gearbox.idleTorque`) comes from these
+// reports, with the EMMB-AS motors' own friction (`Motor.frictionPerRpm`), which Festo's tool adds as well.
 // Known gap: EGC guide utilisation (Festo 96 %, the app 84 % with the spindle axis depth in the lever; the data sheet
 // refers the torques to the slide surface, which gives 58 %).
 import { describe, expect, it } from 'vitest'
@@ -109,8 +109,8 @@ const cases: Case[] = [
     kit: 'EAMM-A-T46-60P|T46-90|60P',
     req: floor(500, 10, 2, 300),
     dwell: 0.4,
-    peak: [1.1, 1.25],
-    rms: [1.1, 1.25],
+    peak: [1.15, 1.35],
+    rms: [1.1, 1.35],
     tolerance: { force: 0.01 },
     festo: { rpm: 1500, peak: 0.35, rms: 0.24, current: 0.74, force: 23.28, inertiaRatio: 7.54, cycle: 2.91, guideMax: 0.05, lifeKm: 10000 },
   },
@@ -135,8 +135,8 @@ const cases: Case[] = [
     kit: 'EAMM-A-L62-60H|L62|60H',
     req: floor(500, 10, 2, 1000),
     dwell: 0.4,
-    peak: [1.28, 1.36],
-    rms: [1.3, 1.38],
+    peak: [1.2, 1.36],
+    rms: [1.2, 1.38],
     festo: { rpm: 1199.96, peak: 0.53, rms: 0.38, current: 0.94, force: 24.42, inertiaRatio: 6.53, cycle: 2.9, guideMax: 0.02 },
   },
   {
@@ -147,8 +147,8 @@ const cases: Case[] = [
     kit: 'EAMM-A-L95-80G-G2|L95|80G',
     req: floor(500, 10, 2, 575),
     dwell: 0.4,
-    peak: [1.27, 1.35],
-    rms: [1.28, 1.36],
+    peak: [1.2, 1.35],
+    rms: [1.2, 1.36],
     festo: { rpm: 1034.46, peak: 1.02, rms: 0.72, current: 1.54, force: 33.09, inertiaRatio: 6.76, cycle: 2.91, guideMax: 0.01 },
   },
   {

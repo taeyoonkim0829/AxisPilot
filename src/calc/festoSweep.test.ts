@@ -1,7 +1,8 @@
 // The app against Festo's Electric Motion Sizing for every axis family it offers, floor and vertical (festo/sweep.json:
 // the same move, Festo's recommended axis, motor and kit per family and technology, read from festo.com). Festo's own
-// model has no μ·m·g and no efficiency on top of the no-load torque, so the app's torques sit at or above Festo's;
-// the cases below a ratio of 1 are listed with their bound.
+// model has no μ·m·g and no efficiency on top of the no-load torque, so the app's torques sit at or above Festo's
+// (1.1 to 2.7 ×). Festo adds the EMMB-AS motors' own friction (`Motor.frictionPerRpm`); without it the app fell under
+// Festo's torque on the cases with an EMMB motor.
 import { describe, expect, it } from 'vitest'
 import { axes, brakingResistors, cables, controllers, kits, motors } from '../data'
 import { evaluateAxis } from './axisSelection'
@@ -12,15 +13,6 @@ import { evaluateDrive } from './motorSelection'
 import { defaultSettings, type Mounting, type Requirements, type Settings } from './types'
 
 const norm = (s: string) => s.replace(/[^A-Z0-9]/gi, '').toUpperCase()
-
-/** app torque over Festo's below 0.95, case by case (axis|mounting): [peak, rms] lower bounds */
-const UNDER: Record<string, [number, number]> = {
-  // Festo's tool takes more speed-dependent friction than the data sheet's Mv line for size 50
-  'ESBF-BS-50-500-10P|vertical': [0.78, 0.64],
-  'ESBF-BS-63-500-10P|vertical': [0.93, 0.85],
-  // Festo back-solves to 0.34 Nm here and 0.17 on the vertical case (another motor and kit): the data sheet's 0.24 kept
-  'EGC-70-500-BS-10P-KF-0H-ML-GK|floor': [0.82, 0.77],
-}
 
 function partsOf(c: (typeof sweep.cases)[number]) {
   const settings: Settings = {
@@ -59,9 +51,9 @@ describe('Festo Electric Motion Sizing: every axis family, floor and vertical', 
       within(v('관성비 (키트 포함)') + 1, c.inertiaRatio, 0.1, 'inertia ratio')
       const ctl = selectController(ev!, drive, settings, { controllers, resistors: brakingResistors, cables })!
       within(ctl.peakCurrent / drive.peakTorque, c.current / c.peak, 0.03, 'current per torque')
-      const [peakMin, rmsMin] = UNDER[key] ?? [0.95, 0.95]
-      expect(v('최대 토크 (키트 포함)') / c.peak, 'peak torque').toBeGreaterThanOrEqual(peakMin)
-      expect(v('실효 토크 (키트 포함)') / c.rms, 'rms torque').toBeGreaterThanOrEqual(rmsMin)
+      // at or above Festo's torque
+      expect(v('최대 토크 (키트 포함)') / c.peak, 'peak torque').toBeGreaterThanOrEqual(1)
+      expect(v('실효 토크 (키트 포함)') / c.rms, 'rms torque').toBeGreaterThanOrEqual(1)
       // the guide: ELGT / ELGD at or above Festo's; EGC (drive axis depth as lever) at least 80 % of it
       if (c.guideMax != null && ev!.axis.family !== 'ESBF') {
         const min = ev!.axis.family === 'EGC' ? 0.8 * c.guideMax : c.guideMax - 0.005

@@ -142,6 +142,8 @@ export interface Motor {
   maxSpeed: number | null
   /** kg·cm², including the brake on brake models */
   inertia: number
+  /** Nm per rpm: the motor's own friction, proportional to its speed, against the motion (EMMB-AS, from Festo's sizing tool) */
+  frictionPerRpm?: number
   allowableInertiaRatio: number | null
   reverseEfficiency: number | null
   capacitorEnergy: number | null
