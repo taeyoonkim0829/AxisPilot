@@ -697,15 +697,17 @@ export function evaluateAxis(
   const down = verticalForward(req) === 'down'
 
   /** Drive-shaft load of a drive train moving m [kg] with inertia J [kg·cm²], taking share k of the external forces */
+  // Speed-dependent friction torque on top of the no-load torque, where the data sheet gives it (ESBF)
+  const speedFriction = (v: number) => (axis.frictionCurve ? curveAt(axis.frictionCurve, Math.abs(v)) : 0)
   const drive =
-    (m: number, J: number, noLoad: number, k: number) =>
+    (m: number, J: number, noLoad: number, k: number, axesDriven = 1) =>
     (v: number, a: number, dir: 1 | -1 | 0, load = 0): DriveState => {
       // Weight opposes the forward move when it goes up and helps it when it goes down (top-down pressing).
       const gravity = vertical ? (down ? -1 : 1) * m * G : 0
       const resistance = mu * m * G + k * (settings.guideResistance + settings.externalForce) + guideDrag
       const sgn = v !== 0 ? Math.sign(v) : dir
       const external = gravity + sgn * resistance + k * load
-      const torque = J * 1e-4 * a * toRad + (external * feed) / (2000 * Math.PI) + sgn * noLoad
+      const torque = J * 1e-4 * a * toRad + (external * feed) / (2000 * Math.PI) + sgn * (noLoad + axesDriven * speedFriction(v))
       return { omega: v * toRad, alpha: a * toRad, torque, force: m * a + external }
     }
   const axisDriveAt = drive(mass, inertia, noLoad, share)
@@ -715,7 +717,7 @@ export function evaluateAxis(
   const ksk = shaft ? connectingShaftFor(axis, req.parallel?.spacing ?? 0, shafts) : null
   const shaftInertia = ksk?.inertia ?? layout.shaftInertia
   const trainInertia = shaft ? 2 * axisInertia + axis.inertiaJLPerKg * req.payload + shaftInertia : inertia
-  const driveAt = shaft ? drive(req.payload + 2 * slide, trainInertia, 2 * noLoad, 1) : axisDriveAt
+  const driveAt = shaft ? drive(req.payload + 2 * slide, trainInertia, 2 * noLoad, 1, 2) : axisDriveAt
   const sampled = samplePhases(phases, (i) => moves[i])
   const samples: AxisSample[] = sampled.map((s) => ({ ...s, ...driveAt(s.v, s.a, s.dir, s.load) }))
   const axisSamples: AxisSample[] = shaft ? sampled.map((s) => ({ ...s, ...axisDriveAt(s.v, s.a, s.dir, s.load) })) : samples

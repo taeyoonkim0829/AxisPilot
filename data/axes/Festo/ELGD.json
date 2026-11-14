@@ -2410,7 +2410,7 @@
       "maxShaftRadialForce": 180,
       "shaftRadialForce5000km": null,
       "shaftRadialForce10000km": null,
-      "noLoadTorque": 0.077,
+      "noLoadTorque": 0.2,
       "maxDrivingTorque": null,
       "maxSpeed": 1.33,
       "maxAcceleration": 15,

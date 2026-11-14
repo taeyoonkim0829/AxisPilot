@@ -22,6 +22,8 @@ export interface Axis {
   /** N, ELGD-BS: max. feed force with a parallel kit (data sheet p.6), when lower than with an axial kit */
   maxFeedForceParallel?: number | null
   noLoadTorque: number
+  /** ESBF: the data sheet's speed-dependent friction torque Mv [Nm] over the feed speed [m/s], on top of the no-load torque */
+  frictionCurve?: [number, number][]
   maxDrivingTorque: number | null
   maxSpeed: number
   maxAcceleration: number
