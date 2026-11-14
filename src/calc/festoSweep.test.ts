@@ -18,13 +18,8 @@ const UNDER: Record<string, [number, number]> = {
   // Festo's tool takes more speed-dependent friction than the data sheet's Mv line for size 50
   'ESBF-BS-50-500-10P|vertical': [0.78, 0.64],
   'ESBF-BS-63-500-10P|vertical': [0.93, 0.85],
-  // Festo's no-load torque about 40 % above the data sheet's (0.24 Nm) with this kit
+  // Festo back-solves to 0.34 Nm here and 0.17 on the vertical case (another motor and kit): the data sheet's 0.24 kept
   'EGC-70-500-BS-10P-KF-0H-ML-GK|floor': [0.82, 0.77],
-  // the data sheet's no-load torque at max. travel speed, Festo's about 20 % above it
-  'ELGT-BS-120-500-10P|floor': [0.93, 0.9],
-  'ELGT-BS-120-500-10P|vertical': [0.98, 0.93],
-  'ELGT-BS-160-500-10P|floor': [0.96, 0.94],
-  'ELGT-BS-90-500-20P|floor': [0.98, 0.95],
 }
 
 function partsOf(c: (typeof sweep.cases)[number]) {
