@@ -2684,6 +2684,18 @@ body {
   text-align: center;
 }
 
+/* the item's name above its gauge; the values beside it sit level with the gauge */
+.compare-spec .gauge-label {
+  display: block;
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+.compare-spec td.num,
+.compare-spec td.spec-other {
+  vertical-align: bottom;
+}
+
 .compare-spec .spec-other,
 .data-table td.data {
   text-align: left;

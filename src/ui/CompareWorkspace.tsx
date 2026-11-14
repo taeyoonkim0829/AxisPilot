@@ -108,7 +108,6 @@ function SpecTable({ rows, reference, festo }: { rows: SpecRow[]; reference: str
         <table className="data-table compare-spec">
           <thead>
             <tr>
-              <th>{t('항목')}</th>
               <th className="num">
                 <span className="model">{reference}</span>
               </th>
@@ -121,9 +120,9 @@ function SpecTable({ rows, reference, festo }: { rows: SpecRow[]; reference: str
           <tbody>
             {rows.map((r) => (
               <tr key={r.label}>
-                <td>{t(r.label)}</td>
                 <td className="num">{cell(r.reference, t(r.unit))}</td>
                 <td className="gauge-cell">
+                  <span className="gauge-label">{t(r.label)}</span>
                   <Gauge ratio={r.ratio} />
                 </td>
                 <td className="num spec-other">{cell(r.other, t(r.unit))}</td>
