@@ -622,5 +622,8 @@ export interface ThirdPartyAxis {
   /** ball screw accuracy class, e.g. C7S */
   screwClass: string | null
   belt: string | null
+  /** catalog "Allowable Overhang Distance": how far from the slide the payload's COG may sit, mm, per mounting and
+   *  payload; 0° = across the travel in the slide plane, 90° = along the slide normal (read from the catalog's figures) */
+  overhang?: { mounting: 'floor' | 'wall' | 'vertical'; payload: number; lateral: number; normal: number }[]
   dataSource: string
 }

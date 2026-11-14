@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { axes, motors, thirdPartyAxes } from '../data'
-import { axisCandidates, axisSpecRows, COMPARE_AXIS_FAMILIES, motorCandidates, motorSpecRows, supplyOf } from './compare'
+import { G, guideComparisonValue, guideLoads } from './axisSelection'
+import { axisCandidates, axisSpecRows, COMPARE_AXIS_FAMILIES, estimatedThrust, festoOverhang, motorCandidates, motorSpecRows, supplyOf } from './compare'
+import type { Requirements } from './types'
 
 describe('제품 비교', () => {
   it('reads the Robostar catalog rows (ball screw and belt types, no linear motor RF)', () => {
@@ -40,5 +42,28 @@ describe('제품 비교', () => {
     const rows = motorSpecRows(ref, emmt)
     expect(rows.find((r) => r.label === '최대 토크')!.ratio).toBeCloseTo(2.8 / 3.75)
     expect(rows.find((r) => r.label === '인터페이스')).toMatchObject({ reference: '80PA', other: '80P', ratio: null })
+  })
+})
+
+describe('제품 비교: Robostar load ratings', () => {
+  it('estimates the feed force and puts the catalog overhangs against the Festo axis at fv = 1', () => {
+    const rs = thirdPartyAxes.find((a) => a.model === 'RS-120-X10SS')!
+    expect(rs.overhang).toEqual([
+      { mounting: 'floor', payload: 30, lateral: 246, normal: 978 },
+      { mounting: 'floor', payload: 50, lateral: 162, normal: 594 },
+    ])
+    // 200 W at 3000 rpm, lead 10 mm, η 0.9
+    expect(estimatedThrust(200, 10)).toBeCloseTo(360, 0)
+    const egc = axes.find((a) => a.id === 'EGC-120-...-BS-10P-KF-GK')!
+    const rows = axisSpecRows(rs, egc).filter((r) => r.label.startsWith('허용 오버행'))
+    expect(rows).toHaveLength(4)
+    // further out the guide comparison value passes 1; a heavier payload sits closer
+    const lateral = festoOverhang(egc, 'floor', 30, 'lateral')!
+    const f = (y: number) => guideComparisonValue(guideLoads({ mounting: 'floor', cog: { x: 0, y, z: 0 } } as Requirements, 30 + egc.slideMass, 0.3 * G, egc.guideCentre ?? 0), egc).fv
+    expect(f(lateral)).toBeLessThan(1)
+    expect(f(lateral + 2)).toBeGreaterThan(1)
+    expect(festoOverhang(egc, 'floor', 50, 'lateral')!).toBeLessThan(lateral)
+    // along gravity on a wall only the inertial force loads the guide: beyond the search
+    expect(festoOverhang(egc, 'wall', 2, 'lateral')).toBe(5000)
   })
 })

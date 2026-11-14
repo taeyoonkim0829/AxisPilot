@@ -2691,6 +2691,11 @@ body {
   text-align: center;
 }
 
+.compare-spec .gauge-note {
+  display: block;
+  font-size: 12px;
+}
+
 .compare-spec td.num,
 .compare-spec td.spec-other {
   vertical-align: bottom;

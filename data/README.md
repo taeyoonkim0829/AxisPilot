@@ -306,6 +306,7 @@ The axes another maker offers, compared with Festo's on 제품 비교 > 직교 �
 | `motorPower`, `brake` | W of the built-in AC servo motor; with brake (Z axes) |
 | `screwDiameter`, `screwLead`, `screwClass` | mm, mm, accuracy class (C7S, C10S) |
 | `belt` | belt type (belt axes) |
+| `overhang` | the catalog's Allowable Overhang Distance, one entry per mounting and payload: `mounting` (floor = Horizontal (X), wall = Wall Mount (Y), vertical = Vertical (Z)), `payload` kg, `lateral` mm (0°: across the travel in the slide plane), `normal` mm (90°: along the slide normal); the directions read from the catalog's figures, the catalog gives no acceleration. Read from the model pages' tables (word positions, pymupdf); catalog slips taken as the page's model: RS-095-Z10SS (printed RS-075), RS-086N-Z10PR (L), RC-125-Z10SS, RC-150-Z10SS (printed as the Z05 model twice), RS-175-Y20PR (L) (Y0PR), RS-210-X20PR (L) / -Y20PR (L) / -Y20PB (printed 10), RS-095-Z10SS 18 kg (blank, the PR page's), RS-210-Y20PB 25 / 45 kg (printed 50 / 100, the SS and PR pages' 25 / 45). The belt types from the page images. None given for RS-050-Z10SS / -Z10PR (L) (blank), RK-080, RJ-…-BSA/BSB_… (R) and the -Y belt types. 제품 비교 puts them against the Festo axis's overhang at fv = 1 (`compare.ts` `festoOverhang`: same mounting and payload + slide mass, 0.3 G, the guide data at 5000 km) |
 
 ## Drawings (`<kind>/<maker>/Drawings/…/<partNumber>_<model>.stp`)
 

@@ -122,7 +122,10 @@ function SpecTable({ rows, reference, festo }: { rows: SpecRow[]; reference: str
               <tr key={r.label}>
                 <td className="num">{cell(r.reference, t(r.unit))}</td>
                 <td className="gauge-cell">
-                  <span className="gauge-label">{t(r.label)}</span>
+                  <span className="gauge-label">
+                    {t(r.label)}
+                    {r.note && <span className="gauge-note muted">{t(r.note, r.noteArgs)}</span>}
+                  </span>
                   <Gauge ratio={r.ratio} />
                 </td>
                 <td className="num spec-other">{cell(r.other, t(r.unit))}</td>
