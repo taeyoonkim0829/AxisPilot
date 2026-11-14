@@ -3,7 +3,7 @@
 // of the data sheet no-load torque, so its torques sit at or above Festo's; `peak` / `rms` hold each case's ratio to
 // Festo's value. Known gaps: EGC guide utilisation (Festo 96 %, the app 84 % with the spindle axis depth in the lever;
 // the data sheet refers the torques to the slide surface, which gives 58 %) and the idle torque of a gearbox on a
-// small motor (no data: the ELGD case's rms is 18 % under Festo's).
+// small motor (no data sheet value: with EMGA-40 the ELGD case's rms is 18 % under Festo's, the EGC-50-TB case's 50 %).
 import { describe, expect, it } from 'vitest'
 import { axes, brakingResistors, cables, controllers, gearboxes, kits, motors } from '../data'
 import { evaluateAxis, PRESS_LOAD_FACTOR, type AxisEvaluation, type AxisSample } from './axisSelection'
@@ -34,6 +34,8 @@ interface Case {
   peak: [number, number]
   rms: [number, number]
   tolerance?: { inertia?: number; force?: number }
+  /** lowest guide utilisation the app may give where it stays under Festo's */
+  guideMin?: number
   festo: { rpm: number; peak: number; rms: number; current: number; force: number; inertiaRatio: number; cycle: number; guideMax?: number; lifeKm?: number }
 }
 
@@ -83,6 +85,7 @@ const cases: Case[] = [
     dwell: 0.4,
     peak: [1.25, 1.4],
     rms: [1.4, 1.6],
+    guideMin: 0.8,
     festo: { rpm: 1500, peak: 2.27, rms: 0.65, current: 4.28, force: 503.68, inertiaRatio: 8.44, cycle: 4.68, guideMax: 0.96, lifeKm: 10000 },
   },
   {
@@ -109,6 +112,20 @@ const cases: Case[] = [
     rms: [0.95, 1.06],
     tolerance: { force: 0.01 },
     festo: { rpm: 1500, peak: 0.35, rms: 0.24, current: 0.74, force: 23.28, inertiaRatio: 7.54, cycle: 2.91, guideMax: 0.05, lifeKm: 10000 },
+  },
+  {
+    name: 'EGC-50-TB, 10 kg, EMMB-AS-40-01 + EMGA i=5',
+    axis: 'EGC-50-...-TB-KF-GK',
+    motor: 'EMMB-AS-40-01',
+    gearbox: 'EMGA-40-P-G5-EAS-40',
+    kit: 'EAMM-A-L27-40G|L27|40G',
+    req: floor(500, 10, 2, 92),
+    dwell: 0.4,
+    // no gearbox idle torque in the data: Festo's torque at constant speed is about 0.08 Nm above the app's
+    peak: [0.65, 0.75],
+    rms: [0.45, 0.56],
+    guideMin: 0.3,
+    festo: { rpm: 2586.48, peak: 0.14, rms: 0.1, current: 0.54, force: 20.26, inertiaRatio: 7.22, cycle: 2.94, guideMax: 0.32 },
   },
   {
     name: 'pressing 10 kN: ESBF-BS-100-400-40P, EMMT-AS-100-L-HS-B + EMGA i=8',
@@ -216,8 +233,8 @@ describe('Festo Electric Motion Sizing reports', () => {
       // motor current per torque
       within(r.controller!.peakCurrent / r.drive.peakTorque, f.current / f.peak, 0.04, 'current per torque')
       // the guide: at or above Festo's where the data sheet gives the guide centre
-      // EGC: the spindle axis depth as lever gives 84 %, Festo 96 % (58 % at the slide surface the data sheet names)
-      const guideMin = r.ev.axis.family === 'EGC' ? 0.8 : (f.guideMax ?? 0) - 0.005
+      // EGC stays under Festo with the drive axis depth as lever (`guideMin`): 84 % for 96 %, 30.7 % for 32 %
+      const guideMin = c.guideMin ?? (f.guideMax ?? 0) - 0.005
       if (f.guideMax != null && r.ev.axis.guideCentre != null) expect(r.ev.guideFv).toBeGreaterThanOrEqual(guideMin)
       // ball screw life: Festo's is the data sheet's (fw = 1), the app's has the press-in coefficient
       const life = r.ev.info.find((i) => i.label === '볼스크류 예상 수명')?.value

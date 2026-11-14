@@ -163,7 +163,7 @@ describe('axis evaluation boundaries', () => {
     // a COG behind the slide surface is nearer the guide
     expect(guideLoads({ ...req, cog: { x: 0, y: 0, z: -48 } }, 10, 5, 48).My).toBeCloseTo(0)
     for (const a of axes) {
-      if ((a.family === 'EGC' && a.drive === 'belt') || a.family === 'ESBF') expect(a.guideCentre, a.id).toBeUndefined()
+      if (a.family === 'ESBF') expect(a.guideCentre, a.id).toBeUndefined()
       else expect(a.guideCentre, a.id).toBeGreaterThan(0)
     }
   })
