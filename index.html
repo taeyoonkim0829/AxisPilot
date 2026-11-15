@@ -13,10 +13,46 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/axispilot-icon-32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AxisPilot</title>
+    <title>AxisPilot – Festo 직교 축·모터 선정 툴</title>
+    <meta name="description" content="스트로크, 속도, 가속도, 하중, 무게 중심을 입력하면 Festo 직교 축(ELGT, ELGD, EGC, ESBF), 서보 모터·드라이브, 감속기, 연결키트를 선정하고 토크·가이드 하중·수명을 검토하는 무료 웹 툴. 조합축, 3D 도면(STEP/DXF), PDF 보고서." />
+    <link rel="canonical" href="https://taeyoonkim0829.github.io/AxisPilot/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="AxisPilot" />
+    <meta property="og:title" content="AxisPilot – Festo 직교 축·모터 선정 툴" />
+    <meta property="og:description" content="운송 조건으로 Festo 직교 축, 모터, 감속기, 연결키트를 선정하고 토크·가이드 하중·수명을 검토하는 무료 웹 툴." />
+    <meta property="og:url" content="https://taeyoonkim0829.github.io/AxisPilot/" />
+    <meta property="og:image" content="https://taeyoonkim0829.github.io/AxisPilot/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="ko_KR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "AxisPilot",
+        "url": "https://taeyoonkim0829.github.io/AxisPilot/",
+        "description": "Festo 직교 축(ELGT, ELGD, EGC, ESBF), 서보 모터·드라이브, 감속기, 연결키트 선정 및 토크·가이드 하중·수명 검토 웹 툴",
+        "applicationCategory": "EngineeringApplication",
+        "operatingSystem": "Web browser",
+        "inLanguage": ["ko", "en"],
+        "image": "https://taeyoonkim0829.github.io/AxisPilot/og-image.png",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" }
+      }
+    </script>
   </head>
   <body>
-    <div id="root"></div>
+    <!-- shown until React mounts (and to crawlers that do not run JavaScript); createRoot replaces it -->
+    <div id="root">
+      <main style="max-width: 720px; margin: 15vh auto; padding: 0 16px; font-family: sans-serif">
+        <h1>AxisPilot – Festo 직교 축·모터 선정 툴</h1>
+        <p>
+          스트로크, 속도, 가속도, 하중과 무게 중심을 입력하면 Festo 직교 축(ELGT, ELGD, EGC, ESBF), 서보 모터와 드라이브,
+          감속기, 모터 연결키트를 선정하고 최대·실효 토크, 가이드 하중, 볼스크류 수명을 검토합니다.
+        </p>
+        <p>조합축(XYZ) 선정, 3D 도면(STEP, DXF), PDF 계산 보고서, 타사 축·모터와의 사양 비교를 제공합니다.</p>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
