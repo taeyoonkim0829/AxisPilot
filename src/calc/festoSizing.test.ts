@@ -1,8 +1,9 @@
 // The app's sizing against Festo's Electric Motion Sizing reports (2026-11-14, folder Ref): the same axis, motor,
 // gearbox and kit under the same motion. The app keeps the Excel's friction term (μ·m·g) and drive efficiency on top
 // of the data sheet no-load torque, so its torques sit at or above Festo's; `peak` / `rms` hold each case's ratio to
-// Festo's value: about 1.3 to 1.5 on the small motors, where μ·m·g weighs most. The EMGA idle torque (`Gearbox.idleTorque`) comes from these
-// reports, with the EMMB-AS motors' own friction (`Motor.frictionPerRpm`), which Festo's tool adds as well.
+// Festo's value: about 1.1 to 1.4, with the EMMB-AS motors' own friction (`Motor.frictionPerRpm`), which Festo's tool
+// adds as well. Festo also adds an EMGA idle torque no data sheet gives; the app leaves it out, so the two EMGA-40
+// cases sit at or under Festo's.
 // Known gap: EGC guide utilisation (Festo 96 %, the app 84 % with the spindle axis depth in the lever; the data sheet
 // refers the torques to the slide surface, which gives 58 %).
 import { describe, expect, it } from 'vitest'
@@ -70,9 +71,10 @@ const cases: Case[] = [
     kit: 'EAMM-A-L38-40G-G2|L38|40G',
     req: floor(500, 10, 2, 415),
     dwell: 0.4,
-    // Festo's moving mass is 1.08 kg, the data sheet's 1.36 kg
-    peak: [1.45, 1.55],
-    rms: [1.5, 1.6],
+    // Festo's moving mass is 1.08 kg, the data sheet's 1.36 kg. Festo adds an EMGA-40 idle torque (about 0.07 Nm)
+    // that no data sheet gives: the app leaves it out, so the rms falls just under Festo's
+    peak: [1.05, 1.15],
+    rms: [0.95, 1.05],
     tolerance: { inertia: 0.03, force: 0.03 },
     festo: { rpm: 2856.93, peak: 0.16, rms: 0.11, current: 0.59, force: 22.16, inertiaRatio: 6.65, cycle: 2.91, guideMax: 0.04 },
   },
@@ -122,8 +124,9 @@ const cases: Case[] = [
     kit: 'EAMM-A-L27-40G|L27|40G',
     req: floor(500, 10, 2, 92),
     dwell: 0.4,
-    peak: [1.3, 1.4],
-    rms: [1.22, 1.32],
+    // under Festo's: the EMGA-40 idle torque Festo adds (no data sheet value) weighs most on this light drive
+    peak: [0.8, 0.92],
+    rms: [0.6, 0.7],
     guideMin: 0.3,
     festo: { rpm: 2586.48, peak: 0.14, rms: 0.1, current: 0.54, force: 20.26, inertiaRatio: 7.22, cycle: 2.94, guideMax: 0.32 },
   },

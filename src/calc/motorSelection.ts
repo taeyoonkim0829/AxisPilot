@@ -35,14 +35,13 @@ export function motorTorqueFn(axisEval: AxisEvaluation, motor: Motor, gearbox: G
   const efficiency = axisEval.efficiency * (gearbox?.efficiency ? gearbox.efficiency / 100 : 1)
   // kg·m²: rotor (incl. brake) + gearbox input + coupling, all on the motor shaft
   const motorSideInertia = (motor.inertia + (gearbox?.inertia ?? 0) + settings.couplingInertia) * 1e-4
-  const idle = gearbox?.idleTorque ?? 0
   // the motor's own friction: rad/s at the drive shaft → rpm at the motor
   const friction = (motor.frictionPerRpm ?? 0) * ratio * (60 / (2 * Math.PI))
   return (s: ShaftState) => {
     const loadTorque = s.torque / ratio
     let motorLoadTorque = loadTorque
     if (s.dir !== 0)
-      motorLoadTorque = (s.torque * s.omega >= 0 ? loadTorque / efficiency : loadTorque * efficiency) + idle * Math.sign(s.omega) + friction * s.omega
+      motorLoadTorque = (s.torque * s.omega >= 0 ? loadTorque / efficiency : loadTorque * efficiency) + friction * s.omega
     return motorLoadTorque + motorSideInertia * s.alpha * ratio
   }
 }
