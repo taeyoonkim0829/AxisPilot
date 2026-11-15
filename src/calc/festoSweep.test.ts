@@ -1,8 +1,8 @@
 // The app against Festo's Electric Motion Sizing for every axis family it offers, floor and vertical (festo/sweep.json:
 // the same move, Festo's recommended axis, motor and kit per family and technology, read from festo.com). Festo's own
 // model has no μ·m·g and no efficiency on top of the no-load torque, so the app's torques sit at or above Festo's
-// (1.1 to 2.7 ×; ELGD-BS-KF-WD-100-10P under it, below). Festo adds the EMMB-AS motors' own friction
-// (`Motor.frictionPerRpm`); without it the app fell under Festo's torque on the cases with an EMMB motor.
+// (1.1 to 2.7 ×). Festo adds the EMMB-AS motors' own friction (`Motor.frictionPerRpm`, at the top speed) and, on
+// ELGT-BS / ELGD-BS / ESBF, an axis no-load torque that rises with speed above the data sheet's (`Axis.frictionCurve`).
 import { describe, expect, it } from 'vitest'
 import { axes, brakingResistors, cables, controllers, kits, motors } from '../data'
 import { evaluateAxis } from './axisSelection'
@@ -51,11 +51,9 @@ describe('Festo Electric Motion Sizing: every axis family, floor and vertical', 
       within(v('관성비 (키트 포함)') + 1, c.inertiaRatio, 0.1, 'inertia ratio')
       const ctl = selectController(ev!, drive, settings, { controllers, resistors: brakingResistors, cables })!
       within(ctl.peakCurrent / drive.peakTorque, c.current / c.peak, 0.03, 'current per torque')
-      // at or above Festo's torque, but ELGD-BS-KF-WD-100-10P: the data sheet's no-load torque 0.077 Nm is under the
-      // about 0.2 Nm Festo's tool takes, so the app falls to 0.6 to 0.9 × Festo's (data sheet kept, the user's decision)
-      const min = /^ELGD-BS-KF-WD-100-.*-10P/.test(c.axis) ? 0.55 : 1
-      expect(v('최대 토크 (키트 포함)') / c.peak, 'peak torque').toBeGreaterThanOrEqual(min)
-      expect(v('실효 토크 (키트 포함)') / c.rms, 'rms torque').toBeGreaterThanOrEqual(min)
+      // at or above Festo's torque
+      expect(v('최대 토크 (키트 포함)') / c.peak, 'peak torque').toBeGreaterThanOrEqual(1)
+      expect(v('실효 토크 (키트 포함)') / c.rms, 'rms torque').toBeGreaterThanOrEqual(1)
       // the guide: ELGT / ELGD at or above Festo's; EGC (drive axis depth as lever) at least 80 % of it
       if (c.guideMax != null && ev!.axis.family !== 'ESBF') {
         const min = ev!.axis.family === 'EGC' ? 0.8 * c.guideMax : c.guideMax - 0.005

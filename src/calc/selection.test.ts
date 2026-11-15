@@ -314,8 +314,14 @@ describe('torque calculation', () => {
     const settings = { ...defaultSettings, dwellTime: 0.5 }
     const ev = evaluateAxis(spindle, { ...baseReq, mounting: 'vertical' }, settings)!
     const dwell = ev.samples.filter((s) => s.dir === 0)
-    const holding = (ev.movingMass * G * ev.feed) / (2000 * Math.PI)
+    // the weight, plus the no-load torque Festo's tool keeps at standstill
+    const holding = (ev.movingMass * G * ev.feed) / (2000 * Math.PI) + ev.noLoadTorque
     expect(dwell[0].torque).toBeCloseTo(holding)
+  })
+
+  it('floor axis keeps the no-load torque during dwell', () => {
+    const ev = evaluateAxis(spindle, baseReq, { ...defaultSettings, dwellTime: 0.5 })!
+    expect(ev.samples.find((s) => s.dir === 0)!.torque).toBeCloseTo(ev.noLoadTorque)
   })
 })
 
@@ -397,7 +403,7 @@ describe('selection on real data', () => {
     expect(hold[0].force).toBeCloseTo(800)
     expect(Math.max(...ev.samples.filter((s) => s.move === 1).map((s) => Math.abs(s.force)))).toBeLessThan(800)
 
-    const motor = { ...motors[0], ratedTorque: 0.5, peakTorque: 100 } as Motor
+    const motor = { ...motors[0], ratedTorque: 0.5, peakTorque: 100, frictionPerRpm: undefined } as Motor
     const checks = evaluateDrive(ev, motor, null, settings).checks
     const pressTorque = (800 * axis.spindlePitch!) / 1000 / (2 * Math.PI) / 0.9
     expect(checks.find((c) => c.label === '가압 구간 토크')!.value).toBeCloseTo(pressTorque)

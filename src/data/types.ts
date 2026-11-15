@@ -22,7 +22,8 @@ export interface Axis {
   /** N, ELGD-BS: max. feed force with a parallel kit (data sheet p.6), when lower than with an axial kit */
   maxFeedForceParallel?: number | null
   noLoadTorque: number
-  /** ESBF: the data sheet's speed-dependent friction torque Mv [Nm] over the feed speed [m/s], on top of the no-load torque */
+  /** Nm over the feed speed [m/s], on top of the no-load torque while moving: ESBF's Mv, raised where Festo's sizing
+   *  tool takes more (ELGT-BS, ELGD-BS, ESBF at high speed, `data/README.md`) */
   frictionCurve?: [number, number][]
   maxDrivingTorque: number | null
   maxSpeed: number
@@ -37,7 +38,7 @@ export interface Axis {
   speedCurve?: [number, number][] | null
   /** ball screw support (ELGD-BS -SU, EGC-BS -S): order type, the stroke it is offered above, its no-load torque
    *  (where the data sheet gives one) and the speed-stroke curve with it */
-  spindleSupport?: { typeCode: string; minStroke?: number; noLoadTorque?: number; speedCurve: [number, number][] } | null
+  spindleSupport?: { typeCode: string; minStroke?: number; noLoadTorque?: number; frictionCurve?: [number, number][]; speedCurve: [number, number][] } | null
   /** ELGD-BS: [working stroke mm, max. feed force N] towards the motor (screw buckling), read from the data sheet curve */
   feedForceCurve?: [number, number][] | null
   /** ESBF: [rod length mm, max. pressure force N] — buckling limit, read from the data sheet curve */

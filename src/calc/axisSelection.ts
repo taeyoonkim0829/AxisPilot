@@ -697,8 +697,9 @@ export function evaluateAxis(
   const down = verticalForward(req) === 'down'
 
   /** Drive-shaft load of a drive train moving m [kg] with inertia J [kg·cm²], taking share k of the external forces */
-  // Speed-dependent friction torque on top of the no-load torque, where the data sheet gives it (ESBF)
-  const speedFriction = (v: number) => (axis.frictionCurve ? curveAt(axis.frictionCurve, Math.abs(v)) : 0)
+  // Speed-dependent friction torque on top of the no-load torque (ESBF's Mv; raised where Festo's tool takes more)
+  const frictionCurve = support ? support.frictionCurve : axis.frictionCurve
+  const speedFriction = (v: number) => (frictionCurve ? curveAt(frictionCurve, Math.abs(v)) : 0)
   const drive =
     (m: number, J: number, noLoad: number, k: number, axesDriven = 1) =>
     (v: number, a: number, dir: 1 | -1 | 0, load = 0): DriveState => {
@@ -707,7 +708,9 @@ export function evaluateAxis(
       const resistance = mu * m * G + k * (settings.guideResistance + settings.externalForce) + guideDrag
       const sgn = v !== 0 ? Math.sign(v) : dir
       const external = gravity + sgn * resistance + k * load
-      const torque = J * 1e-4 * a * toRad + (external * feed) / (2000 * Math.PI) + sgn * (noLoad + axesDriven * speedFriction(v))
+      // At standstill the no-load torque is still taken, with the weight (Festo's tool counts it in the RMS torque)
+      const friction = noLoad + axesDriven * speedFriction(v)
+      const torque = J * 1e-4 * a * toRad + (external * feed) / (2000 * Math.PI) + (sgn || (gravity < 0 ? -1 : 1)) * friction
       return { omega: v * toRad, alpha: a * toRad, torque, force: m * a + external }
     }
   const axisDriveAt = drive(mass, inertia, noLoad, share)
