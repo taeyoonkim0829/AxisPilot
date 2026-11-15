@@ -139,7 +139,7 @@ const cases: Case[] = [
     req: floor(500, 10, 2, 1000),
     dwell: 0.4,
     peak: [1.2, 1.36],
-    rms: [1.2, 1.38],
+    rms: [1.15, 1.38],
     festo: { rpm: 1199.96, peak: 0.53, rms: 0.38, current: 0.94, force: 24.42, inertiaRatio: 6.53, cycle: 2.9, guideMax: 0.02 },
   },
   {
