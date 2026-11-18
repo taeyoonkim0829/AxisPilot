@@ -1,17 +1,20 @@
-import { useState, type ReactNode, type RefObject } from 'react'
+import { useEffect, useId, useState, type KeyboardEvent, type ReactNode, type RefObject } from 'react'
 import { createPortal } from 'react-dom'
 import {
   axisCandidates,
   axisSpecRows,
   COMPARE_AXIS_FAMILIES,
+  festoVariant,
   motorCandidates,
+  motorOptionRows,
   motorSpecRows,
+  siemensArticle,
   supplyOf,
   type SpecRow,
   type SupplyClass,
 } from '../calc/compare'
 import { axes, motorFamilies, motors, thirdPartyAxes } from '../data'
-import type { Axis, AxisFamily, Motor, ThirdPartyAxis } from '../data/types'
+import type { Axis, AxisFamily, Motor, MotorOptions, ThirdPartyAxis } from '../data/types'
 import { useLang, useT } from '../i18n'
 import { RadioGroup, ToggleButton, ToggleGroup } from './common'
 import { Footer } from './Footer'
@@ -52,42 +55,84 @@ const squash = (s: string) => s.toLowerCase().replace(/[\s\-_/.()]/g, '')
 
 /**
  * Finds a compared product by its model name among every maker and series (the whole name, any part of it,
- * case, spaces and hyphens ignored): picking a suggestion or Enter takes the first match.
+ * case, spaces, hyphens, underscores, dots, slashes and brackets ignored), in a list below the field (combobox):
+ * a click or Enter picks (Enter the highlighted suggestion, else the first), the arrow keys move, Escape closes.
  */
 function ModelSearch<T extends { id: string; model: string; maker: string }>({ items, sub, onPick }: { items: T[]; sub: (i: T) => string; onPick: (i: T) => void }) {
   const t = useT()
+  const id = useId()
   const [q, setQ] = useState('')
-  const find = (text: string, exact: boolean) => {
-    const k = squash(text)
-    return k ? items.find((i) => (exact ? squash(i.model) === k : squash(i.model).includes(k))) : undefined
-  }
+  const [open, setOpen] = useState(false)
+  const [hi, setHi] = useState(-1)
+  const k = squash(q)
+  const matches = k ? items.filter((i) => squash(i.model).includes(k)).slice(0, 50) : []
+  const shown = open && matches.length > 0
+  useEffect(() => {
+    if (hi >= 0) document.getElementById(`${id}-${hi}`)?.scrollIntoView({ block: 'nearest' })
+  }, [id, hi])
   const take = (i: T | undefined) => {
     if (!i) return
     onPick(i)
     setQ('')
+    setOpen(false)
+    setHi(-1)
+  }
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault()
+      setOpen(true)
+      setHi((h) => (e.key === 'ArrowDown' ? Math.min(h + 1, matches.length - 1) : Math.max(h - 1, 0)))
+    } else if (e.key === 'Enter') {
+      e.preventDefault()
+      take(matches[hi] ?? matches[0])
+    } else if (e.key === 'Escape') setOpen(false)
   }
   return (
-    <label className="field">
+    <label className="field compare-search">
       <span className="field-label">{t('모델명 검색')}</span>
       <span className="field-input">
         <input
           className="field-select"
-          type="search"
-          list="compare-models"
+          type="text"
+          role="combobox"
+          autoComplete="off"
+          aria-expanded={shown}
+          aria-controls={`${id}-list`}
+          aria-autocomplete="list"
+          aria-activedescendant={shown && hi >= 0 ? `${id}-${hi}` : undefined}
           value={q}
           placeholder={t('모델명 입력')}
           onChange={(e) => {
             setQ(e.target.value)
-            take(find(e.target.value, true))
+            setOpen(true)
+            setHi(-1)
           }}
-          onKeyDown={(e) => e.key === 'Enter' && take(find(q, false))}
+          onFocus={() => setOpen(true)}
+          onBlur={() => setOpen(false)}
+          onKeyDown={onKey}
         />
-        <datalist id="compare-models">
-          {items.map((i) => (
-            <option key={i.id} value={i.model} label={`${i.maker} · ${sub(i)}`} />
-          ))}
-        </datalist>
+        <svg className="compare-search-icon" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="11" cy="11" r="6.5" />
+          <path d="M16 16l4.5 4.5" />
+        </svg>
       </span>
+      <ul id={`${id}-list`} role="listbox" className="compare-search-list" hidden={!shown}>
+        {matches.map((i, n) => (
+          <li
+            key={i.id}
+            id={`${id}-${n}`}
+            role="option"
+            aria-selected={n === hi}
+            className={n === hi ? 'active' : undefined}
+            onMouseDown={(e) => e.preventDefault()}
+            onMouseEnter={() => setHi(n)}
+            onClick={() => take(i)}
+          >
+            <span>{i.model}</span>
+            <small>{`${i.maker} · ${sub(i)}`}</small>
+          </li>
+        ))}
+      </ul>
     </label>
   )
 }
@@ -411,6 +456,8 @@ function AxisCompare() {
 
 const thirdPartyMakers = ['Siemens', 'Mitsubishi', 'LS'] as const
 const supplies: (SupplyClass | 'all')[] = ['all', 'AC 380–480 V', 'AC 200–240 V']
+const OPTION_LABEL: Record<keyof MotorOptions, string> = { shaft: '축 끝', seal: '축 씰', encoder: '엔코더' }
+
 /** Every compared motor (the makers offered), for the model search */
 const searchMotors = motors.filter((m) => (thirdPartyMakers as readonly string[]).includes(m.maker))
 const motorLine = (m: Motor) => `${fmt(m.ratedPower, 0)} W · ${fmt(m.ratedTorque)} Nm${supplyOf(m) ? ` · ${supplyOf(m)}` : ''}`
@@ -430,12 +477,27 @@ function MotorCompare() {
   const [samePower, setSamePower] = useState(true)
   const [sameInterface, setSameInterface] = useState(false)
   const [pick, setPick] = useState<string | null>(null)
+  const [options, setOptions] = useState<MotorOptions>({ shaft: 'plain', seal: false, encoder: 'single' })
+  const option = <K extends keyof MotorOptions>(k: K) => (v: MotorOptions[K]) => setOptions((o) => ({ ...o, [k]: v }))
   const list = motorCandidates(ref, motors, { families, supply: supply === 'all' ? null : supply, samePower, sameInterface })
   const festo = picked(list, pick)
-  const { exporting, start, reportRef } = useCompareExport(ref.model, festo?.model ?? null)
-  const reference = { maker: ref.maker, model: ref.model, line: motorLine(ref) }
-  const festoBar = festo ? { model: festo.model, line: motorLine(festo) } : null
-  const specs = festo && { rows: motorSpecRows(ref, festo), reference: ref.model, festo: festo.model }
+  // the full order designations: Siemens 1FK2 article number and the Festo variant for the same options
+  const refModel = siemensArticle(ref, options) ?? ref.model
+  const match = festo ? festoVariant(festo, options) : null
+  const festoModel = match?.variant?.orderCode ?? festo?.orderCode ?? festo?.model ?? ''
+  const festoLine = (m: Motor) => {
+    const pn = match?.variant ? (match.variant.partNumber ?? t('품번 없음 (타입 코드 주문)')) : m.partNumber
+    const differs = match?.differs.length ? ` · ${t('선택 불가: {what}', { what: match.differs.map((k) => t(OPTION_LABEL[k])).join(', ') })}` : ''
+    return `${motorLine(m)}${pn ? ` · ${pn}` : ''}${differs}`
+  }
+  const { exporting, start, reportRef } = useCompareExport(refModel, festo ? festoModel : null)
+  const reference = { maker: ref.maker, model: refModel, line: motorLine(ref) }
+  const festoBar = festo ? { model: festoModel, line: festoLine(festo) } : null
+  const specs = festo && {
+    rows: [...motorSpecRows(ref, festo), ...(siemensArticle(ref, options) ? motorOptionRows(options, match?.variant ?? null, ref.brake, festo.brake) : [])],
+    reference: refModel,
+    festo: festoModel,
+  }
 
   return (
     <main className="layout">
@@ -463,6 +525,22 @@ function MotorCompare() {
                 [t('전원 · 인터페이스'), `${supplyOf(ref) ?? '—'} · ${ref.interfaceCode ?? '—'}`],
               ]}
             />
+            {siemensArticle(ref, options) && (
+              <>
+                <div className="field">
+                  <span className="field-label">{t('축 끝')}</span>
+                  <RadioGroup options={['plain', 'key'] as const} value={options.shaft} onChange={option('shaft')} label={(v) => t(v === 'plain' ? '평축' : '키 축')} />
+                </div>
+                <div className="field">
+                  <span className="field-label">{t('축 씰')}</span>
+                  <RadioGroup options={['no', 'yes'] as const} value={options.seal ? 'yes' : 'no'} onChange={(v) => option('seal')(v === 'yes')} label={(v) => t(v === 'yes' ? 'IP65 (씰 있음)' : 'IP64 (씰 없음)')} />
+                </div>
+                <div className="field">
+                  <span className="field-label">{t('엔코더')}</span>
+                  <RadioGroup options={['single', 'multi'] as const} value={options.encoder} onChange={option('encoder')} label={(v) => t(v === 'single' ? '싱글턴' : '멀티턴')} />
+                </div>
+              </>
+            )}
           </section>
           <section>
             <h2>{t('Festo 제품')}</h2>
@@ -488,7 +566,7 @@ function MotorCompare() {
           selected={festo?.id ?? null}
           onSelect={setPick}
           columns={[
-            { head: t('모델명'), cell: (m) => <span className="model">{m.model}</span> },
+            { head: t('모델명'), cell: (m) => <span className="model">{siemensArticle(ref, options) ? (festoVariant(m, options).variant?.orderCode ?? m.model) : m.model}</span> },
             { head: t('정격 출력'), num: true, cell: (m) => `${fmt(m.ratedPower, 0)} W` },
             { head: t('정격 토크'), num: true, cell: (m) => `${fmt(m.ratedTorque)} Nm` },
             { head: t('최대 토크'), num: true, cell: (m) => `${fmt(m.peakTorque)} Nm` },

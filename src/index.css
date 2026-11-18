@@ -139,6 +139,10 @@
   --fail: #c8322b;
   --fail-soft: #fbe4e2;
 
+  /* overlays as in the light theme (the comparison gauges' track and halo) */
+  --ov: 18 40 66;
+  --veil: 255 255 255;
+
   color: var(--text);
   color-scheme: light;
 }
@@ -2591,11 +2595,13 @@ body {
 
 /* ---------- 제품 비교 ---------- */
 
+/* Grey ▼ with a light top edge and a soft shadow; the right gap equals the 10px text inset */
 .field-select {
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10' viewBox='0 0 12 10'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23c9d2dc'/%3E%3Cstop offset='1' stop-color='%23737e8a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M1 1.6h10L6 8.6z' fill='%23000' fill-opacity='.28' transform='translate(0 .9)'/%3E%3Cpath d='M1 1.6h10L6 8.6z' fill='url(%23g)'/%3E%3Cpath d='M1.4 1.75h9.2' stroke='%23fff' stroke-opacity='.75' stroke-width='.7' stroke-linecap='round'/%3E%3C/svg%3E");
   flex: 1;
   min-width: 0;
   height: 100%;
-  padding: 0 8px;
+  padding: 0 10px;
   border: 0;
   background: transparent;
   color: inherit;
@@ -2604,9 +2610,80 @@ body {
   outline: none;
 }
 
+select.field-select {
+  appearance: none;
+  padding-right: 32px;
+  background: var(--select-arrow) no-repeat right 10px center / 12px 10px;
+  cursor: pointer;
+}
+
+/* Light ground: a darker grey, the shadow lighter */
+:root[data-theme='light'] .field-select {
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10' viewBox='0 0 12 10'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%239aa5b1'/%3E%3Cstop offset='1' stop-color='%234a5562'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M1 1.6h10L6 8.6z' fill='%23123' fill-opacity='.18' transform='translate(0 .9)'/%3E%3Cpath d='M1 1.6h10L6 8.6z' fill='url(%23g)'/%3E%3Cpath d='M1.4 1.75h9.2' stroke='%23fff' stroke-opacity='.85' stroke-width='.7' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
 .field-select option {
   background: var(--surface-solid);
   color: var(--text);
+}
+
+/* 모델명 검색: magnifier on the right, own suggestion list below the field */
+.compare-search {
+  position: relative;
+}
+
+.compare-search .field-select {
+  padding-right: 0;
+}
+
+.compare-search-icon {
+  flex: none;
+  margin: 0 10px;
+  color: var(--muted);
+}
+
+.compare-search-list {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 352px;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  list-style: none;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--surface-solid);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 24px 48px -12px rgb(var(--shade) / calc(0.8 * var(--shade-k)));
+}
+
+.compare-search-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.compare-search-list li span {
+  font-family: var(--din);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.compare-search-list li small {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.compare-search-list li.active {
+  background: rgb(var(--ov) / 0.1);
 }
 
 .compare-facts {
@@ -2718,8 +2795,9 @@ body {
   border-top: 1px solid var(--line-strong);
 }
 
-/* the gauge's Festo side in Festo blue */
-.compare {
+/* the gauge's Festo side in Festo blue (the PDF's report stage too, which sits outside .compare) */
+.compare,
+.report-stage {
   --gauge: #0091dc;
 }
 

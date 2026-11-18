@@ -36,6 +36,12 @@
       "interfaceCode": "40P",
       "winding": null,
       "controller": "CMMT-AS-3A",
+      "variants": [
+        { "orderCode": "EMMB-AS-40-01-S30M", "partNumber": "8097167", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-AS-40-01-S30S", "partNumber": "8097163", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMB-AS-40-01-K-S30M", "partNumber": "8097169", "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-AS-40-01-K-S30S", "partNumber": "8097165", "shaft": "key", "seal": false, "encoder": "single" }
+      ],
       "orderCode": "EMMB-AS-40-01-S30S",
       "partNumber": "8097163"
     },
@@ -75,6 +81,12 @@
       "interfaceCode": "40P",
       "winding": null,
       "controller": "CMMT-AS-3A",
+      "variants": [
+        { "orderCode": "EMMB-AS-40-01-S30MB", "partNumber": "8097168", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-AS-40-01-S30SB", "partNumber": "8097164", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMB-AS-40-01-K-S30MB", "partNumber": "8097170", "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-AS-40-01-K-S30SB", "partNumber": "8097166", "shaft": "key", "seal": false, "encoder": "single" }
+      ],
       "orderCode": "EMMB-AS-40-01-S30SB",
       "partNumber": "8097164"
     },
@@ -114,6 +126,12 @@
       "interfaceCode": "60P",
       "winding": null,
       "controller": "CMMT-AS-3A",
+      "variants": [
+        { "orderCode": "EMMB-AS-60-02-S30M", "partNumber": "8097175", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-AS-60-02-S30S", "partNumber": "8097171", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMB-AS-60-02-K-S30M", "partNumber": "8097177", "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-AS-60-02-K-S30S", "partNumber": "8097173", "shaft": "key", "seal": false, "encoder": "single" }
+      ],
       "orderCode": "EMMB-AS-60-02-S30S",
       "partNumber": "8097171"
     },
@@ -153,6 +171,12 @@
       "interfaceCode": "60P",
       "winding": null,
       "controller": "CMMT-AS-3A",
+      "variants": [
+        { "orderCode": "EMMB-AS-60-02-S30MB", "partNumber": "8097176", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-AS-60-02-S30SB", "partNumber": "8097172", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMB-AS-60-02-K-S30MB", "partNumber": "8097178", "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-AS-60-02-K-S30SB", "partNumber": "8097174", "shaft": "key", "seal": false, "encoder": "single" }
+      ],
       "orderCode": "EMMB-AS-60-02-S30SB",
       "partNumber": "8097172"
     },
@@ -192,6 +216,12 @@
       "interfaceCode": "60P",
       "winding": null,
       "controller": "CMMT-AS-3A",
+      "variants": [
+        { "orderCode": "EMMB-AS-60-04-S30M", "partNumber": "8097183", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-AS-60-04-S30S", "partNumber": "8097179", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMB-AS-60-04-K-S30M", "partNumber": "8097185", "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-AS-60-04-K-S30S", "partNumber": "8097181", "shaft": "key", "seal": false, "encoder": "single" }
+      ],
       "orderCode": "EMMB-AS-60-04-S30S",
       "partNumber": "8097179"
     },
@@ -231,6 +261,11 @@
       "interfaceCode": "60P",
       "winding": null,
       "controller": "CMMT-AS-3A",
+      "variants": [
+        { "orderCode": "EMMB-AS-60-04-S30MB", "partNumber": "8097184", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-AS-60-04-S30SB", "partNumber": "8097180", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMB-AS-60-04-K-S30SB", "partNumber": "8097182", "shaft": "key", "seal": false, "encoder": "single" }
+      ],
       "orderCode": "EMMB-AS-60-04-S30SB",
       "partNumber": "8097180"
     },
@@ -270,6 +305,12 @@
       "interfaceCode": "80P",
       "winding": null,
       "controller": "CMMT-AS-3A",
+      "variants": [
+        { "orderCode": "EMMB-AS-80-07-S30M", "partNumber": "8097191", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-AS-80-07-S30S", "partNumber": "8097187", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMB-AS-80-07-K-S30M", "partNumber": "8097193", "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-AS-80-07-K-S30S", "partNumber": "8097189", "shaft": "key", "seal": false, "encoder": "single" }
+      ],
       "orderCode": "EMMB-AS-80-07-S30S",
       "partNumber": "8097187"
     },
@@ -309,6 +350,12 @@
       "interfaceCode": "80P",
       "winding": null,
       "controller": "CMMT-AS-3A",
+      "variants": [
+        { "orderCode": "EMMB-AS-80-07-S30MB", "partNumber": "8097192", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-AS-80-07-S30SB", "partNumber": "8097188", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMB-AS-80-07-K-S30MB", "partNumber": "8097194", "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-AS-80-07-K-S30SB", "partNumber": "8097190", "shaft": "key", "seal": false, "encoder": "single" }
+      ],
       "orderCode": "EMMB-AS-80-07-S30SB",
       "partNumber": "8097188"
     }

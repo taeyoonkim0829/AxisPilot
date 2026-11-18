@@ -1,10 +1,22 @@
 import { describe, expect, it } from 'vitest'
 import { axes, motors, thirdPartyAxes } from '../data'
 import { G, guideComparisonValue, guideLoads } from './axisSelection'
-import { axisCandidates, axisSpecRows, COMPARE_AXIS_FAMILIES, estimatedThrust, festoOverhang, motorCandidates, motorSpecRows, supplyOf } from './compare'
+import { axisCandidates, axisSpecRows, COMPARE_AXIS_FAMILIES, estimatedThrust, festoOverhang, festoVariant, motorCandidates, motorSpecRows, siemensArticle, supplyOf } from './compare'
 import type { Requirements } from './types'
 
 describe('제품 비교', () => {
+  it('builds the 1FK2 article number and the Festo order variant for the same options', () => {
+    const sie = motors.find((m) => m.id === '1FK2104-4AF0 (230V)')!
+    expect(siemensArticle(sie, { shaft: 'key', seal: false, encoder: 'multi' })).toBe('1FK2104-4AF00-1MA0')
+    expect(siemensArticle(sie, { shaft: 'plain', seal: true, encoder: 'single' })).toBe('1FK2104-4AF01-0SA0')
+    const emmb = motors.find((m) => m.id === 'EMMB-AS-40-01')!
+    expect(festoVariant(emmb, { shaft: 'key', seal: false, encoder: 'multi' }).variant).toMatchObject({ orderCode: 'EMMB-AS-40-01-K-S30M', partNumber: '8097169' })
+    // EMMB-AS has no shaft seal: the nearest variant, the seal named as not offered
+    expect(festoVariant(emmb, { shaft: 'plain', seal: true, encoder: 'single' })).toMatchObject({ variant: { orderCode: 'EMMB-AS-40-01-S30S' }, differs: ['seal'] })
+    const emmt = motors.find((m) => m.id === 'EMMT-AS-60-S-LS-B')!
+    expect(festoVariant(emmt, { shaft: 'key', seal: true, encoder: 'multi' }).variant).toMatchObject({ orderCode: 'EMMT-AS-60-SKR-LS-RMB', partNumber: null })
+  })
+
   it('reads the Robostar catalog rows (ball screw and belt types, no linear motor RF)', () => {
     expect(thirdPartyAxes.length).toBeGreaterThan(350)
     expect(thirdPartyAxes.some((a) => a.series === 'RF')).toBe(false)

@@ -46,6 +46,11 @@
         [3002, 0.052],
         [3508, 0.039]
       ],
+      "variants": [
+        { "orderCode": "EMMB-ST-42-S-SM", "partNumber": "8156127", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-ST-42-S-S", "partNumber": "8156125", "shaft": "plain", "seal": false, "encoder": "none" },
+        { "orderCode": "EMMB-ST-42-S-SS", "partNumber": "8156126", "shaft": "plain", "seal": false, "encoder": "single" }
+      ],
       "orderCode": "EMMB-ST-42-S-SS",
       "partNumber": "8156126"
     },
@@ -94,6 +99,11 @@
         [1988, 0.09],
         [3002, 0.052],
         [3508, 0.039]
+      ],
+      "variants": [
+        { "orderCode": "EMMB-ST-42-S-SMB", "partNumber": "8156130", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-ST-42-S-SB", "partNumber": "8156128", "shaft": "plain", "seal": false, "encoder": "none" },
+        { "orderCode": "EMMB-ST-42-S-SSB", "partNumber": "8156129", "shaft": "plain", "seal": false, "encoder": "single" }
       ],
       "orderCode": "EMMB-ST-42-S-SSB",
       "partNumber": "8156129"
@@ -145,6 +155,11 @@
         [3540, 0.171],
         [3546, 0.085]
       ],
+      "variants": [
+        { "orderCode": "EMMB-ST-42-L-SM", "partNumber": "8156133", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-ST-42-L-S", "partNumber": "8156131", "shaft": "plain", "seal": false, "encoder": "none" },
+        { "orderCode": "EMMB-ST-42-L-SS", "partNumber": "8156132", "shaft": "plain", "seal": false, "encoder": "single" }
+      ],
       "orderCode": "EMMB-ST-42-L-SS",
       "partNumber": "8156132"
     },
@@ -195,6 +210,11 @@
         [3540, 0.171],
         [3546, 0.085]
       ],
+      "variants": [
+        { "orderCode": "EMMB-ST-42-L-SMB", "partNumber": "8156136", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-ST-42-L-SB", "partNumber": "8156134", "shaft": "plain", "seal": false, "encoder": "none" },
+        { "orderCode": "EMMB-ST-42-L-SSB", "partNumber": "8156135", "shaft": "plain", "seal": false, "encoder": "single" }
+      ],
       "orderCode": "EMMB-ST-42-L-SSB",
       "partNumber": "8156135"
     },
@@ -244,6 +264,11 @@
         [2996, 0.36],
         [3778, 0.245]
       ],
+      "variants": [
+        { "orderCode": "EMMB-ST-57-M-SM", "partNumber": "8156139", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-ST-57-M-S", "partNumber": "8156137", "shaft": "plain", "seal": false, "encoder": "none" },
+        { "orderCode": "EMMB-ST-57-M-SS", "partNumber": "8156138", "shaft": "plain", "seal": false, "encoder": "single" }
+      ],
       "orderCode": "EMMB-ST-57-M-SS",
       "partNumber": "8156138"
     },
@@ -292,6 +317,11 @@
         [2496, 0.46],
         [2996, 0.36],
         [3778, 0.245]
+      ],
+      "variants": [
+        { "orderCode": "EMMB-ST-57-M-SMB", "partNumber": "8156142", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-ST-57-M-SB", "partNumber": "8156140", "shaft": "plain", "seal": false, "encoder": "none" },
+        { "orderCode": "EMMB-ST-57-M-SSB", "partNumber": "8156141", "shaft": "plain", "seal": false, "encoder": "single" }
       ],
       "orderCode": "EMMB-ST-57-M-SSB",
       "partNumber": "8156141"
@@ -343,6 +373,11 @@
         [1790, 0.499],
         [1793, 0.35]
       ],
+      "variants": [
+        { "orderCode": "EMMB-ST-57-L-SM", "partNumber": "8156145", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-ST-57-L-S", "partNumber": "8156143", "shaft": "plain", "seal": false, "encoder": "none" },
+        { "orderCode": "EMMB-ST-57-L-SS", "partNumber": "8156144", "shaft": "plain", "seal": false, "encoder": "single" }
+      ],
       "orderCode": "EMMB-ST-57-L-SS",
       "partNumber": "8156144"
     },
@@ -392,6 +427,11 @@
         [1406, 0.787],
         [1790, 0.499],
         [1793, 0.35]
+      ],
+      "variants": [
+        { "orderCode": "EMMB-ST-57-L-SMB", "partNumber": "8156148", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-ST-57-L-SB", "partNumber": "8156146", "shaft": "plain", "seal": false, "encoder": "none" },
+        { "orderCode": "EMMB-ST-57-L-SSB", "partNumber": "8156147", "shaft": "plain", "seal": false, "encoder": "single" }
       ],
       "orderCode": "EMMB-ST-57-L-SSB",
       "partNumber": "8156147"
@@ -444,6 +484,11 @@
         [2390, 0.622],
         [2397, 0.434]
       ],
+      "variants": [
+        { "orderCode": "EMMB-ST-87-S-SM", "partNumber": "8156151", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-ST-87-S-S", "partNumber": "8156149", "shaft": "plain", "seal": false, "encoder": "none" },
+        { "orderCode": "EMMB-ST-87-S-SS", "partNumber": "8156150", "shaft": "plain", "seal": false, "encoder": "single" }
+      ],
       "orderCode": "EMMB-ST-87-S-SS",
       "partNumber": "8156150"
     },
@@ -495,6 +540,11 @@
         [2390, 0.622],
         [2397, 0.434]
       ],
+      "variants": [
+        { "orderCode": "EMMB-ST-87-S-SMB", "partNumber": "8156154", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-ST-87-S-SB", "partNumber": "8156152", "shaft": "plain", "seal": false, "encoder": "none" },
+        { "orderCode": "EMMB-ST-87-S-SSB", "partNumber": "8156153", "shaft": "plain", "seal": false, "encoder": "single" }
+      ],
       "orderCode": "EMMB-ST-87-S-SSB",
       "partNumber": "8156153"
     },
@@ -544,6 +594,11 @@
         [599, 1.911],
         [749, 1.3]
       ],
+      "variants": [
+        { "orderCode": "EMMB-ST-87-M-SM", "partNumber": "8156157", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-ST-87-M-S", "partNumber": "8156155", "shaft": "plain", "seal": false, "encoder": "none" },
+        { "orderCode": "EMMB-ST-87-M-SS", "partNumber": "8156156", "shaft": "plain", "seal": false, "encoder": "single" }
+      ],
       "orderCode": "EMMB-ST-87-M-SS",
       "partNumber": "8156156"
     },
@@ -592,6 +647,11 @@
         [500, 2.451],
         [599, 1.911],
         [749, 1.3]
+      ],
+      "variants": [
+        { "orderCode": "EMMB-ST-87-M-SMB", "partNumber": "8156160", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMB-ST-87-M-SB", "partNumber": "8156158", "shaft": "plain", "seal": false, "encoder": "none" },
+        { "orderCode": "EMMB-ST-87-M-SSB", "partNumber": "8156159", "shaft": "plain", "seal": false, "encoder": "single" }
       ],
       "orderCode": "EMMB-ST-87-M-SSB",
       "partNumber": "8156159"

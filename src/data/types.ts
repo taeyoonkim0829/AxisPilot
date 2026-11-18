@@ -176,8 +176,24 @@ export interface Motor {
   /** Festo: order type of the base configuration (smooth shaft, single-turn encoder …) and its part number */
   orderCode?: string | null
   partNumber?: string | null
+  /** Festo: the order options of this motor (same brake), from the data sheets' ordering data; EMMT-AS/-EC
+   *  featherkey / shaft seal combinations the tables leave out have no part number (ordered by type code) */
+  variants?: MotorVariant[]
   /** kg; so far only Mitsubishi HK-* */
   mass?: number | null
+}
+
+/** Motor order options compared in 제품 비교 */
+export interface MotorOptions {
+  shaft: 'plain' | 'key'
+  /** radial shaft seal (Siemens IP65, Festo R / A) */
+  seal: boolean
+  encoder: 'single' | 'multi' | 'none'
+}
+
+export interface MotorVariant extends MotorOptions {
+  orderCode: string
+  partNumber: string | null
 }
 
 /** Servo drive: Festo CMMT-AS / CMMT-ST, Siemens S210 / V90 */

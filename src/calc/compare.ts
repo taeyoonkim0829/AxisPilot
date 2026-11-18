@@ -1,4 +1,4 @@
-import type { Axis, AxisFamily, Motor, ThirdPartyAxis } from '../data/types'
+import type { Axis, AxisFamily, Motor, MotorOptions, MotorVariant, ThirdPartyAxis } from '../data/types'
 import { G, guideComparisonValue, guideLoads } from './axisSelection'
 import type { Mounting, Requirements } from './types'
 
@@ -168,6 +168,46 @@ export function motorCandidates(ref: Motor, motors: Motor[], filter: MotorCandid
     .map((m) => ({ m, s: score(m) }))
     .sort((x, y) => x.s - y.s || x.m.model.localeCompare(y.m.model))
     .map((x) => x.m)
+}
+
+/**
+ * Siemens 1FK2 article number for the order options, from the model (up to the brake digit). Positions read from
+ * Siemens's per-article data sheets: 13th IP64 0 / IP65 (shaft seal) 1, 14th plain shaft 0 / fitted key 1, 15th
+ * encoder AS22DQC S / AM22DQC M, then A0. Other motors: null (their model is the order designation).
+ */
+export function siemensArticle(m: Motor, o: MotorOptions): string | null {
+  if (m.maker !== 'Siemens' || m.family !== '1FK2' || o.encoder === 'none') return null
+  const base = m.model.replace(/ \(.*\)$/, '')
+  return `${base}${o.seal ? 1 : 0}-${o.shaft === 'key' ? 1 : 0}${o.encoder === 'multi' ? 'M' : 'S'}A0`
+}
+
+export interface VariantMatch {
+  variant: MotorVariant | null
+  /** options the Festo motor is not offered with (the variant is the nearest) */
+  differs: (keyof MotorOptions)[]
+}
+
+/** The Festo motor's order variant closest to the options (fewest differences, encoder first) */
+export function festoVariant(m: Motor, o: MotorOptions): VariantMatch {
+  const keys: (keyof MotorOptions)[] = ['encoder', 'shaft', 'seal']
+  const diff = (v: MotorVariant) => keys.filter((k) => v[k] !== o[k])
+  const weight = (v: MotorVariant) => diff(v).reduce((s, k) => s + (k === 'encoder' ? 4 : k === 'shaft' ? 2 : 1), 0)
+  const variant = [...(m.variants ?? [])].sort((a, b) => weight(a) - weight(b))[0] ?? null
+  return { variant, differs: variant ? diff(variant) : [] }
+}
+
+const SHAFT_TEXT = { plain: '평축', key: '키 축' } as const
+const ENCODER_TEXT = { single: '싱글턴', multi: '멀티턴', none: '없음' } as const
+
+/** The order option rows: the compared motor's choice and the Festo variant's */
+export function motorOptionRows(o: MotorOptions, v: MotorVariant | null, refBrake: boolean, festoBrake: boolean): SpecRow[] {
+  const seal = (s: boolean) => (s ? '있음' : '없음')
+  return [
+    row('축 끝', '', SHAFT_TEXT[o.shaft], v ? SHAFT_TEXT[v.shaft] : null),
+    row('축 씰', '', seal(o.seal), v ? seal(v.seal) : null),
+    row('엔코더', '', ENCODER_TEXT[o.encoder], v ? ENCODER_TEXT[v.encoder] : null),
+    row('브레이크', '', seal(refBrake), seal(festoBrake)),
+  ]
 }
 
 export function motorSpecRows(ref: Motor, festo: Motor): SpecRow[] {

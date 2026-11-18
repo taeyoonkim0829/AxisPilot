@@ -36,6 +36,16 @@
       "winding": "ES",
       "controller": "CMMT-ST",
       "preferredController": null,
+      "variants": [
+        { "orderCode": "EMMT-EC-40-M-ES-R1MC", "partNumber": "8171405", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-EC-40-M-ES-R1SC", "partNumber": "8171404", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-EC-40-MR-ES-R1MC", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-EC-40-MR-ES-R1SC", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-EC-40-MK-ES-R1MC", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-EC-40-MK-ES-R1SC", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-EC-40-MKR-ES-R1MC", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-EC-40-MKR-ES-R1SC", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-EC-40-M-ES-R1SC",
       "partNumber": "8171404"
     },
@@ -75,6 +85,16 @@
       "winding": "ES",
       "controller": "CMMT-ST",
       "preferredController": null,
+      "variants": [
+        { "orderCode": "EMMT-EC-40-M-ES-R1MCB", "partNumber": "8171407", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-EC-40-M-ES-R1SCB", "partNumber": "8171406", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-EC-40-MR-ES-R1MCB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-EC-40-MR-ES-R1SCB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-EC-40-MK-ES-R1MCB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-EC-40-MK-ES-R1SCB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-EC-40-MKR-ES-R1MCB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-EC-40-MKR-ES-R1SCB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-EC-40-M-ES-R1SCB",
       "partNumber": "8171406"
     },
@@ -114,6 +134,16 @@
       "winding": "LS",
       "controller": "CMMT-AS-3A",
       "preferredController": null,
+      "variants": [
+        { "orderCode": "EMMT-AS-40-M-LS-R2M", "partNumber": "8171417", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-40-M-LS-R2S", "partNumber": "8171416", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-40-MR-LS-R2M", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-40-MR-LS-R2S", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-40-MK-LS-R2M", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-40-MK-LS-R2S", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-40-MKR-LS-R2M", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-40-MKR-LS-R2S", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-40-M-LS-R2S",
       "partNumber": "8171416"
     },
@@ -153,6 +183,16 @@
       "winding": "LS",
       "controller": "CMMT-AS-3A",
       "preferredController": null,
+      "variants": [
+        { "orderCode": "EMMT-AS-40-M-LS-R2MB", "partNumber": "8171419", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-40-M-LS-R2SB", "partNumber": "8171418", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-40-MR-LS-R2MB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-40-MR-LS-R2SB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-40-MK-LS-R2MB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-40-MK-LS-R2SB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-40-MKR-LS-R2MB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-40-MKR-LS-R2SB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-40-M-LS-R2SB",
       "partNumber": "8171418"
     },
@@ -192,6 +232,16 @@
       "winding": "ES",
       "controller": "CMMT-ST",
       "preferredController": null,
+      "variants": [
+        { "orderCode": "EMMT-EC-40-S-ES-R1MC", "partNumber": "8171401", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-EC-40-S-ES-R1SC", "partNumber": "8171400", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-EC-40-SR-ES-R1MC", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-EC-40-SR-ES-R1SC", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-EC-40-SK-ES-R1MC", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-EC-40-SK-ES-R1SC", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-EC-40-SKR-ES-R1MC", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-EC-40-SKR-ES-R1SC", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-EC-40-S-ES-R1SC",
       "partNumber": "8171400"
     },
@@ -231,6 +281,16 @@
       "winding": "ES",
       "controller": "CMMT-ST",
       "preferredController": null,
+      "variants": [
+        { "orderCode": "EMMT-EC-40-S-ES-R1MCB", "partNumber": "8171403", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-EC-40-S-ES-R1SCB", "partNumber": "8171402", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-EC-40-SR-ES-R1MCB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-EC-40-SR-ES-R1SCB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-EC-40-SK-ES-R1MCB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-EC-40-SK-ES-R1SCB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-EC-40-SKR-ES-R1MCB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-EC-40-SKR-ES-R1SCB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-EC-40-S-ES-R1SCB",
       "partNumber": "8171402"
     },
@@ -270,6 +330,16 @@
       "winding": "LS",
       "controller": "CMMT-AS-3A",
       "preferredController": null,
+      "variants": [
+        { "orderCode": "EMMT-AS-40-S-LS-R2M", "partNumber": "8171413", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-40-S-LS-R2S", "partNumber": "8171412", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-40-SR-LS-R2M", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-40-SR-LS-R2S", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-40-SK-LS-R2M", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-40-SK-LS-R2S", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-40-SKR-LS-R2M", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-40-SKR-LS-R2S", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-40-S-LS-R2S",
       "partNumber": "8171412"
     },
@@ -309,6 +379,16 @@
       "winding": "LS",
       "controller": "CMMT-AS-3A",
       "preferredController": null,
+      "variants": [
+        { "orderCode": "EMMT-AS-40-S-LS-R2MB", "partNumber": "8171415", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-40-S-LS-R2SB", "partNumber": "8171414", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-40-SR-LS-R2MB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-40-SR-LS-R2SB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-40-SK-LS-R2MB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-40-SK-LS-R2SB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-40-SKR-LS-R2MB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-40-SKR-LS-R2SB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-40-S-LS-R2SB",
       "partNumber": "8171414"
     },
@@ -348,6 +428,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C5-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-60-L-HS-RM", "partNumber": "5242217", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-L-HS-RS", "partNumber": "5242216", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-LR-HS-RM", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-LR-HS-RS", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-LK-HS-RM", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-LK-HS-RS", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-LKR-HS-RM", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-LKR-HS-RS", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-60-L-HS-RS",
       "partNumber": "5242216"
     },
@@ -387,6 +477,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C5-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-60-L-HS-RMB", "partNumber": "5242219", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-L-HS-RSB", "partNumber": "5242218", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-LR-HS-RMB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-LR-HS-RSB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-LK-HS-RMB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-LK-HS-RSB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-LKR-HS-RMB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-LKR-HS-RSB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-60-L-HS-RSB",
       "partNumber": "5242218"
     },
@@ -426,6 +526,16 @@
       "winding": "LS",
       "controller": "CMMT-AS-3A",
       "preferredController": "CMMT-AS-C4-3A-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-60-L-LS-RM", "partNumber": "5242213", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-L-LS-RS", "partNumber": "5242212", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-LR-LS-RM", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-LR-LS-RS", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-LK-LS-RM", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-LK-LS-RS", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-LKR-LS-RM", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-LKR-LS-RS", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-60-L-LS-RS",
       "partNumber": "5242212"
     },
@@ -465,6 +575,16 @@
       "winding": "LS",
       "controller": "CMMT-AS-3A",
       "preferredController": "CMMT-AS-C4-3A-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-60-L-LS-RMB", "partNumber": "5242215", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-L-LS-RSB", "partNumber": "5242214", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-LR-LS-RMB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-LR-LS-RSB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-LK-LS-RMB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-LK-LS-RSB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-LKR-LS-RMB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-LKR-LS-RSB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-60-L-LS-RSB",
       "partNumber": "5242214"
     },
@@ -504,6 +624,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C3-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-60-M-HS-RM", "partNumber": "5242209", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-M-HS-RS", "partNumber": "5242208", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-MR-HS-RM", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-MR-HS-RS", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-MK-HS-RM", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-MK-HS-RS", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-MKR-HS-RM", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-MKR-HS-RS", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-60-M-HS-RS",
       "partNumber": "5242208"
     },
@@ -543,6 +673,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C3-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-60-M-HS-RMB", "partNumber": "5242211", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-M-HS-RSB", "partNumber": "5242210", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-MR-HS-RMB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-MR-HS-RSB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-MK-HS-RMB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-MK-HS-RSB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-MKR-HS-RMB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-MKR-HS-RSB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-60-M-HS-RSB",
       "partNumber": "5242210"
     },
@@ -582,6 +722,16 @@
       "winding": "LS",
       "controller": "CMMT-AS-3A",
       "preferredController": "CMMT-AS-C4-3A-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-60-M-LS-RM", "partNumber": "5242205", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-M-LS-RS", "partNumber": "5242204", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-MR-LS-RM", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-MR-LS-RS", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-MK-LS-RM", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-MK-LS-RS", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-MKR-LS-RM", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-MKR-LS-RS", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-60-M-LS-RS",
       "partNumber": "5242204"
     },
@@ -621,6 +771,16 @@
       "winding": "LS",
       "controller": "CMMT-AS-3A",
       "preferredController": "CMMT-AS-C4-3A-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-60-M-LS-RMB", "partNumber": "5242207", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-M-LS-RSB", "partNumber": "5242206", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-MR-LS-RMB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-MR-LS-RSB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-MK-LS-RMB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-MK-LS-RSB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-MKR-LS-RMB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-MKR-LS-RSB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-60-M-LS-RSB",
       "partNumber": "5242206"
     },
@@ -660,6 +820,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C2-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-60-S-HS-RM", "partNumber": "5242201", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-S-HS-RS", "partNumber": "5242200", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-SR-HS-RM", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-SR-HS-RS", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-SK-HS-RM", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-SK-HS-RS", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-SKR-HS-RM", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-SKR-HS-RS", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-60-S-HS-RS",
       "partNumber": "5242200"
     },
@@ -699,6 +869,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C2-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-60-S-HS-RMB", "partNumber": "5242203", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-S-HS-RSB", "partNumber": "5242202", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-SR-HS-RMB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-SR-HS-RSB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-SK-HS-RMB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-SK-HS-RSB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-SKR-HS-RMB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-SKR-HS-RSB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-60-S-HS-RSB",
       "partNumber": "5242202"
     },
@@ -738,6 +918,16 @@
       "winding": "LS",
       "controller": "CMMT-AS-3A",
       "preferredController": "CMMT-AS-C2-3A-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-60-S-LS-RM", "partNumber": "5242197", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-S-LS-RS", "partNumber": "5242196", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-SR-LS-RM", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-SR-LS-RS", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-SK-LS-RM", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-SK-LS-RS", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-SKR-LS-RM", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-SKR-LS-RS", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-60-S-LS-RS",
       "partNumber": "5242196"
     },
@@ -777,6 +967,16 @@
       "winding": "LS",
       "controller": "CMMT-AS-3A",
       "preferredController": "CMMT-AS-C2-3A-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-60-S-LS-RMB", "partNumber": "5242199", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-S-LS-RSB", "partNumber": "5242198", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-SR-LS-RMB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-SR-LS-RSB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-SK-LS-RMB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-SK-LS-RSB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-60-SKR-LS-RMB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-60-SKR-LS-RSB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-60-S-LS-RSB",
       "partNumber": "5242198"
     },
@@ -816,6 +1016,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C5-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-80-H-HS-RM", "partNumber": "8172104", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-H-HS-RS", "partNumber": "610909", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-HR-HS-RM", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-HR-HS-RS", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-HK-HS-RM", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-HK-HS-RS", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-HKR-HS-RM", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-HKR-HS-RS", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-80-H-HS-RS",
       "partNumber": "610909"
     },
@@ -855,6 +1065,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C5-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-80-H-HS-RMB", "partNumber": "8172026", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-H-HS-RSB", "partNumber": "610908", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-HR-HS-RMB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-HR-HS-RSB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-HK-HS-RMB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-HK-HS-RSB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-HKR-HS-RMB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-HKR-HS-RSB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-80-H-HS-RSB",
       "partNumber": "610908"
     },
@@ -894,6 +1114,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C5-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-80-L-HS-RM", "partNumber": "5255446", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-L-HS-RS", "partNumber": "5255445", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-LR-HS-RM", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-LR-HS-RS", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-LK-HS-RM", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-LK-HS-RS", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-LKR-HS-RM", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-LKR-HS-RS", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-80-L-HS-RS",
       "partNumber": "5255445"
     },
@@ -933,6 +1163,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C5-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-80-L-HS-RMB", "partNumber": "5255448", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-L-HS-RSB", "partNumber": "5255447", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-LR-HS-RMB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-LR-HS-RSB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-LK-HS-RMB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-LK-HS-RSB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-LKR-HS-RMB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-LKR-HS-RSB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-80-L-HS-RSB",
       "partNumber": "5255447"
     },
@@ -972,6 +1212,16 @@
       "winding": "LS",
       "controller": "CMMT-AS-3A",
       "preferredController": "CMMT-AS-C4-3A-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-80-L-LS-RM", "partNumber": "5255442", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-L-LS-RS", "partNumber": "5255441", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-LR-LS-RM", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-LR-LS-RS", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-LK-LS-RM", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-LK-LS-RS", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-LKR-LS-RM", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-LKR-LS-RS", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-80-L-LS-RS",
       "partNumber": "5255441"
     },
@@ -1011,6 +1261,16 @@
       "winding": "LS",
       "controller": "CMMT-AS-3A",
       "preferredController": "CMMT-AS-C4-3A-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-80-L-LS-RMB", "partNumber": "5255444", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-L-LS-RSB", "partNumber": "5255443", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-LR-LS-RMB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-LR-LS-RSB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-LK-LS-RMB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-LK-LS-RSB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-LKR-LS-RMB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-LKR-LS-RSB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-80-L-LS-RSB",
       "partNumber": "5255443"
     },
@@ -1050,6 +1310,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C3-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-80-M-HS-RM", "partNumber": "5255438", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-M-HS-RS", "partNumber": "5255437", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-MR-HS-RM", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-MR-HS-RS", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-MK-HS-RM", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-MK-HS-RS", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-MKR-HS-RM", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-MKR-HS-RS", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-80-M-HS-RS",
       "partNumber": "5255437"
     },
@@ -1089,6 +1359,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C3-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-80-M-HS-RMB", "partNumber": "5255440", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-M-HS-RSB", "partNumber": "5255439", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-MR-HS-RMB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-MR-HS-RSB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-MK-HS-RMB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-MK-HS-RSB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-MKR-HS-RMB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-MKR-HS-RSB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-80-M-HS-RSB",
       "partNumber": "5255439"
     },
@@ -1128,6 +1408,16 @@
       "winding": "LS",
       "controller": "CMMT-AS-3A",
       "preferredController": "CMMT-AS-C4-3A-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-80-M-LS-RM", "partNumber": "5255434", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-M-LS-RS", "partNumber": "5255433", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-MR-LS-RM", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-MR-LS-RS", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-MK-LS-RM", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-MK-LS-RS", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-MKR-LS-RM", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-MKR-LS-RS", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-80-M-LS-RS",
       "partNumber": "5255433"
     },
@@ -1167,6 +1457,16 @@
       "winding": "LS",
       "controller": "CMMT-AS-3A",
       "preferredController": "CMMT-AS-C4-3A-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-80-M-LS-RMB", "partNumber": "5255436", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-M-LS-RSB", "partNumber": "5255435", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-MR-LS-RMB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-MR-LS-RSB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-MK-LS-RMB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-MK-LS-RSB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-MKR-LS-RMB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-MKR-LS-RSB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-80-M-LS-RSB",
       "partNumber": "5255435"
     },
@@ -1206,6 +1506,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C3-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-80-S-HS-RM", "partNumber": "5255430", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-S-HS-RS", "partNumber": "5255429", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-SR-HS-RM", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-SR-HS-RS", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-SK-HS-RM", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-SK-HS-RS", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-SKR-HS-RM", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-SKR-HS-RS", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-80-S-HS-RS",
       "partNumber": "5255429"
     },
@@ -1245,6 +1555,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C3-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-80-S-HS-RMB", "partNumber": "5255432", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-S-HS-RSB", "partNumber": "5255431", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-SR-HS-RMB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-SR-HS-RSB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-SK-HS-RMB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-SK-HS-RSB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-SKR-HS-RMB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-SKR-HS-RSB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-80-S-HS-RSB",
       "partNumber": "5255431"
     },
@@ -1284,6 +1604,16 @@
       "winding": "LS",
       "controller": "CMMT-AS-3A",
       "preferredController": "CMMT-AS-C4-3A-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-80-S-LS-RM", "partNumber": "5255426", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-S-LS-RS", "partNumber": "5255425", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-SR-LS-RM", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-SR-LS-RS", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-SK-LS-RM", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-SK-LS-RS", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-SKR-LS-RM", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-SKR-LS-RS", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-80-S-LS-RS",
       "partNumber": "5255425"
     },
@@ -1323,6 +1653,16 @@
       "winding": "LS",
       "controller": "CMMT-AS-3A",
       "preferredController": "CMMT-AS-C4-3A-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-80-S-LS-RMB", "partNumber": "5255428", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-S-LS-RSB", "partNumber": "5255427", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-SR-LS-RMB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-SR-LS-RSB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-SK-LS-RMB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-SK-LS-RSB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-80-SKR-LS-RMB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-80-SKR-LS-RSB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-80-S-LS-RSB",
       "partNumber": "5255427"
     },
@@ -1362,6 +1702,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": null,
+      "variants": [
+        { "orderCode": "EMMT-AS-100-H-HS-RM", "partNumber": "8182016", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-H-HS-RS", "partNumber": "8182017", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-HR-HS-RM", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-HR-HS-RS", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-HK-HS-RM", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-HK-HS-RS", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-HKR-HS-RM", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-HKR-HS-RS", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-100-H-HS-RS",
       "partNumber": "8182017"
     },
@@ -1401,6 +1751,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": null,
+      "variants": [
+        { "orderCode": "EMMT-AS-100-H-HS-RMB", "partNumber": "8182014", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-H-HS-RSB", "partNumber": "8182015", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-HR-HS-RMB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-HR-HS-RSB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-HK-HS-RMB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-HK-HS-RSB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-HKR-HS-RMB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-HKR-HS-RSB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-100-H-HS-RSB",
       "partNumber": "8182015"
     },
@@ -1440,6 +1800,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C7-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-100-L-HS-RM", "partNumber": "5255535", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-L-HS-RS", "partNumber": "5255534", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-LR-HS-RM", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-LR-HS-RS", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-LK-HS-RM", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-LK-HS-RS", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-LKR-HS-RM", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-LKR-HS-RS", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-100-L-HS-RS",
       "partNumber": "5255534"
     },
@@ -1479,6 +1849,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C7-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-100-L-HS-RMB", "partNumber": "5255537", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-L-HS-RSB", "partNumber": "5255536", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-LR-HS-RMB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-LR-HS-RSB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-LK-HS-RMB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-LK-HS-RSB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-LKR-HS-RMB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-LKR-HS-RSB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-100-L-HS-RSB",
       "partNumber": "5255536"
     },
@@ -1518,6 +1898,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C5-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-100-M-HS-RM", "partNumber": "5255531", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-M-HS-RS", "partNumber": "5255530", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-MR-HS-RM", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-MR-HS-RS", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-MK-HS-RM", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-MK-HS-RS", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-MKR-HS-RM", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-MKR-HS-RS", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-100-M-HS-RS",
       "partNumber": "5255530"
     },
@@ -1557,6 +1947,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C5-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-100-M-HS-RMB", "partNumber": "5255533", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-M-HS-RSB", "partNumber": "5255532", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-MR-HS-RMB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-MR-HS-RSB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-MK-HS-RMB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-MK-HS-RSB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-MKR-HS-RMB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-MKR-HS-RSB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-100-M-HS-RSB",
       "partNumber": "5255532"
     },
@@ -1596,6 +1996,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C5-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-100-S-HS-RM", "partNumber": "5255521", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-S-HS-RS", "partNumber": "5255519", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-SR-HS-RM", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-SR-HS-RS", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-SK-HS-RM", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-SK-HS-RS", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-SKR-HS-RM", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-SKR-HS-RS", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-100-S-HS-RS",
       "partNumber": "5255519"
     },
@@ -1635,6 +2045,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C5-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-100-S-HS-RMB", "partNumber": "5255529", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-S-HS-RSB", "partNumber": "5255528", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-SR-HS-RMB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-SR-HS-RSB", "partNumber": null, "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-SK-HS-RMB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-SK-HS-RSB", "partNumber": null, "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-100-SKR-HS-RMB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-100-SKR-HS-RSB", "partNumber": null, "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-100-S-HS-RSB",
       "partNumber": "5255528"
     },
@@ -1674,6 +2094,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C12-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-150-L-HS-R3M", "partNumber": "8148325", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-L-HS-R3S", "partNumber": "8148324", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-LR-HS-R3M", "partNumber": "8148349", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-LR-HS-R3S", "partNumber": "8148348", "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-LK-HS-R3M", "partNumber": "8148337", "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-LK-HS-R3S", "partNumber": "8148336", "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-LKR-HS-R3M", "partNumber": "8148361", "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-LKR-HS-R3S", "partNumber": "8148360", "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-150-L-HS-R3S",
       "partNumber": "8148324"
     },
@@ -1713,6 +2143,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C12-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-150-L-HS-R3MB", "partNumber": "8148328", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-L-HS-R3SB", "partNumber": "8148327", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-LR-HS-R3MB", "partNumber": "8148352", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-LR-HS-R3SB", "partNumber": "8148351", "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-LK-HS-R3MB", "partNumber": "8148340", "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-LK-HS-R3SB", "partNumber": "8148339", "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-LKR-HS-R3MB", "partNumber": "8148364", "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-LKR-HS-R3SB", "partNumber": "8148363", "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-150-L-HS-R3SB",
       "partNumber": "8148327"
     },
@@ -1752,6 +2192,16 @@
       "winding": "HT",
       "controller": "CMMT-AS-11A",
       "preferredController": null,
+      "variants": [
+        { "orderCode": "EMMT-AS-150-L-HT-R2M", "partNumber": "8148319", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-L-HT-R2S", "partNumber": "8148318", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-LR-HT-R2M", "partNumber": "8148343", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-LR-HT-R2S", "partNumber": "8148342", "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-LK-HT-R2M", "partNumber": "8148331", "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-LK-HT-R2S", "partNumber": "8148330", "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-LKR-HT-R2M", "partNumber": "8148355", "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-LKR-HT-R2S", "partNumber": "8148354", "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-150-L-HT-R2S",
       "partNumber": "8148318"
     },
@@ -1791,6 +2241,16 @@
       "winding": "HT",
       "controller": "CMMT-AS-11A",
       "preferredController": null,
+      "variants": [
+        { "orderCode": "EMMT-AS-150-L-HT-R2MB", "partNumber": "8148322", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-L-HT-R2SB", "partNumber": "8148321", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-LR-HT-R2MB", "partNumber": "8148346", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-LR-HT-R2SB", "partNumber": "8148345", "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-LK-HT-R2MB", "partNumber": "8148334", "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-LK-HT-R2SB", "partNumber": "8148333", "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-LKR-HT-R2MB", "partNumber": "8148358", "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-LKR-HT-R2SB", "partNumber": "8148357", "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-150-L-HT-R2SB",
       "partNumber": "8148321"
     },
@@ -1830,6 +2290,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C7-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-150-M-HS-R2M", "partNumber": "8148271", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-M-HS-R2S", "partNumber": "8148270", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-MR-HS-R2M", "partNumber": "8148295", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-MR-HS-R2S", "partNumber": "8148294", "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-MK-HS-R2M", "partNumber": "8148283", "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-MK-HS-R2S", "partNumber": "8148282", "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-MKR-HS-R2M", "partNumber": "8148307", "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-MKR-HS-R2S", "partNumber": "8148306", "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-150-M-HS-R2S",
       "partNumber": "8148270"
     },
@@ -1869,6 +2339,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C7-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-150-M-HS-R2MB", "partNumber": "8148274", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-M-HS-R2SB", "partNumber": "8148273", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-MR-HS-R2MB", "partNumber": "8148298", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-MR-HS-R2SB", "partNumber": "8148297", "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-MK-HS-R2MB", "partNumber": "8148286", "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-MK-HS-R2SB", "partNumber": "8148285", "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-MKR-HS-R2MB", "partNumber": "8148310", "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-MKR-HS-R2SB", "partNumber": "8148309", "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-150-M-HS-R2SB",
       "partNumber": "8148273"
     },
@@ -1908,6 +2388,16 @@
       "winding": "HV",
       "controller": "CMMT-AS-11A",
       "preferredController": null,
+      "variants": [
+        { "orderCode": "EMMT-AS-150-M-HV-R3M", "partNumber": "8148277", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-M-HV-R3S", "partNumber": "8148276", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-MR-HV-R3M", "partNumber": "8148301", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-MR-HV-R3S", "partNumber": "8148300", "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-MK-HV-R3M", "partNumber": "8148289", "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-MK-HV-R3S", "partNumber": "8148288", "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-MKR-HV-R3M", "partNumber": "8148313", "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-MKR-HV-R3S", "partNumber": "8148312", "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-150-M-HV-R3S",
       "partNumber": "8148276"
     },
@@ -1947,6 +2437,16 @@
       "winding": "HV",
       "controller": "CMMT-AS-11A",
       "preferredController": null,
+      "variants": [
+        { "orderCode": "EMMT-AS-150-M-HV-R3MB", "partNumber": "8148280", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-M-HV-R3SB", "partNumber": "8148279", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-MR-HV-R3MB", "partNumber": "8148304", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-MR-HV-R3SB", "partNumber": "8148303", "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-MK-HV-R3MB", "partNumber": "8148292", "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-MK-HV-R3SB", "partNumber": "8148291", "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-150-MKR-HV-R3MB", "partNumber": "8148316", "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-150-MKR-HV-R3SB", "partNumber": "8148315", "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-150-M-HV-R3SB",
       "partNumber": "8148279"
     },
@@ -1986,6 +2486,16 @@
       "winding": "HT",
       "controller": "CMMT-AS-11A",
       "preferredController": null,
+      "variants": [
+        { "orderCode": "EMMT-AS-190-L-HT-R3M", "partNumber": "8148391", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-190-L-HT-R3S", "partNumber": "8148390", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-190-LR-HT-R3M", "partNumber": "8148403", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-190-LR-HT-R3S", "partNumber": "8148402", "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-190-LK-HT-R3M", "partNumber": "8148397", "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-190-LK-HT-R3S", "partNumber": "8148396", "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-190-LKR-HT-R3M", "partNumber": "8148409", "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-190-LKR-HT-R3S", "partNumber": "8148408", "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-190-L-HT-R3S",
       "partNumber": "8148390"
     },
@@ -2025,6 +2535,16 @@
       "winding": "HT",
       "controller": "CMMT-AS-11A",
       "preferredController": null,
+      "variants": [
+        { "orderCode": "EMMT-AS-190-L-HT-R3MB", "partNumber": "8148394", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-190-L-HT-R3SB", "partNumber": "8148393", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-190-LR-HT-R3MB", "partNumber": "8148406", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-190-LR-HT-R3SB", "partNumber": "8148405", "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-190-LK-HT-R3MB", "partNumber": "8148400", "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-190-LK-HT-R3SB", "partNumber": "8148399", "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-190-LKR-HT-R3MB", "partNumber": "8148412", "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-190-LKR-HT-R3SB", "partNumber": "8148411", "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-190-L-HT-R3SB",
       "partNumber": "8148393"
     },
@@ -2064,6 +2584,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C12-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-190-M-HS-R3M", "partNumber": "8148367", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-190-M-HS-R3S", "partNumber": "8148366", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-190-MR-HS-R3M", "partNumber": "8148379", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-190-MR-HS-R3S", "partNumber": "8148378", "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-190-MK-HS-R3M", "partNumber": "8148373", "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-190-MK-HS-R3S", "partNumber": "8148372", "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-190-MKR-HS-R3M", "partNumber": "8148385", "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-190-MKR-HS-R3S", "partNumber": "8148384", "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-190-M-HS-R3S",
       "partNumber": "8148366"
     },
@@ -2103,6 +2633,16 @@
       "winding": "HS",
       "controller": "CMMT-AS-11A",
       "preferredController": "CMMT-AS-C12-11A-P3-MP-S1",
+      "variants": [
+        { "orderCode": "EMMT-AS-190-M-HS-R3MB", "partNumber": "8148370", "shaft": "plain", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-190-M-HS-R3SB", "partNumber": "8148369", "shaft": "plain", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-190-MR-HS-R3MB", "partNumber": "8148382", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-190-MR-HS-R3SB", "partNumber": "8148381", "shaft": "plain", "seal": true, "encoder": "single" },
+        { "orderCode": "EMMT-AS-190-MK-HS-R3MB", "partNumber": "8148376", "shaft": "key", "seal": false, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-190-MK-HS-R3SB", "partNumber": "8148375", "shaft": "key", "seal": false, "encoder": "single" },
+        { "orderCode": "EMMT-AS-190-MKR-HS-R3MB", "partNumber": "8148388", "shaft": "key", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMT-AS-190-MKR-HS-R3SB", "partNumber": "8148387", "shaft": "key", "seal": true, "encoder": "single" }
+      ],
       "orderCode": "EMMT-AS-190-M-HS-R3SB",
       "partNumber": "8148369"
     }

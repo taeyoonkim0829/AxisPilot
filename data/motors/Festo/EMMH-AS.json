@@ -35,6 +35,10 @@
       "interfaceCode": "68C",
       "winding": "HS",
       "controller": "CMMT-AS-11A",
+      "variants": [
+        { "orderCode": "EMMH-AS-68-HA-HS-S1M-T", "partNumber": "8215345", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMH-AS-68-HKA-HS-S1M-T", "partNumber": "8215346", "shaft": "key", "seal": true, "encoder": "multi" }
+      ],
       "orderCode": "EMMH-AS-68-HA-HS-S1M-T",
       "partNumber": "8215345"
     },
@@ -73,6 +77,10 @@
       "interfaceCode": "68C",
       "winding": "HS",
       "controller": "CMMT-AS-11A",
+      "variants": [
+        { "orderCode": "EMMH-AS-68-HA-HS-S1MB-T", "partNumber": "8215347", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMH-AS-68-HKA-HS-S1MB-T", "partNumber": "8215348", "shaft": "key", "seal": true, "encoder": "multi" }
+      ],
       "orderCode": "EMMH-AS-68-HA-HS-S1MB-T",
       "partNumber": "8215347"
     },
@@ -111,6 +119,10 @@
       "interfaceCode": "68C",
       "winding": "HS",
       "controller": "CMMT-AS-11A",
+      "variants": [
+        { "orderCode": "EMMH-AS-68-MA-HS-S1M-T", "partNumber": "8215341", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMH-AS-68-MKA-HS-S1M-T", "partNumber": "8215342", "shaft": "key", "seal": true, "encoder": "multi" }
+      ],
       "orderCode": "EMMH-AS-68-MA-HS-S1M-T",
       "partNumber": "8215341"
     },
@@ -149,6 +161,10 @@
       "interfaceCode": "68C",
       "winding": "HS",
       "controller": "CMMT-AS-11A",
+      "variants": [
+        { "orderCode": "EMMH-AS-68-MA-HS-S1MB-T", "partNumber": "8215343", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMH-AS-68-MKA-HS-S1MB-T", "partNumber": "8215344", "shaft": "key", "seal": true, "encoder": "multi" }
+      ],
       "orderCode": "EMMH-AS-68-MA-HS-S1MB-T",
       "partNumber": "8215343"
     },
@@ -187,6 +203,10 @@
       "interfaceCode": "88C",
       "winding": "HS",
       "controller": "CMMT-AS-11A",
+      "variants": [
+        { "orderCode": "EMMH-AS-88-HA-HS-S1M-T", "partNumber": "8215353", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMH-AS-88-HKA-HS-S1M-T", "partNumber": "8215354", "shaft": "key", "seal": true, "encoder": "multi" }
+      ],
       "orderCode": "EMMH-AS-88-HA-HS-S1M-T",
       "partNumber": "8215353"
     },
@@ -225,6 +245,10 @@
       "interfaceCode": "88C",
       "winding": "HS",
       "controller": "CMMT-AS-11A",
+      "variants": [
+        { "orderCode": "EMMH-AS-88-HA-HS-S1MB-T", "partNumber": "8215355", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMH-AS-88-HKA-HS-S1MB-T", "partNumber": "8215356", "shaft": "key", "seal": true, "encoder": "multi" }
+      ],
       "orderCode": "EMMH-AS-88-HA-HS-S1MB-T",
       "partNumber": "8215355"
     },
@@ -263,6 +287,10 @@
       "interfaceCode": "88C",
       "winding": "HS",
       "controller": "CMMT-AS-11A",
+      "variants": [
+        { "orderCode": "EMMH-AS-88-MA-HS-S1M-T", "partNumber": "8215349", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMH-AS-88-MKA-HS-S1M-T", "partNumber": "8215350", "shaft": "key", "seal": true, "encoder": "multi" }
+      ],
       "orderCode": "EMMH-AS-88-MA-HS-S1M-T",
       "partNumber": "8215349"
     },
@@ -301,6 +329,10 @@
       "interfaceCode": "88C",
       "winding": "HS",
       "controller": "CMMT-AS-11A",
+      "variants": [
+        { "orderCode": "EMMH-AS-88-MA-HS-S1MB-T", "partNumber": "8215351", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMH-AS-88-MKA-HS-S1MB-T", "partNumber": "8215352", "shaft": "key", "seal": true, "encoder": "multi" }
+      ],
       "orderCode": "EMMH-AS-88-MA-HS-S1MB-T",
       "partNumber": "8215351"
     },
@@ -339,6 +371,10 @@
       "interfaceCode": "108C",
       "winding": "HS",
       "controller": "CMMT-AS-11A",
+      "variants": [
+        { "orderCode": "EMMH-AS-108-HA-HS-S1M-T", "partNumber": "8215361", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMH-AS-108-HKA-HS-S1M-T", "partNumber": "8215362", "shaft": "key", "seal": true, "encoder": "multi" }
+      ],
       "orderCode": "EMMH-AS-108-HA-HS-S1M-T",
       "partNumber": "8215361"
     },
@@ -377,6 +413,10 @@
       "interfaceCode": "108C",
       "winding": "HS",
       "controller": "CMMT-AS-11A",
+      "variants": [
+        { "orderCode": "EMMH-AS-108-HA-HS-S1MB-T", "partNumber": "8215363", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMH-AS-108-HKA-HS-S1MB-T", "partNumber": "8215364", "shaft": "key", "seal": true, "encoder": "multi" }
+      ],
       "orderCode": "EMMH-AS-108-HA-HS-S1MB-T",
       "partNumber": "8215363"
     },
@@ -415,6 +455,10 @@
       "interfaceCode": "108C",
       "winding": "HS",
       "controller": "CMMT-AS-11A",
+      "variants": [
+        { "orderCode": "EMMH-AS-108-MA-HS-S1M-T", "partNumber": "8215357", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMH-AS-108-MKA-HS-S1M-T", "partNumber": "8215358", "shaft": "key", "seal": true, "encoder": "multi" }
+      ],
       "orderCode": "EMMH-AS-108-MA-HS-S1M-T",
       "partNumber": "8215357"
     },
@@ -453,6 +497,10 @@
       "interfaceCode": "108C",
       "winding": "HS",
       "controller": "CMMT-AS-11A",
+      "variants": [
+        { "orderCode": "EMMH-AS-108-MA-HS-S1MB-T", "partNumber": "8215359", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMH-AS-108-MKA-HS-S1MB-T", "partNumber": "8215360", "shaft": "key", "seal": true, "encoder": "multi" }
+      ],
       "orderCode": "EMMH-AS-108-MA-HS-S1MB-T",
       "partNumber": "8215359"
     },
@@ -491,6 +539,10 @@
       "interfaceCode": "138C",
       "winding": "HS",
       "controller": "CMMT-AS-11A",
+      "variants": [
+        { "orderCode": "EMMH-AS-138-HA-HS-S1M-T", "partNumber": "8215369", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMH-AS-138-HKA-HS-S1M-T", "partNumber": "8215370", "shaft": "key", "seal": true, "encoder": "multi" }
+      ],
       "orderCode": "EMMH-AS-138-HA-HS-S1M-T",
       "partNumber": "8215369"
     },
@@ -529,6 +581,10 @@
       "interfaceCode": "138C",
       "winding": "HS",
       "controller": "CMMT-AS-11A",
+      "variants": [
+        { "orderCode": "EMMH-AS-138-HA-HS-S1MB-T", "partNumber": "8215371", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMH-AS-138-HKA-HS-S1MB-T", "partNumber": "8215372", "shaft": "key", "seal": true, "encoder": "multi" }
+      ],
       "orderCode": "EMMH-AS-138-HA-HS-S1MB-T",
       "partNumber": "8215371"
     },
@@ -567,6 +623,10 @@
       "interfaceCode": "138C",
       "winding": "HS",
       "controller": "CMMT-AS-11A",
+      "variants": [
+        { "orderCode": "EMMH-AS-138-MA-HS-S1M-T", "partNumber": "8215365", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMH-AS-138-MKA-HS-S1M-T", "partNumber": "8215366", "shaft": "key", "seal": true, "encoder": "multi" }
+      ],
       "orderCode": "EMMH-AS-138-MA-HS-S1M-T",
       "partNumber": "8215365"
     },
@@ -605,6 +665,10 @@
       "interfaceCode": "138C",
       "winding": "HS",
       "controller": "CMMT-AS-11A",
+      "variants": [
+        { "orderCode": "EMMH-AS-138-MA-HS-S1MB-T", "partNumber": "8215367", "shaft": "plain", "seal": true, "encoder": "multi" },
+        { "orderCode": "EMMH-AS-138-MKA-HS-S1MB-T", "partNumber": "8215368", "shaft": "key", "seal": true, "encoder": "multi" }
+      ],
       "orderCode": "EMMH-AS-138-MA-HS-S1MB-T",
       "partNumber": "8215367"
     }
