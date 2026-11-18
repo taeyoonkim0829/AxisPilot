@@ -480,8 +480,6 @@ export const en: Record<string, string> = {
     '{model} has no integrated braking resistor. There is regenerative energy, so an external braking resistor is recommended',
   'CMMT-ST는 내장 제동저항이 없습니다. 회생 에너지가 있어 외부 제동저항을 권장합니다':
     'CMMT-ST has no integrated braking resistor. With regenerative energy an external braking resistor is recommended',
-  '회생 계산은 모터·드라이브 손실과 DC 링크 흡수를 빼지 않은 보수적인 값입니다':
-    'The regeneration figures are conservative: motor and drive losses and DC link absorption are not deducted',
   '토크-회전수 선도': 'Torque-speed curve',
   '{rpm} rpm, 48 V 선도 (최대 토크)': '{rpm} rpm, 48 V curve (peak torque)',
   '모터 케이블': 'Motor cable',
@@ -501,7 +499,6 @@ export const en: Record<string, string> = {
   '내장 제동저항': 'Integrated braking resistor',
   '불필요': 'Not needed',
   '회생 평균 {avg} W · 최대 {peak} W · 1회 {energy} Ws': 'Regeneration avg. {avg} W · peak {peak} W · per braking {energy} Ws',
-  '필요 전류: 실효 {rms} A · 최대 {peak} A': 'Required current: RMS {rms} A · peak {peak} A',
   '드라이브': 'Drive',
   '주문 형식 / 주문번호': 'Order type / part no.',
   '주문 형식': 'Order type',

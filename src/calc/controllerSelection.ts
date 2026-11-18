@@ -302,7 +302,6 @@ export function selectController(
         )
     }
   }
-  notes.push({ text: '회생 계산은 모터·드라이브 손실과 DC 링크 흡수를 빼지 않은 보수적인 값입니다' })
 
   return {
     controller,

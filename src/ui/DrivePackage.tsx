@@ -92,9 +92,6 @@ export function DrivePackage({
           </tbody>
         </table>
       </div>
-      <p className="muted small-print">
-        {t('필요 전류: 실효 {rms} A · 최대 {peak} A', { rms: fmt(selection.rmsCurrent, 2), peak: fmt(selection.peakCurrent, 2) })}
-      </p>
       <CheckTable checks={selection.checks} />
       {selection.notes.length > 0 && <KitNotes notes={selection.notes} />}
     </div>
