@@ -10,12 +10,17 @@ import {
   motorSpecRows,
   fullModel,
   fullModels,
+  robostarModel,
+  robostarModels,
+  robostarStrokes,
+  type RobostarOptions,
   offeredOptions,
   referenceOptions,
   supplyOf,
   type SpecRow,
   type SupplyClass,
 } from '../calc/compare'
+import { axisOrder } from '../calc/axisSelection'
 import { axes, motorFamilies, motors, thirdPartyAxes } from '../data'
 import type { Axis, AxisFamily, Motor, MotorOptions, ThirdPartyAxis } from '../data/types'
 import { useLang, useT } from '../i18n'
@@ -55,6 +60,7 @@ function Select<T extends string>({ label, value, options, onChange, text = (v) 
   )
 }
 
+const robostarModelNames = (a: ThirdPartyAxis) => robostarModels(a).map((f) => f.model)
 const fullModelNames = (m: Motor) => fullModels(m).map((f) => f.model)
 const squash =(s: string) => s.toLowerCase().replace(/[\s\-_/.()]/g, '')
 
@@ -401,10 +407,17 @@ function AxisCompare() {
   const [pick, setPick] = useState<string | null>(null)
   const list = axisCandidates(ref, axes, { drive: ref.drive, families, atLeast })
   const festo = picked(list, pick)
-  const { exporting, start, reportRef } = useCompareExport(ref.model, festo?.model ?? null)
-  const reference = { maker: ref.maker, model: ref.model, line: axisLine(ref, t) }
-  const festoBar = festo ? { model: festo.model, line: axisLine(festo, t) } : null
-  const specs = festo && { rows: axisSpecRows(ref, festo), reference: ref.model, festo: festo.model }
+  // the full model names: Robostar's for its order options, the Festo axis ordered at the same stroke
+  const [options, setOptions] = useState<RobostarOptions>({ stroke: 500, encoder: 'A', hand: 'R' })
+  const strokes = robostarStrokes(ref)
+  const opts = { ...options, stroke: strokes.filter((s) => s <= options.stroke).at(-1) ?? strokes[0] }
+  const refModel = robostarModel(ref, opts) ?? ref.model
+  const order = festo ? axisOrder(festo, opts.stroke) : null
+  const festoModel = ref.drive === 'spindle' && order ? order.model : (festo?.model ?? '')
+  const { exporting, start, reportRef } = useCompareExport(refModel, festo ? festoModel : null)
+  const reference = { maker: ref.maker, model: refModel, line: axisLine(ref, t) }
+  const festoBar = festo ? { model: festoModel, line: `${axisLine(festo, t)}${ref.drive === 'spindle' && order?.partNumber ? ` · ${order.partNumber}` : ''}` } : null
+  const specs = festo && { rows: axisSpecRows(ref, festo), reference: refModel, festo: festoModel }
 
   return (
     <main className="layout">
@@ -415,10 +428,13 @@ function AxisCompare() {
             <ModelSearch
               items={thirdPartyAxes}
               sub={(a) => a.series}
-              onPick={(a) => {
+              names={robostarModelNames}
+              onPick={(a, name) => {
                 setMaker(a.maker)
                 setSeries(a.series)
                 setModelId(a.id)
+                const full = robostarModels(a).find((f) => f.model === name)
+                if (full) setOptions(full.options)
               }}
             />
             <Select label={t('제조사')} value={maker} options={makers} onChange={setMaker} />
@@ -436,6 +452,37 @@ function AxisCompare() {
                 ...(ref.axisUse ? ([[t('축 용도'), ref.axisUse]] as [string, ReactNode][]) : []),
               ]}
             />
+            {ref.drive === 'spindle' && (
+              <>
+                <Select
+                  label={t('주문 스트로크')}
+                  value={String(opts.stroke)}
+                  options={strokes.map(String)}
+                  onChange={(v) => setOptions((o) => ({ ...o, stroke: Number(v) }))}
+                  text={(v) => `${v} mm`}
+                />
+                <div className="field">
+                  <span className="field-label">{t('엔코더')}</span>
+                  <RadioGroup
+                    options={['A', 'I'] as const}
+                    value={opts.encoder}
+                    onChange={(encoder) => setOptions((o) => ({ ...o, encoder }))}
+                    label={(v) => t(v === 'A' ? '앱솔루트' : '인크리멘탈')}
+                  />
+                </div>
+                {ref.layout === 'PR' && (
+                  <div className="field">
+                    <span className="field-label">{t('병렬 방향')}</span>
+                    <RadioGroup
+                      options={['R', 'L'] as const}
+                      value={opts.hand}
+                      onChange={(hand) => setOptions((o) => ({ ...o, hand }))}
+                      label={(v) => t(v === 'R' ? '우측' : '좌측')}
+                    />
+                  </div>
+                )}
+              </>
+            )}
           </section>
           <section>
             <h2>{t('Festo 제품')}</h2>
@@ -460,7 +507,7 @@ function AxisCompare() {
           selected={festo?.id ?? null}
           onSelect={setPick}
           columns={[
-            { head: t('모델명'), sort: (a) => a.model, cell: (a) => <span className="model">{a.model}</span> },
+            { head: t('모델명'), sort: (a) => a.model, cell: (a) => <span className="model">{ref.drive === 'spindle' ? axisOrder(a, opts.stroke).model : a.model}</span> },
             { head: t('최대 스트로크'), num: true, sort: (a) => a.maxStroke, cell: (a) => `${fmt(a.maxStroke, 0)} mm` },
             { head: t('최고 속도'), num: true, sort: (a) => a.maxSpeed, cell: (a) => `${fmt(a.maxSpeed, 3)} m/s` },
             ...(ref.drive === 'spindle'

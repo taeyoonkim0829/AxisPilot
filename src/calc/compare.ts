@@ -47,6 +47,44 @@ export interface AxisCandidateFilter {
   atLeast: boolean
 }
 
+/** Robostar order options: stroke (mm), encoder I incremental / A absolute, PR / PL for the parallel models */
+export interface RobostarOptions {
+  stroke: number
+  encoder: 'A' | 'I'
+  hand: 'R' | 'L'
+}
+
+/** The strokes a Robostar axis is ordered at: 50 mm steps (the catalog's codes 010, 055, 115) within its range */
+export const robostarStrokes = (a: ThirdPartyAxis) =>
+  Array.from({ length: Math.floor((a.strokeMax - a.strokeMin) / 50) + 1 }, (_, i) => a.strokeMin + 50 * i)
+
+/**
+ * A Robostar ball screw axis's full model (catalog "ROBOT Ordering method": model, stroke in 10 mm (3 digits),
+ * encoder I / A, motor W with B for brake, e.g. RS-120-X20SS-055-A-200; the A1-OO option codes are left out);
+ * null for the belt types, whose data name neither the axis nor the type.
+ * shortcut: the catalog shows the fields but no written example, so the hyphens between them are assumed.
+ */
+export function robostarModel(a: ThirdPartyAxis, o: RobostarOptions): string | null {
+  if (a.drive !== 'spindle') return null
+  const model = a.model.replace(/ \(Long\)$/, '').replace(/PR \(L\)$/, o.hand === 'L' ? 'PL' : 'PR')
+  const motor = a.brake ? `${String(a.motorPower).slice(0, 2)}B` : String(a.motorPower)
+  return `${model}-${String(Math.round(o.stroke / 10)).padStart(3, '0')}-${o.encoder}-${motor}`
+}
+
+/** Every full model a Robostar axis is ordered as, with its options (none for the belt types) */
+export function robostarModels(a: ThirdPartyAxis): { model: string; options: RobostarOptions }[] {
+  if (a.drive !== 'spindle') return []
+  const hands: RobostarOptions['hand'][] = a.layout === 'PR' ? ['R', 'L'] : ['R']
+  return robostarStrokes(a).flatMap((stroke) =>
+    (['A', 'I'] as const).flatMap((encoder) =>
+      hands.map((hand) => {
+        const options = { stroke, encoder, hand }
+        return { model: robostarModel(a, options)!, options }
+      }),
+    ),
+  )
+}
+
 /** Festo axes that could replace `ref`, closest first */
 export function axisCandidates(ref: ThirdPartyAxis, axes: Axis[], filter: AxisCandidateFilter): Axis[] {
   const lead = (a: Axis) => (a.drive === 'spindle' ? a.spindlePitch : null)

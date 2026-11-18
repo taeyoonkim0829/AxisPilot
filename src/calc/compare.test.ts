@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { axes, motors, thirdPartyAxes } from '../data'
 import { G, guideComparisonValue, guideLoads } from './axisSelection'
-import { axisCandidates, axisSpecRows, COMPARE_AXIS_FAMILIES, estimatedThrust, festoOverhang, festoVariant, motorCandidates, fullModel, fullModels, motorSpecRows, offeredOptions, supplyOf } from './compare'
+import { axisCandidates, axisSpecRows, COMPARE_AXIS_FAMILIES, estimatedThrust, festoOverhang, festoVariant, motorCandidates, fullModel, fullModels, motorSpecRows, robostarModel, robostarModels, offeredOptions, supplyOf } from './compare'
 import type { Requirements } from './types'
 
 describe('제품 비교', () => {
@@ -26,6 +26,14 @@ describe('제품 비교', () => {
     // the search finds a model by any of its full names, which give back their options
     expect(fullModels(sie).find((f) => f.model === '1FK2104-4AF01-0MA0')?.options).toEqual({ shaft: 'plain', seal: true, encoder: 'multi' })
     expect(fullModels(motors.find((m) => m.id === 'HG-KR053')!).map((f) => f.model)).toEqual(['HG-KR053'])
+  })
+
+  it('builds the Robostar order code: stroke in 10 mm, encoder, motor W with B for brake, PR / PL', () => {
+    const ax = (id: string) => thirdPartyAxes.find((a) => a.id === id)!
+    expect(robostarModel(ax('RS-120-X20SS'), { stroke: 550, encoder: 'A', hand: 'R' })).toBe('RS-120-X20SS-055-A-200')
+    expect(robostarModel(ax('RC-070-Z05PR (L)'), { stroke: 100, encoder: 'I', hand: 'L' })).toBe('RC-070-Z05PL-010-I-10B')
+    expect(robostarModel(ax('RK-080'), { stroke: 500, encoder: 'A', hand: 'R' })).toBeNull()
+    expect(robostarModels(ax('RS-120-X20SS')).find((f) => f.model === 'RS-120-X20SS-100-I-200')?.options).toEqual({ stroke: 1000, encoder: 'I', hand: 'R' })
     const emmb = motors.find((m) => m.id === 'EMMB-AS-40-01')!
     expect(festoVariant(emmb, { shaft: 'key', seal: false, encoder: 'multi' }).variant).toMatchObject({ orderCode: 'EMMB-AS-40-01-K-S30M', partNumber: '8097169' })
     // EMMB-AS has no shaft seal: the nearest variant, the seal named as not offered
