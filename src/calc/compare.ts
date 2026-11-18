@@ -170,15 +170,73 @@ export function motorCandidates(ref: Motor, motors: Motor[], filter: MotorCandid
     .map((x) => x.m)
 }
 
+/** The order options a compared motor is offered with (the first of each is its default) */
+export interface ReferenceOptions {
+  shaft: MotorOptions['shaft'][]
+  seal: boolean[]
+  encoder: MotorOptions['encoder'][]
+}
+
+/** the model without the data's bracketed suffixes (`(230V)`, `(200V)`, `(48V)`, `(brake)`) */
+const baseModel = (m: Motor) => m.model.replace(/( \([^)]*\))+$/, '')
+const LS_M3 = /^APM-FGP?(110D|110G|150G)$/
+
 /**
- * Siemens 1FK2 article number for the order options, from the model (up to the brake digit). Positions read from
- * Siemens's per-article data sheets: 13th IP64 0 / IP65 (shaft seal) 1, 14th plain shaft 0 / fitted key 1, 15th
- * encoder AS22DQC S / AM22DQC M, then A0. Other motors: null (their model is the order designation).
+ * The options a compared motor's full model name takes, null where it has none (1FL6: the model is the full
+ * article number). Mitsubishi and LS encoders are absolute multi-turn (battery backed) by standard, so the
+ * encoder is fixed to multi-turn there.
  */
-export function siemensArticle(m: Motor, o: MotorOptions): string | null {
-  if (m.maker !== 'Siemens' || m.family !== '1FK2' || o.encoder === 'none') return null
-  const base = m.model.replace(/ \(.*\)$/, '')
-  return `${base}${o.seal ? 1 : 0}-${o.shaft === 'key' ? 1 : 0}${o.encoder === 'multi' ? 'M' : 'S'}A0`
+export function referenceOptions(m: Motor): ReferenceOptions | null {
+  const both = { shaft: ['plain', 'key'] as MotorOptions['shaft'][], seal: [false, true] }
+  if (m.family === '1FK2') return { ...both, encoder: ['single', 'multi'] }
+  if (m.maker === 'Mitsubishi' && /^H[GK]-/.test(m.family)) {
+    const base = baseModel(m)
+    // HG-KR: oil seal from 0.1 kW, keyed shaft only on 200 / 400 / 750 W; HG-JR: oil seal as standard
+    const kr = m.family === 'HG-KR'
+    return {
+      shaft: kr && !/^HG-KR(23|43|73)/.test(base) ? ['plain'] : both.shaft,
+      seal: m.family === 'HG-JR' ? [true] : kr && /^HG-KR053/.test(base) ? [false] : both.seal,
+      encoder: ['multi'],
+    }
+  }
+  if (m.maker === 'LS') {
+    // F series 40 □ (FAL): no oil seal
+    return { shaft: ['key', 'plain'], seal: /-FAL/.test(m.model) ? [false] : both.seal, encoder: ['multi'] }
+  }
+  return null
+}
+
+/** The options within what the motor is offered with (a value it lacks becomes its default) */
+export function offeredOptions(m: Motor, o: MotorOptions): MotorOptions {
+  const r = referenceOptions(m)
+  if (!r) return o
+  return {
+    shaft: r.shaft.includes(o.shaft) ? o.shaft : r.shaft[0],
+    seal: r.seal.includes(o.seal) ? o.seal : r.seal[0],
+    encoder: r.encoder.includes(o.encoder) ? o.encoder : r.encoder[0],
+  }
+}
+
+/**
+ * The compared motor's full model name for the order options (null: no options, the model is the full name).
+ * - Siemens 1FK2: the model is the article number up to the brake digit; positions read from Siemens's
+ *   per-article data sheets: 13th IP64 0 / IP65 (shaft seal) 1, 14th plain shaft 0 / fitted key 1, 15th encoder
+ *   AS22DQC S / AM22DQC M, then A0.
+ * - Mitsubishi HG / HK (MR-J4 / MR-J5 catalogs' model designation): the model (with B for the brake), then J for
+ *   the oil seal (not on HG-JR, which has it as standard) and K for the keyed shaft.
+ * - LS APM (Xmotion catalog type key): the model, the encoder (E series M3; F series M, FAL M8, FG(P)110D / 110G /
+ *   150G M3), the shaft K (key, standard) or N (straight), the option digit (1 oil seal, 2 brake, 3 both) and
+ *   8 for the 48 V DC motors.
+ */
+export function fullModel(m: Motor, options: MotorOptions): string | null {
+  if (!referenceOptions(m)) return null
+  const o = offeredOptions(m, options)
+  const base = baseModel(m)
+  if (m.family === '1FK2') return `${base}${o.seal ? 1 : 0}-${o.shaft === 'key' ? 1 : 0}${o.encoder === 'multi' ? 'M' : 'S'}A0`
+  if (m.maker === 'Mitsubishi') return `${base}${o.seal && m.family !== 'HG-JR' ? 'J' : ''}${o.shaft === 'key' ? 'K' : ''}`
+  const encoder = m.family === 'APM-E' || LS_M3.test(base) ? 'M3' : /-FAL/.test(base) ? 'M8' : 'M'
+  const option = (o.seal ? 1 : 0) + (m.brake ? 2 : 0)
+  return `${base}${encoder}${o.shaft === 'key' ? 'K' : 'N'}${option || ''}${m.voltage === 48 ? 8 : ''}`
 }
 
 export interface VariantMatch {

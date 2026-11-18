@@ -1,14 +1,28 @@
 import { describe, expect, it } from 'vitest'
 import { axes, motors, thirdPartyAxes } from '../data'
 import { G, guideComparisonValue, guideLoads } from './axisSelection'
-import { axisCandidates, axisSpecRows, COMPARE_AXIS_FAMILIES, estimatedThrust, festoOverhang, festoVariant, motorCandidates, motorSpecRows, siemensArticle, supplyOf } from './compare'
+import { axisCandidates, axisSpecRows, COMPARE_AXIS_FAMILIES, estimatedThrust, festoOverhang, festoVariant, motorCandidates, fullModel, motorSpecRows, offeredOptions, supplyOf } from './compare'
 import type { Requirements } from './types'
 
 describe('제품 비교', () => {
   it('builds the 1FK2 article number and the Festo order variant for the same options', () => {
     const sie = motors.find((m) => m.id === '1FK2104-4AF0 (230V)')!
-    expect(siemensArticle(sie, { shaft: 'key', seal: false, encoder: 'multi' })).toBe('1FK2104-4AF00-1MA0')
-    expect(siemensArticle(sie, { shaft: 'plain', seal: true, encoder: 'single' })).toBe('1FK2104-4AF01-0SA0')
+    expect(fullModel(sie, { shaft: 'key', seal: false, encoder: 'multi' })).toBe('1FK2104-4AF00-1MA0')
+    expect(fullModel(sie, { shaft: 'plain', seal: true, encoder: 'single' })).toBe('1FK2104-4AF01-0SA0')
+    const opt = { shaft: 'key', seal: true, encoder: 'single' } as const
+    const model = (id: string) => fullModel(motors.find((m) => m.id === id)!, opt)
+    // Mitsubishi: brake B, oil seal J, keyed shaft K; HG-KR053 has no oil seal and no keyed shaft, HG-JR its oil seal as standard
+    expect(model('HG-KR43B')).toBe('HG-KR43BJK')
+    expect(model('HG-KR053')).toBe('HG-KR053')
+    expect(model('HG-JR153')).toBe('HG-JR153K')
+    expect(model('HK-KT13WB (200V)')).toBe('HK-KT13WBJK')
+    // LS: encoder, shaft K / N, option 1 seal / 2 brake / 3 both, 8 for 48 V; no oil seal on FAL
+    expect(model('APM-EB04A brake')).toBe('APM-EB04AM3K3')
+    expect(fullModel(motors.find((m) => m.id === 'APM-EB04A')!, { shaft: 'plain', seal: false, encoder: 'multi' })).toBe('APM-EB04AM3N')
+    expect(model('APM-FG110D')).toBe('APM-FG110DM3K1')
+    expect(model('APMC-FBL04A')).toBe('APMC-FBL04AMK1')
+    expect(model(motors.find((m) => m.model === 'APMC-FAL01A (48V) (brake)')!.id)).toBe('APMC-FAL01AM8K28')
+    expect(offeredOptions(motors.find((m) => m.id === 'HG-KR053')!, opt)).toEqual({ shaft: 'plain', seal: false, encoder: 'multi' })
     const emmb = motors.find((m) => m.id === 'EMMB-AS-40-01')!
     expect(festoVariant(emmb, { shaft: 'key', seal: false, encoder: 'multi' }).variant).toMatchObject({ orderCode: 'EMMB-AS-40-01-K-S30M', partNumber: '8097169' })
     // EMMB-AS has no shaft seal: the nearest variant, the seal named as not offered

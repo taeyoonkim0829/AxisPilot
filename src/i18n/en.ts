@@ -208,6 +208,8 @@ export const en: Record<string, string> = {
   'IP64 (씰 없음)': 'IP64 (no seal)',
   '품번 없음 (타입 코드 주문)': 'no part number (order by type code)',
   '선택 불가: {what}': 'not offered: {what}',
+  '이 모델에는 없는 옵션': 'Not offered for this model',
+  '멀티턴 앱솔루트 엔코더가 표준입니다': 'Absolute multi-turn encoder as standard',
   '모델명 입력': 'Type a model name',
   '제품 비교서 · {date}': 'Product comparison · {date}',
   '제품비교_{model}_{date}': 'AxisPilot-compare_{model}_{date}',

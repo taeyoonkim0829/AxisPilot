@@ -8,7 +8,9 @@ import {
   motorCandidates,
   motorOptionRows,
   motorSpecRows,
-  siemensArticle,
+  fullModel,
+  offeredOptions,
+  referenceOptions,
   supplyOf,
   type SpecRow,
   type SupplyClass,
@@ -481,9 +483,11 @@ function MotorCompare() {
   const option = <K extends keyof MotorOptions>(k: K) => (v: MotorOptions[K]) => setOptions((o) => ({ ...o, [k]: v }))
   const list = motorCandidates(ref, motors, { families, supply: supply === 'all' ? null : supply, samePower, sameInterface })
   const festo = picked(list, pick)
-  // the full order designations: Siemens 1FK2 article number and the Festo variant for the same options
-  const refModel = siemensArticle(ref, options) ?? ref.model
-  const match = festo ? festoVariant(festo, options) : null
+  // the full model names: the compared motor's for its order options and the Festo variant for the same options
+  const offered = referenceOptions(ref)
+  const opts = offeredOptions(ref, options)
+  const refModel = fullModel(ref, opts) ?? ref.model
+  const match = festo ? festoVariant(festo, opts) : null
   const festoModel = match?.variant?.orderCode ?? festo?.orderCode ?? festo?.model ?? ''
   const festoLine = (m: Motor) => {
     const pn = match?.variant ? (match.variant.partNumber ?? t('품번 없음 (타입 코드 주문)')) : m.partNumber
@@ -494,7 +498,7 @@ function MotorCompare() {
   const reference = { maker: ref.maker, model: refModel, line: motorLine(ref) }
   const festoBar = festo ? { model: festoModel, line: festoLine(festo) } : null
   const specs = festo && {
-    rows: [...motorSpecRows(ref, festo), ...(siemensArticle(ref, options) ? motorOptionRows(options, match?.variant ?? null, ref.brake, festo.brake) : [])],
+    rows: [...motorSpecRows(ref, festo), ...(offered ? motorOptionRows(opts, match?.variant ?? null, ref.brake, festo.brake) : [])],
     reference: refModel,
     festo: festoModel,
   }
@@ -525,19 +529,37 @@ function MotorCompare() {
                 [t('전원 · 인터페이스'), `${supplyOf(ref) ?? '—'} · ${ref.interfaceCode ?? '—'}`],
               ]}
             />
-            {siemensArticle(ref, options) && (
+            {offered && (
               <>
                 <div className="field">
                   <span className="field-label">{t('축 끝')}</span>
-                  <RadioGroup options={['plain', 'key'] as const} value={options.shaft} onChange={option('shaft')} label={(v) => t(v === 'plain' ? '평축' : '키 축')} />
+                  <RadioGroup
+                    options={['plain', 'key'] as const}
+                    value={opts.shaft}
+                    onChange={option('shaft')}
+                    label={(v) => t(v === 'plain' ? '평축' : '키 축')}
+                    disabled={(v) => (offered.shaft.includes(v) ? null : t('이 모델에는 없는 옵션'))}
+                  />
                 </div>
                 <div className="field">
                   <span className="field-label">{t('축 씰')}</span>
-                  <RadioGroup options={['no', 'yes'] as const} value={options.seal ? 'yes' : 'no'} onChange={(v) => option('seal')(v === 'yes')} label={(v) => t(v === 'yes' ? 'IP65 (씰 있음)' : 'IP64 (씰 없음)')} />
+                  <RadioGroup
+                    options={['no', 'yes'] as const}
+                    value={opts.seal ? 'yes' : 'no'}
+                    onChange={(v) => option('seal')(v === 'yes')}
+                    label={(v) => (ref.maker === 'Siemens' ? t(v === 'yes' ? 'IP65 (씰 있음)' : 'IP64 (씰 없음)') : t(v === 'yes' ? '있음' : '없음'))}
+                    disabled={(v) => (offered.seal.includes(v === 'yes') ? null : t('이 모델에는 없는 옵션'))}
+                  />
                 </div>
                 <div className="field">
                   <span className="field-label">{t('엔코더')}</span>
-                  <RadioGroup options={['single', 'multi'] as const} value={options.encoder} onChange={option('encoder')} label={(v) => t(v === 'single' ? '싱글턴' : '멀티턴')} />
+                  <RadioGroup
+                    options={['single', 'multi'] as const}
+                    value={opts.encoder === 'none' ? 'multi' : opts.encoder}
+                    onChange={option('encoder')}
+                    label={(v) => t(v === 'single' ? '싱글턴' : '멀티턴')}
+                    disabled={(v) => (offered.encoder.includes(v) ? null : t('멀티턴 앱솔루트 엔코더가 표준입니다'))}
+                  />
                 </div>
               </>
             )}
@@ -566,7 +588,7 @@ function MotorCompare() {
           selected={festo?.id ?? null}
           onSelect={setPick}
           columns={[
-            { head: t('모델명'), cell: (m) => <span className="model">{siemensArticle(ref, options) ? (festoVariant(m, options).variant?.orderCode ?? m.model) : m.model}</span> },
+            { head: t('모델명'), cell: (m) => <span className="model">{offered ? (festoVariant(m, opts).variant?.orderCode ?? m.model) : m.model}</span> },
             { head: t('정격 출력'), num: true, cell: (m) => `${fmt(m.ratedPower, 0)} W` },
             { head: t('정격 토크'), num: true, cell: (m) => `${fmt(m.ratedTorque)} Nm` },
             { head: t('최대 토크'), num: true, cell: (m) => `${fmt(m.peakTorque)} Nm` },
