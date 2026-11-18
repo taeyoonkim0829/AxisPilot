@@ -19,10 +19,11 @@ import {
 import { axes, motorFamilies, motors, thirdPartyAxes } from '../data'
 import type { Axis, AxisFamily, Motor, MotorOptions, ThirdPartyAxis } from '../data/types'
 import { useLang, useT } from '../i18n'
-import { RadioGroup, ToggleButton, ToggleGroup } from './common'
+import { RadioGroup, SortTh, ToggleButton, ToggleGroup } from './common'
 import { Footer } from './Footer'
 import { fmt, pct } from './format'
 import { useReportExport } from './useReportExport'
+import { useSort, type SortValue } from './useSort'
 
 /**
  * 제품 비교: another maker's product (the reference, picked by maker, series and model) and the Festo products that
@@ -332,9 +333,10 @@ function CandidateTable<T extends { id: string }>({
   selected: string | null
   onSelect: (id: string) => void
   /** num: right-aligned numbers; data: left-aligned in the data face */
-  columns: { head: string; cell: (r: T) => ReactNode; num?: boolean; data?: boolean }[]
+  columns: { head: string; cell: (r: T) => ReactNode; sort: (r: T) => SortValue; num?: boolean; data?: boolean }[]
 }) {
   const t = useT()
+  const { sorted, sort, toggle } = useSort(rows, Object.fromEntries(columns.map((c) => [c.head, c.sort])))
   return (
     <section className="panel step">
       <header className="step-head">
@@ -349,14 +351,14 @@ function CandidateTable<T extends { id: string }>({
             <thead>
               <tr>
                 {columns.map((c) => (
-                  <th key={c.head} className={c.num ? 'num' : undefined}>
+                  <SortTh key={c.head} id={c.head} sort={sort} onSort={toggle} num={c.num}>
                     {c.head}
-                  </th>
+                  </SortTh>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {rows.map((r) => (
+              {sorted.map((r) => (
                 <tr key={r.id} className={r.id === selected ? 'selected' : ''} onClick={() => onSelect(r.id)} tabIndex={0} onKeyDown={(k) => k.key === 'Enter' && onSelect(r.id)}>
                   {columns.map((c) => (
                     <td key={c.head} className={c.num ? 'num' : c.data ? 'data' : undefined}>
@@ -458,15 +460,15 @@ function AxisCompare() {
           selected={festo?.id ?? null}
           onSelect={setPick}
           columns={[
-            { head: t('모델명'), cell: (a) => <span className="model">{a.model}</span> },
-            { head: t('최대 스트로크'), num: true, cell: (a) => `${fmt(a.maxStroke, 0)} mm` },
-            { head: t('최고 속도'), num: true, cell: (a) => `${fmt(a.maxSpeed, 3)} m/s` },
+            { head: t('모델명'), sort: (a) => a.model, cell: (a) => <span className="model">{a.model}</span> },
+            { head: t('최대 스트로크'), num: true, sort: (a) => a.maxStroke, cell: (a) => `${fmt(a.maxStroke, 0)} mm` },
+            { head: t('최고 속도'), num: true, sort: (a) => a.maxSpeed, cell: (a) => `${fmt(a.maxSpeed, 3)} m/s` },
             ...(ref.drive === 'spindle'
-              ? [{ head: t('볼스크류'), num: true, cell: (a: Axis) => (a.spindleDiameter ? `Ø${a.spindleDiameter} × ${a.spindlePitch}` : '—') }]
-              : [{ head: t('피드 상수'), num: true, cell: (a: Axis) => (a.feedConstant ? `${fmt(a.feedConstant)} mm/rev` : '—') }]),
-            { head: t('최대 이송력'), num: true, cell: (a) => (a.maxFeedForce ? `${fmt(a.maxFeedForce, 0)} N` : '—') },
-            { head: 'Fy / Fz', num: true, cell: (a) => (a.FyMax != null && a.FzMax != null ? `${fmt(a.FyMax, 0)} / ${fmt(a.FzMax, 0)} N` : '—') },
-            { head: t('속도 비교'), num: true, cell: (a) => pct(a.maxSpeed / ref.maxSpeed) },
+              ? [{ head: t('볼스크류'), num: true, sort: (a: Axis) => (a.spindleDiameter ? a.spindleDiameter * 1000 + (a.spindlePitch ?? 0) : null), cell: (a: Axis) => (a.spindleDiameter ? `Ø${a.spindleDiameter} × ${a.spindlePitch}` : '—') }]
+              : [{ head: t('피드 상수'), num: true, sort: (a: Axis) => a.feedConstant ?? null, cell: (a: Axis) => (a.feedConstant ? `${fmt(a.feedConstant)} mm/rev` : '—') }]),
+            { head: t('최대 이송력'), num: true, sort: (a) => a.maxFeedForce ?? null, cell: (a) => (a.maxFeedForce ? `${fmt(a.maxFeedForce, 0)} N` : '—') },
+            { head: 'Fy / Fz', num: true, sort: (a) => a.FyMax ?? null, cell: (a) => (a.FyMax != null && a.FzMax != null ? `${fmt(a.FyMax, 0)} / ${fmt(a.FzMax, 0)} N` : '—') },
+            { head: t('속도 비교'), num: true, sort: (a) => a.maxSpeed, cell: (a) => pct(a.maxSpeed / ref.maxSpeed) },
           ]}
         />
         {specs && <SpecTable {...specs} />}
@@ -614,16 +616,17 @@ function MotorCompare() {
           selected={festo?.id ?? null}
           onSelect={setPick}
           columns={[
-            { head: t('모델명'), cell: (m) => <span className="model">{offered ? (festoVariant(m, opts).variant?.orderCode ?? m.model) : m.model}</span> },
-            { head: t('정격 출력'), num: true, cell: (m) => `${fmt(m.ratedPower, 0)} W` },
-            { head: t('정격 토크'), num: true, cell: (m) => `${fmt(m.ratedTorque)} Nm` },
-            { head: t('최대 토크'), num: true, cell: (m) => `${fmt(m.peakTorque)} Nm` },
-            { head: t('최고 회전수'), num: true, cell: (m) => `${fmt(m.maxSpeed, 0)} rpm` },
-            { head: t('회전자 관성'), num: true, cell: (m) => `${fmt(m.inertia, 3)} kg·cm²` },
-            { head: t('전원'), data: true, cell: (m) => supplyOf(m) ?? '—' },
+            { head: t('모델명'), sort: (m) => (offered ? (festoVariant(m, opts).variant?.orderCode ?? m.model) : m.model), cell: (m) => <span className="model">{offered ? (festoVariant(m, opts).variant?.orderCode ?? m.model) : m.model}</span> },
+            { head: t('정격 출력'), num: true, sort: (m) => m.ratedPower, cell: (m) => `${fmt(m.ratedPower, 0)} W` },
+            { head: t('정격 토크'), num: true, sort: (m) => m.ratedTorque, cell: (m) => `${fmt(m.ratedTorque)} Nm` },
+            { head: t('최대 토크'), num: true, sort: (m) => m.peakTorque, cell: (m) => `${fmt(m.peakTorque)} Nm` },
+            { head: t('최고 회전수'), num: true, sort: (m) => m.maxSpeed, cell: (m) => `${fmt(m.maxSpeed, 0)} rpm` },
+            { head: t('회전자 관성'), num: true, sort: (m) => m.inertia, cell: (m) => `${fmt(m.inertia, 3)} kg·cm²` },
+            { head: t('전원'), data: true, sort: (m) => supplyOf(m) ?? null, cell: (m) => supplyOf(m) ?? '—' },
             {
               head: t('인터페이스'),
               data: true,
+              sort: (m) => m.interfaceCode ?? null,
               cell: (m) => <span className={m.interfaceCode === ref.interfaceCode ? undefined : 'warn-text'}>{m.interfaceCode ?? '—'}</span>,
             },
           ]}
