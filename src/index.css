@@ -2574,22 +2574,64 @@ body {
   background: rgb(var(--ov) / 0.14);
 }
 
+/* phones: two rows, the logo and the switches above, the two menus below, each half the width */
 @media (max-width: 640px) {
+  :root {
+    --header-h: 104px;
+  }
+
   .app-header-inner {
-    gap: 12px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: 56px 48px;
+    grid-template-areas:
+      'logo tools'
+      'nav nav';
+    gap: 0;
     padding: 0 12px;
   }
 
+  .app-logo {
+    grid-area: logo;
+    justify-self: start;
+  }
+
   .app-logo img {
-    height: 22px;
+    height: 24px;
+  }
+
+  .app-tools {
+    grid-area: tools;
+  }
+
+  .app-nav {
+    grid-area: nav;
+    margin: 0 -12px;
+    border-top: 1px solid var(--line);
+  }
+
+  .nav-menu {
+    flex: 1;
   }
 
   .nav-menu-btn {
+    flex: 1;
+    justify-content: center;
     padding: 0 8px;
   }
 
   .nav-menu-sub {
     display: none;
+  }
+
+  /* the second menu's list opens towards the left, inside the screen */
+  .nav-menu + .nav-menu .nav-menu-list {
+    left: auto;
+    right: 6px;
+  }
+
+  .nav-menu:first-child .nav-menu-list {
+    left: 6px;
   }
 }
 
