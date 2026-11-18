@@ -8,9 +8,9 @@ import { isStaleBuild, STALE_BUILD_NOTICE } from './staleBuild'
 /**
  * PDF export: `start` opens the waiting tab inside the click and mounts the report (render it off screen into
  * `reportRef` while `exporting`); the PDF then replaces the waiting page. `name` goes into the file name; `share`
- * gives the state the report's link opens on the web.
+ * gives the state the report's link opens on the web (none: no link); `template` names the file.
  */
-export function useReportExport(lang: Lang, name: string | null, share: () => Shared) {
+export function useReportExport(lang: Lang, name: string | null, share?: () => Shared, template?: string) {
   const [exporting, setExporting] = useState(false)
   const reportRef = useRef<HTMLDivElement>(null)
   const pdfTab = useRef<Window | null>(null)
@@ -21,9 +21,9 @@ export function useReportExport(lang: Lang, name: string | null, share: () => Sh
   }
   useEffect(() => {
     if (!exporting || !reportRef.current || !name) return
-    const title = reportTitle(name, lang)
+    const title = reportTitle(name, lang, template)
     const root = reportRef.current
-    shareUrl(share())
+    ;(share ? shareUrl(share()) : Promise.resolve(undefined))
       .then((link) => reportToPdf(root, title, link))
       .then((blob) => {
         const url = URL.createObjectURL(new File([blob], `${title}.pdf`, { type: 'application/pdf' }))

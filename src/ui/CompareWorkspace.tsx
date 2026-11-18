@@ -1,4 +1,5 @@
-import { useState, type ReactNode } from 'react'
+import { useState, type ReactNode, type RefObject } from 'react'
+import { createPortal } from 'react-dom'
 import {
   axisCandidates,
   axisSpecRows,
@@ -11,10 +12,11 @@ import {
 } from '../calc/compare'
 import { axes, motorFamilies, motors, thirdPartyAxes } from '../data'
 import type { Axis, AxisFamily, Motor, ThirdPartyAxis } from '../data/types'
-import { useT } from '../i18n'
+import { useLang, useT } from '../i18n'
 import { RadioGroup, ToggleButton, ToggleGroup } from './common'
 import { Footer } from './Footer'
 import { fmt, pct } from './format'
+import { useReportExport } from './useReportExport'
 
 /**
  * 제품 비교: another maker's product (the reference, picked by maker, series and model) and the Festo products that
@@ -46,6 +48,50 @@ function Select<T extends string>({ label, value, options, onChange, text = (v) 
   )
 }
 
+const squash = (s: string) => s.toLowerCase().replace(/[\s\-_/.()]/g, '')
+
+/**
+ * Finds a compared product by its model name among every maker and series (the whole name, any part of it,
+ * case, spaces and hyphens ignored): picking a suggestion or Enter takes the first match.
+ */
+function ModelSearch<T extends { id: string; model: string; maker: string }>({ items, sub, onPick }: { items: T[]; sub: (i: T) => string; onPick: (i: T) => void }) {
+  const t = useT()
+  const [q, setQ] = useState('')
+  const find = (text: string, exact: boolean) => {
+    const k = squash(text)
+    return k ? items.find((i) => (exact ? squash(i.model) === k : squash(i.model).includes(k))) : undefined
+  }
+  const take = (i: T | undefined) => {
+    if (!i) return
+    onPick(i)
+    setQ('')
+  }
+  return (
+    <label className="field">
+      <span className="field-label">{t('모델명 검색')}</span>
+      <span className="field-input">
+        <input
+          className="field-select"
+          type="search"
+          list="compare-models"
+          value={q}
+          placeholder={t('모델명 입력')}
+          onChange={(e) => {
+            setQ(e.target.value)
+            take(find(e.target.value, true))
+          }}
+          onKeyDown={(e) => e.key === 'Enter' && take(find(q, false))}
+        />
+        <datalist id="compare-models">
+          {items.map((i) => (
+            <option key={i.id} value={i.model} label={`${i.maker} · ${sub(i)}`} />
+          ))}
+        </datalist>
+      </span>
+    </label>
+  )
+}
+
 /** Label / value list under the reference's choice */
 function Facts({ rows }: { rows: [string, ReactNode][] }) {
   return (
@@ -61,7 +107,9 @@ function Facts({ rows }: { rows: [string, ReactNode][] }) {
 }
 
 /** The reference and the picked Festo product, at the top of the results */
-function CompareBar({ reference, festo }: { reference: { maker: string; model: string; line: string }; festo: { model: string; line: string } | null }) {
+type Item = { maker: string; model: string; line: string }
+
+function CompareBar({ reference, festo, onExport, exporting }: { reference: Item; festo: Omit<Item, 'maker'> | null; onExport: () => void; exporting: boolean }) {
   const t = useT()
   return (
     <div className="panel compare-bar">
@@ -78,6 +126,11 @@ function CompareBar({ reference, festo }: { reference: { maker: string; model: s
         <span className="compare-bar-role">{t('Festo 제품')}</span>
         <span className={`compare-bar-model${festo ? '' : ' sign-empty'}`}>{festo?.model ?? t('해당 제품 없음')}</span>
         {festo && <span className="compare-bar-line">{festo.line}</span>}
+      </div>
+      <div className="rail-actions">
+        <button type="button" className="rail-action" onClick={onExport} disabled={exporting || !festo}>
+          {exporting ? t('PDF 생성 중…') : t('PDF로 내보내기')}
+        </button>
       </div>
     </div>
   )
@@ -97,7 +150,9 @@ function Gauge({ ratio }: { ratio: number | null }) {
 
 const cell = (v: number | string | null, unit: string) => (v == null ? '—' : typeof v === 'number' ? `${fmt(v, 3)}${unit ? ` ${unit}` : ''}` : v)
 
-function SpecTable({ rows, reference, festo }: { rows: SpecRow[]; reference: string; festo: string }) {
+type Specs = { rows: SpecRow[]; reference: string; festo: string }
+
+function SpecTable(specs: Specs) {
   const t = useT()
   return (
     <section className="panel step">
@@ -105,37 +160,91 @@ function SpecTable({ rows, reference, festo }: { rows: SpecRow[]; reference: str
         <h2>{t('사양 비교')}</h2>
       </header>
       <div className="table-wrap">
-        <table className="data-table compare-spec">
-          <thead>
-            <tr>
-              <th className="num">
-                <span className="model">{reference}</span>
-              </th>
-              <th className="gauge-head">{t('수치 비교')}</th>
-              <th>
-                <span className="model">{festo}</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((r) => (
-              <tr key={r.label}>
-                <td className="num">{cell(r.reference, t(r.unit))}</td>
-                <td className="gauge-cell">
-                  <span className="gauge-label">
-                    {t(r.label)}
-                    {r.note && <span className="gauge-note muted">{t(r.note, r.noteArgs)}</span>}
-                  </span>
-                  <Gauge ratio={r.ratio} />
-                </td>
-                <td className="num spec-other">{cell(r.other, t(r.unit))}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <SpecRows {...specs} />
       </div>
     </section>
   )
+}
+
+function SpecRows({ rows, reference, festo }: Specs) {
+  const t = useT()
+  return (
+    <table className="data-table compare-spec">
+      <thead>
+        <tr>
+          <th className="num">
+            <span className="model">{reference}</span>
+          </th>
+          <th className="gauge-head">{t('수치 비교')}</th>
+          <th>
+            <span className="model">{festo}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((r) => (
+          <tr key={r.label}>
+            <td className="num">{cell(r.reference, t(r.unit))}</td>
+            <td className="gauge-cell">
+              <span className="gauge-label">
+                {t(r.label)}
+                {r.note && <span className="gauge-note muted">{t(r.note, r.noteArgs)}</span>}
+              </span>
+              <Gauge ratio={r.ratio} />
+            </td>
+            <td className="num spec-other">{cell(r.other, t(r.unit))}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )
+}
+
+/**
+ * The PDF (one chapter, pdfExport): the pair and the data side by side. Mounted while exporting, off screen on
+ * the body, outside `.app`, so it keeps the report's light look.
+ */
+function CompareReport({ stageRef, kind, reference, festo, specs }: { stageRef: RefObject<HTMLDivElement | null>; kind: string; reference: Item; festo: Omit<Item, 'maker'>; specs: Specs }) {
+  const t = useT()
+  const lang = useLang()
+  const [today] = useState(() => new Date().toLocaleDateString(lang === 'ko' ? 'ko-KR' : 'en-US'))
+  return createPortal(
+    <div className="report-stage" ref={stageRef} aria-hidden="true">
+      <div className="report">
+        <section className="report-chapter">
+          <h2>
+            {t('제품 비교')} · {kind}
+          </h2>
+          <p className="report-meta">{t('제품 비교서 · {date}', { date: today })}</p>
+          <table className="report-spec">
+            <tbody>
+              <tr>
+                <th>
+                  {t('비교 제품')} · {reference.maker}
+                </th>
+                <td>{reference.model}</td>
+                <td colSpan={2}>{reference.line}</td>
+              </tr>
+              <tr>
+                <th>{t('Festo 제품')}</th>
+                <td>{festo.model}</td>
+                <td colSpan={2}>{festo.line}</td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>{t('사양 비교')}</h3>
+          <SpecRows {...specs} />
+        </section>
+      </div>
+    </div>,
+    document.body,
+  )
+}
+
+/** PDF export of a comparison: file name 제품비교_<compared>_<Festo>_<date> */
+function useCompareExport(reference: string, festo: string | null) {
+  const lang = useLang()
+  return useReportExport(lang, festo && `${reference}_${festo}`, undefined, '제품비교_{model}_{date}')
 }
 
 /** Candidates table: a row picks the Festo product compared below */
@@ -220,6 +329,10 @@ function AxisCompare() {
   const [pick, setPick] = useState<string | null>(null)
   const list = axisCandidates(ref, axes, { drive: ref.drive, families, atLeast })
   const festo = picked(list, pick)
+  const { exporting, start, reportRef } = useCompareExport(ref.model, festo?.model ?? null)
+  const reference = { maker: ref.maker, model: ref.model, line: axisLine(ref, t) }
+  const festoBar = festo ? { model: festo.model, line: axisLine(festo, t) } : null
+  const specs = festo && { rows: axisSpecRows(ref, festo), reference: ref.model, festo: festo.model }
 
   return (
     <main className="layout">
@@ -227,6 +340,15 @@ function AxisCompare() {
         <div className="panel inputs-main">
           <section>
             <h2>{t('비교 제품')}</h2>
+            <ModelSearch
+              items={thirdPartyAxes}
+              sub={(a) => a.series}
+              onPick={(a) => {
+                setMaker(a.maker)
+                setSeries(a.series)
+                setModelId(a.id)
+              }}
+            />
             <Select label={t('제조사')} value={maker} options={makers} onChange={setMaker} />
             <Select label={t('시리즈')} value={seriesNow} options={seriesList} onChange={setSeries} />
             <Select label={t('모델')} value={ref.id} options={models.map((a) => a.id)} onChange={setModelId} />
@@ -258,10 +380,7 @@ function AxisCompare() {
         </div>
       </aside>
       <div className="results">
-        <CompareBar
-          reference={{ maker: ref.maker, model: ref.model, line: axisLine(ref, t) }}
-          festo={festo ? { model: festo.model, line: axisLine(festo, t) } : null}
-        />
+        <CompareBar reference={reference} festo={festoBar} onExport={start} exporting={exporting} />
         <CandidateTable
           title={t('Festo 대체 제품')}
           note={t('제품 데이터 · 비교 제품과 가까운 순 · {n}개', { n: list.length })}
@@ -280,9 +399,10 @@ function AxisCompare() {
             { head: t('속도 비교'), num: true, cell: (a) => pct(a.maxSpeed / ref.maxSpeed) },
           ]}
         />
-        {festo && <SpecTable rows={axisSpecRows(ref, festo)} reference={ref.model} festo={festo.model} />}
+        {specs && <SpecTable {...specs} />}
         <Footer />
       </div>
+      {exporting && festoBar && specs && <CompareReport stageRef={reportRef} kind={t('직교 축')} reference={reference} festo={festoBar} specs={specs} />}
     </main>
   )
 }
@@ -291,6 +411,8 @@ function AxisCompare() {
 
 const thirdPartyMakers = ['Siemens', 'Mitsubishi', 'LS'] as const
 const supplies: (SupplyClass | 'all')[] = ['all', 'AC 380–480 V', 'AC 200–240 V']
+/** Every compared motor (the makers offered), for the model search */
+const searchMotors = motors.filter((m) => (thirdPartyMakers as readonly string[]).includes(m.maker))
 const motorLine = (m: Motor) => `${fmt(m.ratedPower, 0)} W · ${fmt(m.ratedTorque)} Nm${supplyOf(m) ? ` · ${supplyOf(m)}` : ''}`
 
 function MotorCompare() {
@@ -310,6 +432,10 @@ function MotorCompare() {
   const [pick, setPick] = useState<string | null>(null)
   const list = motorCandidates(ref, motors, { families, supply: supply === 'all' ? null : supply, samePower, sameInterface })
   const festo = picked(list, pick)
+  const { exporting, start, reportRef } = useCompareExport(ref.model, festo?.model ?? null)
+  const reference = { maker: ref.maker, model: ref.model, line: motorLine(ref) }
+  const festoBar = festo ? { model: festo.model, line: motorLine(festo) } : null
+  const specs = festo && { rows: motorSpecRows(ref, festo), reference: ref.model, festo: festo.model }
 
   return (
     <main className="layout">
@@ -317,6 +443,15 @@ function MotorCompare() {
         <div className="panel inputs-main">
           <section>
             <h2>{t('비교 제품')}</h2>
+            <ModelSearch
+              items={searchMotors}
+              sub={(m) => m.family}
+              onPick={(m) => {
+                setMaker(m.maker as (typeof thirdPartyMakers)[number])
+                setFamily(m.family)
+                setModelId(m.id)
+              }}
+            />
             <Select label={t('제조사')} value={maker} options={[...thirdPartyMakers]} onChange={setMaker} />
             <Select label={t('시리즈')} value={familyNow} options={familyList} onChange={setFamily} />
             <Select label={t('모델')} value={ref.id} options={models.map((m) => m.id)} onChange={setModelId} text={(id) => models.find((m) => m.id === id)?.model ?? id} />
@@ -345,7 +480,7 @@ function MotorCompare() {
         </div>
       </aside>
       <div className="results">
-        <CompareBar reference={{ maker: ref.maker, model: ref.model, line: motorLine(ref) }} festo={festo ? { model: festo.model, line: motorLine(festo) } : null} />
+        <CompareBar reference={reference} festo={festoBar} onExport={start} exporting={exporting} />
         <CandidateTable
           title={t('Festo 대체 제품')}
           note={t('제품 데이터 · 비교 제품과 가까운 순 · {n}개', { n: list.length })}
@@ -367,9 +502,10 @@ function MotorCompare() {
             },
           ]}
         />
-        {festo && <SpecTable rows={motorSpecRows(ref, festo)} reference={ref.model} festo={festo.model} />}
+        {specs && <SpecTable {...specs} />}
         <Footer />
       </div>
+      {exporting && festoBar && specs && <CompareReport stageRef={reportRef} kind={t('모터')} reference={reference} festo={festoBar} specs={specs} />}
     </main>
   )
 }

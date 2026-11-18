@@ -49,11 +49,11 @@ export async function reportToPdf(root: HTMLElement, title: string, link?: strin
 }
 
 /** Suggested file name / PDF title: 축선정_<axis model>_<yyyy-mm-dd> (AxisPilot_… in English). */
-export function reportTitle(axisModel: string, lang: Lang): string {
+export function reportTitle(axisModel: string, lang: Lang, template = '축선정_{model}_{date}'): string {
   // Local date (toISOString would give the UTC date, a day early in Korea before 9:00)
   const now = new Date()
   const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
-  return translate(lang, '축선정_{model}_{date}', { model: axisModel, date }).replace(/[\\/:*?"<>|]/g, '_')
+  return translate(lang, template, { model: axisModel, date }).replace(/[\\/:*?"<>|]/g, '_')
 }
 
 /**
