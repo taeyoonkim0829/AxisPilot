@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { axes, motors, thirdPartyAxes } from '../data'
 import { G, guideComparisonValue, guideLoads } from './axisSelection'
-import { axisCandidates, axisSpecRows, COMPARE_AXIS_FAMILIES, estimatedThrust, festoOverhang, festoVariant, motorCandidates, fullModel, motorSpecRows, offeredOptions, supplyOf } from './compare'
+import { axisCandidates, axisSpecRows, COMPARE_AXIS_FAMILIES, estimatedThrust, festoOverhang, festoVariant, motorCandidates, fullModel, fullModels, motorSpecRows, offeredOptions, supplyOf } from './compare'
 import type { Requirements } from './types'
 
 describe('제품 비교', () => {
@@ -23,6 +23,9 @@ describe('제품 비교', () => {
     expect(model('APMC-FBL04A')).toBe('APMC-FBL04AMK1')
     expect(model(motors.find((m) => m.model === 'APMC-FAL01A (48V) (brake)')!.id)).toBe('APMC-FAL01AM8K28')
     expect(offeredOptions(motors.find((m) => m.id === 'HG-KR053')!, opt)).toEqual({ shaft: 'plain', seal: false, encoder: 'multi' })
+    // the search finds a model by any of its full names, which give back their options
+    expect(fullModels(sie).find((f) => f.model === '1FK2104-4AF01-0MA0')?.options).toEqual({ shaft: 'plain', seal: true, encoder: 'multi' })
+    expect(fullModels(motors.find((m) => m.id === 'HG-KR053')!).map((f) => f.model)).toEqual(['HG-KR053'])
     const emmb = motors.find((m) => m.id === 'EMMB-AS-40-01')!
     expect(festoVariant(emmb, { shaft: 'key', seal: false, encoder: 'multi' }).variant).toMatchObject({ orderCode: 'EMMB-AS-40-01-K-S30M', partNumber: '8097169' })
     // EMMB-AS has no shaft seal: the nearest variant, the seal named as not offered

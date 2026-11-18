@@ -217,6 +217,20 @@ export function offeredOptions(m: Motor, o: MotorOptions): MotorOptions {
   }
 }
 
+/** Every full model name the compared motor is offered as, with its options (none: no order options) */
+export function fullModels(m: Motor): { model: string; options: MotorOptions }[] {
+  const r = referenceOptions(m)
+  if (!r) return []
+  return r.shaft.flatMap((shaft) =>
+    r.seal.flatMap((seal) =>
+      r.encoder.map((encoder) => {
+        const options = { shaft, seal, encoder }
+        return { model: fullModel(m, options) ?? m.model, options }
+      }),
+    ),
+  )
+}
+
 /**
  * The compared motor's full model name for the order options (null: no options, the model is the full name).
  * - Siemens 1FK2: the model is the article number up to the brake digit; positions read from Siemens's

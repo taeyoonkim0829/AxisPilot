@@ -1,4 +1,4 @@
-import { useEffect, useId, useState, type KeyboardEvent, type ReactNode, type RefObject } from 'react'
+import { useEffect, useId, useMemo, useState, type KeyboardEvent, type ReactNode, type RefObject } from 'react'
 import { createPortal } from 'react-dom'
 import {
   axisCandidates,
@@ -9,6 +9,7 @@ import {
   motorOptionRows,
   motorSpecRows,
   fullModel,
+  fullModels,
   offeredOptions,
   referenceOptions,
   supplyOf,
@@ -53,28 +54,50 @@ function Select<T extends string>({ label, value, options, onChange, text = (v) 
   )
 }
 
-const squash = (s: string) => s.toLowerCase().replace(/[\s\-_/.()]/g, '')
+const fullModelNames = (m: Motor) => fullModels(m).map((f) => f.model)
+const squash =(s: string) => s.toLowerCase().replace(/[\s\-_/.()]/g, '')
 
 /**
  * Finds a compared product by its model name among every maker and series (the whole name, any part of it,
  * case, spaces, hyphens, underscores, dots, slashes and brackets ignored), in a list below the field (combobox):
  * a click or Enter picks (Enter the highlighted suggestion, else the first), the arrow keys move, Escape closes.
  */
-function ModelSearch<T extends { id: string; model: string; maker: string }>({ items, sub, onPick }: { items: T[]; sub: (i: T) => string; onPick: (i: T) => void }) {
+function ModelSearch<T extends { id: string; model: string; maker: string }>({
+  items,
+  sub,
+  names,
+  onPick,
+}: {
+  items: T[]
+  sub: (i: T) => string
+  /** further names an item is found by (motors: the full model names of its order options) */
+  names?: (i: T) => string[]
+  /** the item and the name it was found by */
+  onPick: (i: T, name: string) => void
+}) {
   const t = useT()
   const id = useId()
   const [q, setQ] = useState('')
   const [open, setOpen] = useState(false)
   const [hi, setHi] = useState(-1)
+  const index = useMemo(() => items.map((i) => ({ i, names: [i.model, ...(names?.(i) ?? [])].map((n) => [n, squash(n)] as const) })), [items, names])
   const k = squash(q)
-  const matches = k ? items.filter((i) => squash(i.model).includes(k)).slice(0, 50) : []
+  // each item once, by the first of its names that matches (the base model before the full names)
+  const matches = k
+    ? index
+        .flatMap(({ i, names }) => {
+          const hit = names.find(([, s]) => s.includes(k))
+          return hit ? [{ i, name: hit[0] }] : []
+        })
+        .slice(0, 50)
+    : []
   const shown = open && matches.length > 0
   useEffect(() => {
     if (hi >= 0) document.getElementById(`${id}-${hi}`)?.scrollIntoView({ block: 'nearest' })
   }, [id, hi])
-  const take = (i: T | undefined) => {
-    if (!i) return
-    onPick(i)
+  const take = (m: (typeof matches)[number] | undefined) => {
+    if (!m) return
+    onPick(m.i, m.name)
     setQ('')
     setOpen(false)
     setHi(-1)
@@ -119,7 +142,7 @@ function ModelSearch<T extends { id: string; model: string; maker: string }>({ i
         </svg>
       </span>
       <ul id={`${id}-list`} role="listbox" className="compare-search-list" hidden={!shown}>
-        {matches.map((i, n) => (
+        {matches.map(({ i, name }, n) => (
           <li
             key={i.id}
             id={`${id}-${n}`}
@@ -128,9 +151,9 @@ function ModelSearch<T extends { id: string; model: string; maker: string }>({ i
             className={n === hi ? 'active' : undefined}
             onMouseDown={(e) => e.preventDefault()}
             onMouseEnter={() => setHi(n)}
-            onClick={() => take(i)}
+            onClick={() => take(matches[n])}
           >
-            <span>{i.model}</span>
+            <span>{name}</span>
             <small>{`${i.maker} · ${sub(i)}`}</small>
           </li>
         ))}
@@ -511,11 +534,14 @@ function MotorCompare() {
             <h2>{t('비교 제품')}</h2>
             <ModelSearch
               items={searchMotors}
-              sub={(m) => m.family}
-              onPick={(m) => {
+              sub={(m) => `${m.family}${m.model.match(/( \([^)]*\))+$/)?.[0] ?? ''}`}
+              names={fullModelNames}
+              onPick={(m, name) => {
                 setMaker(m.maker as (typeof thirdPartyMakers)[number])
                 setFamily(m.family)
                 setModelId(m.id)
+                const full = fullModels(m).find((f) => f.model === name)
+                if (full) setOptions(full.options)
               }}
             />
             <Select label={t('제조사')} value={maker} options={[...thirdPartyMakers]} onChange={setMaker} />
