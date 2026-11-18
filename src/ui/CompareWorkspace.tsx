@@ -479,7 +479,7 @@ function MotorCompare() {
   const [samePower, setSamePower] = useState(true)
   const [sameInterface, setSameInterface] = useState(false)
   const [pick, setPick] = useState<string | null>(null)
-  const [options, setOptions] = useState<MotorOptions>({ shaft: 'plain', seal: false, encoder: 'single' })
+  const [options, setOptions] = useState<MotorOptions>({ shaft: 'plain', seal: false, encoder: 'multi' })
   const option = <K extends keyof MotorOptions>(k: K) => (v: MotorOptions[K]) => setOptions((o) => ({ ...o, [k]: v }))
   const list = motorCandidates(ref, motors, { families, supply: supply === 'all' ? null : supply, samePower, sameInterface })
   const festo = picked(list, pick)
@@ -554,7 +554,7 @@ function MotorCompare() {
                 <div className="field">
                   <span className="field-label">{t('엔코더')}</span>
                   <RadioGroup
-                    options={['single', 'multi'] as const}
+                    options={['multi', 'single'] as const}
                     value={opts.encoder === 'none' ? 'multi' : opts.encoder}
                     onChange={option('encoder')}
                     label={(v) => t(v === 'single' ? '싱글턴' : '멀티턴')}

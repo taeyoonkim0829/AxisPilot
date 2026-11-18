@@ -188,7 +188,7 @@ const LS_M3 = /^APM-FGP?(110D|110G|150G)$/
  */
 export function referenceOptions(m: Motor): ReferenceOptions | null {
   const both = { shaft: ['plain', 'key'] as MotorOptions['shaft'][], seal: [false, true] }
-  if (m.family === '1FK2') return { ...both, encoder: ['single', 'multi'] }
+  if (m.family === '1FK2') return { ...both, encoder: ['multi', 'single'] }
   if (m.maker === 'Mitsubishi' && /^H[GK]-/.test(m.family)) {
     const base = baseModel(m)
     // HG-KR: oil seal from 0.1 kW, keyed shaft only on 200 / 400 / 750 W; HG-JR: oil seal as standard
