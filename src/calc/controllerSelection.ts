@@ -226,7 +226,7 @@ export function selectController(
     if (internal && !needed)
       checks.push(
         check('내장 제동저항 정격 전력', averagePower, internal.nominalPower, 'W'),
-        ...(internal.pulseEnergy != null ? [check('제동 에너지 (내장)', eventEnergy, internal.pulseEnergy, 'Ws')] : []),
+        ...(internal.pulseEnergy != null ? [check('내장 제동저항 펄스 에너지', eventEnergy, internal.pulseEnergy, 'Ws')] : []),
       )
     if (needed) {
       // listed by id; a resistor rated for one supply (Siemens S210 3AC: 240 V / 400 V) only for motors on it

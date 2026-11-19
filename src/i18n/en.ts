@@ -461,7 +461,7 @@ export const en: Record<string, string> = {
   '{type}: 주문할 수 있는 길이를 넘습니다': '{type}: longer than can be ordered',
   '브레이크 모터는 24 V DC 이상의 로직 전원이 필요합니다': 'Motors with a brake need a logic supply of at least 24 V DC',
   '내장 제동저항 정격 전력': 'Integrated braking resistor nominal power',
-  '제동 에너지 (내장)': 'Braking energy (integrated)',
+  '내장 제동저항 펄스 에너지': 'Integrated braking resistor pulse energy',
   '외부 제동저항 정격 전력': 'External braking resistor nominal power',
   '외부 제동저항 펄스 에너지': 'External braking resistor pulse energy',
   '외부 제동저항': 'External braking resistor',

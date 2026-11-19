@@ -159,7 +159,7 @@ describe('Mitsubishi drive packages (data)', () => {
     expect(at('HG-SR52').cables.find((c) => c.role === 'motor')).toMatchObject({ partNumber: 'MR-PWCNS4', type: 'MR-PWCNS4 + power cable 5 m (user-made)' })
     // no peak current or pulse rating in the Mitsubishi manuals: not checked
     expect(hg.checks.find((c) => c.label === '드라이브 최대 전류')!.limit).toBeNull()
-    expect(hg.checks.find((c) => c.label === '제동 에너지 (내장)')).toBeUndefined()
+    expect(hg.checks.find((c) => c.label === '내장 제동저항 펄스 에너지')).toBeUndefined()
   })
 
   it('adds an MR-RB regenerative option rated by permissible power only', () => {
