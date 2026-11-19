@@ -101,7 +101,10 @@ JM = mo['inertia']
 rotor = JM * 1e-4 * alpha
 TM = {'acc': Tax['acc'] / eta + rotor, 'run': Tax['run'] / eta, 'dec': Tax['dec'] / eta - rotor}
 same(TM['acc'], ex['drive']['peak']); same(TM['run'], check('등속 구간 토크', ex['drive']['checks'])['value'])
-Trms = math.sqrt(2 * (TM['acc'] ** 2 * Ta + TM['run'] ** 2 * Tc + TM['dec'] ** 2 * Ta) / tf)
+# at standstill the axis no-load torque is still held, without the efficiency (as Festo's tool counts it in the RMS)
+Tdwell = next(s_['torque'] for s_ in ex['samples'] if s_['dir'] == 0)
+same(Tdwell, T0)
+Trms = math.sqrt((2 * (TM['acc'] ** 2 * Ta + TM['run'] ** 2 * Tc + TM['dec'] ** 2 * Ta) + Tdwell ** 2 * dwell) / tf)
 same(Trms, ex['drive']['rms'])
 ratio = J / JM
 same(ratio, ex['drive']['ratio'])
@@ -117,7 +120,7 @@ same(ratioK, check('관성비 (키트 포함)', kit['checks'])['value'])
 TMk = TM['acc'] + kitRotor
 same(TMk, check('최대 토크 (키트 포함)', kit['checks'])['value'])
 TMkdec = TM['dec'] - kitRotor
-Trmsk = math.sqrt(2 * ((TMk) ** 2 * Ta + TM['run'] ** 2 * Tc + TMkdec ** 2 * Ta) / tf)
+Trmsk = math.sqrt((2 * ((TMk) ** 2 * Ta + TM['run'] ** 2 * Tc + TMkdec ** 2 * Ta) + Tdwell ** 2 * dwell) / tf)
 same(Trmsk, check('실효 토크 (키트 포함)', kit['checks'])['value'])
 
 Irms = Trms / mo['kt']
@@ -231,7 +234,8 @@ class Slide:
         ext.set('cx', str(int(W * E))); ext.set('cy', str(int(H * E)))
 
     def finish(self):
-        self.add(self.num)
+        # cached text of the slide number field: its place once the closing slide has moved behind the example
+        self.add(self.num).find('.//' + q('t')).text = str(len(prs.slides) - 1)
 
 
 HANGUL = re.compile(r'([ㄱ-힣①-⑩]+(?:[ ·,()/]*[ㄱ-힣①-⑩]+)*)')
@@ -454,14 +458,14 @@ s = Slide('예시 6. 모터: 효율로 나누고 로터 관성을 더합니다')
 s.card(0.6, 1.5, 12.15, 1.45, name='모터 토크 대입')
 s.head(0.85, 1.58, 11, f'{mo["id"]}: J_{{M}} {JM} kg·cm², 정격 {mo["rated"]} Nm, 최대 {mo["peak"]} Nm, 허용 관성비 {mo["allow"]}')
 s.text(0.85, 2.02, 11.7, 0.85, [f'T_{{M}} = T_{{axis}} / η + J_{{M}}·10⁻⁴·α = {Tax["acc"]:.4f} / 0.9 + {JM} × 10⁻⁴ × {alpha:.1f} = {Tax["acc"] / eta:.4f} + {rotor:.4f} = {TM["acc"]:.4f} Nm'], 16, 'tx1', math_=True, after=0, anchor='ctr')
-rows = [['구간', 'T_{axis} [Nm]', 'T_{M} [Nm]', '시간 [s]'], ['가속', f(Tax['acc'], 4), f(TM['acc'], 4), f'{Ta:.2f}'], ['등속', f(Tax['run'], 4), f(TM['run'], 4), f'{Tc:.2f}'], ['감속', f(Tax['dec'], 4), f(TM['dec'], 4), f'{Ta:.2f}']]
-s.table(0.6, 3.15, [1.1, 1.55, 1.45, 1.15], rows, rowh=0.44, align={1: 'r', 2: 'r', 3: 'r'}, math_cols=(1, 2, 3))
-s.text(0.6, 4.98, 5.25, 1.3, ['복귀 이동도 크기는 같습니다.', f'감속에서도 T_{{M}} > 0 (토크와 회전 방향이 같음)이므로 회생 에너지가 생기지 않습니다. 제동저항도 필요 없습니다.'], 13, 'tx1', after=4)
+rows = [['구간', 'T_{axis} [Nm]', 'T_{M} [Nm]', '시간 [s]'], ['가속', f(Tax['acc'], 4), f(TM['acc'], 4), f'{Ta:.2f}'], ['등속', f(Tax['run'], 4), f(TM['run'], 4), f'{Tc:.2f}'], ['감속', f(Tax['dec'], 4), f(TM['dec'], 4), f'{Ta:.2f}'], ['정지', f(Tdwell, 4), f(Tdwell, 4), f'{dwell:.2f}']]
+s.table(0.6, 3.15, [1.1, 1.55, 1.45, 1.15], rows, rowh=0.4, align={1: 'r', 2: 'r', 3: 'r'}, math_cols=(1, 2, 3))
+s.text(0.6, 5.25, 5.25, 1.05, ['복귀 이동도 크기는 같습니다. 정지 중에도 무부하 토크 T_{0}를 잡고 있습니다 (효율 없이, Festo EMS와 같은 방식).', f'감속에서도 T_{{M}} > 0이라 회생 에너지가 없고 제동저항도 필요 없습니다.'], 12, 'tx1', after=3)
 s.card(6.1, 3.15, 6.65, 3.1, dark=True, name='모터 판정')
 s.text(6.35, 3.25, 6.2, 2.9, [
     f'T_{{peak}} = {TM["acc"]:.3f} Nm ≤ {mo["peak"]} Nm  ({pct(TM["acc"], mo["peak"])})',
-    f'T_{{rms}} = √( 2 × ({TM["acc"]:.3f}²×0.25 + {TM["run"]:.3f}²×0.75',
-    f'     + {TM["dec"]:.3f}²×0.25) / 3.0 ) = {Trms:.3f} Nm ≤ {mo["rated"]} Nm  ({pct(Trms, mo["rated"])})',
+    f'T_{{rms}} = √( ( 2 × ({TM["acc"]:.3f}²×0.25 + {TM["run"]:.3f}²×0.75 + {TM["dec"]:.3f}²×0.25)',
+    f'     + {Tdwell:.1f}²×0.5 ) / 3.0 ) = {Trms:.3f} Nm ≤ {mo["rated"]} Nm  ({pct(Trms, mo["rated"])})',
     f'N = {N:.0f} rpm ≤ 정격 {mo["ratedSpeed"]} rpm  ({pct(N, mo["ratedSpeed"])})',
     f'J / J_{{M}} = {J:.4f} / {JM} = {ratio:.2f} ≤ {mo["allow"]}  ({pct(ratio, mo["allow"])})',
 ], 15, 'bg1', math_=True, after=7, anchor='ctr')
@@ -533,6 +537,13 @@ ids = list(lst)
 closing = ids[15]
 lst.remove(closing)
 lst.append(closing)
+renumbered = 0
+for sh in prs.slides[len(prs.slides) - 1].shapes:
+    if sh.has_text_frame and sh.text_frame.text.strip() == '16':
+        # a slide number field: PowerPoint refreshes it, other viewers show this cached text
+        sh._element.find('.//' + q('t')).text = str(len(prs.slides))
+        renumbered += 1
+assert renumbered == 1
 
 # ---------- a stale sentence on the motor slide: the conservative check is gone from the app ----------
 fixed = 0
