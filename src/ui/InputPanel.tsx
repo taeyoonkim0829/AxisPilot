@@ -500,6 +500,7 @@ export function DetailSettings({ settings, onSettings }: { settings: Settings; o
           unit="N"
           value={settings.guideResistance}
           onChange={(v) => setS('guideResistance', v)}
+          help={t('축 밖의 저항(외부 LM 가이드 블록, 실링 등)을 더합니다. Festo 축 자체의 가이드 마찰은 무부하 토크와 마찰 계수에 이미 포함되고, Festo 가이드 축·EAGF의 이동 저항은 자동으로 반영됩니다.')}
         />
         <NumberField
           label={t('커플링 관성')}

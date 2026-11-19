@@ -204,6 +204,8 @@ export const en: Record<string, string> = {
   '키 축': 'Feather key',
   '싱글턴': 'Single-turn',
   '멀티턴': 'Multi-turn',
+  '축 밖의 저항(외부 LM 가이드 블록, 실링 등)을 더합니다. Festo 축 자체의 가이드 마찰은 무부하 토크와 마찰 계수에 이미 포함되고, Festo 가이드 축·EAGF의 이동 저항은 자동으로 반영됩니다.':
+    "Adds resistance from outside the axis (external LM guide blocks, seals …). The Festo axis's own guide friction is already in its no-load torque and the friction coefficient, and the displacement force of Festo guide axes and the EAGF is added automatically.",
   '앱솔루트': 'Absolute',
   '인크리멘탈': 'Incremental',
   '병렬 방향': 'Parallel side',
