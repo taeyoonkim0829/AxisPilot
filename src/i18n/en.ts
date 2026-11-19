@@ -79,6 +79,16 @@ export const en: Record<string, string> = {
   '모터 데이터에 없을 때': 'If not in the motor data',
   '지지 간격': 'Support spacing',
   '0 = 양 끝만 지지': '0 = ends only',
+  '지지 방식': 'Support',
+  '양단 지지': 'Both ends',
+  '외팔보': 'Cantilever',
+  '돌출 길이': 'Overhang',
+  '한 점에서 지지한 축의 지지점에서 자유단까지 길이. 이동 질량이 자유단에 있을 때의 처짐을 봅니다. 0 = 축 전체 길이':
+    'Length from the single support to the free end of the axis. The deflection is taken with the moving mass at the free end. 0 = the whole axis length',
+  '외팔보 돌출 길이': 'Cantilever overhang',
+  '축 전체 길이': 'Whole axis length',
+  '외팔보 돌출 길이 {span} mm 기준': 'For a cantilever overhang of {span} mm',
+  '외팔보 돌출 길이 {span} mm 기준 — 지지 추가 검토': 'For a cantilever overhang of {span} mm — consider another support',
   '일 가동 시간': 'Hours per day',
 
   // Motion profile

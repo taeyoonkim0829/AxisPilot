@@ -136,8 +136,11 @@ export interface Settings {
   couplingInertia: number
   /** h/day, for converting life in km to years */
   hoursPerDay: number
-  /** mm between supports for the deflection check; 0 = supported only at both ends */
+  /** mm between supports for the deflection check; 0 = supported only at both ends. Cantilever: the overhang from
+   *  the support to the free end; 0 = the whole axis length */
   supportSpan: number
+  /** the axis held at one point only (cantilever), its free end overhanging, instead of supported at both ends */
+  cantilever: boolean
   /** used when a motor has no allowable inertia ratio in the data */
   defaultInertiaRatio: number
   families: AxisFamily[]
@@ -187,6 +190,7 @@ export const defaultSettings: Settings = {
   couplingInertia: 0,
   hoursPerDay: 24,
   supportSpan: 0,
+  cantilever: false,
   defaultInertiaRatio: 10,
   families: ['ELGT'],
   drives: ['spindle'],

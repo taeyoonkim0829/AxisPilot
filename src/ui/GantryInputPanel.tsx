@@ -50,6 +50,7 @@ const sharedKeys = [
   'couplingInertia',
   'defaultInertiaRatio',
   'supportSpan',
+  'cantilever',
   'hoursPerDay',
 ] as const satisfies (keyof Settings)[]
 

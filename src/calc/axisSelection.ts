@@ -892,11 +892,15 @@ export function evaluateAxis(
       const selfWeight = mAxis * G * (totalLength ? Math.min(1, span / totalLength) : 1)
       // Point load: the weight on this axis (its share in a parallel arrangement)
       const pointLoad = layout.positions.length > 1 ? (req.mounting === 'floor' ? loads.Fz : loads.Fy) : mass * G
-      const deflection =
-        (pointLoad * span ** 3) / (48 * YOUNGS_MODULUS * I) + (5 * selfWeight * span ** 3) / (384 * YOUNGS_MODULUS * I)
+      // simply supported: moving mass in the middle; cantilever: at the free end, the overhang's weight spread over it
+      const deflection = settings.cantilever
+        ? (pointLoad * span ** 3) / (3 * YOUNGS_MODULUS * I) + (selfWeight * span ** 3) / (8 * YOUNGS_MODULUS * I)
+        : (pointLoad * span ** 3) / (48 * YOUNGS_MODULUS * I) + (5 * selfWeight * span ** 3) / (384 * YOUNGS_MODULUS * I)
       const limit = axis.allowableDeflection ?? 0.5
-      const c = { ...check('처짐', deflection, limit, 'mm', '지지 간격 {span} mm 기준'), noteArgs: { span: Math.round(span) } }
-      checks.push(c.status === 'fail' ? { ...c, status: 'warn', note: '지지 간격 {span} mm 기준 — 중간 지지 추가 또는 지지 간격 입력 검토' } : c)
+      const basis = settings.cantilever ? '외팔보 돌출 길이 {span} mm 기준' : '지지 간격 {span} mm 기준'
+      const c = { ...check('처짐', deflection, limit, 'mm', basis), noteArgs: { span: Math.round(span) } }
+      const fix = settings.cantilever ? '외팔보 돌출 길이 {span} mm 기준 — 지지 추가 검토' : '지지 간격 {span} mm 기준 — 중간 지지 추가 또는 지지 간격 입력 검토'
+      checks.push(c.status === 'fail' ? { ...c, status: 'warn', note: fix } : c)
     }
   }
 
