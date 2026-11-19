@@ -221,16 +221,13 @@ export function selectController(
         (internal.pulseEnergy != null && eventEnergy > internal.pulseEnergy) ||
         (internal.pulsePower != null && peakRegen > internal.pulsePower)
       : eventEnergy > ST_REGEN_LIMIT
-    if (internal) {
-      // pulse values are not documented for every drive (Mitsubishi: continuous regenerative power only)
-      const own = [
-        check('제동저항 정격 전력 (내장)', averagePower, internal.nominalPower, 'W'),
+    // the internal resistor is checked only while it does the braking: an external one takes over when it is exceeded
+    // (pulse values are not documented for every drive, Mitsubishi: continuous regenerative power only)
+    if (internal && !needed)
+      checks.push(
+        check('내장 제동저항 정격 전력', averagePower, internal.nominalPower, 'W'),
         ...(internal.pulseEnergy != null ? [check('제동 에너지 (내장)', eventEnergy, internal.pulseEnergy, 'Ws')] : []),
-      ]
-      // the internal resistor only informs here: an external one takes over when it is exceeded
-      for (const c of own) if (c.status === 'fail') Object.assign(c, { status: 'ok', note: '외부 제동저항으로 보완' })
-      checks.push(...own)
-    }
+      )
     if (needed) {
       // listed by id; a resistor rated for one supply (Siemens S210 3AC: 240 V / 400 V) only for motors on it
       const options = controller.brakingResistors

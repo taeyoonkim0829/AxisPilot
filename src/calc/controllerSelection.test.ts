@@ -169,6 +169,8 @@ describe('Mitsubishi drive packages (data)', () => {
     expect(selection.controller!.brakingResistors).toContain(selection.resistor.item!.model)
     expect(selection.checks.find((c) => c.label === '외부 제동저항 정격 전력')!.limit).toBe(selection.resistor.item!.ratedPower)
     expect(selection.checks.find((c) => c.label === '외부 제동저항 펄스 에너지')).toBeUndefined()
+    // the external resistor takes over: the internal one is not checked
+    expect(selection.checks.find((c) => c.label === '내장 제동저항 정격 전력')).toBeUndefined()
   })
 
   it('takes the cooling-fan rating (MR-RB5R, 5K-4) when the plain one is too small', () => {
