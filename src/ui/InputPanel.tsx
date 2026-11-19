@@ -517,20 +517,10 @@ export function DetailSettings({ settings, onSettings }: { settings: Settings; o
           help={
             <>
               <img className="help-image" src={inertiaImage} alt="" />
-              {t('모터 데이터에 없을 때')}
+              {t('모터 데이터에 없을 때만 적용')}
             </>
           }
         />
-        <div className="field">
-          <span className="field-label">{t('지지 방식')}</span>
-          <RadioGroup
-            className=""
-            options={['양단 지지', '외팔보']}
-            value={settings.cantilever ? '외팔보' : '양단 지지'}
-            onChange={(v) => setS('cantilever', v === '외팔보')}
-            label={(v) => t(v)}
-          />
-        </div>
         {settings.cantilever ? (
           <NumberField
             label={t('돌출 길이')}
@@ -559,6 +549,16 @@ export function DetailSettings({ settings, onSettings }: { settings: Settings; o
           value={settings.hoursPerDay}
           min={0.1}
           onChange={(v) => setS('hoursPerDay', v)}
+        />
+      </div>
+      <div className="field">
+        <span className="field-label">{t('지지 방식')}</span>
+        <RadioGroup
+          className=""
+          options={['양단 지지', '외팔보']}
+          value={settings.cantilever ? '외팔보' : '양단 지지'}
+          onChange={(v) => setS('cantilever', v === '외팔보')}
+          label={(v) => t(v)}
         />
       </div>
     </details>

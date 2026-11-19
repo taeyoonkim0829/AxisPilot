@@ -76,7 +76,7 @@ export const en: Record<string, string> = {
   '가이드 저항 FG': 'Guide resistance FG',
   '커플링 관성': 'Coupling inertia',
   '기본 허용 관성비': 'Inertia ratio limit',
-  '모터 데이터에 없을 때': 'If not in the motor data',
+  '모터 데이터에 없을 때만 적용': 'Applied only when the motor data has none',
   '지지 간격': 'Support spacing',
   '0 = 양 끝만 지지': '0 = ends only',
   '지지 방식': 'Support',
