@@ -62,7 +62,7 @@ export const moveLabel = (back: boolean, vertical: VerticalDirection | null) => 
 }
 
 /** Motor power supply (`Settings.supplies`, `motorSupply`) */
-export const supplyLabel: Record<Supply, string> = { ac230: 'AC 200–240 V', ac400: 'AC 380–480 V', dc48: 'DC 24/48 V' }
+export const supplyLabel: Record<Supply, string> = { ac230: 'AC 200–240 V', ac400: 'AC 380–480 V', dc24: 'DC 24 V', dc48: 'DC 48 V' }
 
 export const cableRoleLabel: Record<CableChoice['role'], string> = {
   motor: '모터 케이블',

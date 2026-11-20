@@ -202,7 +202,7 @@ export function gearboxOptionsFor(motor: Motor) {
  * Power supply of a motor: from `voltage`, else from its drive range (`controller`); null when the data has neither.
  */
 export function motorSupply(m: Motor): Supply | null {
-  if (m.voltage != null) return m.voltage <= 60 ? 'dc48' : m.voltage < 300 ? 'ac230' : 'ac400'
+  if (m.voltage != null) return m.voltage <= 30 ? 'dc24' : m.voltage <= 60 ? 'dc48' : m.voltage < 300 ? 'ac230' : 'ac400'
   if (!m.controller) return null
   if (m.controller.endsWith('ST')) return 'dc48'
   return /-(3A|1AC|200V)$/.test(m.controller) ? 'ac230' : 'ac400'

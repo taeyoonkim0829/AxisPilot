@@ -221,8 +221,8 @@ export const defaultSettings: Settings = {
   homeContact: 'NO',
 }
 
-/** Motor power supply: 200–240 V AC, 380–480 V AC, DC (24/48 V) */
-export type Supply = 'ac230' | 'ac400' | 'dc48'
+/** Motor power supply: 200–240 V AC, 380–480 V AC, 24 V DC, 48 V DC */
+export type Supply = 'ac230' | 'ac400' | 'dc24' | 'dc48'
 
 export type Status = 'ok' | 'warn' | 'fail'
 

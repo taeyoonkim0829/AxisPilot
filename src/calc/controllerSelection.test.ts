@@ -195,6 +195,7 @@ describe('motorSupply', () => {
     expect(motorSupply({ ...m, voltage: 200, controller: null })).toBe('ac230')
     expect(motorSupply({ ...m, voltage: 400, controller: null })).toBe('ac400')
     expect(motorSupply({ ...m, voltage: 48, controller: null })).toBe('dc48')
+    expect(motorSupply({ ...m, voltage: 24, controller: null })).toBe('dc24')
     expect(motorSupply({ ...m, voltage: null, controller: 'CMMT-AS-3A' })).toBe('ac230')
     expect(motorSupply({ ...m, voltage: null, controller: 'CMMT-AS-11A' })).toBe('ac400')
     expect(motorSupply({ ...m, voltage: null, controller: 'CMMT-ST' })).toBe('dc48')
