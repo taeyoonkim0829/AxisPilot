@@ -92,7 +92,7 @@ describe('제품 비교: Robostar load ratings', () => {
     // 200 W at 3000 rpm, lead 10 mm, η 0.9
     expect(estimatedThrust(200, 10)).toBeCloseTo(360, 0)
     const egc = axes.find((a) => a.id === 'EGC-120-...-BS-10P-KF-GK')!
-    const rows = axisSpecRows(rs, egc).filter((r) => r.label.startsWith('허용 오버행'))
+    const rows = axisSpecRows(rs, egc).filter((r) => r.label.startsWith('모멘트 한계 거리'))
     expect(rows).toHaveLength(4)
     // further out the guide comparison value passes 1; a heavier payload sits closer
     const lateral = festoOverhang(egc, 'floor', 30, 'lateral')!

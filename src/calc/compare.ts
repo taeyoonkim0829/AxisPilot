@@ -129,7 +129,7 @@ export function axisSpecRows(ref: ThirdPartyAxis, festo: Axis): SpecRow[] {
       // beyond the search: the gauge stays full, the value says so
       return { ...r, ...note, ...(festoMm === OVERHANG_MAX ? { other: `≥ ${OVERHANG_MAX} mm` } : {}) }
     }
-    rows.push(overhangRow('허용 오버행 0°', o.lateral, 'lateral'), overhangRow('허용 오버행 90°', o.normal, 'normal'))
+    rows.push(overhangRow('모멘트 한계 거리 y', o.lateral, 'lateral'), overhangRow('모멘트 한계 거리 z', o.normal, 'normal'))
   }
   rows.push(row('모터', '', `${ref.motorPower} W`, null))
   return rows
