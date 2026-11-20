@@ -465,7 +465,7 @@ export function ParallelSection({
   )
 }
 
-/** The collapsible 상세 설정 box: operating hours, process force, inertia, support. */
+/** The collapsible 상세 설정 box: operating hours, process force, default inertia ratio, support. */
 export function DetailSettings({ settings, onSettings }: { settings: Settings; onSettings: (settings: Settings) => void }) {
   const t = useT()
   const setS = <K extends keyof Settings>(key: K, value: Settings[K]) => onSettings({ ...settings, [key]: value })
@@ -498,12 +498,6 @@ export function DetailSettings({ settings, onSettings }: { settings: Settings; o
               help={t('외부 반력이 걸리는 점, 부하 무게 중심과 같은 슬라이드 기준 좌표입니다. 이동 방향의 힘이라 x는 모멘트에 영향이 없고, y·z 오프셋이 가이드 모멘트 Mz·My를 만듭니다.')}
             />
           ))}
-        <NumberField
-          label={t('커플링 관성')}
-          unit="kg·cm²"
-          value={settings.couplingInertia}
-          onChange={(v) => setS('couplingInertia', v)}
-        />
         <NumberField
           label={t('기본 허용 관성비')}
           unit={t('배')}
