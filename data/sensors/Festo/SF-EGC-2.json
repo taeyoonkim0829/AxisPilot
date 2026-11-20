@@ -1,0 +1,60 @@
+{
+  "items": [
+    {
+      "id": "SF-EGC-2-70",
+      "maker": "Festo",
+      "role": "lug",
+      "systems": ["Festo M8"],
+      "model": "SF-EGC-2-70",
+      "partNumber": "558052",
+      "mass": 0.1,
+      "axes": [
+        { "family": "EGC", "variant": "", "size": 70, "drive": "belt" },
+        { "family": "EGC", "variant": "", "size": 70, "drive": "spindle" }
+      ],
+      "dataSource": "EGC-TB-KF data sheet 2026/10 p.52, EGC-BS-KF alike (switch lug SF-EGC-2 for sensing via SIEN-M8B in the sensor bracket HWS-EGC, screwed to the slide side with two screws like SF-EGC-1); drawing from PARTdataManager"
+    },
+    {
+      "id": "SF-EGC-2-80",
+      "maker": "Festo",
+      "role": "lug",
+      "systems": ["Festo M8"],
+      "model": "SF-EGC-2-80",
+      "partNumber": "558053",
+      "mass": 0.13,
+      "axes": [
+        { "family": "EGC", "variant": "", "size": 80, "drive": "belt" },
+        { "family": "EGC", "variant": "", "size": 80, "drive": "spindle" }
+      ],
+      "dataSource": "EGC-TB-KF data sheet 2026/10 p.52, EGC-BS-KF alike (switch lug SF-EGC-2 for sensing via SIEN-M8B in the sensor bracket HWS-EGC, screwed to the slide side with two screws like SF-EGC-1); drawing from PARTdataManager"
+    },
+    {
+      "id": "SF-EGC-2-120",
+      "maker": "Festo",
+      "role": "lug",
+      "systems": ["Festo M8"],
+      "model": "SF-EGC-2-120",
+      "partNumber": "558054",
+      "mass": 0.277,
+      "axes": [
+        { "family": "EGC", "variant": "", "size": 120, "drive": "belt" },
+        { "family": "EGC", "variant": "", "size": 120, "drive": "spindle" }
+      ],
+      "dataSource": "EGC-TB-KF data sheet 2026/10 p.52, EGC-BS-KF alike (switch lug SF-EGC-2 for sensing via SIEN-M8B in the sensor bracket HWS-EGC, screwed to the slide side with two screws like SF-EGC-1); drawing from PARTdataManager"
+    },
+    {
+      "id": "SF-EGC-2-185",
+      "maker": "Festo",
+      "role": "lug",
+      "systems": ["Festo M8"],
+      "model": "SF-EGC-2-185",
+      "partNumber": "558056",
+      "mass": 0.39,
+      "axes": [
+        { "family": "EGC", "variant": "", "size": 185, "drive": "belt" },
+        { "family": "EGC", "variant": "", "size": 185, "drive": "spindle" }
+      ],
+      "dataSource": "EGC-TB-KF data sheet 2026/10 p.52, EGC-BS-KF alike (switch lug SF-EGC-2 for sensing via SIEN-M8B in the sensor bracket HWS-EGC, screwed to the slide side with two screws like SF-EGC-1); drawing from PARTdataManager"
+    }
+  ]
+}

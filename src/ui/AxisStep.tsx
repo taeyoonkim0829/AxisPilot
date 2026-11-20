@@ -59,7 +59,7 @@ function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'sett
   const sensorMakers: SensorMaker[] = [
     'Festo',
     ...(elgd || settings.families.includes('ELGT') ? (['Omron'] as const) : []),
-    ...(settings.families.includes('EGC-HD') ? (['Festo M8'] as const) : []),
+    ...(settings.families.includes('EGC-HD') || settings.families.includes('EGC') ? (['Festo M8'] as const) : []),
   ]
   if (choices.length === 0 && shown.length === 0 && !elgd && !sensing) return null
   const mounting = settings.axisMounting && mountings.includes(settings.axisMounting) ? settings.axisMounting : 'standard'
@@ -135,7 +135,7 @@ function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'sett
       )}
       {sensing && (
         <div className="axis-options-row">
-          {/* Omron EE-SX674 on a Festo sensor bracket: ELGD and ELGT; Festo's round SIEN-M8B on HWS-EGC: EGC-HD */}
+          {/* Omron EE-SX674 on a Festo sensor bracket: ELGD and ELGT; Festo's round SIEN-M8B on HWS-EGC: EGC-HD and EGC 70 … 185 (EGC-50 falls back to Festo's) */}
           {sensorMakers.length > 1 && (
             <div className="filter-group">
               <span className="field-label">{t('센서 제조사')}</span>

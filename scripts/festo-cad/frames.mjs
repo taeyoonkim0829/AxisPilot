@@ -840,12 +840,6 @@ const SENSOR_SEATS = {
  *  check: an outward bracket reaches the size-60 heads and kits, the TB-80 heads, a parallel kit's motor on BS-WD-120 */
 const ELGD_LIMITS_INWARDS = ['TB-60', 'BS-60', 'TB-80', 'BS-WD-120']
 const ESBF_SLOT_TOP = { 32: 22.25, 40: 26.75, 50: 31.75, 63: 37.25, 80: 46.25, 100: 54.75 }
-/** EGC-TB-KF / EGC-BS-KF size → mm from the slide surface centre, on the side away from `slide.front` (TB) / along
- *  travel × normal (BS), where the switch lug SF-EGC-1's threads are: the slide's side face, the threads' depth below
- *  the surface (their middle on the slide centre), the profile's top face below the surface and where it ends at that
- *  side (measured on the STEP models; GK, GV and BS slides alike). The sensor slot (data sheet profile [1]) lies in the
- *  profile's upper corner face, tilted 25° from vertical, its opening's centre 2.6 mm out from and 4.22 mm below
- *  that end at every size */
 /** EGC-HD-TB / -BS size → mm from the slide surface centre along travel × normal: the slide's side face with the
  *  switch lug SF-EGC-HD-1's two threads (their middle on the slide centre), their depth below the surface, and the
  *  sensor slot's opening centre out from the middle and below the surface (the upper corner slot, tilted 25° like
@@ -853,7 +847,21 @@ const ESBF_SLOT_TOP = { 32: 22.25, 40: 26.75, 50: 31.75, 63: 37.25, 80: 46.25, 1
  *  mounting slot [2] and that slot's centre below the surface, where the sensor bracket HWS-EGC's slot nuts go
  *  (measured on the STEP models, the profile symmetric, TB and BS slides alike) */
 const EGC_HD_SENSOR_SEATS = { 125: [60, 12, 58.15, 29.33, 61, 44], 160: [75.35, 16.5, 78.75, 40.32, 80, 56.5], 220: [102.1, 26.6, 106.5, 55.26, 110, 91.5] }
-const EGC_SENSOR_SEATS = { 50: [15, 7.2, 13.5, 15.13], 70: [24.1, 11.7, 19.7, 24.41], 80: [31.6, 16, 24, 31.44], 120: [48, 24.5, 35.8, 47.71], 185: [77, 35.2, 48.5, 77.31] }
+/** EGC-TB-KF / EGC-BS-KF size → mm from the slide surface centre, on the side away from `slide.front` (TB) / along
+ *  travel × normal (BS), where the switch lug SF-EGC-1's threads are: the slide's side face, the threads' depth below
+ *  the surface (their middle on the slide centre), the profile's top face below the surface and where it ends at that
+ *  side (measured on the STEP models; GK, GV and BS slides alike). The sensor slot (data sheet profile [1]) lies in the
+ *  profile's upper corner face, tilted 25° from vertical, its opening's centre 2.6 mm out from and 4.22 mm below
+ *  that end at every size; and (70 … 185) the profile's side face on the lug side and the centre of its mounting
+ *  slot [2] below the surface (185: the upper of its two), where the sensor bracket HWS-EGC's slot nuts go (the slot
+ *  opening's lips on the STEP models: 5.56 mm wide on 70 / 80, 9.08 mm on 120 / 185) */
+const EGC_SENSOR_SEATS = {
+  50: [15, 7.2, 13.5, 15.13],
+  70: [24.1, 11.7, 19.7, 24.41, 33.5, 44],
+  80: [31.6, 16, 24, 31.44, 40, 56.5],
+  120: [48, 24.5, 35.8, 47.71, 58, 91.5],
+  185: [77, 35.2, 48.5, 77.31, 91, 112.5],
+}
 /** ELGT-BS size → mm from the slide surface centre along travel × normal: the slide's side face with the switch lug
  *  EAPM-L9-…-SLS's two M3 threads (their middle on the slide centre), their depth, the profile's side face with the
  *  sensor slot [1] and the slot's centre below the surface, and the centre of slot [2] below it, where the Omron
@@ -922,13 +930,17 @@ for (const file of files) {
     if (!existsSync(out) || !EGC_SENSOR_SEATS[egcSize]) continue
     const old = JSON.parse(readFileSync(out, 'utf8'))
     if (old.sensor && !force) continue
-    const [side, lug, top, end] = EGC_SENSOR_SEATS[egcSize]
+    const [side, lug, top, end, profileSide, mountingSlot] = EGC_SENSOR_SEATS[egcSize]
     const { origin: o, normal: n, travel: t } = old.slide
     const lateral = old.slide.front ? old.slide.front.map((v) => -v) : [t[1] * n[2] - t[2] * n[1], t[2] * n[0] - t[0] * n[2], t[0] * n[1] - t[1] * n[0]]
     const at = (out, down) => o.map((v, i) => fixed(v + out * lateral[i] - down * n[i]))
     const { out: so, down: sd, tilt } = EGC_SLOT
     const slotAxis = lateral.map((v, i) => unitFixed(Math.cos(tilt) * v + Math.sin(tilt) * n[i]))
-    const sensor = { lug: { origin: at(side, lug), axis: lateral, up: n }, slot: { origin: at(end + so, top + sd), axis: slotAxis, up: t } }
+    const sensor = {
+      lug: { origin: at(side, lug), axis: lateral, up: n },
+      slot: { origin: at(end + so, top + sd), axis: slotAxis, up: t },
+      ...(profileSide != null ? { bracket: { origin: at(profileSide, mountingSlot), axis: lateral, up: t } } : {}),
+    }
     if (dryRun) console.log(out, JSON.stringify(sensor))
     else writeFileSync(out, format({ ...old, sensor }))
     written++

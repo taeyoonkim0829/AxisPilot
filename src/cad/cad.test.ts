@@ -889,10 +889,10 @@ describe('combination', () => {
     const m8 = sensingFor(axis, sensors, { sensorOutput: 'PNP', limitContact: 'NC', homeContact: 'NO', sensorMaker: 'Festo M8' })!
     expect([m8.lug?.partNumber, m8.bracket?.partNumber, ...m8.switches.map((s) => s.part.partNumber)]).toEqual(['570030', '558057', '150390', '150390', '150386'])
     expect(bracketCount(m8)).toBe(2)
-    // a plain EGC has no round switches in the data (its SF-EGC-2 / HWS-EGC have no drawings yet): Festo M8 kept from
-    // another series falls back to the SIES-8M in the slot, so its sensors are still drawn
-    const egc = sensingFor(axes.find((a) => a.id === 'EGC-185-...-TB-KF-GK')!, sensors, { sensorOutput: 'PNP', limitContact: 'NC', homeContact: 'NO', sensorMaker: 'Festo M8' })!
-    expect([egc.lug?.model, egc.bracket, egc.switches[0].part.model]).toEqual(['SF-EGC-1-185', null, 'SIES-8M-PO-24V-K-7.5-OE'])
+    // EGC-50 has no round switches (Festo offers SF-EGC-2 / HWS-EGC from size 70): Festo M8 falls back to the SIES-8M
+    // in the slot, so its sensors are still drawn
+    const egc = sensingFor(axes.find((a) => a.id === 'EGC-50-...-TB-KF-GK')!, sensors, { sensorOutput: 'PNP', limitContact: 'NC', homeContact: 'NO', sensorMaker: 'Festo M8' })!
+    expect([egc.lug?.model, egc.bracket, egc.switches[0].part.model]).toEqual(['SF-EGC-1-50', null, 'SIES-8M-PO-24V-K-7.5-OE'])
     const m8Sel = { ...sel, sensing: m8 }
     const m8Found = comboDrawings(m8Sel, own)
     expect(m8Found.sensors?.bracket?.partNumber).toBe('558057')
@@ -920,6 +920,56 @@ describe('combination', () => {
       expect(own[0].hi[2]).toBeCloseTo(shelf - 3, 1)
     }
   }, 60000)
+
+  it('senses a plain EGC with Festo M8: SF-EGC-2 flag, SIEN-M8B in HWS-EGC at each end, both nuts on the shelf', async () => {
+    const sensorPaths = allPaths.map((p) => p.slice(6)).filter((p) => p.startsWith('data/sensors/'))
+    // size → axis, its file, kit, motor, bracket, lug flag's underside below the slide surface, half the flag, home's hole pitch
+    const cases = [
+      ['EGC-80-...-TB-KF-GK', 'data/axes/Festo/Drawings/EGC/3013354_EGC-80-500-TB-KF-0H-GK.stp', 'EAMM-A-L48-100A', 'EMMT-AS-100-H-HS', 'data/motors/Festo/Drawings/EMMT-AS/8182017_EMMT-AS-100-H-HS-RS.stp', 'HWS-EGC-M5', 16 - 6.65, 45, 20],
+      ['EGC-185-...-TB-KF-GK', 'data/axes/Festo/Drawings/EGC/556817_EGC-185-500-TB-KF-0H-GK.stp', 'EAMM-A-L95-150A-G2', 'EMMT-AS-150-L-HS', 'data/motors/Festo/Drawings/EMMT-AS/8148324_EMMT-AS-150-L-HS-R3S.stp', 'HWS-EGC-M8:KURZ', 35.2 + 43, 115, 25],
+    ] as const
+    for (const [id, axisPath, kitName, motorName, motorPath, bracketModel, flagDown, edge, pitch] of cases) {
+      const axis = axes.find((a) => a.id === id)!
+      const sensing = sensingFor(axis, sensors, { sensorOutput: 'PNP', limitContact: 'NC', homeContact: 'NO', sensorMaker: 'Festo M8' })!
+      expect([sensing.lug?.model.slice(0, 8), sensing.bracket?.model, sensing.switches[0].part.model]).toEqual(['SF-EGC-2', bracketModel, 'SIEN-M8B-PO-K-L'])
+      const kitPath = allPaths.map((p) => p.slice(6)).find((p) => p.endsWith(`_${kitName}.stp`))!
+      const sel: ComboSelection = {
+        axis,
+        axisModel: '',
+        stroke: 500,
+        motor: motors.find((m) => m.model === motorName)!,
+        gearbox: null,
+        kit: kits.find((k) => k.product === kitName && k.axisCode === axis.interfaceCode)!,
+        sensing,
+      }
+      const own = [axisPath, kitPath, motorPath, ...sensorPaths].map((p) => ({ ...parseDrawingPath(p)!, url: p, meta: metas[`../../${p.replace(/\.stp$/, '.json')}`] ?? null }))
+      const found = comboDrawings(sel, own)
+      expect(found.sensors?.bracket?.partNumber).toBe(sensing.bracket!.partNumber)
+      const combo = await buildCombo(sel, found, { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)
+      const parts = (await meshBox(combo.step)).parts
+      // the switch faces 1 mm under the flag; the limits where the flag's ends are 2 mm before the travel ends, home a hole in
+      const bodies = parts.filter((p) => /SIEN-M8B-P.-K-Lp/.test(p.name)).sort((a, b) => a.lo[0] - b.lo[0])
+      expect(bodies).toHaveLength(3)
+      for (const b of bodies) expect(b.hi[2]).toBeCloseTo(-flagDown - 1, 1)
+      expect(bodies.map((b) => Math.round((b.lo[0] + b.hi[0]) / 2))).toEqual([2 - edge, 2 - edge + pitch, 500 - 2 + edge])
+      // the 3 mm shelf clamped by each switch's two nuts
+      const brackets = parts.filter((p) => /HWS-EGC-M[58]\(p\)/.test(p.name))
+      expect(brackets).toHaveLength(2)
+      const shelf = brackets[0].hi[2]
+      const nuts = parts.filter((p) => /DIN-439A/.test(p.name))
+      for (const b of bodies) {
+        const own = nuts.filter((n) => Math.abs((n.lo[0] + n.hi[0]) / 2 - (b.lo[0] + b.hi[0]) / 2) < 1).sort((x, y) => x.lo[2] - y.lo[2])
+        expect(own).toHaveLength(2)
+        expect(own[1].lo[2]).toBeCloseTo(shelf, 1)
+        expect(own[0].hi[2]).toBeCloseTo(shelf - 3, 1)
+      }
+      const profile = parts.find((p) => p.name === (found.axis!.meta as AxisMeta).stretch!.part)!
+      for (const b of brackets) {
+        expect(b.lo[0]).toBeGreaterThan(profile.lo[0])
+        expect(b.hi[0]).toBeLessThan(profile.hi[0])
+      }
+    }
+  }, 120000)
 
   it('draws an ELGD ordered with direct mounting M from its own file, the threads under the profile kept at 100 mm', async () => {
     const axis = axes.find((a) => a.id === 'ELGD-TB-KF-60')!

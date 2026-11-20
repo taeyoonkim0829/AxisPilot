@@ -13,9 +13,13 @@
         { "family": "EGC", "variant": "HD", "size": 125, "drive": "belt" },
         { "family": "EGC", "variant": "HD", "size": 125, "drive": "spindle" },
         { "family": "EGC", "variant": "HD", "size": 160, "drive": "belt" },
-        { "family": "EGC", "variant": "HD", "size": 160, "drive": "spindle" }
+        { "family": "EGC", "variant": "HD", "size": 160, "drive": "spindle" },
+        { "family": "EGC", "variant": "", "size": 70, "drive": "belt" },
+        { "family": "EGC", "variant": "", "size": 80, "drive": "belt" },
+        { "family": "EGC", "variant": "", "size": 70, "drive": "spindle" },
+        { "family": "EGC", "variant": "", "size": 80, "drive": "spindle" }
       ],
-      "dataSource": "EGC-HD-TB data sheet 2026/10 p.31, 34, EGC-HD-BS p.35, 38 (sensor bracket HWS-EGC for proximity switch SIEN-M8B, slot nuts in the profile's mounting slot; one per axis end); drawing from PARTdataManager"
+      "dataSource": "EGC-HD-TB data sheet 2026/10 p.31, 34, EGC-HD-BS p.35, 38 (sensor bracket HWS-EGC for proximity switch SIEN-M8B, slot nuts in the profile's mounting slot; one per axis end; EGC-TB-KF 2026/10 p.52, EGC-BS-KF alike: sizes 70, 80 HWS-EGC-M5, 120 HWS-EGC-M8-B); drawing from PARTdataManager"
     },
     {
       "id": "HWS-EGC-M8-B",
@@ -28,9 +32,26 @@
       "mass": 0.217,
       "axes": [
         { "family": "EGC", "variant": "HD", "size": 220, "drive": "belt" },
-        { "family": "EGC", "variant": "HD", "size": 220, "drive": "spindle" }
+        { "family": "EGC", "variant": "HD", "size": 220, "drive": "spindle" },
+        { "family": "EGC", "variant": "", "size": 120, "drive": "belt" },
+        { "family": "EGC", "variant": "", "size": 120, "drive": "spindle" }
       ],
-      "dataSource": "EGC-HD-TB data sheet 2026/10 p.31, 34, EGC-HD-BS p.35, 38 (sensor bracket HWS-EGC for proximity switch SIEN-M8B, slot nuts in the profile's mounting slot; one per axis end); drawing from PARTdataManager"
+      "dataSource": "EGC-HD-TB data sheet 2026/10 p.31, 34, EGC-HD-BS p.35, 38 (sensor bracket HWS-EGC for proximity switch SIEN-M8B, slot nuts in the profile's mounting slot; one per axis end; EGC-TB-KF 2026/10 p.52, EGC-BS-KF alike: sizes 70, 80 HWS-EGC-M5, 120 HWS-EGC-M8-B); drawing from PARTdataManager"
+    },
+    {
+      "id": "HWS-EGC-M8:KURZ",
+      "maker": "Festo",
+      "role": "bracket",
+      "systems": ["Festo M8"],
+      "perEnd": true,
+      "model": "HWS-EGC-M8:KURZ",
+      "partNumber": "560517",
+      "mass": 0.058,
+      "axes": [
+        { "family": "EGC", "variant": "", "size": 185, "drive": "belt" },
+        { "family": "EGC", "variant": "", "size": 185, "drive": "spindle" }
+      ],
+      "dataSource": "EGC-TB-KF data sheet 2026/10 p.52, EGC-BS-KF alike (sensor bracket HWS-EGC-M8:KURZ (short) for proximity switch SIEN-M8B on size 185, slot nuts in the profile's mounting slot; one per axis end); drawing from PARTdataManager"
     }
   ]
 }
