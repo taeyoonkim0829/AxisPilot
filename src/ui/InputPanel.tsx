@@ -523,7 +523,9 @@ export function DetailSettings({ settings, onSettings }: { settings: Settings; o
               help={
                 <>
                   <img className="help-image" src={cantileverImage} alt="" />
-                  {t('한 점에서 지지한 축의 지지점에서 자유단까지 길이. 이동 질량이 자유단에 있을 때의 처짐을 봅니다. 0 = 축 전체 길이')}
+                  {t('한 점에서 지지한 축의 지지점에서 자유단까지 길이. 이동 질량이 자유단에 있을 때의 처짐을 봅니다.')}
+                  <br />
+                  {t('0 = 축 전체 길이')}
                 </>
               }
             />
