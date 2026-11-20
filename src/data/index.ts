@@ -6,10 +6,10 @@ import { namesMotor } from './names'
 // kind = axes | motors | gearboxes | kits | drives | brakingResistors | cables | shafts | adapters | guides | sensors |
 // thirdPartyAxes (other makers' axes, compared with Festo's on 제품 비교).
 // Files excluded with `!` stay in data/ but are not offered in the app (discontinued: Mitsubishi HF-KP/HF-SP,
-// Apex PA).
+// Apex PA; held back until the user asks for it again: Festo EMMH-AS, whose data sheet gives no allowable inertia ratio).
 type DataFile = { items: unknown[] }
 const axisFiles = import.meta.glob<DataFile>('../../data/axes/*/*.json', { eager: true, import: 'default' })
-const motorFiles = import.meta.glob<DataFile>(['../../data/motors/*/*.json', '!../../data/motors/Mitsubishi/HF-*.json'], {
+const motorFiles = import.meta.glob<DataFile>(['../../data/motors/*/*.json', '!../../data/motors/Mitsubishi/HF-*.json', '!../../data/motors/Festo/EMMH-AS.json'], {
   eager: true,
   import: 'default',
 })
