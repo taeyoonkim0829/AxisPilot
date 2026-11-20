@@ -32,7 +32,8 @@ describe('shared link', () => {
   it('fills fields missing from an older link with the defaults', async () => {
     const { settings: _settings, assembly: _assembly, ...old } = single
     const decoded = await decodeShare(await encodeShare({ ...old, settings: {}, assembly: {} } as unknown as Shared))
-    expect(decoded).toEqual({ ...single, settings: defaultSettings, assembly: defaultComboOptions })
+    // a link from before 바닥 지지 keeps its 양단 지지
+    expect(decoded).toEqual({ ...single, settings: { ...defaultSettings, support: 'ends' }, assembly: defaultComboOptions })
   })
 
   it('reads 외팔보 from a link made before 바닥 지지', async () => {

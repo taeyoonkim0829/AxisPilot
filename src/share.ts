@@ -89,9 +89,10 @@ export async function decodeShare(value: string): Promise<Shared | null> {
 
 const perAxis = <T,>(read: (a: GantryAxis) => T): Record<GantryAxis, T> => ({ x: read('x'), y: read('y'), z: read('z') })
 
-/** links from before 지지 방식 had 바닥 지지: `cantilever` true / false */
+/** links from before 지지 방식 had 바닥 지지 (the default since) keep what they computed: 외팔보 when `cantilever`,
+ *  else 양단 지지 */
 const supportOf = (s: Partial<Settings> & { cantilever?: boolean } = {}): Partial<Settings> =>
-  s.support || s.cantilever == null ? s : { ...s, support: s.cantilever ? 'cantilever' : 'ends' }
+  s.support ? s : { ...s, support: s.cantilever ? 'cantilever' : 'ends' }
 
 /** Fields added since the link was made take their defaults. */
 function withDefaults(s: Partial<Shared> & { mode?: string }): Shared | null {

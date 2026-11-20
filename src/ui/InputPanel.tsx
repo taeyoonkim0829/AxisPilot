@@ -19,6 +19,7 @@ import eagfImage from '../../images/help_guide_eagf.webp'
 import inertiaImage from '../../images/help_inertia_ratio.svg'
 import lmImage from '../../images/help_guide_lm.svg'
 import spanImage from '../../images/help_support_span.svg'
+import cantileverImage from '../../images/help_cantilever.svg'
 import guidesImage from '../../images/parallel_guides.webp'
 import singleImage from '../../images/parallel_single.webp'
 import twinMotorImage from '../../images/parallel_twinMotor.webp'
@@ -533,7 +534,12 @@ export function DetailSettings({ settings, onSettings }: { settings: Settings; o
               unit="mm"
               value={settings.supportSpan}
               onChange={(v) => setS('supportSpan', v)}
-              help={t('한 점에서 지지한 축의 지지점에서 자유단까지 길이. 이동 질량이 자유단에 있을 때의 처짐을 봅니다. 0 = 축 전체 길이')}
+              help={
+                <>
+                  <img className="help-image" src={cantileverImage} alt="" />
+                  {t('한 점에서 지지한 축의 지지점에서 자유단까지 길이. 이동 질량이 자유단에 있을 때의 처짐을 봅니다. 0 = 축 전체 길이')}
+                </>
+              }
             />
           ) : (
             <NumberField

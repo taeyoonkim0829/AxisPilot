@@ -19,7 +19,7 @@ const infoOf = (ev: ReturnType<typeof run>, label: string) => ev.info.find((i) =
 describe('deflection', () => {
   it('is a simply supported beam with the moving mass in the middle and the axis weight spread', () => {
     // ELGT-BS-90, floor: Iy 631000 mm⁴, E 70000 N/mm²; supported every 1000 mm (shorter than the axis)
-    const ev = run('ELGT-BS-90-…20P', {}, { supportSpan: 1000 })
+    const ev = run('ELGT-BS-90-…20P', {}, { supportSpan: 1000, support: 'ends' })
     const L = 1000
     const EI = 70000 * 631000
     const length = 500 + 230 // stroke + base length
@@ -47,7 +47,7 @@ describe('deflection', () => {
   })
 
   it('only warns beyond the allowed deflection (an intermediate support fixes it)', () => {
-    const c = checkOf(run('ELGT-BS-90-…20P', { payload: 60 }, { supportSpan: 4000 }).checks, '처짐')!
+    const c = checkOf(run('ELGT-BS-90-…20P', { payload: 60 }, { supportSpan: 4000, support: 'ends' }).checks, '처짐')!
     expect(c.value).toBeGreaterThan(c.limit!)
     expect(c.status).toBe('warn')
   })

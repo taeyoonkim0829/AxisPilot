@@ -196,7 +196,7 @@ export const defaultSettings: Settings = {
   couplingInertia: 0,
   hoursPerDay: 24,
   supportSpan: 0,
-  support: 'ends',
+  support: 'floor',
   defaultInertiaRatio: 10,
   families: ['ELGT'],
   drives: ['spindle'],
