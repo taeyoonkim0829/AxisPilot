@@ -273,7 +273,12 @@ export const en: Record<string, string> = {
   '최대 가반 질량': 'Max. payload',
   '축 용도': 'Axis use',
   '피드 상수': 'Feed constant',
-  '하중 정격': 'Load rating',
+  '축소': 'Zoom out',
+  '확대': 'Zoom in',
+  '맞춤': 'Fit',
+  '최대 눈금 {pct}': 'Scale to {pct}',
+  '눈금 밖 {pct}': 'Beyond the scale: {pct}',
+  '▲ 눈금 밖 (테두리에 표시)': '▲ beyond the scale (shown on the rim)',
   '로보스타: 모터 사양 고정으로 제한됨 (모터 정격 토크 × 볼스크류로 추정, 정격 {rpm} rpm, 효율 {eta})':
     'Robostar: limited by its fixed built-in motor (estimated from the motor rated torque through the ball screw, rated {rpm} rpm, efficiency {eta})',
   '모멘트 한계 거리 y': 'Moment limit distance y',

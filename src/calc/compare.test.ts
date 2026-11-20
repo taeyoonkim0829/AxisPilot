@@ -64,8 +64,9 @@ describe('제품 비교', () => {
     const rows = axisSpecRows(rs, elgt)
     expect(rows.find((r) => r.label === '최대 스트로크')!.ratio).toBeCloseTo(1100 / 1000)
     expect(rows.find((r) => r.label === '볼스크류 Ø / 리드')).toMatchObject({ reference: 'Ø15 / 20 mm', ratio: null })
-    // a payload in kg is not put on one scale with forces in N
-    expect(rows.find((r) => r.label === '하중 정격')!.ratio).toBeNull()
+    // a payload in kg against forces in N, and the built-in motor against none, do not compare: left out
+    expect(rows.map((r) => r.label)).not.toContain('하중 정격')
+    expect(rows.map((r) => r.label)).not.toContain('모터')
   })
 
   it('lists Festo motors for another maker’s motor by torque, filtered by supply, power and interface', () => {

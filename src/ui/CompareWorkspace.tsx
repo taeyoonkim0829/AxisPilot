@@ -258,7 +258,7 @@ function CompareReport({ stageRef, kind, reference, festo, specs }: { stageRef: 
             </tbody>
           </table>
           <h3>{t('사양 비교')}</h3>
-          <SpecRadar {...specs} />
+          <SpecRadar {...specs} zoomable={false} />
         </section>
       </div>
     </div>,

@@ -2942,6 +2942,54 @@ select.field-select {
   border: 2px solid var(--gauge);
 }
 
+.radar-key-over {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--gauge);
+}
+
+/* zoom: − scale + and 맞춤 (fit) under the legend */
+.radar-zoom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.radar-zoom .count-btn {
+  margin: 0;
+}
+
+.radar-zoom-value {
+  min-width: 110px;
+  text-align: center;
+  font-family: var(--din);
+  color: var(--muted);
+}
+
+.radar-zoom-fit {
+  margin-left: 6px;
+  padding: 5px 12px;
+  border: 1px solid rgb(var(--ov) / 0.3);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.radar-zoom-fit:hover:not(:disabled) {
+  background: rgb(var(--ov) / 0.1);
+}
+
+.radar-zoom-fit:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
 .radar-chart {
   display: block;
   width: 100%;
@@ -2972,6 +3020,17 @@ select.field-select {
 
 .radar-dot {
   fill: var(--gauge);
+}
+
+/* a value beyond the zoomed scale, on the rim */
+.radar-dot-over {
+  fill: var(--surface-solid);
+  stroke: var(--gauge);
+  stroke-width: 2.5;
+}
+
+.radar-rim {
+  stroke: rgb(var(--ov) / 0.35);
 }
 
 .radar-scale {
@@ -3006,12 +3065,12 @@ select.field-select {
   fill: var(--muted);
 }
 
-/* items not on one scale: label, compared value, Festo value */
+/* items not on one scale: compared value | item (centred) | Festo value */
 .radar-facts {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1fr);
   gap: 6px 16px;
-  max-width: 760px;
+  max-width: 600px;
   margin: 12px auto 0;
   font-size: 14px;
 }
@@ -3023,6 +3082,16 @@ select.field-select {
 .radar-facts dd {
   margin: 0;
   font-family: var(--din);
+  overflow-wrap: anywhere;
+}
+
+.radar-facts dd:first-child {
+  text-align: right;
+}
+
+.radar-facts dt {
+  text-align: center;
+  font-weight: 600;
 }
 
 .radar-fact-head dd {
