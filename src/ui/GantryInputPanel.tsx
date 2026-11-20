@@ -46,6 +46,7 @@ const sharedKeys = [
   'efficiency',
   'friction',
   'externalForce',
+  'externalForcePoint',
   'guideResistance',
   'couplingInertia',
   'defaultInertiaRatio',

@@ -58,7 +58,7 @@ The original E-Drive workbook (now retired) had four calc sheets — `BS_Horizon
 - **Accel/decel torque** `TMa = (JL/η + JM)·N0 / (9.55e4·Tsa) + TL`, `TMd = −(JL·η + JM)·N0 / (9.55e4·Tsa) + TL`; RMS torque over the cycle; check peak vs motor peak torque, RMS vs rated torque, `JL/JM` vs the motor's allowable inertia ratio, required speed vs rated speed.
 - **Regeneration** `Pr = (ηm·Em − Ec)/tf` vs the motor's `regenPower`.
 - **Festo criteria**: required force `Fc + FG + WL·a + μ·WL·g` (vertical: `+ WL·g`) ≤ `maxFeedForce`; required axis torque `F·dS/(2π·η·1000) + noLoadTorque` ≤ `maxDrivingTorque`; Festo inertia `J0 + JH·stroke/1000 + JL·payload + J_gear`.
-- **Guide load**: forces/moments from payload COG offsets and inertial force `m·a`, combined `fv = Σ|F_i/F_max,i| < 1`; guide life `(1/fv)³ · 5000 km`.
+- **Guide load**: forces/moments from payload COG offsets and inertial force `m·a`, combined `fv = Σ|F_i/F_max,i| < 1`; guide life `(1/fv)³ · 5000 km`. The app adds the process force Fc (along the travel) at its own point in 상세 설정 (`Settings.externalForcePoint`, y / z in the slide frame like the COG, z + guide centre as lever): My += z'·Fc, Mz += y·Fc (`ExternalForce` in `guideLoads` / `memberLoads`).
 - **Deflection**: simply supported beam with point load + self-weight using `Iy`/`Iz`, E = 70000 N/mm², vs `allowableDeflection`. The app adds 지지 방식 외팔보 in 상세 설정 (`Settings.cantilever`, the axis held at one point): a cantilever of the entered 돌출 길이 (`supportSpan`, 0 = the whole axis), the moving mass at the free end `F·L³/3EI` + the overhang's weight `q·L³/8EI`.
 - **Ball screw life** (`Ball Screw 수명계산`): `L = (Ca / (fw·Fa))³ · 10⁶` rev, with load factor fw by speed (≤0.25 m/s: 1.2, ≤1: 1.5, ≤2: 2, >2: 3.5).
 

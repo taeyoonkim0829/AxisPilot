@@ -239,6 +239,9 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
             ['구동 효율 (볼스크류 / 벨트)', `${fmt(settings.efficiency.spindle)} / ${fmt(settings.efficiency.belt)}`],
             ['마찰 계수 (볼스크류 / 벨트)', `${fmt(settings.friction.spindle)} / ${fmt(settings.friction.belt)}`],
             ['외부 반력 Fc', q(settings.externalForce, 'N')],
+            ...(settings.externalForce > 0
+              ? [['Fc 작용점 y / z', `${fmt(settings.externalForcePoint.y)} / ${fmt(settings.externalForcePoint.z)} mm`] as [string, string]]
+              : []),
             ['가이드 저항 FG', q(settings.guideResistance, 'N')],
             ['커플링 관성', q(settings.couplingInertia, 'kg·cm²', 4)],
             ['기본 허용 관성비', q(settings.defaultInertiaRatio, times)],

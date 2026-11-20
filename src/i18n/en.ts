@@ -73,6 +73,10 @@ export const en: Record<string, string> = {
   '마찰 계수 (볼스크류)': 'Friction (ball screw)',
   '마찰 계수 (벨트)': 'Friction (belt)',
   '외부 반력 Fc': 'Process force Fc',
+  'Fc 작용점 {axis}': 'Fc point {axis}',
+  'Fc 작용점 y / z': 'Fc point y / z',
+  '외부 반력이 걸리는 점, 부하 무게 중심과 같은 슬라이드 기준 좌표입니다. 이동 방향의 힘이라 x는 모멘트에 영향이 없고, y·z 오프셋이 가이드 모멘트 Mz·My를 만듭니다.':
+    'Where the process force acts, in the same slide coordinates as the payload COG. Acting along the travel, its x has no lever; its y and z offsets give the guide moments Mz and My.',
   '가이드 저항 FG': 'Guide resistance FG',
   '커플링 관성': 'Coupling inertia',
   '기본 허용 관성비': 'Inertia ratio limit',

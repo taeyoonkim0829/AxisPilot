@@ -480,6 +480,18 @@ export function DetailSettings({ settings, onSettings }: { settings: Settings; o
           onChange={(v) => setS('guideResistance', v)}
           help={t('축 밖의 저항(외부 LM 가이드 블록, 실링 등)을 더합니다. Festo 축 자체의 가이드 마찰은 무부하 토크와 마찰 계수에 이미 포함되고, Festo 가이드 축·EAGF의 이동 저항은 자동으로 반영됩니다.')}
         />
+        {settings.externalForce > 0 &&
+          (['y', 'z'] as const).map((k) => (
+            <NumberField
+              key={k}
+              label={t('Fc 작용점 {axis}', { axis: k })}
+              unit="mm"
+              value={settings.externalForcePoint[k]}
+              min={-1e6}
+              onChange={(v) => setS('externalForcePoint', { ...settings.externalForcePoint, [k]: v })}
+              help={t('외부 반력이 걸리는 점, 부하 무게 중심과 같은 슬라이드 기준 좌표입니다. 이동 방향의 힘이라 x는 모멘트에 영향이 없고, y·z 오프셋이 가이드 모멘트 Mz·My를 만듭니다.')}
+            />
+          ))}
         <NumberField
           label={t('커플링 관성')}
           unit="kg·cm²"

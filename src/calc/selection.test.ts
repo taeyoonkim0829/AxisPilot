@@ -31,6 +31,15 @@ describe('guideLoads', () => {
     expect(l.Mz).toBeCloseTo(0.05 * 50)
   })
 
+  it('adds the process force Fc at its point to the pitch and yaw moments', () => {
+    const req = { ...baseReq, cog: { x: 100, y: 50, z: 200 } }
+    const bare = guideLoads(req, 10, 5, 20)
+    const l = guideLoads(req, 10, 5, 20, { force: 300, y: -40, z: 60 })
+    expect(l.My - bare.My).toBeCloseTo(0.08 * 300)
+    expect(l.Mz - bare.Mz).toBeCloseTo(0.04 * 300)
+    expect([l.Fy, l.Fz, l.Mx]).toEqual([bare.Fy, bare.Fz, bare.Mx])
+  })
+
   it('vertical mounting puts weight + inertia on the moments', () => {
     const l = guideLoads({ ...baseReq, mounting: 'vertical', cog: { x: 0, y: 100, z: 50 } }, 10, 5)
     expect(l.My).toBeCloseTo(0.05 * 10 * (G + 5))

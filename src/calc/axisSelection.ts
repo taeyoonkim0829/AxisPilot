@@ -370,6 +370,13 @@ function feedForceCheck(axis: Axis, force: number, stroke: number): Check {
 
 export { curveAt }
 
+/** Process force Fc along the travel (N) at its point in the slide frame (mm, z like the COG's) */
+export interface ExternalForce {
+  force: number
+  y: number
+  z: number
+}
+
 export interface GuideLoads {
   Fy: number
   Fz: number
@@ -479,23 +486,42 @@ function slideForces(req: Requirements, mass: number, accel: number) {
  * from forces in the travel direction (inertial force, and the weight on a vertical axis); with one axis that yaw
  * acts about the axis and is shared by the guides. One member: `guideLoads`.
  */
-export function memberLoads(req: Requirements, mass: number, accel: number, layout: ParallelLayout, guideCentre = 0): GuideLoads[] {
+export function memberLoads(
+  req: Requirements,
+  mass: number,
+  accel: number,
+  layout: ParallelLayout,
+  guideCentre = 0,
+  external?: ExternalForce,
+): GuideLoads[] {
   const n = layout.positions.length
   const x = Math.abs(req.cog.x) / 1000
   const y = req.cog.y / 1000
   const z = Math.abs(req.cog.z + guideCentre) / 1000
+  const fc = external?.force ?? 0
+  const ey = (external?.y ?? 0) / 1000
+  const ez = Math.abs((external?.z ?? 0) + guideCentre) / 1000
   if (n === 1) {
     // the member at its position; a pushing drive beside it leaves it the yaw of the travel forces about the drive
-    const one = guideLoads({ ...req, cog: { ...req.cog, y: req.cog.y - layout.positions[0] * 1000 } }, mass, accel, guideCentre)
+    const shift = layout.positions[0] * 1000
+    const one = guideLoads(
+      { ...req, cog: { ...req.cog, y: req.cog.y - shift } },
+      mass,
+      accel,
+      guideCentre,
+      external && { ...external, y: external.y - shift },
+    )
     if (layout.pushY == null) return [one]
     const f = slideForces(req, mass, accel)
-    return [{ ...one, Mz: x * f.lateral + Math.abs(y - layout.pushY) * f.travel }]
+    return [{ ...one, Mz: x * f.lateral + Math.abs(y - layout.pushY) * f.travel + Math.abs(ey - layout.pushY) * fc }]
   }
   const f = slideForces(req, mass, accel)
   const mean = layout.positions.reduce((a, b) => a + b, 0) / n
   const spread = layout.positions.reduce((sum, p) => sum + (p - mean) ** 2, 0)
   // Arm of the travel-direction forces about the single driving axis
-  const yaw = layout.axes > 1 ? 0 : Math.abs(y - (layout.pushY ?? layout.positions[layout.isAxis.indexOf(true)]))
+  const driveY = layout.pushY ?? layout.positions[layout.isAxis.indexOf(true)]
+  const yaw = layout.axes > 1 ? 0 : Math.abs(y - driveY)
+  const externalYaw = layout.axes > 1 ? 0 : Math.abs(ey - driveY)
   return layout.positions.map((p) => {
     const d = p - mean
     return {
@@ -503,8 +529,8 @@ export function memberLoads(req: Requirements, mass: number, accel: number, layo
       // normal forces spread by the payload's lateral position; lateral forces at height z roll onto the members
       Fz: Math.abs(f.normal * (1 / n + ((y - mean) * d) / spread)) + (z * f.lateral * Math.abs(d)) / spread,
       Mx: 0,
-      My: (x * f.normal + z * f.travel) / n,
-      Mz: (x * f.lateral + yaw * f.travel) / n,
+      My: (x * f.normal + z * f.travel + ez * fc) / n,
+      Mz: (x * f.lateral + yaw * f.travel + externalYaw * fc) / n,
     }
   })
 }
@@ -538,17 +564,21 @@ const LM_LOAD_LABELS: [keyof GuideLoads, string, string][] = [
  * surface; where the data sheet's forces and torques refer to the centre of the guide (ELGT, ELGD), `guideCentre`
  * [mm] below the surface, the lever of the forces along the surface is that much longer.
  */
-export function guideLoads(req: Requirements, mass: number, accel: number, guideCentre = 0): GuideLoads {
+export function guideLoads(req: Requirements, mass: number, accel: number, guideCentre = 0, external?: ExternalForce): GuideLoads {
   const x = Math.abs(req.cog.x) / 1000
   const y = Math.abs(req.cog.y) / 1000
   const z = Math.abs(req.cog.z + guideCentre) / 1000
   const f = slideForces(req, mass, accel)
+  // Fc along the travel at its point: pitch and yaw moments by its height and lateral offset
+  const fc = external?.force ?? 0
+  const ey = Math.abs(external?.y ?? 0) / 1000
+  const ez = Math.abs((external?.z ?? 0) + guideCentre) / 1000
   return {
     Fy: f.lateral,
     Fz: f.normal,
     Mx: z * f.lateral + y * f.normal,
-    My: x * f.normal + z * f.travel,
-    Mz: x * f.lateral + y * f.travel,
+    My: x * f.normal + z * f.travel + ez * fc,
+    Mz: x * f.lateral + y * f.travel + ey * fc,
   }
 }
 
@@ -832,7 +862,8 @@ export function evaluateAxis(
   // axis is checked.
   const systemMass = req.payload + layout.axes * moved + layout.guideMass
   const loadReq = req.movingProfile ? { ...req, cog: movingProfileCog(req, axis, profile, driveMass) } : req
-  const members = memberLoads(loadReq, systemMass, peakAcceleration, layout, axis.guideCentre ?? 0)
+  const external = settings.externalForce > 0 ? { force: settings.externalForce, ...settings.externalForcePoint } : undefined
+  const members = memberLoads(loadReq, systemMass, peakAcceleration, layout, axis.guideCentre ?? 0, external)
   // Additional slides: the payload plate spans all slides of the axis, centred on the payload's x reference.
   // (ZL / KL on one side of the slide, ZR / KR on the other). A gantry kit sits on the main slide alone.
   const offsets = [0, ...(options?.slides ?? []).map((code, i) => (code === extra?.left ? -1 : 1) * options!.pitches[i])]

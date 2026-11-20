@@ -130,6 +130,8 @@ export interface Settings {
   friction: Record<DriveKind, number>
   /** N, process force opposing the motion (Excel Fc) */
   externalForce: number
+  /** mm, where Fc acts, in the slide frame like the COG (y across, z along the slide normal); x gives a travel force no lever */
+  externalForcePoint: { y: number; z: number }
   /** N, guide seal resistance (Excel FG) */
   guideResistance: number
   /** kg·cm², coupling inertia at the motor side */
@@ -188,6 +190,7 @@ export const defaultSettings: Settings = {
   efficiency: { spindle: 0.9, belt: 0.8 },
   friction: { spindle: 0.05, belt: 0.1 },
   externalForce: 0,
+  externalForcePoint: { y: 0, z: 0 },
   guideResistance: 0,
   couplingInertia: 0,
   hoursPerDay: 24,
