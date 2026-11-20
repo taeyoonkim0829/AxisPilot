@@ -466,6 +466,7 @@ export const en: Record<string, string> = {
   '케이블 선정표 범위를 넘습니다 — 사전 기술 검토 필요': 'Beyond the cable selection table — technical clarification required',
   '외부 메인 필터 없이 허용되는 길이를 넘습니다': 'Longer than allowed without an external mains filter',
   '케이블 길이 25 m 초과는 사전 기술 검토를 권장합니다': 'For cable lengths over 25 m, prior technical clarification is recommended',
+  '최대 {n} m (드라이브 · 케이블 기준)': 'Max. {n} m (drive and cable)',
   '모듈러 케이블은 모듈 번호와 형식(길이 포함)으로 주문합니다': 'Modular cables are ordered by module number and type (with the length)',
   '표준 길이만 있는 케이블은 다음 표준 길이로 올렸습니다': 'Cables that come in standard lengths only were rounded up to the next standard length',
   '{type}: 주문할 수 있는 길이를 넘습니다': '{type}: longer than can be ordered',

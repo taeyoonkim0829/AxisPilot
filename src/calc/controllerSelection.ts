@@ -40,6 +40,8 @@ export interface ControllerSelection {
   rmsCurrent: number
   peakCurrent: number
   cables: CableChoice[]
+  /** m, the longest motor cable this drive and motor take: the orderable length, capped by the drive's limit without a mains filter */
+  maxCableLength: number | null
   resistor: ResistorChoice
   checks: Check[]
   /** Korean source text with `{name}` placeholders */
@@ -173,6 +175,12 @@ export function selectController(
       })
     }
   }
+  const orderable = data.cables
+    .filter((c) => c.role === 'motor' && c.controller === family && new RegExp(c.motors).test(motor.model) && (!c.brakeOnly || motor.brake))
+    .map((c) => Math.min(c.range[1], Math.max(c.configurable?.max ?? 0, ...Object.keys(c.partNumbers).map(Number))))
+  const longest = orderable.length ? Math.max(...orderable) : null
+  const maxCableLength =
+    controller?.maxCableLength != null && longest != null ? Math.min(longest, controller.maxCableLength) : (controller?.maxCableLength ?? longest)
   const hasMotorCable = cableChoices.some((c) => c.role === 'motor')
   if (!hasMotorCable) {
     checks.push({
@@ -306,6 +314,7 @@ export function selectController(
     rmsCurrent,
     peakCurrent,
     cables: cableChoices,
+    maxCableLength,
     resistor,
     checks,
     notes,

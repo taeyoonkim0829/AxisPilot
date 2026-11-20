@@ -69,6 +69,10 @@ describe('selectController', () => {
     const { selection } = run('ELGD-BS-KF-60-…10P', 'EMMT-AS-60-M-HS', {}, { cableLength: 40 })
     expect(selection.cables.some((c) => c.role === 'motor')).toBe(false)
     expect(selection.checks.find((c) => c.label === '모터 케이블 길이')!.status).toBe('warn')
+    // the limit shown under the length input: at most the drive's, within the orderable cable length
+    expect(selection.maxCableLength).toBeGreaterThan(0)
+    expect(selection.maxCableLength).toBeLessThan(40)
+    expect(selection.maxCableLength).toBeLessThanOrEqual(selection.controller!.maxCableLength!)
   })
 
   it('adds an external braking resistor when the integrated one is too small', () => {

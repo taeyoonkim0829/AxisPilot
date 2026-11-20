@@ -31,7 +31,16 @@ export function DrivePackage({
       {!hideTitle && <h4>{t('드라이브 · 케이블 · 제동저항')}</h4>}
       {onCableLength && (
         <div className="drive-package-length">
-          <NumberField label={t('모터 케이블 길이')} unit="m" value={cableLength} min={0.5} step={0.5} onChange={onCableLength} />
+          <NumberField
+            label={t('모터 케이블 길이')}
+            unit="m"
+            value={cableLength}
+            min={0.5}
+            step={0.5}
+            hint={selection.maxCableLength != null ? t('최대 {n} m (드라이브 · 케이블 기준)', { n: fmt(selection.maxCableLength, 3) }) : undefined}
+            low={selection.maxCableLength != null && cableLength > selection.maxCableLength}
+            onChange={onCableLength}
+          />
         </div>
       )}
       <div className="table-wrap">
