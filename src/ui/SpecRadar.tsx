@@ -9,16 +9,23 @@ const H = 560
 const CX = W / 2
 const CY = H / 2
 const R = 175
-/** the scale's outer ring: 200% of the compared product's value */
-const MAX = 2
-const RINGS = [0.5, 1, 1.5, 2]
+/**
+ * The scale: the outer ring at the largest value of the items (at least the compared product's 100%), rounded up
+ * to the ring step; rings every 50% up to 200%, 100% up to 500%, 200% beyond.
+ */
+function radarScale(ratios: number[]): { max: number; rings: number[] } {
+  const top = Math.max(1, ...ratios)
+  const step = top <= 2 ? 0.5 : top <= 5 ? 1 : 2
+  const max = Math.ceil(top / step - 1e-9) * step
+  return { max, rings: Array.from({ length: Math.round(max / step) }, (_, i) => (i + 1) * step) }
+}
 
 const specCell = (v: number | string | null, unit: string) =>
   v == null ? '—' : typeof v === 'number' ? `${fmt(v, 3)}${unit ? ` ${unit}` : ''}` : v
 
 /**
  * 사양 비교 as a radar chart: one spoke per item on one scale, the compared product at 100% (dashed ring), the
- * Festo product's values as the blue area (0–200%, clamped at the outer ring). Items not on one scale (texts) are
+ * Festo product's values as the blue area, the scale up to the largest value (`radarScale`). Items not on one scale (texts) are
  * listed below it.
  */
 export function SpecRadar({ rows, reference, festo }: Specs) {
@@ -28,9 +35,10 @@ export function SpecRadar({ rows, reference, festo }: Specs) {
   const charted = spokes.length >= 3 ? spokes : []
   const listed = rows.filter((r) => !charted.includes(r))
   const n = charted.length
+  const { max: MAX, rings } = radarScale(charted.map((r) => r.ratio!))
   const angle = (i: number) => -Math.PI / 2 + (2 * Math.PI * i) / n
   const at = (i: number, ratio: number): [number, number] => {
-    const r = (Math.min(ratio, MAX) / MAX) * R
+    const r = (ratio / MAX) * R
     return [CX + r * Math.cos(angle(i)), CY + r * Math.sin(angle(i))]
   }
   const polygon = (ratio: (i: number) => number) =>
@@ -50,14 +58,17 @@ export function SpecRadar({ rows, reference, festo }: Specs) {
             </span>
           </div>
           <svg className="radar-chart" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={t('사양 비교')}>
-            {RINGS.map((ring) => (
-              <polygon key={ring} className={ring === 1 ? 'radar-reference' : 'radar-ring'} points={polygon(() => ring)} />
-            ))}
+            {rings
+              .filter((ring) => ring !== 1)
+              .map((ring) => (
+                <polygon key={ring} className="radar-ring" points={polygon(() => ring)} />
+              ))}
+            <polygon className="radar-reference" points={polygon(() => 1)} />
             {charted.map((_, i) => {
               const [x, y] = at(i, MAX)
               return <line key={i} className="radar-ring" x1={CX} y1={CY} x2={x} y2={y} />
             })}
-            {RINGS.map((ring) => (
+            {rings.map((ring) => (
               <text key={ring} className="radar-scale" x={CX + 4} y={CY - (ring / MAX) * R - 3}>
                 {pct(ring)}
               </text>
