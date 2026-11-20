@@ -17,7 +17,6 @@ import {
   offeredOptions,
   referenceOptions,
   supplyOf,
-  type SpecRow,
   type SupplyClass,
 } from '../calc/compare'
 import { axisOrder } from '../calc/axisSelection'
@@ -27,14 +26,15 @@ import { useLang, useT } from '../i18n'
 import { RadioGroup, SortTh, ToggleButton, ToggleGroup } from './common'
 import { Footer } from './Footer'
 import { fmt, pct } from './format'
+import { SpecRadar, type Specs } from './SpecRadar'
 import { useReportExport } from './useReportExport'
 import { useSort, type SortValue } from './useSort'
 
 /**
  * 제품 비교: another maker's product (the reference, picked by maker, series and model) and the Festo products that
  * could replace it, from their data alone. Left: the reference and the candidate filters; right: the pair, the
- * candidates (closest first, a row picks one) and the data side by side with the Festo value against the
- * reference's as a gauge (reference = 100%).
+ * candidates (closest first, a row picks one) and the data as a radar chart, the Festo value against the
+ * reference's (reference = 100%).
  */
 export function CompareWorkspace({ kind }: { kind: 'axis' | 'motor' }) {
   return <div className="app compare">{kind === 'axis' ? <AxisCompare /> : <MotorCompare />}</div>
@@ -213,22 +213,6 @@ function CompareBar({ reference, festo, onExport, exporting }: { reference: Item
   )
 }
 
-/** The Festo product's value against the compared product's (= 100%): a 0–200% bar, the Festo share in blue from the right */
-function Gauge({ ratio }: { ratio: number | null }) {
-  const t = useT()
-  if (ratio == null) return <span className="gauge-none muted">{t('수치 비교 없음')}</span>
-  return (
-    <span className="gauge">
-      <span className="gauge-fill" style={{ width: `${(Math.min(ratio, 2) / 2) * 100}%` }} />
-      <span className="gauge-text">{pct(ratio)}</span>
-    </span>
-  )
-}
-
-const cell = (v: number | string | null, unit: string) => (v == null ? '—' : typeof v === 'number' ? `${fmt(v, 3)}${unit ? ` ${unit}` : ''}` : v)
-
-type Specs = { rows: SpecRow[]; reference: string; festo: string }
-
 function SpecTable(specs: Specs) {
   const t = useT()
   return (
@@ -236,44 +220,8 @@ function SpecTable(specs: Specs) {
       <header className="step-head">
         <h2>{t('사양 비교')}</h2>
       </header>
-      <div className="table-wrap">
-        <SpecRows {...specs} />
-      </div>
+      <SpecRadar {...specs} />
     </section>
-  )
-}
-
-function SpecRows({ rows, reference, festo }: Specs) {
-  const t = useT()
-  return (
-    <table className="data-table compare-spec">
-      <thead>
-        <tr>
-          <th className="num">
-            <span className="model">{reference}</span>
-          </th>
-          <th className="gauge-head">{t('수치 비교')}</th>
-          <th>
-            <span className="model">{festo}</span>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((r) => (
-          <tr key={r.label}>
-            <td className="num">{cell(r.reference, t(r.unit))}</td>
-            <td className="gauge-cell">
-              <span className="gauge-label">
-                {t(r.label)}
-                {r.note && <span className="gauge-note muted">{t(r.note, r.noteArgs)}</span>}
-              </span>
-              <Gauge ratio={r.ratio} />
-            </td>
-            <td className="num spec-other">{cell(r.other, t(r.unit))}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
   )
 }
 
@@ -310,7 +258,7 @@ function CompareReport({ stageRef, kind, reference, festo, specs }: { stageRef: 
             </tbody>
           </table>
           <h3>{t('사양 비교')}</h3>
-          <SpecRows {...specs} />
+          <SpecRadar {...specs} />
         </section>
       </div>
     </div>,

@@ -139,7 +139,7 @@
   --fail: #c8322b;
   --fail-soft: #fbe4e2;
 
-  /* overlays as in the light theme (the comparison gauges' track and halo) */
+  /* overlays as in the light theme (the comparison radar's rings) */
   --ov: 18 40 66;
   --veil: 255 255 255;
 
@@ -2809,34 +2809,6 @@ select.field-select {
   color: var(--muted);
 }
 
-/* the Festo value against the reference's (= 100%, the mark in the middle), 0 to 200%, the percentage inside the
-   bar; between the reference's value (right-aligned) and the replacement's (left-aligned) */
-.compare-spec .gauge-cell {
-  width: 46%;
-}
-
-.compare-spec .gauge-head {
-  text-align: center;
-}
-
-/* the item's name above its gauge; the values beside it sit level with the gauge */
-.compare-spec .gauge-label {
-  display: block;
-  margin-bottom: 4px;
-  text-align: center;
-}
-
-.compare-spec .gauge-note {
-  display: block;
-  font-size: 12px;
-}
-
-.compare-spec td.num,
-.compare-spec td.spec-other {
-  vertical-align: bottom;
-}
-
-.compare-spec .spec-other,
 .data-table td.data {
   text-align: left;
 }
@@ -2853,47 +2825,139 @@ select.field-select {
   border-top: 1px solid var(--line-strong);
 }
 
-/* the gauge's Festo side in Festo blue (the PDF's report stage too, which sits outside .compare) */
+/* the radar's Festo side in Festo blue (the PDF's report stage too, which sits outside .compare) */
 .compare,
 .report-stage {
   --gauge: #0091dc;
 }
 
-.gauge {
-  position: relative;
-  display: block;
-  height: 22px;
-  border-radius: 6px;
-  /* the track: neutral, opaque */
-  background: linear-gradient(rgb(var(--ov) / 0.14), rgb(var(--ov) / 0.14)), var(--surface-solid);
-  overflow: hidden;
+/* 사양 비교: radar chart, the compared product at 100% (dashed ring), the Festo product's area in blue */
+.radar {
+  padding: 4px 0 8px;
 }
 
-/* the Festo product's share, in Festo blue from the right */
-.gauge-fill {
-  position: absolute;
-  inset: 0 0 0 auto;
-  background: var(--gauge);
+.radar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 24px;
+  font-size: 13px;
 }
 
-.gauge-text {
-  position: relative;
+.radar-legend > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.radar-key {
+  display: inline-block;
+  width: 22px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.radar-key-reference {
+  height: 0;
+  border-top: 2px dashed var(--text);
+}
+
+.radar-key-festo {
+  background: color-mix(in srgb, var(--gauge) 30%, transparent);
+  border: 2px solid var(--gauge);
+}
+
+.radar-chart {
   display: block;
-  line-height: 22px;
-  text-align: center;
+  width: 100%;
+  max-width: 760px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.radar-ring {
+  fill: none;
+  stroke: rgb(var(--ov) / 0.18);
+  stroke-width: 1;
+}
+
+.radar-reference {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 4;
+}
+
+.radar-festo {
+  fill: color-mix(in srgb, var(--gauge) 28%, transparent);
+  stroke: var(--gauge);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+
+.radar-dot {
+  fill: var(--gauge);
+}
+
+.radar-scale {
+  fill: var(--muted);
   font-family: var(--din);
-  font-size: 14px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  /* a halo in the ground's colour, readable over the blue and over the empty track */
-  text-shadow:
-    0 0 3px rgb(var(--veil)),
-    0 0 6px rgb(var(--veil) / 0.8);
+  font-size: 11px;
 }
 
-.gauge-none {
+.radar-label {
+  fill: var(--text);
+  font-size: 14px;
+}
+
+.radar-name {
+  font-weight: 600;
+}
+
+.radar-pct {
+  fill: var(--gauge);
+  font-family: var(--din);
+  font-weight: 600;
+}
+
+.radar-values {
+  font-family: var(--din);
+  font-size: 13px;
+  fill: var(--muted);
+}
+
+.radar-note {
+  font-size: 11px;
+  fill: var(--muted);
+}
+
+/* items not on one scale: label, compared value, Festo value */
+.radar-facts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 6px 16px;
+  max-width: 760px;
+  margin: 12px auto 0;
+  font-size: 14px;
+}
+
+.radar-fact {
+  display: contents;
+}
+
+.radar-facts dd {
+  margin: 0;
+  font-family: var(--din);
+}
+
+.radar-fact-head dd {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.radar-fact-note {
   display: block;
-  text-align: center;
+  font-size: 12px;
 }
 
 /* the Festo series and supply choices wrap inside the 320px input box */
