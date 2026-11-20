@@ -465,7 +465,7 @@ export function ParallelSection({
   )
 }
 
-/** The collapsible 상세 설정 box: efficiencies, friction, external forces, inertia, support span, operating hours. */
+/** The collapsible 상세 설정 box: operating hours, process force, inertia, support. */
 export function DetailSettings({ settings, onSettings }: { settings: Settings; onSettings: (settings: Settings) => void }) {
   const t = useT()
   const setS = <K extends keyof Settings>(key: K, value: Settings[K]) => onSettings({ ...settings, [key]: value })
@@ -474,17 +474,17 @@ export function DetailSettings({ settings, onSettings }: { settings: Settings; o
       <summary>{t('상세 설정')}</summary>
       <div className="grid-2">
         <NumberField
+          label={t('일 가동 시간')}
+          unit="h"
+          value={settings.hoursPerDay}
+          min={0.1}
+          onChange={(v) => setS('hoursPerDay', v)}
+        />
+        <NumberField
           label={t('외부 반력 Fc')}
           unit="N"
           value={settings.externalForce}
           onChange={(v) => setS('externalForce', v)}
-        />
-        <NumberField
-          label={t('가이드 저항 FG')}
-          unit="N"
-          value={settings.guideResistance}
-          onChange={(v) => setS('guideResistance', v)}
-          help={t('축 밖의 저항(외부 LM 가이드 블록, 실링 등)을 더합니다. Festo 축 자체의 가이드 마찰은 무부하 토크와 마찰 계수에 이미 포함되고, Festo 가이드 축·EAGF의 이동 저항은 자동으로 반영됩니다.')}
         />
         {settings.externalForce > 0 &&
           (['y', 'z'] as const).map((k) => (
@@ -539,13 +539,6 @@ export function DetailSettings({ settings, onSettings }: { settings: Settings; o
             }
           />
         )}
-        <NumberField
-          label={t('일 가동 시간')}
-          unit="h"
-          value={settings.hoursPerDay}
-          min={0.1}
-          onChange={(v) => setS('hoursPerDay', v)}
-        />
       </div>
       <div className="field">
         <span className="field-label">{t('지지 방식')}</span>
