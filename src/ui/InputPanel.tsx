@@ -468,28 +468,6 @@ export function DetailSettings({ settings, onSettings }: { settings: Settings; o
       <summary>{t('상세 설정')}</summary>
       <div className="grid-2">
         <NumberField
-          label={t('구동 효율 (볼스크류)')}
-          value={settings.efficiency.spindle}
-          min={0.01}
-          onChange={(v) => setS('efficiency', { ...settings.efficiency, spindle: v })}
-        />
-        <NumberField
-          label={t('구동 효율 (벨트)')}
-          value={settings.efficiency.belt}
-          min={0.01}
-          onChange={(v) => setS('efficiency', { ...settings.efficiency, belt: v })}
-        />
-        <NumberField
-          label={t('마찰 계수 (볼스크류)')}
-          value={settings.friction.spindle}
-          onChange={(v) => setS('friction', { ...settings.friction, spindle: v })}
-        />
-        <NumberField
-          label={t('마찰 계수 (벨트)')}
-          value={settings.friction.belt}
-          onChange={(v) => setS('friction', { ...settings.friction, belt: v })}
-        />
-        <NumberField
           label={t('외부 반력 Fc')}
           unit="N"
           value={settings.externalForce}
