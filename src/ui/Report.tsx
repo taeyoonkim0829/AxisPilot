@@ -244,7 +244,6 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
               : []),
             ['가이드 저항 FG', q(settings.guideResistance, 'N')],
             ['커플링 관성', q(settings.couplingInertia, 'kg·cm²', 4)],
-            ['기본 허용 관성비', q(settings.defaultInertiaRatio, times)],
             settings.support === 'floor'
               ? ['지지 방식', t('바닥 지지')]
               : settings.support === 'cantilever'

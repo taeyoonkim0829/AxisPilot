@@ -16,7 +16,6 @@ import {
 import { useT } from '../i18n'
 import cogImage from '../../images/center_of_gravity.png'
 import eagfImage from '../../images/help_guide_eagf.webp'
-import inertiaImage from '../../images/help_inertia_ratio.svg'
 import lmImage from '../../images/help_guide_lm.svg'
 import spanImage from '../../images/help_support_span.svg'
 import cantileverImage from '../../images/help_cantilever.svg'
@@ -469,7 +468,7 @@ export function ParallelSection({
 const supportModes = ['floor', 'ends', 'cantilever'] as const
 const supportLabel: Record<Settings['support'], string> = { floor: '바닥 지지', ends: '양단 지지', cantilever: '외팔보' }
 
-/** The collapsible 상세 설정 box: operating hours, process force, default inertia ratio, support. */
+/** The collapsible 상세 설정 box: operating hours, process force, support. */
 export function DetailSettings({ settings, onSettings }: { settings: Settings; onSettings: (settings: Settings) => void }) {
   const t = useT()
   const setS = <K extends keyof Settings>(key: K, value: Settings[K]) => onSettings({ ...settings, [key]: value })
@@ -502,19 +501,6 @@ export function DetailSettings({ settings, onSettings }: { settings: Settings; o
               help={t('외부 반력이 걸리는 점, 부하 무게 중심과 같은 슬라이드 기준 좌표입니다. 이동 방향의 힘이라 x는 모멘트에 영향이 없고, y·z 오프셋이 가이드 모멘트 Mz·My를 만듭니다.')}
             />
           ))}
-        <NumberField
-          label={t('기본 허용 관성비')}
-          unit={t('배')}
-          value={settings.defaultInertiaRatio}
-          min={0.1}
-          onChange={(v) => setS('defaultInertiaRatio', v)}
-          help={
-            <>
-              <img className="help-image" src={inertiaImage} alt="" />
-              {t('모터 데이터에 없을 때만 적용')}
-            </>
-          }
-        />
       </div>
       <div className="field">
         <span className="field-label">{t('지지 방식')}</span>
