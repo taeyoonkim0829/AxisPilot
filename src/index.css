@@ -671,6 +671,81 @@ h3 {
   color: var(--accent);
 }
 
+/* a field's help: a popover under its ? (above it when there is more room), no backdrop; the arrow points at the ?
+   (--arrow from the popover's left edge) */
+.help-pop {
+  position: fixed;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  width: min(320px, calc(100vw - 16px));
+  padding: 12px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--surface-solid);
+  color: var(--text);
+  box-shadow: 0 14px 36px rgb(var(--shade) / calc(0.3 * var(--shade-k) + 0.1));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
+  font-size: 13px;
+  line-height: 1.55;
+  overflow-wrap: break-word;
+}
+
+.help-pop::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: calc(var(--arrow) - 6px);
+  width: 12px;
+  height: 12px;
+  background: var(--surface-solid);
+  border-left: 1px solid var(--line-strong);
+  border-top: 1px solid var(--line-strong);
+  transform: rotate(45deg);
+}
+
+.help-pop.above::before {
+  top: auto;
+  bottom: -7px;
+  transform: rotate(225deg);
+}
+
+.help-pop h2 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.help-pop-body {
+  display: grid;
+  gap: 6px;
+  min-height: 0;
+  overflow: auto;
+}
+
+.help-pop .help-image {
+  max-height: 160px;
+  margin-bottom: 2px;
+}
+
+.help-pop-more {
+  align-self: flex-start;
+  margin-top: 8px;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.help-pop-more:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 /* a larger touch target than the mark */
 .help-btn::after {
   content: '';

@@ -1,4 +1,4 @@
-import { useId, useRef, useState, type ReactNode } from 'react'
+import { Children, isValidElement, useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import type { Check, Status } from '../calc/types'
 import { useT } from '../i18n'
@@ -156,40 +156,126 @@ export function NumberField({ label, unit, value, onChange, min = 0, step, hint,
   )
 }
 
-/** The ? beside a title: opens its help as a popup. In a portal, since a dialog cannot sit in a label, summary or heading. */
+/** true when the help holds option cards (축 구성, 어플리케이션 선택 …): those open as a large dialog */
+function hasCards(node: ReactNode): boolean {
+  return Children.toArray(node).some(
+    (c) => isValidElement<{ children?: ReactNode }>(c) && (c.type === ConfigCards || hasCards(c.props.children)),
+  )
+}
+
+const POPOVER_W = 320
+const GAP = 8
+
+/**
+ * The ? beside a title: its help as a popover anchored to the button (no backdrop; outside click or Esc closes it),
+ * with 그림 크게 보기 for a picture; option cards open as a large dialog instead. In a portal, since neither can sit
+ * in a label, summary or heading. The content mounts only while open: a video in it must not load with the page.
+ */
 export function HelpTip({ title, children }: { title: string; children: ReactNode }) {
   const t = useT()
   const id = useId()
+  const button = useRef<HTMLButtonElement>(null)
+  const pop = useRef<HTMLDivElement>(null)
   const dialog = useRef<HTMLDialogElement>(null)
-  // the content mounts with the popup: a video in it must not load with the page or play behind it
-  const [open, setOpen] = useState(false)
+  const [popover, setPopover] = useState(false)
+  const [modal, setModal] = useState(false)
+  const [place, setPlace] = useState<{ left: number; top: number; arrow: number; above: boolean; maxHeight: number } | null>(null)
+  const [picture, setPicture] = useState(false)
+  const cards = hasCards(children)
   const name = t('{title} 도움말', { title })
+
+  const openModal = () => {
+    setPopover(false)
+    setModal(true)
+    dialog.current?.showModal()
+  }
+
+  // place the popover under the button (above it when there is more room there), within the window
+  useLayoutEffect(() => {
+    if (!popover) return
+    const update = () => {
+      const r = button.current?.getBoundingClientRect()
+      const h = pop.current?.offsetHeight ?? 0
+      if (!r) return
+      const w = Math.min(POPOVER_W, window.innerWidth - 2 * GAP)
+      const centre = r.left + r.width / 2
+      const left = Math.min(Math.max(GAP, centre - 20), window.innerWidth - w - GAP)
+      const below = window.innerHeight - r.bottom - 2 * GAP
+      const aboveRoom = r.top - 2 * GAP
+      const above = h > below && aboveRoom > below
+      const maxHeight = Math.max(120, above ? aboveRoom : below)
+      setPlace({ left, top: above ? r.top - GAP - Math.min(h, maxHeight) : r.bottom + GAP, arrow: centre - left, above, maxHeight })
+    }
+    update()
+    setPicture(!!pop.current?.querySelector('img'))
+    const close = (e: Event) => {
+      const target = e.target as Node
+      if (!pop.current?.contains(target) && !button.current?.contains(target)) setPopover(false)
+    }
+    const key = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      setPopover(false)
+      button.current?.focus()
+    }
+    window.addEventListener('resize', update)
+    window.addEventListener('scroll', update, true)
+    document.addEventListener('pointerdown', close)
+    document.addEventListener('keydown', key)
+    return () => {
+      window.removeEventListener('resize', update)
+      window.removeEventListener('scroll', update, true)
+      document.removeEventListener('pointerdown', close)
+      document.removeEventListener('keydown', key)
+    }
+  }, [popover])
+
   return (
     <>
       <button
+        ref={button}
         type="button"
         className="help-btn"
         aria-label={name}
         title={name}
+        aria-expanded={cards ? undefined : popover}
         onClick={(e) => {
           e.preventDefault() // inside a summary: must not fold it
-          setOpen(true)
-          dialog.current?.showModal()
+          if (cards) openModal()
+          else setPopover((o) => !o)
         }}
       >
         ?
       </button>
+      {popover &&
+        createPortal(
+          <div
+            ref={pop}
+            className={`help-pop${place?.above ? ' above' : ''}`}
+            role="dialog"
+            aria-labelledby={id}
+            style={place ? { left: place.left, top: place.top, maxHeight: place.maxHeight, ['--arrow' as string]: `${place.arrow}px` } : { visibility: 'hidden' }}
+          >
+            <h2 id={id}>{title}</h2>
+            <div className="help-pop-body">{children}</div>
+            {picture && (
+              <button type="button" className="help-pop-more" onClick={openModal}>
+                {t('그림 크게 보기')}
+              </button>
+            )}
+          </div>,
+          document.body,
+        )}
       {createPortal(
         // the dialog itself only takes clicks on its backdrop: its content covers the box
         <dialog
           ref={dialog}
           className="notice"
-          aria-labelledby={id}
-          onClose={() => setOpen(false)}
+          aria-labelledby={`${id}-modal`}
+          onClose={() => setModal(false)}
           onClick={(e) => e.target === dialog.current && dialog.current.close()}
         >
-          <h2 id={id}>{title}</h2>
-          <div className="notice-text">{open && children}</div>
+          <h2 id={`${id}-modal`}>{title}</h2>
+          <div className="notice-text">{modal && children}</div>
           <form method="dialog">
             <button type="submit" className="notice-ok" autoFocus>
               {t('확인')}
