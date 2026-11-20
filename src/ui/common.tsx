@@ -14,10 +14,13 @@ export function StatusBadge({ status, dot }: { status: Status; dot?: boolean }) 
   return <span className={`badge badge-${status}`}>{word}</span>
 }
 
-/** Utilisation cell: percentage plus a thin bar. */
-export function Ratio({ ratio, status }: { ratio: number | null; status?: Status }) {
+/** Speed checks (속도, 회전수, not 가속도) stay green up to 100%. */
+export const isSpeedLabel = (label: string) => label.endsWith('회전수') || (label.endsWith('속도') && !label.endsWith('가속도'))
+
+/** Utilisation cell: percentage plus a thin bar; yellow above `warnAt` (speeds: 1). */
+export function Ratio({ ratio, status, warnAt = 0.8 }: { ratio: number | null; status?: Status; warnAt?: number }) {
   if (ratio == null) return <span className="muted">—</span>
-  const tone = status ?? (ratio > 1 ? 'fail' : ratio > 0.8 ? 'warn' : 'ok')
+  const tone = status ?? (ratio > 1 ? 'fail' : ratio > warnAt ? 'warn' : 'ok')
   return (
     <span className="ratio">
       <span className="ratio-text">{pct(ratio)}</span>
@@ -55,7 +58,7 @@ export function CheckTable({ checks }: { checks: Check[] }) {
               {c.limit == null ? '—' : fmt(c.limit, 3)} {c.limit != null && <span className="unit">{t(c.unit)}</span>}
             </td>
             <td>
-              <Ratio ratio={c.ratio} status={c.status === 'ok' ? undefined : c.status} />
+              <Ratio ratio={c.ratio} status={c.status === 'ok' ? undefined : c.status} warnAt={isSpeedLabel(c.label) ? 1 : undefined} />
             </td>
             <td>
               <StatusBadge status={c.status} />

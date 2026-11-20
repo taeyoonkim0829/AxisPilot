@@ -290,5 +290,5 @@ export function SpeedRatio({ drive }: { drive: DriveEvaluation }) {
   const overMax = drive.checks.some(
     (c) => (c.label === '최대 회전수' || c.label === '감속기 최대 입력 회전수') && c.status === 'fail',
   )
-  return <Ratio ratio={ratio} status={overMax ? 'fail' : ratio > 1 ? 'warn' : undefined} />
+  return <Ratio ratio={ratio} status={overMax ? 'fail' : ratio > 1 ? 'warn' : undefined} warnAt={1} />
 }

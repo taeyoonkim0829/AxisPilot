@@ -114,7 +114,7 @@ function KitTable({
                 <Ratio ratio={checks.find((c) => c.label === '키트 전달 토크')?.ratio ?? null} />
               </td>
               <td>
-                <Ratio ratio={checks.find((c) => c.label === '키트 최대 회전수')?.ratio ?? null} />
+                <Ratio ratio={checks.find((c) => c.label === '키트 최대 회전수')?.ratio ?? null} warnAt={1} />
               </td>
             </tr>
           ))}

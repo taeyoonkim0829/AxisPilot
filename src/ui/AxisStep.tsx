@@ -321,7 +321,7 @@ export function AxisStep({ results, selectedId, onSelect, settings, onSettings }
                   <td>{t(driveLabel[e.axis.drive])}</td>
                   <td className="num">{fmt(e.axisMass, 1)} kg</td>
                   <td>
-                    <Ratio ratio={ratioOf(e, '속도')} />
+                    <Ratio ratio={ratioOf(e, '속도')} warnAt={1} />
                   </td>
                   <td>
                     <Ratio ratio={ratioOf(e, '가속도')} />
