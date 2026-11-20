@@ -63,7 +63,7 @@ describe('제품 비교', () => {
     const elgt = axes.find((a) => a.id === 'ELGT-BS-120-…20P')!
     const rows = axisSpecRows(rs, elgt)
     expect(rows.find((r) => r.label === '최대 스트로크')!.ratio).toBeCloseTo(1100 / 1000)
-    expect(rows.find((r) => r.label === '볼스크류 리드')!.ratio).toBe(1)
+    expect(rows.find((r) => r.label === '볼스크류 Ø / 리드')).toMatchObject({ reference: 'Ø15 / 20 mm', ratio: null })
     // a payload in kg is not put on one scale with forces in N
     expect(rows.find((r) => r.label === '하중 정격')!.ratio).toBeNull()
   })

@@ -105,12 +105,12 @@ export function axisCandidates(ref: ThirdPartyAxis, axes: Axis[], filter: AxisCa
 /** The data side by side: stroke, speed, the ball screw (diameter, lead), load ratings and the motor */
 export function axisSpecRows(ref: ThirdPartyAxis, festo: Axis): SpecRow[] {
   const rows = [row('최대 스트로크', 'mm', ref.strokeMax, festo.maxStroke), row('최고 속도', 'm/s', ref.maxSpeed, festo.maxSpeed)]
-  if (ref.drive === 'spindle')
-    rows.push(
-      row('볼스크류 직경', 'mm', ref.screwDiameter, festo.spindleDiameter ?? null),
-      row('볼스크류 리드', 'mm', ref.screwLead, festo.spindlePitch ?? null),
-    )
-  else rows.push(row('벨트', '', ref.belt, null))
+  if (ref.drive === 'spindle') {
+    const screw = (d: number | null | undefined, lead: number | null | undefined) =>
+      d == null && lead == null ? null : `Ø${d ?? '—'} / ${lead ?? '—'} mm`
+    const r = row('볼스크류 Ø / 리드', '', screw(ref.screwDiameter, ref.screwLead), screw(festo.spindleDiameter, festo.spindlePitch))
+    if (r.reference != null || r.other != null) rows.push(r)
+  } else rows.push(row('벨트', '', ref.belt, null))
   const load = ref.payload ? `${ref.payload[0]} / ${ref.payload[1]} kg (0.3G / 0.5G)` : `${ref.maxPayload} kg`
   const forces = festo.FyMax != null && festo.FzMax != null ? `Fy / Fz ${festo.FyMax} / ${festo.FzMax} N` : null
   rows.push(row('하중 정격', '', load, forces))
