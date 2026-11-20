@@ -89,6 +89,10 @@ export async function decodeShare(value: string): Promise<Shared | null> {
 
 const perAxis = <T,>(read: (a: GantryAxis) => T): Record<GantryAxis, T> => ({ x: read('x'), y: read('y'), z: read('z') })
 
+/** links from before 지지 방식 had 바닥 지지: `cantilever` true / false */
+const supportOf = (s: Partial<Settings> & { cantilever?: boolean } = {}): Partial<Settings> =>
+  s.support || s.cantilever == null ? s : { ...s, support: s.cantilever ? 'cantilever' : 'ends' }
+
 /** Fields added since the link was made take their defaults. */
 function withDefaults(s: Partial<Shared> & { mode?: string }): Shared | null {
   if (s.mode === 'single') {
@@ -103,7 +107,7 @@ function withDefaults(s: Partial<Shared> & { mode?: string }): Shared | null {
         press: { ...defaultPress, ...v.req.press },
         ...(eagf ? { parallel: { ...defaultParallel, ...v.req.parallel, mode: 'guides' as const, guideAxis: true } } : {}),
       },
-      settings: { ...defaultSettings, ...v.settings },
+      settings: { ...defaultSettings, ...supportOf(v.settings) },
       picks: { ...noPicks, ...v.picks },
       profileView: v.profileView ?? 'cycle',
       assembly: { ...defaultComboOptions, ...v.assembly },
@@ -114,7 +118,7 @@ function withDefaults(s: Partial<Shared> & { mode?: string }): Shared | null {
     return {
       mode: 'gantry',
       gantry: gantryOf(v.gantry),
-      gantrySettings: perAxis((a) => ({ ...initialGantrySettings[a], ...v.gantrySettings?.[a] })),
+      gantrySettings: perAxis((a) => ({ ...initialGantrySettings[a], ...supportOf(v.gantrySettings?.[a]) })),
       picks: perAxis((a) => ({ ...noPicks, ...v.picks?.[a] })),
       views: perAxis((a) => v.views?.[a] ?? 'cycle'),
       assemblies: perAxis((a) => ({ ...defaultComboOptions, ...v.assemblies?.[a] })),

@@ -77,6 +77,8 @@ export const en: Record<string, string> = {
   '관리자 모드 끄기': 'Leave admin mode',
   '비밀번호': 'Password',
   '비밀번호가 맞지 않습니다': 'Wrong password',
+  '바닥 지지': 'Floor support',
+  '바닥 지지 — 프로파일 굽힘 없음': 'Floor support — the profile does not bend',
   '외부 반력 Fc': 'Process force Fc',
   'Fc 작용점 {axis}': 'Fc point {axis}',
   'Fc 작용점 y / z': 'Fc point y / z',

@@ -915,7 +915,11 @@ export function evaluateAxis(
     guideUnitFv = guideFv(unit, guideAxis.guide)
   }
 
-  if (!vertical) {
+  if (!vertical && settings.support === 'floor') {
+    // held along its whole length: the profile does not bend
+    checks.push(check('처짐', 0, axis.allowableDeflection ?? 0.5, 'mm', '바닥 지지 — 프로파일 굽힘 없음'))
+  } else if (!vertical) {
+    const cantilever = settings.support === 'cantilever'
     const totalLength = axis.baseLength ? req.stroke + (options?.extension ?? 0) + axis.baseLength : null
     const span = settings.supportSpan > 0 ? settings.supportSpan : totalLength
     const I = req.mounting === 'floor' ? axis.Iy : axis.Iz
@@ -924,13 +928,13 @@ export function evaluateAxis(
       // Point load: the weight on this axis (its share in a parallel arrangement)
       const pointLoad = layout.positions.length > 1 ? (req.mounting === 'floor' ? loads.Fz : loads.Fy) : mass * G
       // simply supported: moving mass in the middle; cantilever: at the free end, the overhang's weight spread over it
-      const deflection = settings.cantilever
+      const deflection = cantilever
         ? (pointLoad * span ** 3) / (3 * YOUNGS_MODULUS * I) + (selfWeight * span ** 3) / (8 * YOUNGS_MODULUS * I)
         : (pointLoad * span ** 3) / (48 * YOUNGS_MODULUS * I) + (5 * selfWeight * span ** 3) / (384 * YOUNGS_MODULUS * I)
       const limit = axis.allowableDeflection ?? 0.5
-      const basis = settings.cantilever ? '외팔보 돌출 길이 {span} mm 기준' : '지지 간격 {span} mm 기준'
+      const basis = cantilever ? '외팔보 돌출 길이 {span} mm 기준' : '지지 간격 {span} mm 기준'
       const c = { ...check('처짐', deflection, limit, 'mm', basis), noteArgs: { span: Math.round(span) } }
-      const fix = settings.cantilever ? '외팔보 돌출 길이 {span} mm 기준 — 지지 추가 검토' : '지지 간격 {span} mm 기준 — 중간 지지 추가 또는 지지 간격 입력 검토'
+      const fix = cantilever ? '외팔보 돌출 길이 {span} mm 기준 — 지지 추가 검토' : '지지 간격 {span} mm 기준 — 중간 지지 추가 또는 지지 간격 입력 검토'
       checks.push(c.status === 'fail' ? { ...c, status: 'warn', note: fix } : c)
     }
   }

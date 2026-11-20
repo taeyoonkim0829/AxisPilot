@@ -30,7 +30,7 @@ describe('deflection', () => {
   })
 
   it('is a cantilever with the moving mass at the free end and the overhang weight spread', () => {
-    const ev = run('ELGT-BS-90-…20P', {}, { supportSpan: 400, cantilever: true })
+    const ev = run('ELGT-BS-90-…20P', {}, { supportSpan: 400, support: 'cantilever' })
     const L = 400
     const EI = 70000 * 631000
     const point = infoOf(ev, '이동 질량').value * 9.81
@@ -38,6 +38,12 @@ describe('deflection', () => {
     const c = checkOf(ev.checks, '처짐')!
     expect(c.value).toBeCloseTo((point * L ** 3) / (3 * EI) + (self * L ** 3) / (8 * EI), 6)
     expect(c.note).toBe('외팔보 돌출 길이 {span} mm 기준')
+  })
+
+  it('has no deflection on floor support (held along its length)', () => {
+    const c = checkOf(run('ELGT-BS-90-…20P', { payload: 60 }, { supportSpan: 4000, support: 'floor' }).checks, '처짐')!
+    expect(c.value).toBe(0)
+    expect(c.status).toBe('ok')
   })
 
   it('only warns beyond the allowed deflection (an intermediate support fixes it)', () => {

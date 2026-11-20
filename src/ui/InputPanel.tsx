@@ -465,6 +465,9 @@ export function ParallelSection({
   )
 }
 
+const supportModes = ['floor', 'ends', 'cantilever'] as const
+const supportLabel: Record<Settings['support'], string> = { floor: '바닥 지지', ends: '양단 지지', cantilever: '외팔보' }
+
 /** The collapsible 상세 설정 box: operating hours, process force, default inertia ratio, support. */
 export function DetailSettings({ settings, onSettings }: { settings: Settings; onSettings: (settings: Settings) => void }) {
   const t = useT()
@@ -511,39 +514,43 @@ export function DetailSettings({ settings, onSettings }: { settings: Settings; o
             </>
           }
         />
-        {settings.cantilever ? (
-          <NumberField
-            label={t('돌출 길이')}
-            unit="mm"
-            value={settings.supportSpan}
-            onChange={(v) => setS('supportSpan', v)}
-            help={t('한 점에서 지지한 축의 지지점에서 자유단까지 길이. 이동 질량이 자유단에 있을 때의 처짐을 봅니다. 0 = 축 전체 길이')}
-          />
-        ) : (
-          <NumberField
-            label={t('지지 간격')}
-            unit="mm"
-            value={settings.supportSpan}
-            onChange={(v) => setS('supportSpan', v)}
-            help={
-              <>
-                <img className="help-image" src={spanImage} alt="" />
-                {t('0 = 양 끝만 지지')}
-              </>
-            }
-          />
-        )}
       </div>
       <div className="field">
         <span className="field-label">{t('지지 방식')}</span>
         <RadioGroup
           className=""
-          options={['양단 지지', '외팔보']}
-          value={settings.cantilever ? '외팔보' : '양단 지지'}
-          onChange={(v) => setS('cantilever', v === '외팔보')}
-          label={(v) => t(v)}
+          options={supportModes}
+          value={settings.support}
+          onChange={(v) => setS('support', v)}
+          label={(v) => t(supportLabel[v])}
         />
       </div>
+      {settings.support !== 'floor' && (
+        <div className="grid-2">
+          {settings.support === 'cantilever' ? (
+            <NumberField
+              label={t('돌출 길이')}
+              unit="mm"
+              value={settings.supportSpan}
+              onChange={(v) => setS('supportSpan', v)}
+              help={t('한 점에서 지지한 축의 지지점에서 자유단까지 길이. 이동 질량이 자유단에 있을 때의 처짐을 봅니다. 0 = 축 전체 길이')}
+            />
+          ) : (
+            <NumberField
+              label={t('지지 간격')}
+              unit="mm"
+              value={settings.supportSpan}
+              onChange={(v) => setS('supportSpan', v)}
+              help={
+                <>
+                  <img className="help-image" src={spanImage} alt="" />
+                  {t('0 = 양 끝만 지지')}
+                </>
+              }
+            />
+          )}
+        </div>
+      )}
     </details>
   )
 }

@@ -35,6 +35,11 @@ describe('shared link', () => {
     expect(decoded).toEqual({ ...single, settings: defaultSettings, assembly: defaultComboOptions })
   })
 
+  it('reads 외팔보 from a link made before 바닥 지지', async () => {
+    const decoded = await decodeShare(await encodeShare({ ...single, settings: { cantilever: true } } as unknown as Shared))
+    expect(decoded?.mode === 'single' && decoded.settings.support).toBe('cantilever')
+  })
+
   it('keeps the gantry screen with its tab', async () => {
     const gantry: Shared = {
       mode: 'gantry',

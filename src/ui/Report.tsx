@@ -245,9 +245,11 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
             ['가이드 저항 FG', q(settings.guideResistance, 'N')],
             ['커플링 관성', q(settings.couplingInertia, 'kg·cm²', 4)],
             ['기본 허용 관성비', q(settings.defaultInertiaRatio, times)],
-            settings.cantilever
-              ? ['외팔보 돌출 길이', settings.supportSpan > 0 ? q(settings.supportSpan, 'mm') : t('축 전체 길이')]
-              : ['지지 간격', settings.supportSpan > 0 ? q(settings.supportSpan, 'mm') : t('양 끝만 지지')],
+            settings.support === 'floor'
+              ? ['지지 방식', t('바닥 지지')]
+              : settings.support === 'cantilever'
+                ? ['외팔보 돌출 길이', settings.supportSpan > 0 ? q(settings.supportSpan, 'mm') : t('축 전체 길이')]
+                : ['지지 간격', settings.supportSpan > 0 ? q(settings.supportSpan, 'mm') : t('양 끝만 지지')],
             ['일 가동 시간', q(settings.hoursPerDay, 'h')],
             ['전원', settings.supplies.map((s) => supplyLabel[s]).join(' / ')],
             ['브레이크', settings.requireBrake ? t('필요') : t('선택')],
