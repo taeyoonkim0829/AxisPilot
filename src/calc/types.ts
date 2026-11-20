@@ -153,6 +153,8 @@ export interface Settings {
   requireBrake: boolean
   /** false = motors are checked in direct drive only; true = with a compatible gearbox only */
   useGearbox: boolean
+  /** motor mounting kits offered: both, axial (직렬) or parallel (병렬) only (kit step header; motor and kit selection follow) */
+  kitType: 'all' | 'axial' | 'parallel'
   /** Additional slide on axes that offer one (`Axis.additionalSlide`); 'both' only where both sides can be ordered */
   additionalSlide: AdditionalSlideSide
   /** mm, centre-to-centre spacing of the main and the additional slide (KL of both); below the axis minimum (half of
@@ -200,6 +202,7 @@ export const defaultSettings: Settings = {
   excludedMotorFamilies: ['EMMT-ST', 'EMMT-EC', 'EMMB-AS', 'EMMB-ST', 'EMMH-AS'],
   requireBrake: false,
   useGearbox: false,
+  kitType: 'all',
   cableLength: 5,
   additionalSlide: 'none',
   slidePitch: 0,

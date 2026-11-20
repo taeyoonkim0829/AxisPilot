@@ -18,10 +18,13 @@ export interface KitMatch {
 }
 
 
-export function findKits(axis: Axis, motor: Motor, gearbox: Gearbox | null, all: Kit[]): KitMatch {
+export function findKits(axis: Axis, motor: Motor, gearbox: Gearbox | null, all: Kit[], kitType: Settings['kitType'] = 'all'): KitMatch {
   const axisCode = axis.interfaceCode
   const motorCode = gearbox ? gearbox.interfaceCode : motor.interfaceCode
-  const matches = axisCode && motorCode ? all.filter((k) => k.axisCode === axisCode && k.motorCode === motorCode) : []
+  const matches =
+    axisCode && motorCode
+      ? all.filter((k) => k.axisCode === axisCode && k.motorCode === motorCode && (kitType === 'all' || k.type === kitType))
+      : []
   return {
     axisCode,
     motorCode,
@@ -133,7 +136,7 @@ export function evaluateKit(axisEval: AxisEvaluation, drive: DriveEvaluation, ki
  * The drive's status then includes the kit: the recommended kit's verdict, or `warn` when no kit matches.
  */
 export function attachKit(axisEval: AxisEvaluation, drive: DriveEvaluation, all: Kit[], settings: Settings): DriveEvaluation {
-  const match = findKits(axisEval.axis, drive.motor, drive.gearbox, all)
+  const match = findKits(axisEval.axis, drive.motor, drive.gearbox, all, settings.kitType)
   const evaluated = orderKits(match.kits).map((k) => evaluateKit(axisEval, drive, k, settings))
   // Prefer a kit the data sheet values could verify over one without data
   const passing = evaluated.filter((e) => e.status !== 'fail')

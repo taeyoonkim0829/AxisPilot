@@ -76,6 +76,8 @@ export function AxisSteps({ sel, req, calcSettings, settings, onSettings, picks,
         rows={sel.kitEvals}
         selectedId={sel.selectedKitEval?.kit.id ?? null}
         onSelect={(id) => onPicks({ ...picks, kitId: id })}
+        settings={settings}
+        onSettings={onSettings}
       />
       {drawing ?? (
         <DrawingStep

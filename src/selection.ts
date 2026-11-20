@@ -58,7 +58,7 @@ export function computeSelection(req: Requirements, settings: Settings, picks: P
     gearboxOptions.find((o) => (o.gearbox?.id ?? null) === (motorResult?.gearbox?.id ?? null)) ??
     gearboxOptions[0] ??
     null
-  const kitMatch = selectedAxis && selectedDrive ? findKits(selectedAxis.axis, selectedDrive.motor, selectedDrive.gearbox, kits) : null
+  const kitMatch = selectedAxis && selectedDrive ? findKits(selectedAxis.axis, selectedDrive.motor, selectedDrive.gearbox, kits, settings.kitType) : null
   const kitEvals = selectedDrive?.kits ?? []
   // The user's pick, else the drive's recommended kit
   const selectedKitEval = kitEvals.find((e) => e.kit.id === picks.kitId) ?? selectedDrive?.kit ?? null

@@ -195,6 +195,8 @@ export const en: Record<string, string> = {
   '직렬': 'Axial',
   '병렬': 'Parallel',
   '커플링 / 풀리 품번': 'Coupling / pulley part no.',
+  '축 {axis} · {motor} 조합의 {type} 연결키트가 없습니다. 전체를 선택하면 다른 연결 방식의 키트도 봅니다.':
+    'No {type} kit for axis {axis} · {motor}. Choose All to see kits of the other type.',
   '축 {axis} · {motor} 조합의 연결키트가 없습니다.': 'No mounting kit for axis {axis} · {motor}.',
   '약 {years}년 · 왕복 {cycles}회 한계': 'about {years} years · limited to {cycles} round trips',
   '위→아래': 'Top-down',

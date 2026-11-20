@@ -116,6 +116,14 @@ describe('attachKit', () => {
     expect(drive.driveStatus).toBeDefined()
   })
 
+  it('offers only the chosen kit type (직렬 / 병렬) and recommends among them', () => {
+    const parallel = { ...settings, kitType: 'parallel' as const }
+    const drive = attachKit(ev, evaluateDrive(ev, motor('HG-KR43'), null, parallel), kits, parallel)
+    expect(drive.kits!.length).toBeGreaterThan(0)
+    expect(drive.kits!.every((k) => k.kit.type === 'parallel')).toBe(true)
+    expect(drive.kit!.kit.product).toBe('EAMM-U-65-T42-60P-87')
+  })
+
   it('warns when no kit fits and sorts motors by the combined verdict', () => {
     // a Festo motor without an interface code (every one in the data has one)
     const noCode = { ...motors.find((m) => m.maker === 'Festo')!, id: 'no-code', interfaceCode: null }

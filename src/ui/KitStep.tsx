@@ -1,7 +1,8 @@
 import { orderKits, type KitEvaluation, type KitMatch, type KitNote, type KitType } from '../calc/kitSelection'
 import type { Kit } from '../data/types'
 import { useT } from '../i18n'
-import { CheckTable, InfoTable, Ratio, StatusBadge } from './common'
+import type { Settings } from '../calc/types'
+import { CheckTable, InfoTable, RadioGroup, Ratio, StatusBadge } from './common'
 
 interface Props {
   /** null until a motor is selected */
@@ -12,11 +13,15 @@ interface Props {
   onSelect: (id: string) => void
   /** step number: 4 after the gearbox, else 3 */
   no: number
+  settings: Settings
+  onSettings: (settings: Settings) => void
 }
+
+const kitTypes = ['all', 'axial', 'parallel'] as const
 
 const typeLabel: Record<KitType, string> = { axial: '직렬', parallel: '병렬' }
 
-export function KitStep({ match, rows, selectedId, onSelect, no }: Props) {
+export function KitStep({ match, rows, selectedId, onSelect, no, settings, onSettings }: Props) {
   const t = useT()
   const selectedEval = rows.find((e) => e.kit.id === selectedId)
 
@@ -36,12 +41,20 @@ export function KitStep({ match, rows, selectedId, onSelect, no }: Props) {
           </span>
         )}
       </header>
+      <div className="step-filters">
+        <RadioGroup
+          options={kitTypes}
+          value={settings.kitType}
+          onChange={(v) => onSettings({ ...settings, kitType: v })}
+          label={(v) => t(v === 'all' ? '전체' : typeLabel[v])}
+        />
+      </div>
 
       {!match ? (
         <p className="empty">{t('모터를 선택하면 축과 모터(감속기)의 인터페이스 코드에 맞는 키트를 찾습니다.')}</p>
       ) : (
         <>
-          <KitTable match={match} rows={rows} selectedId={selectedId} onSelect={onSelect} />
+          <KitTable match={match} rows={rows} selectedId={selectedId} onSelect={onSelect} kitType={settings.kitType} />
           {selectedEval && <KitDetail evaluation={selectedEval} />}
           {match.special.length > 0 && <SpecialKits kits={orderKits(match.special)} />}
         </>
@@ -55,11 +68,13 @@ function KitTable({
   rows,
   selectedId,
   onSelect,
+  kitType,
 }: {
   match: KitMatch
   rows: KitEvaluation[]
   selectedId: string | null
   onSelect: (id: string) => void
+  kitType: Settings['kitType']
 }) {
   const t = useT()
   if (!match.axisCode)
@@ -76,7 +91,13 @@ function KitTable({
   if (rows.length === 0) {
     return (
       <p className="empty">
-        {t('축 {axis} · {motor} 조합의 연결키트가 없습니다.', { axis: match.axisCode, motor: match.motorCode })}
+        {kitType === 'all'
+          ? t('축 {axis} · {motor} 조합의 연결키트가 없습니다.', { axis: match.axisCode, motor: match.motorCode })
+          : t('축 {axis} · {motor} 조합의 {type} 연결키트가 없습니다. 전체를 선택하면 다른 연결 방식의 키트도 봅니다.', {
+              axis: match.axisCode,
+              motor: match.motorCode,
+              type: t(typeLabel[kitType]),
+            })}
       </p>
     )
   }
