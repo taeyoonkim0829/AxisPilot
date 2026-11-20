@@ -478,6 +478,35 @@ describe('combination', () => {
     expect(elgt.slides[1] - elgt.slides[0]).toBeCloseTo(155, 0)
   }, 60000)
 
+  it('adds a standard slide beside a long one (ELGD …-L), as PARTdataManager configures ELGD-TB-KF-60-500-0H-L-ZL', async () => {
+    const axis = axes.find((a) => a.id === 'ELGD-TB-KF-60-…-L')!
+    const standard = axes.find((a) => a.id === 'ELGD-TB-KF-60')!
+    const kitPath = allPaths.map((p) => p.slice(6)).find((p) => p.includes('_EAMM-A-N48-60P.stp'))!
+    const paths = ['data/axes/Festo/Drawings/ELGD/8176884_ELGD-TB-KF-60-500-0H-L-PU2.stp', 'data/axes/Festo/Drawings/ELGD/8192346_ELGD-TB-KF-60-500-0H-PU2.stp', kitPath, files[2]]
+    const own = paths.map((p) => ({ ...parseDrawingPath(p)!, url: p, meta: metas[`../../${p.replace(/\.stp$/, '.json')}`] ?? null }))
+    const sel: ComboSelection = {
+      axis,
+      axisModel: 'ELGD-TB-KF-60-500-0H-L-ZL-PU2',
+      stroke: 500,
+      // centres: half of both slides (159, 118) and the 50 mm minimum between them
+      extraSlides: [{ side: 'left', pitch: 188.5 }],
+      slideAxis: standard,
+      motor: motors.find((m) => m.model === 'EMMT-AS-60-S-HS')!,
+      gearbox: null,
+      kit: kits.find((k) => k.product === 'EAMM-A-N48-60P' && k.axisCode === 'N48')!,
+    }
+    const found = comboDrawings(sel, own)
+    expect(found.extraSlide?.model).toContain('ELGD-TB-KF-60-500')
+    const box = await meshBox((await buildCombo(sel, found, { mounting: 'floor', cog: { x: 0, y: 0, z: 0 } }, load)).step)
+    const slides = box.parts.filter((p) => /high_?s\)/.test(p.name)).map((p) => [p.lo[0], p.hi[0]]).sort((a, b) => a[0] - b[0])
+    const axisParts = box.parts.filter((p) => p.name.includes('8176884'))
+    const end = Math.min(...axisParts.map((p) => p.lo[0]))
+    // the drive head at -x: ZL (118 mm, standard) 66.5 mm from the end, then 50 mm to the long slide (159 mm)
+    expect(slides.map(([lo, hi]) => Math.round(hi - lo))).toEqual([118, 159])
+    expect(slides[0][0] - end).toBeCloseTo(66.5, 0)
+    expect(slides[1][0] - slides[0][1]).toBeCloseTo(50, 0)
+  }, 60000)
+
   it('puts the switch lug on the slide side, the limit switches 2 mm before the ends and the home switch beside the - limit', async () => {
     const axis = axes.find((a) => a.id === 'ELGD-TB-KF-60')!
     const sensing = sensingFor(axis, sensors, { sensorOutput: 'PNP', limitContact: 'NC', homeContact: 'NO' })!

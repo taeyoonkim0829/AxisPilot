@@ -3,7 +3,16 @@ import type { DriveEvaluation } from '../calc/motorSelection'
 import type { Requirements } from '../calc/types'
 import { comboDrawings, type ComboDrawings, type ComboSelection, type TwinAxis } from '../cad/combo'
 import { shaftDrawingFor } from '../cad/drawings'
-import type { Kit } from '../data/types'
+import { axes } from '../data'
+import type { Axis, Kit } from '../data/types'
+
+/** An axis with a long main slide (ELGD …-L, EGC GV): the axis of the same module with the standard slide its
+ *  additional slides are (same drive, main slide as long as the additional one); null when the slides are alike */
+export function standardSlideAxis(axis: Axis): Axis | null {
+  const extra = axis.additionalSlide
+  if (!extra || axis.slideLength == null || axis.slideLength === extra.length) return null
+  return axes.find((a) => a.moduleNumber === axis.moduleNumber && a.drive === axis.drive && a.slideLength === extra.length) ?? null
+}
 
 /**
  * What one axis's combination drawing is built from (step 5, and each axis of the gantry drawing): the selection,
@@ -30,6 +39,7 @@ export function comboInputs(
                   side: code === axis.axis.additionalSlide?.left ? ('left' as const) : ('right' as const),
                   pitch: axis.options!.pitches[i] * 1000,
                 })),
+                slideAxis: standardSlideAxis(axis.axis),
               }
             : {}),
           motor: drive.motor,

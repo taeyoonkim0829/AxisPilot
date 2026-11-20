@@ -21,7 +21,7 @@ import {
 import { add, apply, cross, dot, identity, invert, mate, rotate, scale, sub, turnAbout, type Frame, type Transform } from './geometry'
 import { args, closure, directionBody, mapRefs, nextIdOf, parseStep, pointBody, pointOf, refs, typeOf, writeStep, type StepFile, type Vec3 } from './step'
 import { stretchedOrigin, stretchPart } from './stretch'
-import { definitionByName, definitionOf, placementAxes, placementIdsOf, shapeOf, solidsOf } from './structure'
+import { definitionByName, definitionOf, placementAxes, placementIdsOf, rootDefinition, shapeOf, solidsOf } from './structure'
 
 export type PartRole = 'axis' | 'kit' | 'gearbox' | 'motor' | 'shaft' | 'adapter' | 'guide' | 'sensor'
 
@@ -35,6 +35,9 @@ export interface ComboSelection {
    *  neighbouring slide centres. The ordered stroke includes them. */
   /** additional slides: side and centre distance from the slide (mm) */
   extraSlides?: { side: 'left' | 'right'; pitch: number }[]
+  /** an axis with a long main slide (ELGD …-L, EGC GV) whose additional slides are standard ones: the same size's
+   *  standard-slide axis, whose drawing gives their slide (PARTdataManager adds a standard slide as ZL / KL …) */
+  slideAxis?: Axis | null
   motor: Motor
   gearbox: Gearbox | null
   kit: Kit
@@ -64,6 +67,8 @@ export interface ComboDrawings {
   sensors: { lug: Drawing<SensorMeta> | null; bracket: Drawing<SensorMeta> | null; switches: Drawing<SensorMeta>[]; fixing?: Drawing<SensorMeta> | null } | null
   /** a mounting type was ordered but has no file of its own: the standard profile is drawn */
   mountingMissing: boolean
+  /** the standard-slide axis's drawing, whose slide the additional slides take (`ComboSelection.slideAxis`) */
+  extraSlide?: Drawing<AxisMeta> | null
   missing: PartRole[]
 }
 
@@ -95,6 +100,7 @@ export function comboDrawings(sel: ComboSelection, all?: Drawing[]): ComboDrawin
     kit,
     guide: guide && (sel.guide!.guide.kind === 'axis' || axis?.meta?.front) ? guide : null,
     mountingMissing: !!sel.mounting && !mounted,
+    extraSlide: sel.extraSlides?.length && sel.slideAxis ? (axisDrawingsFor(sel.slideAxis, sel.stroke, all)[0] ?? null) : null,
     sensors:
       sel.sensing &&
       (lug || !sel.sensing.lug) &&
@@ -223,6 +229,80 @@ export const twinPositionWords = (meta: AxisMeta, mounting: Mounting, position: 
  *  ELGT-BS: …---(high_0_s)) */
 const SLIDE_PART = /TB1-{4,}|---\(high_?(0_)?s\)/
 
+/** the name given to a slide taken in from another axis's file (`importSlide`) */
+const IMPORTED_SLIDE = /\(ZSLIDE\)/
+
+/**
+ * Adds the slide of another axis file `source` (same module, same orientation: a standard slide where the axis has
+ * a long one) at `targets` (file mm, slide centres; `sourceOrigin` its slide centre there): its part definition and
+ * geometry copied with new ids, one instance per target under this file's root. False when either has no slide part.
+ */
+function importSlide(file: StepFile, source: StepFile, sourceOrigin: Vec3, targets: Vec3[]): boolean {
+  const src = source.entities
+  const pd = definitionByName(source, SLIDE_PART)
+  const find = (type: string, test: (r: number[]) => boolean) => [...src].find(([, b]) => typeOf(b) === type && test(refs(b)))
+  const nauo = pd == null ? undefined : find('NEXT_ASSEMBLY_USAGE_OCCURRENCE', (r) => r[1] === pd)
+  const pds = nauo && find('PRODUCT_DEFINITION_SHAPE', (r) => r.at(-1) === nauo[0])
+  const cdsr = pds && find('CONTEXT_DEPENDENT_SHAPE_REPRESENTATION', (r) => r[1] === pds[0])
+  const rel = cdsr ? src.get(refs(cdsr[1])[0]) : undefined
+  const idt = rel ? refs(rel)[2] : undefined
+  const placement = idt != null ? refs(src.get(idt) ?? '')[1] : undefined
+  const location = placement != null ? refs(src.get(placement) ?? '')[0] : undefined
+  const at = location != null ? pointOf(src.get(location) ?? '') : null
+  const rootPd = rootDefinition(file)
+  const rootRep = shapeOf(file, rootPd)
+  if (pd == null || !nauo || !pds || !cdsr || !rel || idt == null || placement == null || location == null || !at || rootRep == null) return false
+  // the slide's own definition and shape, with its sub-parts (usages under it and their shapes): grown until no
+  // usage, shape definition or placed shape hangs on what is kept; not its usage in the source file's root
+  const keep = new Set<number>([...closure(source, pd), ...closure(source, idt)])
+  const grow = (id: number) => {
+    for (const k of closure(source, id)) keep.add(k)
+  }
+  for (let size = -1; size !== keep.size; ) {
+    size = keep.size
+    for (const [id, b] of src) {
+      if (keep.has(id) || id === nauo[0] || id === pds[0] || id === cdsr[0] || id === refs(cdsr[1])[0]) continue
+      const type = typeOf(b)
+      const r = refs(b)
+      if (
+        (type === 'NEXT_ASSEMBLY_USAGE_OCCURRENCE' && keep.has(r[0])) ||
+        (type === 'PRODUCT_DEFINITION_SHAPE' && keep.has(r.at(-1)!)) ||
+        (type === 'SHAPE_DEFINITION_REPRESENTATION' && keep.has(r[0])) ||
+        (type === 'CONTEXT_DEPENDENT_SHAPE_REPRESENTATION' && keep.has(r[1])) ||
+        // the shape's geometry in a representation of its own (SHAPE_REPRESENTATION_RELATIONSHIP), but not the
+        // source root's
+        (/REPRESENTATION_RELATIONSHIP/.test(b) && !/WITH_TRANSFORMATION/.test(b) && r.some((x) => keep.has(x)))
+      )
+        grow(id)
+    }
+  }
+  const e = file.entities
+  let next = nextIdOf(e)
+  let low = Infinity
+  for (const id of keep) if (id < low) low = id
+  const offset = next - low
+  for (const id of keep) {
+    let body = mapRefs(src.get(id)!, (r) => r + offset)
+    // its PRODUCT renamed, so moveSlide finds it apart from this file's slide
+    if (id === refs(src.get(refs(src.get(pd)!)[0]) ?? '')[0] && typeOf(body) === 'PRODUCT') body = body.replace(/^(\s*PRODUCT\s*\(\s*'[^']*)'/, "$1 (ZSLIDE)'")
+    e.set(id + offset, body)
+  }
+  for (const id of keep) if (id + offset >= next) next = id + offset + 1
+  targets.forEach((target, i) => {
+    const [p, pl, t, r, n, s, c] = [next, next + 1, next + 2, next + 3, next + 4, next + 5, next + 6]
+    next += 7
+    e.set(p, pointBody(add(at, sub(target, sourceOrigin))))
+    e.set(pl, mapRefs(src.get(placement)!, (id) => (id === location ? p : id + offset)))
+    e.set(t, mapRefs(src.get(idt)!, (id) => (id === placement ? pl : id + offset)))
+    // the relationship: the slide's shape in this file's root shape
+    e.set(r, mapRefs(rel, (id) => (id === idt ? t : id === refs(rel)[1] ? rootRep : id + offset)))
+    e.set(n, mapRefs(nauo[1], (id) => (id === pd ? pd + offset : rootPd)).replace(/^(\s*NEXT_ASSEMBLY_USAGE_OCCURRENCE\s*\(\s*')[^']*/, `$1ZSLIDE${i + 1}`))
+    e.set(s, mapRefs(pds[1], () => n))
+    e.set(c, mapRefs(cdsr[1], (id) => (id === refs(cdsr[1])[0] ? r : s)))
+  })
+  return true
+}
+
 /**
  * Adds instances of the slide part `shifts` (file mm) from where it sits: copies of its assembly occurrence (usage,
  * shape, transformation) with the placement moved. False when the slide is no part of its own.
@@ -261,7 +341,9 @@ const SLIDE_FITTINGS = /ELGT-M6X0,75|ISO-4026 M\d+x\d+/
 
 /** Moves the slide part with its fittings by `shift` (file mm). False when it is no part of its own. */
 function moveSlide(file: StepFile, shift: Vec3): boolean {
+  // the slide, and a standard slide taken in for additional slides (`importSlide`): a definition of its own
   const moved = placePart(file, SLIDE_PART, { r: identity.r, t: shift })
+  placePart(file, IMPORTED_SLIDE, { r: identity.r, t: shift })
   if (moved) placePart(file, SLIDE_FITTINGS, { r: identity.r, t: shift })
   return moved
 }
@@ -810,6 +892,10 @@ export async function comboParts(
     sensors ? Promise.all(sensors.switches.map(load)) : Promise.resolve(null),
     sensors?.fixing && sensors.bracket && !sensors.bracket.meta?.screws?.length ? load(sensors.fixing) : Promise.resolve(null),
   ])
+  // (its slide frame must lie the same way as this file's, the two files being of one module)
+  const slideMeta = found.extraSlide?.meta
+  const sameWay = slideMeta && [0, 1, 2].every((k) => Math.abs(slideMeta.slide.travel[k] - axisMeta.slide.travel[k]) < 1e-6 && Math.abs(slideMeta.slide.normal[k] - axisMeta.slide.normal[k]) < 1e-6)
+  const standardSlide = sameWay ? parseStep(await load(found.extraSlide!)) : null
 
   let stretched = parseStep(axisText)
   const stretch = sel.stroke - axisMeta.stroke
@@ -837,9 +923,17 @@ export async function comboParts(
     const toDrive = Math.sign(dot(sub(base.drive.origin, middle), t)) || 1
     const near = Math.sign(dot(sub(base.slide.origin, middle), t)) || -toDrive
     const shifts = extra.map((s) => (s.side === 'left' ? toDrive : -toDrive) * s.pitch)
-    const main = -(shifts.find((d) => Math.sign(d) === near) ?? 0)
+    // a standard slide at the start position in front of a long one: it starts where the long one did (same end
+    // face), so the group moves on by half the difference in length
+    const longer = found.extraSlide && sel.axis.slideLength != null && sel.axis.additionalSlide ? (sel.axis.slideLength - sel.axis.additionalSlide.length) / 2 : 0
+    const nearShift = shifts.find((d) => Math.sign(d) === near)
+    const main = nearShift == null ? 0 : -nearShift + near * longer
     const file: StepFile = { header: stretched.header, entities: new Map(stretched.entities) }
-    if ((main === 0 || moveSlide(file, scale(t, main))) && copySlide(file, shifts.map((d) => scale(t, d)))) {
+    // a long main slide (ELGD …-L, EGC GV): the additional slides are standard ones, from that axis's file
+    const added = standardSlide
+      ? importSlide(file, standardSlide, found.extraSlide!.meta!.slide.origin, shifts.map((d) => add(base.slide.origin, scale(t, d))))
+      : copySlide(file, shifts.map((d) => scale(t, d)))
+    if (added && (main === 0 || moveSlide(file, scale(t, main)))) {
       stretched = file
       const centres = [main, ...shifts.map((d) => main + d)]
       const centre = centres.reduce((a, b) => a + b, 0) / centres.length

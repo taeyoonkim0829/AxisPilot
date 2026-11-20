@@ -201,9 +201,10 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
                       to: selection.stroke,
                     })
                   : null,
-                // additional slides are copies of the model's slide: a long / extended one is drawn at its own length
+                // additional slides are copies of the model's slide; beside a long / extended one (ELGD …-L, EGC GV)
+                // the standard slide of that size's standard model, else the long one at its own length
                 axis!.options?.slides.length
-                  ? axis!.axis.slideLength != null && axis!.axis.additionalSlide && axis!.axis.slideLength !== axis!.axis.additionalSlide.length
+                  ? axis!.axis.slideLength != null && axis!.axis.additionalSlide && axis!.axis.slideLength !== axis!.axis.additionalSlide.length && !found.extraSlide?.meta
                     ? t('추가 슬라이드 {codes}: 기존 슬라이드 모델로 그림 (실제 길이 {length} mm)', {
                         codes: axis!.options.slides.join(' + '),
                         length: axis!.axis.additionalSlide.length,
