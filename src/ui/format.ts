@@ -70,3 +70,6 @@ export const cableRoleLabel: Record<CableChoice['role'], string> = {
   adapter: '엔코더 어댑터',
   brake: '브레이크 케이블',
 }
+
+/** Speed checks (속도, 회전수, not 가속도) stay green up to 100% in the load bars. */
+export const isSpeedLabel = (label: string) => label.endsWith('회전수') || (label.endsWith('속도') && !label.endsWith('가속도'))

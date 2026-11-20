@@ -130,7 +130,7 @@ describe('KS drawing sheet', () => {
     // the two equal sensors are one row
     expect(numbers.toSorted()).toEqual(['1', '2', '3', '4'])
     // meshes without a part index: no balloons
-    expect(balloons(tagged.map(({ part: _, ...m }) => m))).toHaveLength(0)
+    expect(balloons(tagged.map((m) => ({ ...m, part: undefined })))).toHaveLength(0)
   })
 
   it('writes the same sheet as a PDF page of the sheet size (A2 landscape)', async () => {

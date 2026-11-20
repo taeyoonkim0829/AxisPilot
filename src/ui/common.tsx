@@ -2,7 +2,7 @@ import { useId, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import type { Check, Status } from '../calc/types'
 import { useT } from '../i18n'
-import { fmt, pct, statusLabel } from './format'
+import { fmt, isSpeedLabel, pct, statusLabel } from './format'
 import type { SortState } from './useSort'
 import { useSlideThumb } from './useSlideThumb'
 
@@ -13,9 +13,6 @@ export function StatusBadge({ status, dot }: { status: Status; dot?: boolean }) 
   if (dot) return <span className={`badge badge-${status}`} role="img" title={word} aria-label={word} />
   return <span className={`badge badge-${status}`}>{word}</span>
 }
-
-/** Speed checks (속도, 회전수, not 가속도) stay green up to 100%. */
-export const isSpeedLabel = (label: string) => label.endsWith('회전수') || (label.endsWith('속도') && !label.endsWith('가속도'))
 
 /** Utilisation cell: percentage plus a thin bar; yellow above `warnAt` (speeds: 1). */
 export function Ratio({ ratio, status, warnAt = 0.8 }: { ratio: number | null; status?: Status; warnAt?: number }) {
