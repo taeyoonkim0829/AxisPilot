@@ -780,9 +780,25 @@ h3 {
   text-align: center;
 }
 
-.app-footer a {
+.app-footer a,
+.footer-link {
   color: inherit;
   text-underline-offset: 3px;
+}
+
+.footer-link {
+  border: 0;
+  padding: 0;
+  background: none;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* the dialog sits in the footer: its own text size and alignment */
+.app-footer .notice {
+  font-size: 14px;
+  text-align: left;
 }
 
 /* ---------- inputs ---------- */

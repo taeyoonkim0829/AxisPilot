@@ -23,6 +23,7 @@ import guidesImage from '../../images/parallel_guides.webp'
 import singleImage from '../../images/parallel_single.webp'
 import twinMotorImage from '../../images/parallel_twinMotor.webp'
 import twinShaftImage from '../../images/parallel_twinShaft.webp'
+import { useAdmin } from './admin'
 import { ConfigCards, CountField, HelpTip, NumberField, RadioGroup } from './common'
 import { fmt, kgf, mountingLabel, parallelModeLabel, pressDirectionLabel } from './format'
 
@@ -342,6 +343,11 @@ export function ParallelSection({
   const guides = parallel.mode === 'guides'
   // the EAGF: one unit on the cylinder, no count, spacing or mass to enter
   const eagf = guides && parallel.guideAxis && cylinder
+  // 2축 동기 only in admin mode (a shared link with one keeps it listed)
+  const admin = useAdmin()
+  const modes = (Object.keys(parallelModeLabel) as ParallelMode[]).filter(
+    (m) => admin || m === 'single' || m === 'guides' || m === parallel.mode,
+  )
   return (
     <section className="panel application">
       <h2>
@@ -349,7 +355,7 @@ export function ParallelSection({
         <HelpTip title={t(title)}>
           <ConfigCards
             title={t(title)}
-            options={Object.keys(parallelModeLabel) as ParallelMode[]}
+            options={modes}
             value={parallel.mode}
             onPick={(m) => setParallel('mode', m)}
             label={(m) => t(parallelModeLabel[m])}
@@ -360,7 +366,7 @@ export function ParallelSection({
       </h2>
       <RadioGroup
         className="segmented-grid"
-        options={Object.keys(parallelModeLabel) as ParallelMode[]}
+        options={modes}
         value={parallel.mode}
         onChange={(m) => setParallel('mode', m)}
         label={(m) => t(parallelModeLabel[m])}
