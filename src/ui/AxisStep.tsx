@@ -324,7 +324,7 @@ export function AxisStep({ results, selectedId, onSelect, settings, onSettings }
                     <Ratio ratio={ratioOf(e, '속도')} warnAt={1} />
                   </td>
                   <td>
-                    <Ratio ratio={ratioOf(e, '가속도')} />
+                    <Ratio ratio={ratioOf(e, '가속도')} warnAt={1} />
                   </td>
                   <td>
                     <Ratio ratio={forceRatio(e)} />
