@@ -1,4 +1,4 @@
-import type { AxisFamily, AxisMounting, DriveKind, MotorMaker, SensorContact, SensorMaker, SensorOutput } from '../data/types'
+import type { AxisFamily, AxisSeries, AxisMounting, DriveKind, MotorMaker, SensorContact, SensorMaker, SensorOutput } from '../data/types'
 
 export type Mounting = 'floor' | 'wall' | 'vertical'
 
@@ -146,7 +146,7 @@ export interface Settings {
   support: 'floor' | 'ends' | 'cantilever'
   /** used when a motor has no allowable inertia ratio in the data */
   defaultInertiaRatio: number
-  families: AxisFamily[]
+  families: AxisSeries[]
   drives: DriveKind[]
   makers: MotorMaker[]
   /** power supplies the motors may run on (`motorSupply`); motors without supply data are always listed */

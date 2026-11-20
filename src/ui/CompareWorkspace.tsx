@@ -21,7 +21,7 @@ import {
 } from '../calc/compare'
 import { axisOrder } from '../calc/axisSelection'
 import { axes, motorFamilies, motors, thirdPartyAxes } from '../data'
-import type { Axis, AxisFamily, Motor, MotorOptions, ThirdPartyAxis } from '../data/types'
+import type { Axis, AxisSeries, Motor, MotorOptions, ThirdPartyAxis } from '../data/types'
 import { useLang, useT } from '../i18n'
 import { RadioGroup, SortTh, ToggleButton, ToggleGroup } from './common'
 import { Footer } from './Footer'
@@ -350,7 +350,7 @@ function AxisCompare() {
   const models = thirdPartyAxes.filter((a) => a.maker === maker && a.series === seriesNow)
   const [modelId, setModelId] = useState('RS-120-X20SS')
   const ref = models.find((a) => a.id === modelId) ?? models[0]
-  const [families, setFamilies] = useState<AxisFamily[]>(COMPARE_AXIS_FAMILIES)
+  const [families, setFamilies] = useState<AxisSeries[]>(COMPARE_AXIS_FAMILIES)
   const [atLeast, setAtLeast] = useState(true)
   const [pick, setPick] = useState<string | null>(null)
   const list = axisCandidates(ref, axes, { drive: ref.drive, families, atLeast })

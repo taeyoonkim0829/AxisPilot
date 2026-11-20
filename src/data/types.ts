@@ -2,6 +2,10 @@
 // (mm, kg, N, Nm, kg·cm², m/s, m/s², rpm).
 
 export type AxisFamily = 'ELGT' | 'ELGD' | 'EGC' | 'ESBF'
+/** The series offered as one choice: the families, with EGC-HD (`variant` HD of EGC) on its own */
+export type AxisSeries = AxisFamily | 'EGC-HD'
+/** the series an axis is listed under */
+export const axisSeries = (a: { family: AxisFamily; variant?: string | null }): AxisSeries => (a.family === 'EGC' && a.variant === 'HD' ? 'EGC-HD' : a.family)
 export type DriveKind = 'belt' | 'spindle'
 
 export interface Axis {

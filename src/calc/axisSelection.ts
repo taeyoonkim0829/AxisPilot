@@ -1,6 +1,6 @@
 // Axis sizing: motion profile, required force/torque at the axis drive shaft,
 // guide load comparison value, deflection and life. Motor-independent.
-import type { AdditionalSlide, Axis, AxisMounting, BeltMaterial, ConnectingShaft, GuideUnit, SensorContact, SensorPart } from '../data/types'
+import { axisSeries, type AdditionalSlide, type Axis, type AxisMounting, type BeltMaterial, type ConnectingShaft, type GuideUnit, type SensorContact, type SensorPart } from '../data/types'
 import { curveAt } from './curve'
 import { dwellPhase, moveProfile, samplePhases, type MoveProfile, type Phase } from './motionProfile'
 import { cylinderGuideFor, eagfLoads, guideAxisFor, guideChecks, guideFv, type GuideFit } from './guideSelection'
@@ -183,7 +183,7 @@ export const maxStrokeOf = (axis: Axis, options: AxisOptions | null) =>
 
 /** Axes of the chosen families and drive that offer an additional slide: the choice is shown (and applies) when any do */
 export const slideAxes = (all: Axis[], settings: Settings) =>
-  all.filter((a) => a.additionalSlide && settings.families.includes(a.family) && settings.drives.includes(a.drive))
+  all.filter((a) => a.additionalSlide && settings.families.includes(axisSeries(a)) && settings.drives.includes(a.drive))
 
 /**
  * Whether an axis can be ordered with the chosen additional slide: with one chosen, axes without it (ELGT-TB,
@@ -1154,7 +1154,7 @@ export function selectAxes(
   sensors: SensorPart[] = [],
 ): AxisEvaluation[] {
   const choices = slideAxes(all, settings)
-  const listed = all.filter((a) => settings.families.includes(a.family) && settings.drives.includes(a.drive))
+  const listed = all.filter((a) => settings.families.includes(axisSeries(a)) && settings.drives.includes(a.drive))
   return listed
     .filter((a) => offersSlides(a, settings, choices) && offersMounting(a, settings, listed))
     .map((a) => evaluateAxis(a, req, settings, shafts, guides, sensors))

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { minSlidePitch, slideAxes, type AxisEvaluation } from '../calc/axisSelection'
 import { axes } from '../data'
 import type { AdditionalSlideSide, Settings } from '../calc/types'
-import type { AxisFamily, AxisMounting, DriveKind, SensorContact, SensorMaker, SensorOutput } from '../data/types'
+import type { AxisSeries, AxisMounting, DriveKind, SensorContact, SensorMaker, SensorOutput } from '../data/types'
 import { CheckTable, CollapseTitle, HelpTip, InfoTable, NumberField, RadioGroup, Ratio, SortTh, StatusBadge, ToggleButton } from './common'
 import mountingImage from '../../images/help_axis_mounting.svg'
 import { statusRank, useSort } from './useSort'
@@ -17,9 +17,9 @@ interface Props {
   onSettings: (settings: Settings) => void
 }
 
-const families: AxisFamily[] = ['ELGT', 'ELGD', 'EGC', 'ESBF']
+const families: AxisSeries[] = ['ELGT', 'ELGD', 'EGC', 'EGC-HD', 'ESBF']
 /** ESBF (electric cylinder) has no belt version */
-const beltFamilies: AxisFamily[] = ['ELGT', 'ELGD', 'EGC']
+const beltFamilies: AxisSeries[] = ['ELGT', 'ELGD', 'EGC', 'EGC-HD']
 const drives: DriveKind[] = ['spindle', 'belt']
 
 const ratioOf = (e: AxisEvaluation, label: string) => e.checks.find((c) => c.label === label)?.ratio ?? null
@@ -55,11 +55,11 @@ function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'sett
   // M7 exists on ball screw axes only
   const mountings: ('standard' | AxisMounting)[] = settings.drives.includes('spindle') ? ['standard', 'M', 'M7'] : ['standard', 'M']
   // position sensing (ELGD, ELGT-BS, EGC, ESBF): the switches' output and contacts
-  const sensing = settings.sensors && (elgd || (['ELGT', 'EGC', 'ESBF'] as const).some((f) => settings.families.includes(f)))
+  const sensing = settings.sensors && (elgd || (['ELGT', 'EGC', 'EGC-HD', 'ESBF'] as const).some((f) => settings.families.includes(f)))
   const sensorMakers: SensorMaker[] = [
     'Festo',
     ...(elgd || settings.families.includes('ELGT') ? (['Omron'] as const) : []),
-    ...(settings.families.includes('EGC') ? (['Festo M8'] as const) : []),
+    ...(settings.families.includes('EGC-HD') ? (['Festo M8'] as const) : []),
   ]
   if (choices.length === 0 && shown.length === 0 && !elgd && !sensing) return null
   const mounting = settings.axisMounting && mountings.includes(settings.axisMounting) ? settings.axisMounting : 'standard'
@@ -254,14 +254,14 @@ export function AxisStep({ results, selectedId, onSelect, settings, onSettings }
           checked={settings.standardStroke}
           onChange={(v) => onSettings({ ...settings, standardStroke: v })}
         />
-        {settings.drives.includes('spindle') && settings.families.some((f) => f === 'ELGD' || f === 'EGC') && (
+        {settings.drives.includes('spindle') && settings.families.some((f) => f === 'ELGD' || f === 'EGC' || f === 'EGC-HD') && (
           <ToggleButton
             label={t('스핀들 서포트')}
             checked={settings.spindleSupport}
             onChange={(v) => onSettings({ ...settings, spindleSupport: v })}
           />
         )}
-        {(['ELGD', 'ELGT', 'EGC', 'ESBF'] as const).some((f) => settings.families.includes(f)) && (
+        {(['ELGD', 'ELGT', 'EGC', 'EGC-HD', 'ESBF'] as const).some((f) => settings.families.includes(f)) && (
           <ToggleButton label={t('위치 센서')} checked={settings.sensors} onChange={(v) => onSettings({ ...settings, sensors: v })} />
         )}
       </div>

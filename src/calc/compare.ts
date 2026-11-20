@@ -1,4 +1,4 @@
-import type { Axis, AxisFamily, Motor, MotorOptions, MotorVariant, ThirdPartyAxis } from '../data/types'
+import { axisSeries, type Axis, type AxisSeries, type Motor, type MotorOptions, type MotorVariant, type ThirdPartyAxis } from '../data/types'
 import { G, guideComparisonValue, guideLoads } from './axisSelection'
 import type { Mounting, Requirements } from './types'
 
@@ -38,11 +38,11 @@ const off = (a: number | null | undefined, b: number | null | undefined) => (a &
 // ---------- axes ----------
 
 /** The Festo axis families compared with linear axes (the electric cylinder ESBF is not one) */
-export const COMPARE_AXIS_FAMILIES: AxisFamily[] = ['ELGT', 'ELGD', 'EGC']
+export const COMPARE_AXIS_FAMILIES: AxisSeries[] = ['ELGT', 'ELGD', 'EGC', 'EGC-HD']
 
 export interface AxisCandidateFilter {
   drive: Axis['drive']
-  families: AxisFamily[]
+  families: AxisSeries[]
   /** only axes reaching the reference's longest stroke and highest speed */
   atLeast: boolean
 }
@@ -94,7 +94,7 @@ export function axisCandidates(ref: ThirdPartyAxis, axes: Axis[], filter: AxisCa
     .filter(
       (a) =>
         a.drive === filter.drive &&
-        filter.families.includes(a.family) &&
+        filter.families.includes(axisSeries(a)) &&
         (!filter.atLeast || (a.maxStroke >= ref.strokeMax && a.maxSpeed >= ref.maxSpeed)),
     )
     .map((a) => ({ a, s: score(a) }))

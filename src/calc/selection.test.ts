@@ -8,7 +8,7 @@ import { comboInputs, shaftTooShort } from '../ui/comboInputs'
 import { defaultParallel, defaultPress, defaultSettings as appDefaults, verticalForward, type Requirements } from './types'
 
 // every axis and motor filter on (the app's defaults narrow the lists)
-const defaultSettings = { ...appDefaults, families: ['ELGT', 'ELGD', 'EGC', 'ESBF'], drives: ['spindle', 'belt'], supplies: ['ac230', 'ac400', 'dc48'], excludedMotorFamilies: [] } satisfies typeof appDefaults
+const defaultSettings = { ...appDefaults, families: ['ELGT', 'ELGD', 'EGC', 'EGC-HD', 'ESBF'], drives: ['spindle', 'belt'], supplies: ['ac230', 'ac400', 'dc48'], excludedMotorFamilies: [] } satisfies typeof appDefaults
 
 const baseReq: Requirements = {
   stroke: 500,

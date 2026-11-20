@@ -6,7 +6,7 @@ import { evaluateDrive, selectMotors } from './motorSelection'
 import { defaultSettings as appDefaults, type Requirements } from './types'
 
 // every axis and motor filter on (the app's defaults narrow the lists)
-const defaultSettings = { ...appDefaults, families: ['ELGT', 'ELGD', 'EGC', 'ESBF'], drives: ['spindle', 'belt'], supplies: ['ac230', 'ac400', 'dc48'], excludedMotorFamilies: [] } satisfies typeof appDefaults
+const defaultSettings = { ...appDefaults, families: ['ELGT', 'ELGD', 'EGC', 'EGC-HD', 'ESBF'], drives: ['spindle', 'belt'], supplies: ['ac230', 'ac400', 'dc48'], excludedMotorFamilies: [] } satisfies typeof appDefaults
 
 const axis = (id: string) => axes.find((a) => a.id === id)!
 const motor = (id: string) => motors.find((m) => m.id === id)!

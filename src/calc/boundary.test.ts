@@ -8,7 +8,7 @@ import { moveProfile, samplePhases, tracePhases } from './motionProfile'
 import { evaluateDrive, gearboxOptionsFor } from './motorSelection'
 import { defaultParallel, defaultPress, defaultSettings, type Check, type Requirements, type Settings } from './types'
 
-const settings: Settings = { ...defaultSettings, families: ['ELGT', 'ELGD', 'EGC', 'ESBF'], drives: ['spindle', 'belt'], supplies: ['ac230', 'ac400', 'dc48'], excludedMotorFamilies: [] }
+const settings: Settings = { ...defaultSettings, families: ['ELGT', 'ELGD', 'EGC', 'EGC-HD', 'ESBF'], drives: ['spindle', 'belt'], supplies: ['ac230', 'ac400', 'dc48'], excludedMotorFamilies: [] }
 
 const base: Requirements = { stroke: 500, velocity: 0.5, acceleration: 5, jerk: 0, payload: 10, cog: { x: 0, y: 0, z: 0 }, mounting: 'floor' }
 

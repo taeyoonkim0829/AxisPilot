@@ -4,7 +4,7 @@ import { evaluateAxis, G } from './axisSelection'
 import { cylinderGuideFor, eagfLoads, guideAxisFor, guideFv } from './guideSelection'
 import { defaultParallel, defaultSettings as appDefaults, type Requirements } from './types'
 
-const settings = { ...appDefaults, families: ['ELGT', 'ELGD', 'EGC', 'ESBF'], drives: ['spindle', 'belt'] } satisfies typeof appDefaults
+const settings = { ...appDefaults, families: ['ELGT', 'ELGD', 'EGC', 'EGC-HD', 'ESBF'], drives: ['spindle', 'belt'] } satisfies typeof appDefaults
 const req: Requirements = { stroke: 200, velocity: 0.3, acceleration: 2, jerk: 0, payload: 5, cog: { x: 15, y: 0, z: 0 }, mounting: 'floor' }
 const esbf = axes.find((a) => a.id === 'ESBF-BS-32-…-5P')!
 

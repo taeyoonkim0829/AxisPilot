@@ -17,7 +17,7 @@ const norm = (s: string) => s.replace(/[^A-Z0-9]/gi, '').toUpperCase()
 function partsOf(c: (typeof sweep.cases)[number]) {
   const settings: Settings = {
     ...defaultSettings,
-    families: ['ELGT', 'ELGD', 'EGC', 'ESBF'],
+    families: ['ELGT', 'ELGD', 'EGC', 'EGC-HD', 'ESBF'],
     drives: ['spindle', 'belt'],
     dwellTime: 0.4,
     spindleSupport: /-SU-/.test(c.axis),

@@ -24,7 +24,7 @@ const twinY = (spacing: number): GantryInputs => ({
   parallel: { ...defaultGantry.parallel, y: { ...defaultGantry.parallel.y, mode: 'twinMotor', spacing } },
 })
 // every axis and motor filter on (the app's defaults narrow the lists)
-const open = { ...defaultSettings, families: ['ELGT', 'ELGD', 'EGC', 'ESBF'], drives: ['spindle', 'belt'], supplies: ['ac230', 'ac400', 'dc48'], excludedMotorFamilies: [] } satisfies typeof defaultSettings
+const open = { ...defaultSettings, families: ['ELGT', 'ELGD', 'EGC', 'EGC-HD', 'ESBF'], drives: ['spindle', 'belt'], supplies: ['ac230', 'ac400', 'dc48'], excludedMotorFamilies: [] } satisfies typeof defaultSettings
 const settings = { x: open, y: open, z: { ...open, requireBrake: true } }
 
 describe('custom brackets', () => {

@@ -37,9 +37,9 @@ const families = (f: AxisFamily[]): GantrySettings => ({
 })
 /** every family and drive open, so a picked axis is listed */
 const open: GantrySettings = {
-  x: { ...initialGantrySettings.x, families: ['ELGT', 'ELGD', 'EGC'], drives: ['belt', 'spindle'] },
-  y: { ...initialGantrySettings.y, families: ['ELGT', 'ELGD', 'EGC'], drives: ['belt', 'spindle'] },
-  z: { ...initialGantrySettings.z, families: ['ELGT', 'ELGD', 'EGC'], drives: ['belt', 'spindle'] },
+  x: { ...initialGantrySettings.x, families: ['ELGT', 'ELGD', 'EGC', 'EGC-HD'], drives: ['belt', 'spindle'] },
+  y: { ...initialGantrySettings.y, families: ['ELGT', 'ELGD', 'EGC', 'EGC-HD'], drives: ['belt', 'spindle'] },
+  z: { ...initialGantrySettings.z, families: ['ELGT', 'ELGD', 'EGC', 'EGC-HD'], drives: ['belt', 'spindle'] },
 }
 const single = { ...defaultGantry.parallel, x: { ...defaultGantry.parallel.x, mode: 'single' as const } }
 

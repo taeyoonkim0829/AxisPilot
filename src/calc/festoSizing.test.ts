@@ -202,7 +202,7 @@ const cases: Case[] = [
   },
 ]
 
-const allOn: Settings = { ...defaultSettings, families: ['ELGT', 'ELGD', 'EGC', 'ESBF'], drives: ['spindle', 'belt'] }
+const allOn: Settings = { ...defaultSettings, families: ['ELGT', 'ELGD', 'EGC', 'EGC-HD', 'ESBF'], drives: ['spindle', 'belt'] }
 
 /** Festo's own records as phases: each move with its speed and acceleration, the cycle's pause at the end */
 function recordSamples(ev: AxisEvaluation, c: Case): { samples: AxisSample[]; cycle: number } {

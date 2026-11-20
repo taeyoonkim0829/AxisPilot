@@ -30,7 +30,7 @@ async function boxes(step: string) {
   })
 }
 
-const settings = { ...defaultSettings, families: ['ELGT', 'ELGD', 'EGC', 'ESBF'] as const, drives: ['spindle', 'belt'] as const }
+const settings = { ...defaultSettings, families: ['ELGT', 'ELGD', 'EGC', 'EGC-HD', 'ESBF'] as const, drives: ['spindle', 'belt'] as const }
 const req: Requirements = { stroke: 300, velocity: 0.2, acceleration: 2, jerk: 0, payload: 5, cog: { x: 20, y: 0, z: 0 }, mounting: 'floor' }
 
 /** the step-5 inputs of an axis with a motor and kit, as the app builds them */

@@ -24,7 +24,7 @@ const twinX = (spacing: number): GantryInputs => ({
   config: 'xy',
   parallel: { ...defaultGantry.parallel, x: { ...defaultGantry.parallel.x, mode: 'twinMotor', spacing } },
 })
-const open = { ...defaultSettings, families: ['ELGT', 'ELGD', 'EGC', 'ESBF'], drives: ['spindle', 'belt'], supplies: ['ac230', 'ac400', 'dc48'], excludedMotorFamilies: [] } satisfies typeof defaultSettings
+const open = { ...defaultSettings, families: ['ELGT', 'ELGD', 'EGC', 'EGC-HD', 'ESBF'], drives: ['spindle', 'belt'], supplies: ['ac230', 'ac400', 'dc48'], excludedMotorFamilies: [] } satisfies typeof defaultSettings
 const settings = { x: open, y: open, z: { ...open, requireBrake: true } }
 const length = (a: Axis, stroke: number) => stroke + a.baseLength!
 
