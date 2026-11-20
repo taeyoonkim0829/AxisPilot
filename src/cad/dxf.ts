@@ -11,6 +11,8 @@ export interface DrawMesh {
   index: ArrayLike<number>
   /** B-rep faces as triangle ranges (inclusive) */
   faces: { first: number; last: number }[]
+  /** index of the assembly part (`DrawingInput.parts`) the mesh belongs to, for its item number */
+  part?: number
 }
 
 export interface ViewDef {
@@ -440,6 +442,10 @@ const NOTE_CHARS = 66
 /** room the views keep for their dimensions (paper mm) and the space between views */
 const DIM_OFFSET = 10
 const DIM_ROOM = 18
+/** room above the top view for the item number balloons (paper mm), their radius and least spacing */
+const BALLOON_ROOM = 16
+const BALLOON_R = 4
+const BALLOON_GAP = 10
 const VIEW_GAP = 28
 const PAD = 8
 
@@ -466,6 +472,40 @@ function wrap(line: string, width: number): string[] {
   return out
 }
 
+/**
+ * One point per parts-list row for its balloon: the middle of the row's first part in plan (the top view). None when
+ * the meshes carry no part index (all on one part).
+ */
+export function balloonTargets(meshes: DrawMesh[], rowOfPart: number[]): { row: number; point: Vec3 }[] {
+  if (rowOfPart.length < 2 || !meshes.some((m) => (m.part ?? 0) > 0)) return []
+  const out: { row: number; point: Vec3 }[] = []
+  const done = new Set<number>()
+  rowOfPart.forEach((row, part) => {
+    if (row < 0 || done.has(row)) return
+    const own = meshes.filter((m) => m.part === part)
+    if (!own.length) return
+    let [x0, y0, z1] = [Infinity, Infinity, -Infinity]
+    let [x1, y1, z0] = [-Infinity, -Infinity, Infinity]
+    for (const m of own)
+      for (let i = 0; i < m.positions.length; i += 3) {
+        const [x, y, z] = [m.positions[i], m.positions[i + 1], m.positions[i + 2]]
+        x0 = Math.min(x0, x)
+        x1 = Math.max(x1, x)
+        y0 = Math.min(y0, y)
+        y1 = Math.max(y1, y)
+        z0 = Math.min(z0, z)
+        z1 = Math.max(z1, z)
+      }
+    // the middle of the part in plan, at its top: inside its outline on the top view
+    const best: Vec3 | null = Number.isFinite(x0) ? [(x0 + x1) / 2, (y0 + y1) / 2, z1] : null
+    if (best) {
+      done.add(row)
+      out.push({ row, point: best })
+    }
+  })
+  return out
+}
+
 /** Lays out the three views (third-angle) on a KS sheet with border, title block, parts list and notes. */
 export function layoutSheet({ meshes, cog, title, parts = [], date, labels: L = DEFAULT_LABELS, stroke, specs = [], axisMeshes }: DrawingInput): Sheet {
   const model = buildModel(meshes)
@@ -477,13 +517,6 @@ export function layoutSheet({ meshes, cog, title, parts = [], date, labels: L = 
     return { v, segs, box: bbox(segs) }
   })
   const [front, top, side, bottom] = views.map((v) => v.box)
-  const wOf = (b: ReturnType<typeof bbox>) => b.x1 - b.x0
-  const hOf = (b: ReturnType<typeof bbox>) => b.y1 - b.y0
-  // views and their dimensions at scale 1/n (paper mm)
-  const content = (n: number) => ({
-    w: DIM_ROOM + (wOf(front) + wOf(side)) / n + VIEW_GAP,
-    h: below + (hOf(bottom) + hOf(front) + hOf(top)) / n + 2 * VIEW_GAP,
-  })
 
   // parts list rows: equal names counted together, in assembly order
   const rows: { role: string; name: string; qty: number }[] = []
@@ -492,6 +525,15 @@ export function layoutSheet({ meshes, cog, title, parts = [], date, labels: L = 
     if (row) row.qty++
     else rows.push({ role: p.role, name: p.name, qty: 1 })
   }
+  const balloons = balloonTargets(meshes, parts.map((p) => rows.findIndex((r) => r.name === p.name && r.role === p.role)))
+  const wOf = (b: ReturnType<typeof bbox>) => b.x1 - b.x0
+  const hOf = (b: ReturnType<typeof bbox>) => b.y1 - b.y0
+  // views and their dimensions at scale 1/n (paper mm)
+  const content = (n: number) => ({
+    w: DIM_ROOM + (wOf(front) + wOf(side)) / n + VIEW_GAP,
+    h: below + (hOf(bottom) + hOf(front) + hOf(top)) / n + 2 * VIEW_GAP + (balloons.length ? BALLOON_ROOM : 0),
+  })
+
   const [name = 'Assembly', ...given] = title
   const notes = [
     ...(cog ? [L.cogNote] : []),
@@ -571,7 +613,24 @@ export function layoutSheet({ meshes, cog, title, parts = [], date, labels: L = 
         else dxf.dimension(b.x1, Math.min(y1, y2), b.x1, Math.max(y1, y2), P(DIM_OFFSET), 'v', label)
       }
     }
-    if (i === 1) dxf.dimension(b.x0, b.y0, b.x0, b.y1, -P(DIM_OFFSET), 'v')
+    if (i === 1) {
+      dxf.dimension(b.x0, b.y0, b.x0, b.y1, -P(DIM_OFFSET), 'v')
+      // item numbers of the parts list: balloons in a row above the top view, leaders to a point of each part
+      const targets = balloons.map((t) => ({ row: t.row, x: dot(t.point, v.right) + dx, y: dot(t.point, v.up) + dy })).sort((a, c) => a.x - c.x)
+      const cy = b.y1 + P(BALLOON_ROOM - BALLOON_R - 1)
+      const xs: number[] = []
+      for (const t of targets) xs.push(Math.max(t.x, (xs.at(-1) ?? -Infinity) + P(BALLOON_GAP)))
+      // a row running past the view's right end moves back left
+      const over = Math.max(0, (xs.at(-1) ?? 0) - Math.max(b.x1, (targets.at(-1)?.x ?? 0)))
+      targets.forEach((t, k) => {
+        const cx = xs[k] - over
+        const len = Math.hypot(t.x - cx, t.y - cy) || 1
+        dxf.line('BALLOON', cx + ((t.x - cx) / len) * P(BALLOON_R), cy + ((t.y - cy) / len) * P(BALLOON_R), t.x, t.y)
+        dxf.circle('BALLOON', t.x, t.y, P(0.6))
+        dxf.circle('BALLOON', cx, cy, P(BALLOON_R))
+        dxf.text('BALLOON', cx, cy - P(TEXT_DIM / 2), P(TEXT_DIM), String(t.row + 1), 'centre')
+      })
+    }
     if (i === 3) {
       dxf.dimension(b.x0, b.y0, b.x1, b.y0, -P(mounting ? 2 * DIM_OFFSET : DIM_OFFSET), 'h')
       if (mounting) holeDimensions(dxf, mounting, b, dx, dy, n)
@@ -763,6 +822,7 @@ const LAYERS: [string, number, string][] = [
   ['TEXT', 7, 'CONTINUOUS'],
   ['BORDER', 7, 'CONTINUOUS'],
   ['TITLE', 7, 'CONTINUOUS'],
+  ['BALLOON', 7, 'CONTINUOUS'],
 ]
 /** two-dot chain line pattern (paper mm; $LTSCALE takes the drawing scale): dash, gap, dot, gap, dot, gap */
 export const PHANTOM = [12, -1.5, 0, -1.5, 0, -1.5]

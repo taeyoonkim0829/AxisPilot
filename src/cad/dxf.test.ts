@@ -109,6 +109,30 @@ describe('KS drawing sheet', () => {
     expect(t).toContain('16x%%c5.5')
   })
 
+  it('numbers the parts with balloons above the top view, one per parts-list row', () => {
+    const parts = [
+      { role: 'axis', name: 'ELGT-BS-90-500-20P' },
+      { role: 'kit', name: 'EAMM-A-T46-60P' },
+      { role: 'motor', name: 'EMMT-AS-60-S-HS-B' },
+      { role: 'sensor', name: 'SIES-8M' },
+      { role: 'sensor', name: 'SIES-8M' },
+    ]
+    const tagged = [
+      { ...box(0, -50, -80, 1000, 50, 0), part: 0 },
+      { ...box(-60, -30, -70, 0, 30, -10), part: 1 },
+      { ...box(-200, -30, -70, -60, 30, -10), part: 2 },
+      { ...box(100, 50, -20, 130, 58, -10), part: 3 },
+      { ...box(800, 50, -20, 830, 58, -10), part: 4 },
+    ]
+    const balloons = (meshes: DrawMesh[]) =>
+      entities(drawingDxf({ meshes, cog: null, title: ['Balloons'], parts })).filter((e) => e.codes.get('8')?.[0] === 'BALLOON')
+    const numbers = balloons(tagged).filter((e) => e.type === 'TEXT').map((e) => e.codes.get('1')![0])
+    // the two equal sensors are one row
+    expect(numbers.toSorted()).toEqual(['1', '2', '3', '4'])
+    // meshes without a part index: no balloons
+    expect(balloons(tagged.map(({ part: _, ...m }) => m))).toHaveLength(0)
+  })
+
   it('writes the same sheet as a PDF page of the sheet size (A2 landscape)', async () => {
     const blob = drawingPdf({ meshes, cog: [500, 0, 50], title: ['Test'], date: '2026-11-04' })
     const pdf = new TextDecoder('latin1').decode(await blob.arrayBuffer())
