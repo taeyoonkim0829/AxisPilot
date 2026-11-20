@@ -115,7 +115,8 @@ export interface Sensing {
 /**
  * The switch lug and the proximity switches listed for this axis (family, variant, size, drive) with the chosen
  * output and contacts: a limit switch at each end, a home switch when `homeContact` is set; null when there is none.
- * Axes whose switches sense the piston's magnet (ESBF) have no lug in the data.
+ * Axes whose switches sense the piston's magnet (ESBF) have no lug in the data. A maker without switches for the axis
+ * (Omron, Festo M8 kept from another series or an old link) falls back to Festo's, so the sensors are still drawn.
  */
 export function sensingFor(
   axis: Axis,
@@ -133,7 +134,7 @@ export function sensingFor(
     sensors.find((s) => s.role === 'sensor' && fits(s) && s.output === settings.sensorOutput && (s.contact == null || s.contact === contact))
   const limit = pick(settings.limitContact)
   const home = settings.homeContact ? pick(settings.homeContact) : null
-  if (!limit || (settings.homeContact && !home)) return null
+  if (!limit || (settings.homeContact && !home)) return maker === 'Festo' ? null : sensingFor(axis, sensors, { ...settings, sensorMaker: 'Festo' })
   return {
     lug,
     bracket,

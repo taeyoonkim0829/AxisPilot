@@ -70,12 +70,13 @@ export interface SensorMeta {
   flag?: number
   /** bracket holding round switches (HWS-EGC, one per axis end): its seat the face on the profile at the slot nuts'
    *  middle (`axis` away from the profile, `up` along its length), `hole` the middle hole's axis on top of its shelf
-   *  (`axis` up through it), `holes` mm along `up` from the middle hole to each */
+   *  (`axis` up through it), `holes` mm along `up` from the middle hole to each, `plate` the shelf's thickness there */
   hole?: Frame
   holes?: number[]
-  /** round switch: its clamping nuts (part name), stacked `height` mm deep at its sensing face in the file; moved down
-   *  to sit on the bracket's shelf */
-  nuts?: { part: string; height: number }
+  plate?: number
+  /** round switch: its two clamping nuts (part name), each `thickness` mm, stacked behind its sensing face in the file
+   *  (placements at their faces towards the cable); moved to clamp the bracket's shelf from above and below */
+  nuts?: { part: string; thickness: number }
   /** switch: mm from its sensing end to its switching point (the mark on its top face) / to its cable end;
    *  bracket: its length along the travel */
   switchPoint?: number

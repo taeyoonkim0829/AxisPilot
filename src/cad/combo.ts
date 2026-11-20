@@ -270,7 +270,7 @@ function moveSlide(file: StepFile, shift: Vec3): boolean {
  * Places every instance of the part named `name` by `t` (file coordinates) on top of where it sits, editing the
  * entities (new points and directions: the old ones may be shared). False when there is no such part.
  */
-export function placePart(file: StepFile, name: string | RegExp, t: Transform): boolean {
+export function placePart(file: StepFile, name: string | RegExp, t: Transform | ((location: Vec3) => Transform)): boolean {
   const pd = definitionByName(file, name)
   const rep = pd != null ? shapeOf(file, pd) : null
   const placements = rep != null ? placementIdsOf(file, rep) : []
@@ -282,13 +282,14 @@ export function placePart(file: StepFile, name: string | RegExp, t: Transform): 
     const [location, z, x] = refs(body)
     const p = pointOf(e.get(location) ?? '')
     if (!p) return false
+    const by = typeof t === 'function' ? t(p) : t
     const renamed = new Map<number, number>([[location, next]])
-    e.set(next++, pointBody(apply(t, p)))
+    e.set(next++, pointBody(apply(by, p)))
     for (const old of [z, x]) {
       const d = old == null ? null : direction(old)
       if (old == null || !d) continue
       renamed.set(old, next)
-      e.set(next++, directionBody(rotate(t, d)))
+      e.set(next++, directionBody(rotate(by, d)))
     }
     e.set(id, mapRefs(body, (r) => renamed.get(r) ?? r))
   }
@@ -1103,11 +1104,18 @@ export async function comboParts(
           const face = (h: number) => {
             const p = apply(onBracket, add(hole.origin, scale(bracket!.seat.up, h)))
             const out = flag - SENSING_GAP - dot(p, n)
-            // the switch's clamping nuts (stacked at its face in the file) moved down onto the shelf
+            // the switch's two clamping nuts (stacked behind its face in the file) clamping the shelf: the one next
+            // to the face onto its top (`out` below the face), the other against its underside, `plate` lower
             sensors.switches.forEach((d, i) => {
               if (files.has(d.path) || !d.meta?.nuts) return
               const f = parseStep(switchTexts[i])
-              placePart(f, d.meta.nuts.part, { r: identity.r, t: scale(d.meta.seat.axis, d.meta.nuts.height - out) })
+              const { seat } = d.meta
+              const { thickness } = d.meta.nuts
+              placePart(f, d.meta.nuts.part, (p) => {
+                const z = dot(sub(p, seat.origin), seat.axis)
+                const to = z >= -thickness ? -out : -out - (bracket!.plate ?? 0) - thickness
+                return { r: identity.r, t: scale(seat.axis, to - z) }
+              })
               files.set(d.path, f)
             })
             return { origin: add(p, scale(n, out)), axis: n, up: base.slide.travel }

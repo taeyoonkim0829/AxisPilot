@@ -889,6 +889,10 @@ describe('combination', () => {
     const m8 = sensingFor(axis, sensors, { sensorOutput: 'PNP', limitContact: 'NC', homeContact: 'NO', sensorMaker: 'Festo M8' })!
     expect([m8.lug?.partNumber, m8.bracket?.partNumber, ...m8.switches.map((s) => s.part.partNumber)]).toEqual(['570030', '558057', '150390', '150390', '150386'])
     expect(bracketCount(m8)).toBe(2)
+    // a plain EGC has no round switches in the data (its SF-EGC-2 / HWS-EGC have no drawings yet): Festo M8 kept from
+    // another series falls back to the SIES-8M in the slot, so its sensors are still drawn
+    const egc = sensingFor(axes.find((a) => a.id === 'EGC-185-...-TB-KF-GK')!, sensors, { sensorOutput: 'PNP', limitContact: 'NC', homeContact: 'NO', sensorMaker: 'Festo M8' })!
+    expect([egc.lug?.model, egc.bracket, egc.switches[0].part.model]).toEqual(['SF-EGC-1-185', null, 'SIES-8M-PO-24V-K-7.5-OE'])
     const m8Sel = { ...sel, sensing: m8 }
     const m8Found = comboDrawings(m8Sel, own)
     expect(m8Found.sensors?.bracket?.partNumber).toBe('558057')
@@ -904,6 +908,16 @@ describe('combination', () => {
     for (const b of m8Parts.filter((p) => /HWS-EGC/.test(p.name))) {
       expect(b.lo[0]).toBeGreaterThan(m8Profile.lo[0])
       expect(b.hi[0]).toBeLessThan(m8Profile.hi[0])
+    }
+    // each switch's two M8x1 nuts (4 mm) clamp the bracket's 3 mm shelf, one on its top face, one against its underside
+    const shelf = m8Parts.find((p) => /HWS-EGC-M5\(p\)/.test(p.name))!.hi[2]
+    const nuts = m8Parts.filter((p) => /DIN-439A/.test(p.name))
+    expect(nuts).toHaveLength(6)
+    for (const b of bodies) {
+      const own = nuts.filter((n) => Math.abs((n.lo[0] + n.hi[0]) / 2 - (b.lo[0] + b.hi[0]) / 2) < 1).sort((x, y) => x.lo[2] - y.lo[2])
+      expect(own).toHaveLength(2)
+      expect(own[1].lo[2]).toBeCloseTo(shelf, 1)
+      expect(own[0].hi[2]).toBeCloseTo(shelf - 3, 1)
     }
   }, 60000)
 
