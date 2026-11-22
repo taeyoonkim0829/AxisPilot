@@ -36,6 +36,13 @@ describe('shared link', () => {
     expect(decoded).toEqual({ ...single, settings: { ...defaultSettings, support: 'ends' }, assembly: defaultComboOptions })
   })
 
+  it('reads the EAGF rods position of an older link as EAGF 취부 방향', async () => {
+    const read = async (guideRods: string) =>
+      decodeShare(await encodeShare({ ...single, assembly: { ...defaultComboOptions, guideRods } } as unknown as Shared))
+    expect(await read('upDown')).toEqual({ ...single, assembly: { ...defaultComboOptions, guideSide: 'right' } })
+    expect(await read('leftRight')).toEqual({ ...single, assembly: defaultComboOptions })
+  })
+
   it('reads 외팔보 from a link made before 바닥 지지', async () => {
     const decoded = await decodeShare(await encodeShare({ ...single, settings: { cantilever: true } } as unknown as Shared))
     expect(decoded?.mode === 'single' && decoded.settings.support).toBe('cantilever')

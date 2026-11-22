@@ -6,6 +6,7 @@ import { evaluateDrive } from '../calc/motorSelection'
 import { comboInputs } from '../ui/comboInputs'
 import { assemblyWarnings, buildCombo, defaultComboOptions } from './combo'
 import type { Drawing } from './drawings'
+import { rotate } from './geometry'
 
 const texts = import.meta.glob<string>(['../../data/*/Festo/Drawings/**/*.stp'], { query: '?raw', import: 'default' })
 const load = (d: Drawing) => texts[`../../${d.path}`]()
@@ -47,8 +48,15 @@ describe('guides in the combination drawing', () => {
     const { selection, found, twin, req: r } = inputs('ESBF-BS-32-…-5P', 'EAMM-A-D32-42A', 'EMMB-ST-42-S', { ...req, parallel: { ...defaultParallel, mode: 'guides' as const, guideAxis: true } }, settings)
     expect(selection!.guide?.model).toBe('EAGF-V2-KF-32-300')
     expect(found!.guide?.model).toBe('EAGF-V2-KF-32-400')
-    const combo = await buildCombo(selection!, found!, r, load, { ...defaultComboOptions, guideRods: 'upDown' }, twin)
+    const combo = await buildCombo(selection!, found!, r, load, { ...defaultComboOptions, guideSide: 'left' }, twin)
     expect(combo.parts.map((p) => p.role)).toEqual(['axis', 'kit', 'motor', 'guide'])
+    // the mounting face (the four holes, file +y) where 취부 방향 puts it; floor, seen from the motor end (−X): right = −Y
+    const top = found!.guide!.meta!.top!
+    expect(top).toEqual([0, 1, 0])
+    const faceOf = (c: typeof combo) => rotate(c.parts.find((p) => p.role === 'guide')!.transform, top).map((v) => Math.round(v) + 0)
+    expect(faceOf(combo)).toEqual([0, 1, 0])
+    for (const [guideSide, v] of [['up', [0, 0, 1]], ['down', [0, 0, -1]], ['right', [0, -1, 0]]] as const)
+      expect(faceOf(await buildCombo(selection!, found!, r, load, { ...defaultComboOptions, guideSide }, twin))).toEqual(v)
     // floor: travel +X, the rod end at the origin; the yoke plate's front 69.5 mm ahead of the flange, the flange
     // 47.5 mm behind the rod end (ESBF-32), the payload COG 20 mm beyond the yoke
     expect(combo.cog[0]).toBeCloseTo(69.5 - 47.5 + 20, 1)
@@ -57,9 +65,9 @@ describe('guides in the combination drawing', () => {
     expect(rods).toHaveLength(2)
     // the rods shortened by 100 mm with the stroke: from the yoke (57.7 − 47.5) back to 485.3 − 100 behind the flange
     for (const rod of rods) expect(rod.hi[0] - rod.lo[0]).toBeCloseTo(57.7 + 485.3 - 100, 0)
-    // 상하: the guide rods one above the other (across x on the file's +x = world up)
+    // 좌: mounting face sideways, the guide rods one above the other
     expect(Math.abs(rods[0].lo[2] - rods[1].lo[2])).toBeCloseTo(74, 0)
-    // 좌우 (the default): the rods side by side (floor: across the travel, world y), level with each other
+    // 상 (the default): mounting face up, the rods side by side (floor: across the travel, world y), level
     const side = (await boxes((await buildCombo(selection!, found!, r, load, defaultComboOptions, twin)).step)).filter(
       (p) => p.name.includes('(FST)'),
     )
@@ -70,9 +78,9 @@ describe('guides in the combination drawing', () => {
   it('warns of the cylinder and the EAGF rods, not of a slide, for an ESBF with a parallel kit', () => {
     const o = { ...defaultComboOptions, kitSide: 'up' as const }
     expect(assemblyWarnings(o, true, { eagf: false })).toEqual([])
-    expect(assemblyWarnings({ ...o, guideRods: 'upDown' }, true, { eagf: true })).toEqual([expect.stringContaining('EAGF 가이드 로드 쪽')])
+    expect(assemblyWarnings({ ...o, guideSide: 'right' }, true, { eagf: true })).toEqual([expect.stringContaining('EAGF 가이드 로드 쪽')])
     expect(assemblyWarnings(o, true, { eagf: true })).toEqual([])
-    expect(assemblyWarnings({ ...o, motorConnector: 'down', guideRods: 'leftRight' }, true, { eagf: true })).toEqual([
+    expect(assemblyWarnings({ ...o, motorConnector: 'down', guideSide: 'down' }, true, { eagf: true })).toEqual([
       expect.stringContaining('실린더 쪽을 향합니다'),
     ])
   })

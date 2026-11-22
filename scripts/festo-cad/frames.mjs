@@ -146,7 +146,7 @@ function meshes(text) {
       for (const k of [0, 1, 2])
         if (Math.abs(Math.abs(normal[k]) - 1) < 1e-4) faces.push({ k, sign: Math.sign(normal[k]), pos: flo[k], area, lo: flo, hi: fhi })
     }
-    return { name: m.name ?? '', lo, hi, faces, points: p, index: idx }
+    return { name: m.name ?? '', lo, hi, faces, points: p, index: idx, brepFaces: m.brep_faces }
   })
 }
 
@@ -772,13 +772,35 @@ function eagfFrames(file, model) {
   const tail = Math.min(...rods.map((r) => r.lo[2]))
   const range = [Math.ceil(tail + 10), Math.floor(housing.lo[2] - 5)]
   if (range[1] - range[0] < 20) throw new Error('rods too short behind the housing')
+  // the mounting face (data sheet plan view): the wide face (±y, across the rods' plane) its four blind holes open on,
+  // found by their walls: small round faces along y, in the housing's half on that side, opening near its face
+  const { points: p, index: idx } = housing
+  const walls = housing.brepFaces.map((f) => {
+    const lo = [Infinity, Infinity, Infinity]
+    const hi = [-Infinity, -Infinity, -Infinity]
+    for (let t = 3 * f.first; t < 3 * f.last + 3; t++)
+      for (let k = 0; k < 3; k++) {
+        lo[k] = Math.min(lo[k], p[idx[t] * 3 + k])
+        hi[k] = Math.max(hi[k], p[idx[t] * 3 + k])
+      }
+    return { lo, hi }
+  })
+  const holes = (s) =>
+    walls.filter(({ lo, hi }) => {
+      const [dx, dy, dz] = [0, 1, 2].map((k) => hi[k] - lo[k])
+      const end = s > 0 ? hi[1] - housing.hi[1] : housing.lo[1] - lo[1]
+      return dx > 2 && dz > 2 && dx < 30 && dz < 30 && Math.abs(dx - dz) < 0.5 && dy > 3 && s * (lo[1] + hi[1] - 2 * y0) > 0 && end > -3 && s * (s > 0 ? lo[1] - y0 : hi[1] - y0) > 0
+    }).length
+  const [plus, minus] = [holes(1), holes(-1)]
+  if ((plus >= 4) === (minus >= 4)) throw new Error(`mounting holes not found on one wide face (+y ${plus}, −y ${minus})`)
   const json = {
     stroke: strokeOf(model),
     mount: { origin: [fixed(x0), fixed(y0), fixed(face.pos)], axis: [0, 0, 1], up: [1, 0, 0] },
+    top: [0, plus >= 4 ? 1 : -1, 0],
     yoke: [fixed(x0), fixed(y0), fixed(yoke.hi[2])],
     stretch: { part: rods[0].name, axis: 2, dir: -1, range },
   }
-  return { json, info: `EAGF mount z ${fixed(face.pos)}, yoke z ${fixed(yoke.hi[2])}, ${rods.length} rods, range ${range}` }
+  return { json, info: `EAGF mount z ${fixed(face.pos)}, yoke z ${fixed(yoke.hi[2])}, ${rods.length} rods, range ${range}, holes +y ${plus} −y ${minus}` }
 }
 
 const typeRe = (code) => new RegExp(`^${code.split('…').map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('(\\d+)')}$`, 'i')

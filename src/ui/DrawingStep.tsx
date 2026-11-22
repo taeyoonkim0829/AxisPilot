@@ -25,7 +25,7 @@ import { comboInputs, comboKey, shaftTooShort } from './comboInputs'
 import { ComboPreviewPanel } from './ComboPreviewPanel'
 import type { NoteTranslator } from './useComboPreview'
 import { RadioGroup } from './common'
-import { mountingLabel, rodsLabel, sideLabel } from './format'
+import { mountingLabel, sideLabel } from './format'
 import { loadText, useComboPreview } from './useComboPreview'
 
 interface Props {
@@ -109,10 +109,10 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
         : {}),
       ...change,
     })
-  // an electric cylinder: no slide, and with the EAGF drawn its guide rods above and below or left and right
+  // an electric cylinder: no slide, and with the EAGF drawn the side its mounting face points to
   const eagf = selection?.guide?.guide.kind === 'cylinder' && found?.guide != null
   const cylinder = axis?.axis.family === 'ESBF' ? { eagf } : null
-  const rods = sides.guideRods ?? 'leftRight'
+  const guideSide = sides.guideSide ?? 'up'
   // position sensing on the other side of the profile (ESBF: any face)
   const sensing = selection?.sensing && found?.sensors ? sensorSides(axisMeta) : null
   const sensorSide = sensing ? (sides.sensorSide && sensing.options.includes(sides.sensorSide) ? sides.sensorSide : sensing.filed) : null
@@ -127,7 +127,7 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
         twinMotor && parallel ? twinSides.kitSide : '',
         twinMotor ? twinConnector : '',
         facing ? 'facing' : '',
-        eagf ? rods : '',
+        eagf ? guideSide : '',
         sensorSide ?? '',
       ].join('|')
     : ''
@@ -145,7 +145,7 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
       parallel && kitMotor(sides),
       tr('모터 커넥터 {side}', { side: tr(sideLabel[connector]) }),
       facing && tr('슬라이드 마주 보기'),
-      eagf && tr('가이드 로드 {rods}', { rods: tr(rodsLabel[rods]) }),
+      eagf && tr('EAGF 취부 {side}', { side: tr(sideLabel[guideSide]) }),
       sensorSide && tr('센서 {side}', { side: tr(sideLabel[sensorSide]) }),
     ].filter(Boolean)
     const second = twinMotor ? [parallel && kitMotor(twinSides), tr('모터 커넥터 {side}', { side: tr(sideLabel[twinConnector]) })].filter(Boolean) : []
@@ -389,12 +389,12 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
             )}
             {eagf && (
               <>
-                <span>{t('가이드 방향 (EAGF 로드 위치)')}</span>
+                <span>{t('EAGF 취부 방향 (취부 홀 면)')}</span>
                 <RadioGroup
-                  options={['leftRight', 'upDown'] as const}
-                  value={rods}
-                  onChange={(guideRods) => onSides({ ...sides, guideRods })}
-                  label={(g) => t(rodsLabel[g])}
+                  options={SIDES}
+                  value={guideSide}
+                  onChange={(s) => onSides({ ...sides, guideSide: s })}
+                  label={(s) => t(sideLabel[s])}
                 />
               </>
             )}

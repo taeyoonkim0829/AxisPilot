@@ -94,6 +94,13 @@ const perAxis = <T,>(read: (a: GantryAxis) => T): Record<GantryAxis, T> => ({ x:
 const supportOf = (s: Partial<Settings> & { cantilever?: boolean } = {}): Partial<Settings> =>
   s.support ? s : { ...s, support: s.cantilever ? 'cantilever' : 'ends' }
 
+/** links from before EAGF 취부 방향 had the rods' position: 상하 (drawn with the mounting face to the right) → 우,
+ *  좌우 → the default 상 (rods left and right as before) */
+const assemblyOf = (a: Partial<ComboOptions> & { guideRods?: string } = {}): ComboOptions => {
+  const { guideRods, ...rest } = a
+  return { ...defaultComboOptions, ...(guideRods === 'upDown' && !rest.guideSide ? { guideSide: 'right' as const } : {}), ...rest }
+}
+
 /** Fields added since the link was made take their defaults. */
 function withDefaults(s: Partial<Shared> & { mode?: string }): Shared | null {
   if (s.mode === 'single') {
@@ -111,7 +118,7 @@ function withDefaults(s: Partial<Shared> & { mode?: string }): Shared | null {
       settings: { ...defaultSettings, ...supportOf(v.settings) },
       picks: { ...noPicks, ...v.picks },
       profileView: v.profileView ?? 'cycle',
-      assembly: { ...defaultComboOptions, ...v.assembly },
+      assembly: assemblyOf(v.assembly),
     }
   }
   if (s.mode === 'gantry') {
@@ -122,7 +129,7 @@ function withDefaults(s: Partial<Shared> & { mode?: string }): Shared | null {
       gantrySettings: perAxis((a) => ({ ...initialGantrySettings[a], ...supportOf(v.gantrySettings?.[a]) })),
       picks: perAxis((a) => ({ ...noPicks, ...v.picks?.[a] })),
       views: perAxis((a) => v.views?.[a] ?? 'cycle'),
-      assemblies: perAxis((a) => ({ ...defaultComboOptions, ...v.assemblies?.[a] })),
+      assemblies: perAxis((a) => assemblyOf(v.assemblies?.[a])),
       tab: v.tab ?? 'z',
     }
   }

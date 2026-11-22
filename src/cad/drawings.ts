@@ -94,6 +94,8 @@ export interface GuideMeta {
   /** EAGF: the housing face on the cylinder's front flange, on the guide centre, `axis` towards the yoke plate,
    *  `up` across the guide rods (their plane) */
   mount?: Frame
+  /** EAGF: out of the housing's mounting face (the wide face with the four blind holes, the data sheet's plan view) */
+  top?: Vec3
   /** EAGF: centre of the yoke plate's front face (the payload's mounting face) at 0 stroke */
   yoke?: Vec3
   stretch?: StretchSpec
