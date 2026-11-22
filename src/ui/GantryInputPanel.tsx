@@ -243,6 +243,8 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, baseS
         parallel={parallel}
         onParallel={(p) => set('parallel', { ...gantry.parallel, [base]: p })}
         title={base === 'x' ? 'X축 구성' : 'Y축 구성'}
+        // the base axis is never vertical (floor or wall)
+        suggestGuide={settings[base].families.includes('ESBF') && settings[base].drives.includes('spindle')}
         spacingNote={
           baseSpacing
             ? t('조합 키트에 맞춰 {used} mm로 자동 조정해 계산합니다(키트끼리 간섭 없이 {axis}축이 두 키트에 맞는 간격, 입력 {entered} mm).', {
