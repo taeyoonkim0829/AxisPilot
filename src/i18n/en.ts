@@ -745,6 +745,10 @@ export const en: Record<string, string> = {
   '무게 중심': 'Centre of gravity',
   '제조사 색': 'Maker colours',
   '부품별 색': 'Colour by part',
+  '치수 표시': 'Dimensions',
+  '길이': 'Length',
+  '폭': 'Width',
+  '높이': 'Height',
   // Parallel arrangement
   '축 구성': 'Axis arrangement',
   '단일 축': 'Single axis',

@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import type { PartRole } from '../cad/combo'
 import { EDGE_ANGLE, type PartMesh } from '../cad/occt'
 import type { Vec3 } from '../cad/step'
 import { useT } from '../i18n'
-import { RadioGroup } from './common'
+import { RadioGroup, ToggleButton } from './common'
 
 // 3D preview of the assembled combination (Z up). Loaded lazily with three.js.
 
@@ -35,6 +35,17 @@ const CUBE_PX = 104
 type ColourMode = 'maker' | 'part'
 const colourLabel: Record<ColourMode, string> = { maker: '제조사 색', part: '부품별 색' }
 
+/** the overall dimensions' labels, in X, Y, Z order */
+const DIM_LABELS = ['길이', '폭', '높이'] as const
+const DIMS_KEY = 'axispilot-dims'
+const readDims = () => {
+  try {
+    return localStorage.getItem(DIMS_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
 export default function ComboViewer({ meshes, roles, cog }: { meshes: PartMesh[]; roles: PartRole[]; cog: Vec3 }) {
   const t = useT()
   const host = useRef<HTMLDivElement>(null)
@@ -46,6 +57,22 @@ export default function ComboViewer({ meshes, roles, cog }: { meshes: PartMesh[]
   const [colours, setColours] = useState<ColourMode>('maker')
   const coloursRef = useRef<ColourMode>('maker')
   const setColouring = useRef<(c: ColourMode) => void>(() => {})
+  const [showDims, setShowDims] = useState(readDims)
+  const showDimsRef = useRef(showDims)
+  const setDimsShown = useRef<(on: boolean) => void>(() => {})
+  // the meshes' bounding box: length, width, height (mm); the labels are placed on the dimension lines each render
+  const extent = useMemo(() => {
+    const lo = [Infinity, Infinity, Infinity]
+    const hi = [-Infinity, -Infinity, -Infinity]
+    for (const m of meshes)
+      for (let i = 0; i < m.positions.length; i++) {
+        const k = i % 3
+        lo[k] = Math.min(lo[k], m.positions[i])
+        hi[k] = Math.max(hi[k], m.positions[i])
+      }
+    return hi.map((h, k) => Math.max(0, h - lo[k]))
+  }, [meshes])
+  const dimLabels = useRef<(HTMLSpanElement | null)[]>([])
   // the cube's face names follow the language
   const labels = CUBE_FACES.map((f) => t(f))
   const labelKey = labels.join('|')
@@ -147,6 +174,46 @@ export default function ComboViewer({ meshes, roles, cog }: { meshes: PartMesh[]
     leader.renderOrder = 2
     scene.add(marker, leader)
 
+    // overall dimensions: X along the front bottom edge, Y along the right bottom edge, Z up the front left edge (away from Y's label),
+    // each a line with arrows and extension lines, set off the box
+    const { min, max } = box
+    const gap = size * 0.05
+    const dimMaterial = new THREE.LineBasicMaterial({ color: edgeColor, depthTest: false })
+    const arrowMaterial = new THREE.MeshBasicMaterial({ color: edgeColor, depthTest: false })
+    const arrowLength = size * 0.018
+    const arrow = new THREE.ConeGeometry(arrowLength * 0.3, arrowLength, 12)
+    materials.push(dimMaterial, arrowMaterial)
+    geometries.push(arrow)
+    const dims = new THREE.Group()
+    const v = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z)
+    // [start, end, extension direction] per dimension
+    const dimLines: [THREE.Vector3, THREE.Vector3, THREE.Vector3][] = [
+      [v(min.x, min.y - gap, min.z), v(max.x, min.y - gap, min.z), v(0, -1, 0)],
+      [v(max.x + gap, min.y, min.z), v(max.x + gap, max.y, min.z), v(1, 0, 0)],
+      [v(min.x, min.y - gap, min.z), v(min.x, min.y - gap, max.z), v(0, -1, 0)],
+    ]
+    const points: THREE.Vector3[] = []
+    for (const [a, b, out] of dimLines) {
+      points.push(a, b)
+      for (const p of [a, b]) points.push(p.clone().addScaledVector(out, -gap), p.clone().addScaledVector(out, gap * 0.3))
+      const dir = b.clone().sub(a).normalize()
+      for (const [tip, d] of [[b, dir], [a, dir.clone().negate()]] as const) {
+        const head = new THREE.Mesh(arrow, arrowMaterial)
+        head.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d)
+        head.position.copy(tip).addScaledVector(d, -arrowLength / 2)
+        head.renderOrder = 3
+        dims.add(head)
+      }
+    }
+    const dimGeometry = new THREE.BufferGeometry().setFromPoints(points)
+    geometries.push(dimGeometry)
+    const dimSegments = new THREE.LineSegments(dimGeometry, dimMaterial)
+    dimSegments.renderOrder = 3
+    dims.add(dimSegments)
+    dims.visible = showDimsRef.current
+    scene.add(dims)
+    const dimMids = dimLines.map(([a, b]) => a.clone().add(b).multiplyScalar(0.5))
+
     scene.add(new THREE.HemisphereLight(0xffffff, 0x8a96a3, 1.6))
     const camera = new THREE.PerspectiveCamera(30, 1, size / 100, size * 20)
     camera.up.set(0, 0, 1)
@@ -194,8 +261,19 @@ export default function ComboViewer({ meshes, roles, cog }: { meshes: PartMesh[]
     hover.visible = false
     cubeScene.add(cube, hover)
 
+    const placeLabels = () => {
+      dimMids.forEach((p, i) => {
+        const label = dimLabels.current[i]
+        if (!label) return
+        const s = p.clone().project(camera)
+        label.style.visibility = s.z < 1 ? '' : 'hidden'
+        label.style.left = `${((s.x + 1) / 2) * el.clientWidth}px`
+        label.style.top = `${((1 - s.y) / 2) * el.clientHeight}px`
+      })
+    }
     const render = () => {
       renderer.render(scene, camera)
+      if (dims.visible) placeLabels()
       viewDir.current.copy(camera.position).sub(controls.target).normalize()
       cubeCamera.position.copy(viewDir.current).multiplyScalar(4)
       cubeCamera.quaternion.copy(camera.quaternion)
@@ -342,6 +420,10 @@ export default function ComboViewer({ meshes, roles, cog }: { meshes: PartMesh[]
       for (const p of painted) p.mesh.material = c === 'maker' ? p.maker : p.part
       render()
     }
+    setDimsShown.current = (on) => {
+      dims.visible = on
+      render()
+    }
     const resize = () => {
       const w = el.clientWidth
       const h = el.clientHeight
@@ -384,11 +466,24 @@ export default function ComboViewer({ meshes, roles, cog }: { meshes: PartMesh[]
     coloursRef.current = c
     setColouring.current(c)
   }
+  const toggleDims = (on: boolean) => {
+    setShowDims(on)
+    showDimsRef.current = on
+    setDimsShown.current(on)
+    try {
+      localStorage.setItem(DIMS_KEY, on ? '1' : '0')
+    } catch {
+      // the choice is only a convenience
+    }
+  }
   const present = colours === 'part' ? [...new Set(roles)] : []
   return (
     <div className="combo-viewer">
       <div className="combo-viewer-bar">
-        <RadioGroup options={['maker', 'part'] as ColourMode[]} value={colours} onChange={paint} label={(c) => t(colourLabel[c])} />
+        <div className="combo-viewer-tools">
+          <RadioGroup options={['maker', 'part'] as ColourMode[]} value={colours} onChange={paint} label={(c) => t(colourLabel[c])} />
+          <ToggleButton label={t('치수 표시')} checked={showDims} onChange={toggleDims} />
+        </div>
         <ul className="combo-legend">
           {present.map((r) => (
             <li key={r}>
@@ -404,6 +499,11 @@ export default function ComboViewer({ meshes, roles, cog }: { meshes: PartMesh[]
       </div>
       <div className="combo-stage">
         <div className="combo-canvas" ref={host} />
+        {DIM_LABELS.map((name, i) => (
+          <span key={name} className="dim-label" hidden={!showDims} ref={(e) => void (dimLabels.current[i] = e)}>
+            {t(name)} {Math.round(extent[i])} mm
+          </span>
+        ))}
         <div className="view-cube" ref={cubeHost} title={t('클릭: 그 방향에서 보기 · 드래그: 회전')} />
         <button type="button" className="view-home" onClick={() => goHome.current()} title={t('등각')} aria-label={t('등각')}>
           ⌂

@@ -1799,6 +1799,32 @@ th.num {
   touch-action: none;
 }
 
+.combo-viewer-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+/* overall dimensions (치수 표시): a label at the middle of each dimension line, kept upright over the model */
+.dim-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--surface-solid);
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--text);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.dim-label[hidden] {
+  display: none;
+}
+
 /* view cube: top right of the 3D view, turning with the camera */
 .combo-stage {
   position: relative;
