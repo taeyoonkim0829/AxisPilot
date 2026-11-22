@@ -732,8 +732,8 @@ export function switchPlacements(
  * Where the proximity switches go on a cylinder body sensing the piston's magnet (ESBF), in mm from its front face
  * (rod end) towards the drive end (`body` mm long): `end` = the switch's sensing end, `facing` = the way it points
  * (+1 towards the front). Each switch is centred in a mounting `pitch[i]` mm long (its bracket); the mountings stay
- * within the sensor area (`area` = [L1 from the front, L2 from the drive end]): the − limit's at L1, the + limit's at
- * L2, cables towards the body ends; the home switch's right beside the + limit's (the motor end) towards −, sensing
+ * within the sensor area (`area` = [L1 from the front, L2 from the drive end]): the − limit's and the + limit's the
+ * larger of L1 / L2 off their body ends (symmetric about the body centre), cables towards the body ends; the home switch's right beside the + limit's (the motor end) towards −, sensing
  * end to sensing end with it, its cable towards the front (as the user set it: the cables lead away from the pair).
  */
 export function bodySwitchPlacements(
@@ -745,10 +745,12 @@ export function bodySwitchPlacements(
 ): { end: number; facing: 1 | -1 }[] {
   const plus = roles.indexOf('limitPlus')
   const inset = (i: number) => (pitch[i] - length[i]) / 2
-  const plusMount = body - area[1]
+  // both limits the same distance off their body ends (symmetric about the body centre), the larger of L1 / L2
+  const margin = Math.max(area[0], area[1])
+  const plusMount = body - margin
   return roles.map((role, i) =>
     role === 'limitMinus'
-      ? { end: area[0] + inset(i) + length[i], facing: -1 as const }
+      ? { end: margin + inset(i) + length[i], facing: -1 as const }
       : role === 'limitPlus'
         ? { end: plusMount - inset(i) - length[i], facing: 1 as const }
         : { end: plusMount - (plus >= 0 ? pitch[plus] : 0) - inset(i), facing: -1 as const },

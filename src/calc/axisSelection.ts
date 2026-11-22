@@ -1013,7 +1013,8 @@ export function evaluateAxis(
   else if (settings.sensors) info.push({ label: '위치 센서', value: Number.NaN, unit: '', note: '이 축의 센서 · 센서 러그 데이터 없음' })
   // ESBF: the switch brackets side by side must fit the data sheet's sensor mounting area (L1 / L2 off the body ends)
   if (sensing?.bracket?.length && axis.sensorArea && axis.bodyLength != null) {
-    const area = axis.bodyLength + builtStroke - axis.sensorArea[0] - axis.sensorArea[1]
+    // the limits sit symmetric about the body centre, both the larger of L1 / L2 off their ends (`bodySwitchPlacements`)
+    const area = axis.bodyLength + builtStroke - 2 * Math.max(...axis.sensorArea)
     const needed = sensing.switches.length * sensing.bracket.length
     if (area < needed)
       checks.push({

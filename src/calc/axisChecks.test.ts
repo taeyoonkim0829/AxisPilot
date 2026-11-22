@@ -74,15 +74,16 @@ describe('ball screw life', () => {
   })
 
   it('warns when the ESBF sensor brackets do not fit the sensor mounting area', () => {
-    // ESBF-63: body 171 + stroke, L1 33, L2 99: 39 + stroke for 3 brackets of 27 mm -> stroke 42 at least
+    // ESBF-63: body 171 + stroke, L1 33, L2 99, limits symmetric (99 off both ends): stroke − 27 for 3 brackets of
+    // 27 mm -> stroke 108 at least
     const settings = { ...defaultSettings, sensors: true, homeContact: 'NO' as const }
     const at = (stroke: number) =>
       checkOf(evaluateAxis(axis('ESBF-BS-63-…-5P'), { ...req, stroke, velocity: 0.1 }, settings, [], [], sensors)!.checks, '센서 장착 구간')
-    const short = at(30)!
+    const short = at(60)!
     expect(short.status).toBe('warn')
-    expect(short.value).toBe(69)
+    expect(short.value).toBe(33)
     expect(short.limit).toBe(81)
-    expect(at(42)).toBeUndefined()
+    expect(at(108)).toBeUndefined()
   })
 
   it('takes the press-in operating coefficient while pressing, and warns on an ESBF stroke under 2.5 pitches', () => {

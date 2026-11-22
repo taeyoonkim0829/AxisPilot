@@ -1201,7 +1201,7 @@ describe('combination', () => {
     expect(coupling.lo[0]).toBeGreaterThan(housing.hi[0] - 63.2 + 5)
   }, 60000)
 
-  it('puts the ESBF switches in brackets within the sensor area (L1 / L2), the home switch beside the + limit at the motor end', async () => {
+  it('puts the ESBF switches in brackets within the sensor area (L1 / L2) symmetric about the body centre, the home switch beside the + limit at the motor end', async () => {
     const axis = axes.find((a) => a.model === 'ESBF-BS-63-…-5P')!
     const sensing = sensingFor(axis, sensors, { sensorOutput: 'PNP', limitContact: 'NC', homeContact: 'NO' })!
     expect(sensing.lug).toBeNull()
@@ -1230,13 +1230,13 @@ describe('combination', () => {
     // the cable clips of the sensor file left out
     expect(parts.some((p) => /ASCF/.test(p.name))).toBe(false)
     // floor: rod end at +X, motor at -X; the body 571 - 100 mm long (stroke 400 -> 300); the brackets (27 mm) within
-    // the sensor area, L1 = 33 from the front and L2 = 99 from the drive end: the - limit's at L1, the + limit's at L2,
-    // the home switch's right behind the + limit, the switch its mirror image (the cables facing each other); each
-    // switch (26.3 mm) centred in its SMB-8-FENG-50/63 bracket, which rests on the top face 37.25 mm above the rod axis
-    // and whose hook reaches down the profile's side (37.25 mm out)
+    // the sensor area, L1 = 33 from the front and L2 = 99 from the drive end: both limits' 99 off their body ends
+    // (symmetric about the body centre), the home switch's right behind the + limit, the switch its mirror image (the
+    // cables facing each other); each switch (26.3 mm) centred in its SMB-8-FENG-50/63 bracket, which rests on the top
+    // face 37.25 mm above the rod axis and whose hook reaches down the profile's side (37.25 mm out)
     const [minus, home, plus] = switchEnds(combo, [0, 4.8, 26.3])
     // sensing ends towards the middle, cables towards the body ends; home's sensing end against the + limit's
-    expect(minus - plus).toBeCloseTo(471 - 33 - 99 - 0.7 - 2 * 26.3, 1)
+    expect(minus - plus).toBeCloseTo(471 - 99 - 99 - 0.7 - 2 * 26.3, 1)
     expect(home - plus).toBeCloseTo(0.7, 1)
     for (const s of parts.filter((p) => /SMT-8M-A/.test(p.name))) {
       expect(s.hi[2]).toBeCloseTo(37.25 + 5.5 - 0.4, 1)
@@ -1245,7 +1245,7 @@ describe('combination', () => {
     }
     const brackets = parts.filter((p) => /SMB-8-FENG/.test(p.name)).sort((a, b) => a.lo[0] - b.lo[0])
     expect(brackets).toHaveLength(3)
-    expect(brackets[2].hi[0] - brackets[0].lo[0]).toBeCloseTo(471 - 33 - 99, 1)
+    expect(brackets[2].hi[0] - brackets[0].lo[0]).toBeCloseTo(471 - 99 - 99, 1)
     // centred on the switch bodies (26.3 mm from their sensing ends, the cables leaving them)
     const centres = [plus - 13.15, home + 13.15, minus + 13.15]
     brackets.forEach((b, i) => {
