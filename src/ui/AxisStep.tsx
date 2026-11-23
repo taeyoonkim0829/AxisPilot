@@ -269,7 +269,7 @@ export function AxisStep({ results, selectedId, onSelect, settings, onSettings, 
       </div>
       <AxisOptionFilters settings={settings} onSettings={onSettings} selected={selected ?? null} />
       {suggestGuide && settings.families.includes('ESBF') && settings.drives.includes('spindle') && (
-        <p className="field-hint application-hint">{t('ESBF 수평 설치: 로드는 횡하중에 약하므로 가이드 축 추가를 권장합니다 (Festo = EAGF, 3rd Party = LM 가이드)')}</p>
+        <p className="field-hint application-hint">{t('ESBF 수평 설치: 로드는 횡하중에 약하므로 가이드 축 추가를 권장합니다')}</p>
       )}
 
       {rows.length === 0 ? (
