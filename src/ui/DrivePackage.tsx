@@ -28,7 +28,8 @@ export function DrivePackage({
   const { controller, preferred, cables, resistor } = selection
   return (
     <div className="drive-package">
-      {!hideTitle && <h4>{t('드라이브 · 케이블 · 제동저항')}</h4>}
+      {/* h3 like the motor details title above it */}
+      {!hideTitle && <h3>{t('드라이브 · 케이블 · 제동저항')}</h3>}
       {onCableLength && (
         <div className="drive-package-length">
           <NumberField
