@@ -18,7 +18,7 @@ import {
   twinPositionWords,
   type ComboOptions,
 } from '../cad/combo'
-import { axisDrawingsFor } from '../cad/drawings'
+import { axisDrawingsFor, kitDrawingFor } from '../cad/drawings'
 import { translateData, useLang, useT } from '../i18n'
 import { CheckTable, StatusBadge } from './common'
 import { partRows } from './reportRows'
@@ -492,6 +492,9 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
                       t(sideLabel[connectorSide(assembly, kit.type === 'parallel')]),
                     ],
                     ...(cylinder?.eagf ? ([['EAGF 취부 방향 (취부 홀 면)', t(sideLabel[assembly.guideSide ?? 'up'])]] as Row[]) : []),
+                    ...(kit.type !== 'parallel' && kit.window && kitDrawingFor(kit)?.meta?.window
+                      ? ([['키트 조립 방향 (견시창)', t(sideLabel[assembly.windowSide ?? 'up'])]] as Row[])
+                      : []),
                     ...(twinAssembly && kit.type === 'parallel'
                       ? ([['키트 조립 방향 (두 번째 축, 모터 위치)', t(sideLabel[twinAssembly.kitSide])]] as Row[])
                       : []),

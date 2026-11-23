@@ -15,7 +15,7 @@ import {
   type ComboSelection,
 } from './combo'
 import { gearboxDrawingFor, motorDrawingFor, parseDrawingPath, shaftDrawingFor, siemensVariant, type AxisMeta, type Drawing, type KitMeta, type ShaftMeta } from './drawings'
-import { apply, invert, mate, type Frame } from './geometry'
+import { apply, invert, mate, sub, type Frame } from './geometry'
 import { closure, parseStep, pointOf, refs, typeOf, writeStep, type StepFile } from './step'
 import { stretchPart, type StretchSpec } from './stretch'
 import { definitionByName, shapeOf, solidsOf } from './structure'
@@ -280,6 +280,24 @@ describe('combination', () => {
     const found = comboDrawings(selection(500), testDrawings)
     expect(found.missing).toEqual([])
     expect(found.motorOtherOptions).toBe(true)
+  })
+
+  it('turns an axial kit with an inspection window so the window faces the chosen side', async () => {
+    const sel = selection(500, 'EMMT-AS-60-S-HS', 'GT120A060M1A-1000')
+    const path = 'data/kits/Festo/Drawings/SA/GT120A060M1A-1000.stp'
+    const meta = metas[`../../${path.replace(/\.stp$/, '.json')}`] as KitMeta
+    expect(meta.window).toEqual([0, 1, 0])
+    const found = comboDrawings(sel, [...testDrawings, { ...parseDrawingPath(path)!, url: path, meta }])
+    const facing = async (windowSide: ComboOptions['windowSide']) => {
+      const combo = await buildCombo(sel, found, { mounting: 'floor', cog: { x: 0, y: 0, z: 50 } }, load, { ...defaultComboOptions, windowSide })
+      const kit = combo.parts.find((p) => p.name === 'GT120A060M1A-1000')!
+      return sub(apply(kit.transform, meta.window!), apply(kit.transform, [0, 0, 0])).map((v) => Math.round(v) + 0)
+    }
+    // floor: slide surface up, the motor end at −X (seen from there, right = −Y)
+    expect(await facing(undefined)).toEqual([0, 0, 1])
+    expect(await facing('down')).toEqual([0, 0, -1])
+    expect(await facing('right')).toEqual([0, -1, 0])
+    expect(await facing('left')).toEqual([0, 1, 0])
   })
 
   it.each(['floor', 'wall', 'vertical'] as const)('assembles axis, kit and motor (%s)', async (mounting) => {

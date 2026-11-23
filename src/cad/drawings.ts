@@ -142,6 +142,9 @@ export interface KitMeta {
    *  -S60 filed 43.5 mm beyond the axis face go to the middle between the two faces (`frames.mjs`); others the least
    *  that clears the axis (`couplings.mjs`) */
   couplingShift?: { parts: string[]; by: number; flip?: Vec3 }
+  /** axial SA kits with an inspection window: the direction out of the housing face its cover sits on
+   *  (`frames.mjs --window`) */
+  window?: Vec3
 }
 export interface GearboxMeta {
   /** output flange (axis / kit side) and input flange (motor side) */

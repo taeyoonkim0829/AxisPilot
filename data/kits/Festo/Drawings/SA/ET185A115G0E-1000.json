@@ -1,4 +1,5 @@
 {
   "axisFace": { "origin": [-2, 0.1, 0], "axis": [1, 0, 0], "up": [0, 0, 1] },
-  "motorFace": { "origin": [117.7, 0.1, 0], "axis": [1, 0, 0], "up": [0, 0, 1] }
+  "motorFace": { "origin": [117.7, 0.1, 0], "axis": [1, 0, 0], "up": [0, 0, 1] },
+  "window": [0, 1, 0]
 }

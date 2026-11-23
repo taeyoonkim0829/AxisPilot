@@ -18,7 +18,7 @@ import {
   type ComboOptions,
   type PartRole,
 } from '../cad/combo'
-import { shaftDrawingFor, type AxisMeta, type Drawing } from '../cad/drawings'
+import { shaftDrawingFor, type AxisMeta, type Drawing, type KitMeta } from '../cad/drawings'
 import type { Kit } from '../data/types'
 import { useT } from '../i18n'
 import { comboInputs, comboKey, shaftTooShort } from './comboInputs'
@@ -113,6 +113,9 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
   const eagf = selection?.guide?.guide.kind === 'cylinder' && found?.guide != null
   const cylinder = axis?.axis.family === 'ESBF' ? { eagf } : null
   const guideSide = sides.guideSide ?? 'up'
+  // an axial kit with an inspection window: the side the window faces
+  const windowed = !parallel && kit?.window === true && (found?.kit?.meta as KitMeta | null | undefined)?.window != null
+  const windowSide = sides.windowSide ?? 'up'
   // position sensing on the other side of the profile (ESBF: any face)
   const sensing = selection?.sensing && found?.sensors ? sensorSides(axisMeta) : null
   const sensorSide = sensing ? (sides.sensorSide && sensing.options.includes(sides.sensorSide) ? sides.sensorSide : sensing.filed) : null
@@ -128,6 +131,7 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
         twinMotor ? twinConnector : '',
         facing ? 'facing' : '',
         eagf ? guideSide : '',
+        windowed ? windowSide : '',
         sensorSide ?? '',
       ].join('|')
     : ''
@@ -146,6 +150,7 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
       tr('모터 커넥터 {side}', { side: tr(sideLabel[connector]) }),
       facing && tr('슬라이드 마주 보기'),
       eagf && tr('EAGF 취부 {side}', { side: tr(sideLabel[guideSide]) }),
+      windowed && tr('견시창 {side}', { side: tr(sideLabel[windowSide]) }),
       sensorSide && tr('센서 {side}', { side: tr(sideLabel[sensorSide]) }),
     ].filter(Boolean)
     const second = twinMotor ? [parallel && kitMotor(twinSides), tr('모터 커넥터 {side}', { side: tr(sideLabel[twinConnector]) })].filter(Boolean) : []
@@ -429,6 +434,12 @@ export function DrawingStep({ no, axis, drive, kit, req: input, sides, onSides, 
                   onChange={(kitSide) => own({ kitSide })}
                   label={(s) => t(sideLabel[s])}
                 />
+              </>
+            )}
+            {windowed && (
+              <>
+                <span>{t('키트 조립 방향 (견시창)')}</span>
+                <RadioGroup options={SIDES} value={windowSide} onChange={(s) => onSides({ ...sides, windowSide: s })} label={(s) => t(sideLabel[s])} />
               </>
             )}
             <span>{t(twinMotor ? '모터 조립 방향 (첫 번째 축, 커넥터)' : '모터 조립 방향 (커넥터)')}</span>

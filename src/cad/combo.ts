@@ -149,6 +149,9 @@ export interface ComboOptions {
    *  default up (the rods then left and right); drawing only, the data sheet loads are the same every way (Fy = Fz,
    *  My = Mz) */
   guideSide?: Side
+  /** An axial kit with an inspection window (`KitMeta.window`): the side the window faces, the kit turned about the
+   *  drive shaft; default up. Under motor sync the second axis's follows the first's */
+  windowSide?: Side
   /** The side the position sensing goes on (`sensorSides`); null = as the axis JSON's seats put it */
   sensorSide?: Side | null
 }
@@ -631,6 +634,7 @@ const mirrorSides = (options: ComboOptions): ComboOptions => ({
   ...options,
   kitSide: mirrorSide[options.kitSide],
   motorConnector: options.motorConnector && mirrorSide[options.motorConnector],
+  windowSide: mirrorSide[options.windowSide ?? 'up'],
 })
 
 const opposite: Record<Side, Side> = { up: 'down', down: 'up', left: 'right', right: 'left' }
@@ -1056,7 +1060,9 @@ export async function comboParts(
       const radial = sub(offset, scale(out, dot(offset, out)))
       if (Math.hypot(...radial) > 1)
         kitToWorld = turnAbout(kitToWorld, apply(axisToWorld, drive.origin), out, radial, sideVector(orientation.kitSide))
-    }
+    } else if (kitMeta.window && sel.kit.window)
+      // the inspection window to the chosen side
+      kitToWorld = turnAbout(kitToWorld, apply(axisToWorld, drive.origin), out, rotate(kitToWorld, kitMeta.window), sideVector(orientation.windowSide ?? 'up'))
     // the axis's coupling hub meshing with the kit's (its jaws between the kit hub's)
     const hub = axisMeta.coupling
     if (hub && kitMeta.coupling?.count === hub.count && !at.otherSide && !mirror)

@@ -47,6 +47,14 @@ const walk = (dir) =>
 const axes = readdirSync(join(root, 'data/axes/festo'))
   .filter((f) => f.endsWith('.json'))
   .flatMap((f) => JSON.parse(readFileSync(join(root, 'data/axes/festo', f), 'utf8')).items)
+/** kits with an inspection window (data/kits `window`) */
+const windowKits = new Set(
+  readdirSync(join(root, 'data/kits/Festo'))
+    .filter((f) => f.endsWith('.json'))
+    .flatMap((f) => JSON.parse(readFileSync(join(root, 'data/kits/Festo', f), 'utf8')).items)
+    .filter((k) => k.window)
+    .map((k) => k.product),
+)
 const guidesDir = join(root, 'data/guides/Festo/Drawings')
 const guideItems = readdirSync(join(root, 'data/guides/Festo'))
   .filter((f) => f.endsWith('.json'))
@@ -518,6 +526,32 @@ function kitFrames(file, model) {
  */
 const SA_COUPLING = /SFC|ALS-|SJC|SOHM|SDW|SHDW|DISK/i
 const SA_PULLEY = /SAPL/i
+/**
+ * An axial SA kit's inspection window: the side (file direction, out of the housing) its cover plate sits on, a thin
+ * plate (≤ 6 mm) at least 12 × 12 mm on a radial face of the housing, well out from the shaft. Null when there is
+ * none or covers on more than one side.
+ */
+function saWindowOf(ms, json, k) {
+  const ext = (m, j) => m.hi[j] - m.lo[j]
+  const volume = (m) => ext(m, 0) * ext(m, 1) * ext(m, 2)
+  const housing = ms.reduce((a, b) => (volume(b) > volume(a) ? b : a))
+  const o = json.axisFace.origin
+  const sides = new Set()
+  for (const m of ms) {
+    if (m === housing || ext(m, k) < 12) continue
+    for (const j of [0, 1, 2].filter((j) => j !== k)) {
+      const other = 3 - k - j
+      if (ext(m, j) > 6 || ext(m, other) < 12) continue
+      const c = centre(m.lo, m.hi, j) - o[j]
+      if (Math.abs(c) < 0.5 * (ext(housing, j) / 2)) continue
+      sides.add(`${j}${Math.sign(c)}`)
+    }
+  }
+  if (sides.size !== 1) return null
+  const [j, s] = [Number([...sides][0][0]), Number([...sides][0].slice(1))]
+  return [0, 1, 2].map((i) => (i === j ? s : 0))
+}
+
 function saKitFrames(file, model) {
   const ms = meshes(readFileSync(file, 'latin1'))
   const parallel = /^[A-Z]{2}\d{3}U/.test(model)
@@ -586,7 +620,9 @@ function saKitFrames(file, model) {
     const axis = unit(k, -axisEnd)
     const up = unit(b, 1)
     const json = { axisFace: { origin: at(c, fa.pos), axis, up }, motorFace: { origin: at(c, fm.pos), axis, up } }
-    const info = `SA axial along ${'xyz'[k]}, axis end ${axisEnd > 0 ? '+' : '-'}, faces ${fixed(fa.pos)} / ${fixed(fm.pos)}, screw vote ${vote}`
+    const win = windowKits.has(model) ? saWindowOf(ms, json, k) : null
+    if (win) json.window = win
+    const info = `SA axial along ${'xyz'[k]}, axis end ${axisEnd > 0 ? '+' : '-'}, faces ${fixed(fa.pos)} / ${fixed(fm.pos)}, screw vote ${vote}${win ? `, window ${JSON.stringify(win)}` : ''}`
     return { json, info }
   }
   // the side the screws stand out of the housing: both faces lie there
@@ -845,6 +881,9 @@ const profileOnly = args.includes('--profile')
 const couplingOnly = args.includes('--coupling')
 // --front: add the front flange frame (`front`) to existing ESBF JSONs, keeping everything else
 const frontOnly = args.includes('--front')
+// --window: add the inspection window side (`window`) to existing axial SA kit JSONs (the window kits; others are
+// passed over by their name in data/kits), keeping everything else
+const windowOnly = args.includes('--window')
 // --sensor: add the position sensing seats (`sensor`) to existing ELGD-TB / -BS and ESBF JSONs, keeping everything else
 const sensorOnly = args.includes('--sensor')
 /** ELGD drive + size (+ `-L` for the long slide) → mm from the slide surface centre: the side face (slide and
@@ -987,6 +1026,22 @@ for (const file of files) {
     if (dryRun) console.log(out, JSON.stringify(sensor))
     else writeFileSync(out, format({ ...old, sensor }))
     written++
+    continue
+  }
+  if (windowOnly) {
+    const model = file.split(/[\\/]/).pop().replace(/\.stp$/i, '')
+    if (!existsSync(out) || !/^[A-Z]{2}\d{3}A\d{3}/.test(model)) continue
+    const old = JSON.parse(readFileSync(out, 'utf8'))
+    if (old.window && !force) continue
+    try {
+      const { json } = saKitFrames(file, model)
+      console.log(`${model}: window ${JSON.stringify(json.window ?? null)}`)
+      if (!json.window) continue
+      if (!dryRun) writeFileSync(out, format({ ...old, window: json.window }))
+      written++
+    } catch (err) {
+      console.log(`${model}: FAILED ${err.message}`)
+    }
     continue
   }
   if (frontOnly) {
