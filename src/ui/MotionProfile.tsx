@@ -76,7 +76,7 @@ export function ProfileNumbers({ axis }: { axis: AxisEvaluation }) {
         </>
       )}
       <div>
-        <dt>{t('사이클 (왕복)')}</dt>
+        <dt>{t('이동 시간 (왕복)')}</dt>
         <dd>{fmt(axis.cycleTime, 3)} s</dd>
       </div>
     </dl>

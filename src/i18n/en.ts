@@ -121,7 +121,7 @@ export const en: Record<string, string> = {
   '최대 가속도': 'Max. acceleration',
   '등속 시간': 'Constant-velocity time',
   '이동 시간 (편도)': 'Move time (one way)',
-  '사이클 (왕복)': 'Cycle (round trip)',
+  '이동 시간 (왕복)': 'Move time (round trip)',
 
   // Step 1: axis
   '직교 축 선정': 'Linear axis selection',

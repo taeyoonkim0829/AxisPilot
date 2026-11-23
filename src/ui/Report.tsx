@@ -300,7 +300,7 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
                   ['가압 유지', `${fmt(axis.press.holdTime, 3)} s`],
                 ] as Row[])
               : []),
-            ['사이클 (왕복)', `${fmt(axis.cycleTime, 3)} s`],
+            ['이동 시간 (왕복)', `${fmt(axis.cycleTime, 3)} s`],
           ]}
         />
         <figure className="profile-chart report-chart">
