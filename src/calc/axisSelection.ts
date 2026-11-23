@@ -1161,5 +1161,7 @@ export function selectAxes(
     .filter((a) => offersSlides(a, settings, choices) && offersMounting(a, settings, listed))
     .map((a) => evaluateAxis(a, req, settings, shafts, guides, sensors))
     .filter((e): e is AxisEvaluation => e !== null)
+    // 표준 스트로크: only axes with a standard stroke long enough (no modular order)
+    .filter((e) => !settings.standardStroke || !e.order.modular)
     .sort((a, b) => statusOrder[a.status] - statusOrder[b.status] || a.axisMass - b.axisMass)
 }

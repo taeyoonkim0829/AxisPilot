@@ -504,6 +504,11 @@ describe('selection on real data', () => {
     const std = (id: string, stroke: number) => axisOrder(axes.find((a) => a.id === id)!, stroke, null, true)
     expect(std('ELGD-BS-KF-60-…10P', 120)).toMatchObject({ partNumber: '8192261', stroke: 200, modular: false })
     expect(std('ELGD-BS-KF-80-…10P-L', 512.3).modular).toBe(true)
+    // and selectAxes then lists only the axes with a standard stroke long enough
+    const listed = selectAxes(axes, { ...baseReq, stroke: 512.3 }, { ...defaultSettings, standardStroke: true })
+    expect(listed.length).toBeGreaterThan(0)
+    expect(listed.some((e) => e.axis.id === 'ELGD-BS-KF-80-…10P-L')).toBe(false)
+    expect(listed.every((e) => !e.order.modular)).toBe(true)
     // Above the variable range only the fixed strokes are left: EGC-70-BS takes 50…980 or 1000
     expect(order('EGC-70-...-BS-10P-KF-GK', 990)).toEqual({ model: 'EGC-70-1000-BS-10P-KF-0H-ML-GK', partNumber: '556807', stroke: 1000, modular: true })
     expect(order('EGC-HD-160-…-BS-20P-GK', 30).model).toBe('EGC-HD-160-50-BS-20P-0H-GK')
