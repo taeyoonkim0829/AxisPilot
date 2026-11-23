@@ -74,8 +74,8 @@ describe('제품 비교', () => {
     const all = motorCandidates(ref, motors, { families: ['EMMT-AS', 'EMMB-AS'], supply: null, samePower: true, sameInterface: false })
     expect(all.every((m) => m.maker === 'Festo' && !m.brake)).toBe(true)
     expect(all.map((m) => m.model)).toContain('EMMT-AS-80-S-HS')
-    const ac400 = motorCandidates(ref, motors, { families: ['EMMT-AS', 'EMMB-AS'], supply: 'AC 380–480 V', samePower: true, sameInterface: false })
-    expect(ac400.every((m) => supplyOf(m) === 'AC 380–480 V')).toBe(true)
+    const ac400 = motorCandidates(ref, motors, { families: ['EMMT-AS', 'EMMB-AS'], supply: '380-480VAC', samePower: true, sameInterface: false })
+    expect(ac400.every((m) => supplyOf(m) === '380-480VAC')).toBe(true)
     const emmt = motors.find((m) => m.model === 'EMMT-AS-80-S-HS')!
     const rows = motorSpecRows(ref, emmt)
     expect(rows.find((r) => r.label === '최대 토크')!.ratio).toBeCloseTo(2.8 / 3.75)

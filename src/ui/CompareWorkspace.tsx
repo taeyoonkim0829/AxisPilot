@@ -477,7 +477,7 @@ function AxisCompare() {
 // ---------- 모터 ----------
 
 const thirdPartyMakers = ['Siemens', 'Mitsubishi', 'LS'] as const
-const supplies: (SupplyClass | 'all')[] = ['all', 'AC 380–480 V', 'AC 200–240 V']
+const supplies: (SupplyClass | 'all')[] = ['all', '380-480VAC', '200-240VAC']
 const OPTION_LABEL: Record<keyof MotorOptions, string> = { shaft: '축 끝', seal: '축 씰', encoder: '엔코더' }
 
 /** Every compared motor (the makers offered), for the model search */

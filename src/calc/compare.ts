@@ -174,9 +174,9 @@ export function festoOverhang(axis: Axis, mounting: Mounting, payload: number, d
 
 // ---------- motors ----------
 
-export type SupplyClass = 'AC 380–480 V' | 'AC 200–240 V' | 'DC'
+export type SupplyClass = '380-480VAC' | '200-240VAC' | 'DC'
 export const supplyOf = (m: Motor): SupplyClass | null =>
-  m.voltage == null ? null : m.voltage >= 380 ? 'AC 380–480 V' : m.voltage >= 100 ? 'AC 200–240 V' : 'DC'
+  m.voltage == null ? null : m.voltage >= 380 ? '380-480VAC' : m.voltage >= 100 ? '200-240VAC' : 'DC'
 
 export interface MotorCandidateFilter {
   families: string[]
