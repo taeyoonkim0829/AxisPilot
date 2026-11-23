@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react'
-import { maxStrokeOf, type AxisEvaluation } from '../calc/axisSelection'
+import { maxStrokeOf, screwSize, type AxisEvaluation } from '../calc/axisSelection'
 import type { KitMatch } from '../calc/kitSelection'
 import { accelTimeFor } from '../calc/motionProfile'
 import { gearboxChecks, type DriveEvaluation } from '../calc/motorSelection'
@@ -126,7 +126,7 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
   const infoRow = (i: AxisEvaluation['info'][number]): Row => {
     // life (km): the years on the line below
     const below = i.unit === 'km' && i.note
-    const text = `${q(i.value, i.unit)}${i.note && !below ? ` (${t(i.note, i.noteArgs)})` : ''}`
+    const text = `${i.text ?? q(i.value, i.unit)}${i.note && !below ? ` (${t(i.note, i.noteArgs)})` : ''}`
     const value = i.alert ? <span className="fail-text">{text}</span> : text
     return [
       i.label,
@@ -345,11 +345,8 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
             ['무부하 구동 토크', q(axis.noLoadTorque, 'Nm')],
             ['최대 구동 토크', q(a.maxDrivingTorque, 'Nm')],
             ['회전당 이송량', q(axis.feed, 'mm/rev')],
-            ...(a.drive === 'spindle'
-              ? ([
-                  ['볼스크류 직경', q(a.spindleDiameter, 'mm')],
-                  ['볼스크류 피치', q(a.spindlePitch, 'mm')],
-                ] as Row[])
+            ...(a.drive === 'spindle' && a.spindleDiameter != null && a.spindlePitch != null
+              ? ([['볼스크류 직경 × 피치', screwSize(a.spindleDiameter, a.spindlePitch)]] as Row[])
               : []),
             ['반복 정밀도', a.repeatability == null ? '—' : `±${fmt(a.repeatability, 3)} mm`],
             ['이동 질량', `${q(axis.movingMass, 'kg')} (${t('부하 + 슬라이드')})`],

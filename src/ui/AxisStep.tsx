@@ -388,7 +388,7 @@ function InfoList({ items }: { items: AxisEvaluation['info'] }) {
     <InfoTable
       rows={items.map((i) => ({
         label: i.label,
-        value: `${fmt(i.value, 3)} ${i.unit}`,
+        value: i.text ?? `${fmt(i.value, 3)} ${i.unit}`,
         note: i.note && t(i.note, i.noteArgs),
         alert: i.alert,
       }))}

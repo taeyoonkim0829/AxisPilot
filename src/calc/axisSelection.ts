@@ -37,6 +37,9 @@ export interface AxisSample {
 /** Drive-shaft load for one kinematic state */
 export type DriveState = Pick<AxisSample, 'omega' | 'alpha' | 'torque' | 'force'>
 
+/** ball screw diameter and pitch in one: Ø16×10 mm */
+export const screwSize = (diameter: number, pitch: number) => `Ø${diameter}×${pitch} mm`
+
 export interface InfoItem {
   label: string
   value: number
@@ -46,6 +49,8 @@ export interface InfoItem {
   noteArgs?: Record<string, string | number>
   /** shown in red (ball screw life under SCREW_LIFE_MIN_KM) */
   alert?: boolean
+  /** shown in place of value and unit (ball screw Ø16×10 mm) */
+  text?: string
 }
 
 export interface AxisEvaluation {
@@ -960,8 +965,7 @@ export function evaluateAxis(
     { label: '축 질량', value: mAxis, unit: 'kg' },
     ...(axis.drive === 'spindle' && axis.spindleDiameter != null && axis.spindlePitch != null
       ? [
-          { label: '볼스크류 직경', value: axis.spindleDiameter, unit: 'mm' },
-          { label: '볼스크류 피치', value: axis.spindlePitch, unit: 'mm' },
+          { label: '볼스크류 직경 × 피치', value: axis.spindleDiameter, unit: 'mm', text: screwSize(axis.spindleDiameter, axis.spindlePitch) },
         ]
       : []),
     ...(extra
