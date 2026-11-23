@@ -53,6 +53,7 @@ export function AxisSteps({ sel, req, calcSettings, settings, onSettings, picks,
         onSelect={(id) => onPicks({ ...picks, axisId: id, motorId: null, gearboxId: null })}
         settings={settings}
         onSettings={onSettings}
+        suggestGuide={req.mounting !== 'vertical' && req.parallel?.mode !== 'guides'}
       />
       {selectedAxis ? (
         <MotorStep

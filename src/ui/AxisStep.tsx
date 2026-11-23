@@ -15,6 +15,8 @@ interface Props {
   onSelect: (id: string) => void
   settings: Settings
   onSettings: (settings: Settings) => void
+  /** an ESBF mounted horizontally may be listed without a guide: suggest adding one */
+  suggestGuide?: boolean
 }
 
 const families: AxisSeries[] = ['ELGT', 'ELGD', 'EGC', 'EGC-HD', 'ESBF']
@@ -180,7 +182,7 @@ function AxisOptionFilters({ settings, onSettings, selected }: Pick<Props, 'sett
   )
 }
 
-export function AxisStep({ results, selectedId, onSelect, settings, onSettings }: Props) {
+export function AxisStep({ results, selectedId, onSelect, settings, onSettings, suggestGuide }: Props) {
   const t = useT()
   const [showFailed, setShowFailed] = useState(false)
   const [detailOpen, setDetailOpen] = useState(true)
@@ -266,6 +268,9 @@ export function AxisStep({ results, selectedId, onSelect, settings, onSettings }
         )}
       </div>
       <AxisOptionFilters settings={settings} onSettings={onSettings} selected={selected ?? null} />
+      {suggestGuide && settings.families.includes('ESBF') && settings.drives.includes('spindle') && (
+        <p className="field-hint application-hint">{t('ESBF 수평 설치: 로드는 횡하중에 약하므로 가이드 축 추가를 권장합니다 (Festo = EAGF, 3rd Party = LM 가이드)')}</p>
+      )}
 
       {rows.length === 0 ? (
         <p className="empty">{t('조건을 만족하는 축이 없습니다. 부적합 포함을 켜서 초과 항목을 확인하세요.')}</p>

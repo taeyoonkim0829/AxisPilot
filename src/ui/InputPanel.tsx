@@ -306,8 +306,6 @@ export function InputPanel({ req, settings, onReq, onSettings, axisFamily }: Pro
         onParallel={(p) => onReq({ ...req, parallel: p })}
         noGuideAxis={axisFamily === 'ELGT'}
         cylinder={axisFamily === 'ESBF'}
-        // ESBF listed (it may fail on its own, leaving no axis selected) and mounted horizontally
-        suggestGuide={req.mounting !== 'vertical' && settings.families.includes('ESBF') && settings.drives.includes('spindle')}
       />
 
       <DetailSettings settings={settings} onSettings={onSettings} />
@@ -323,7 +321,6 @@ export function ParallelSection({
   spacingNote,
   noGuideAxis,
   cylinder,
-  suggestGuide,
 }: {
   parallel: ParallelConfig
   onParallel: (p: ParallelConfig) => void
@@ -335,8 +332,6 @@ export function ParallelSection({
   /** the selected axis is an electric cylinder (ESBF): its Festo guide is one EAGF on the front flange, and between
    *  LM guides it only pushes */
   cylinder?: boolean
-  /** an ESBF mounted horizontally is listed: the 축 구성 suggests adding a guide while there is none */
-  suggestGuide?: boolean
 }) {
   const t = useT()
   const setParallel = <K extends keyof ParallelConfig>(key: K, value: ParallelConfig[K]) => onParallel({ ...parallel, [key]: value })
@@ -371,9 +366,6 @@ export function ParallelSection({
         onChange={(m) => setParallel('mode', m)}
         label={(m) => t(parallelModeLabel[m])}
       />
-      {suggestGuide && !guides && (
-        <p className="field-hint application-hint">{t('ESBF 수평 설치: 로드는 횡하중에 약하므로 가이드 축 추가를 권장합니다 (Festo = EAGF, 3rd Party = LM 가이드)')}</p>
-      )}
       {guides && !eagf && (
         <CountField
           label={t('가이드 수')}
