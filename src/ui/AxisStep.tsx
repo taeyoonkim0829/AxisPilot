@@ -203,7 +203,7 @@ export function AxisStep({ results, selectedId, onSelect, settings, onSettings, 
     force: forceRatio,
     torque: (e) => ratioOf(e, '구동 토크'),
     fv: guideRatio,
-  }, { key: 'model', dir: 'desc' })
+  }, { key: 'model', dir: 'asc' })
   const th = { sort, onSort: toggle }
   const selected = results.find((r) => r.axis.id === selectedId)
   const guide = selected ? guideDetail(selected) : null

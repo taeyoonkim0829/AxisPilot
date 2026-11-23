@@ -73,7 +73,7 @@ export function MotorStep({ results, selected, onSelect, settings, onSettings, l
     inertia: (d) => d.checks.find((c) => c.label === '관성비')?.ratio ?? null,
     kit: (d) => (d.kit ? statusRank[d.kit.status] : 3),
     controller: (d) => d.controller?.controller?.nominalCurrent ?? null,
-  }, { key: 'model', dir: 'desc' })
+  }, { key: 'model', dir: 'asc' })
   const th = { sort, onSort: toggle }
   const familyOptions = settings.makers.flatMap((m) => motorFamilies[m])
   const excluded = settings.excludedMotorFamilies
