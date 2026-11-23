@@ -48,6 +48,11 @@ describe('shared link', () => {
     expect(decoded?.mode === 'single' && decoded.settings.support).toBe('cantilever')
   })
 
+  it('drops 가이드 저항 FG and 커플링 관성, which no field or report shows any more', async () => {
+    const decoded = await decodeShare(await encodeShare({ ...single, settings: { ...single.settings, guideResistance: 50, couplingInertia: 2 } }))
+    expect(decoded).toEqual(single)
+  })
+
   it('keeps the gantry screen with its tab', async () => {
     const gantry: Shared = {
       mode: 'gantry',

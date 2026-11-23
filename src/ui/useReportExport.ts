@@ -30,6 +30,8 @@ export function useReportExport(lang: Lang, name: string | null, share?: () => S
         const tab = pdfTab.current
         if (tab && !tab.closed) tab.location.href = url
         else window.open(url, '_blank')
+        // the tab has loaded the PDF by then; the page would otherwise keep every exported PDF in memory
+        setTimeout(() => URL.revokeObjectURL(url), 60_000)
       })
       .catch((error: unknown) => {
         pdfTab.current?.close()

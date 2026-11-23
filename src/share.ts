@@ -90,8 +90,12 @@ export async function decodeShare(value: string): Promise<Shared | null> {
 const perAxis = <T,>(read: (a: GantryAxis) => T): Record<GantryAxis, T> => ({ x: read('x'), y: read('y'), z: read('z') })
 
 /** links from before 지지 방식 had 바닥 지지 (the default since) keep what they computed: 외팔보 when `cantilever`,
- *  else 양단 지지 */
-const supportOf = (s: Partial<Settings> & { cantilever?: boolean } = {}): Partial<Settings> =>
+ *  else 양단 지지; 가이드 저항 FG and 커플링 관성 (no longer shown anywhere) take their defaults */
+const supportOf = ({
+  guideResistance: _fg,
+  couplingInertia: _coupling,
+  ...s
+}: Partial<Settings> & { cantilever?: boolean } = {}): Partial<Settings> =>
   s.support ? s : { ...s, support: s.cantilever ? 'cantilever' : 'ends' }
 
 /** links from before EAGF 취부 방향 had the rods' position: 상하 (drawn with the mounting face to the right) → 우,
