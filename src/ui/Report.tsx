@@ -7,7 +7,7 @@ import type { GantryInputs } from '../calc/gantry'
 import { jointAccessories, type GantryJoint } from '../calc/gantryKits'
 import { adapters } from '../data'
 import { verticalForward, type Requirements, type Settings, type Status } from '../calc/types'
-import type { KitEvaluation } from '../calc/kitSelection'
+import { MOTOR_MAX_LABEL, type KitEvaluation } from '../calc/kitSelection'
 import {
   assemblyWarnings,
   connectorSide,
@@ -516,7 +516,7 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
                     {t(w)}
                   </p>
                 ))}
-                {kitEval && <CheckTable checks={kitEval.checks} />}
+                {kitEval && <CheckTable checks={kitEval.checks} bare advice={MOTOR_MAX_LABEL} />}
                 {kitEval && kitEval.notes.length > 0 && <KitNotes notes={kitEval.notes} />}
               </>
             ) : (

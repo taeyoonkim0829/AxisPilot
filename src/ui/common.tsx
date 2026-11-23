@@ -28,7 +28,8 @@ export function Ratio({ ratio, status, warnAt = 0.8 }: { ratio: number | null; s
   )
 }
 
-export function CheckTable({ checks }: { checks: Check[] }) {
+/** `bare`: labels without their parenthesised part (the kit step); `advice`: the label of a row shown without a verdict */
+export function CheckTable({ checks, bare = false, advice }: { checks: Check[]; bare?: boolean; advice?: string }) {
   const t = useT()
   return (
     <table className="check-table">
@@ -45,7 +46,7 @@ export function CheckTable({ checks }: { checks: Check[] }) {
         {checks.map((c) => (
           <tr key={c.label}>
             <td>
-              {t(c.label)}
+              {bare ? t(c.label).replace(/\s*\([^)]*\)/g, '') : t(c.label)}
               {c.note && <div className="note">{t(c.note, c.noteArgs)}</div>}
             </td>
             <td className="num">
@@ -57,9 +58,7 @@ export function CheckTable({ checks }: { checks: Check[] }) {
             <td>
               <Ratio ratio={c.ratio} status={c.status === 'ok' ? undefined : c.status} warnAt={isSpeedLabel(c.label) ? 1 : undefined} />
             </td>
-            <td>
-              <StatusBadge status={c.status} />
-            </td>
+            <td>{c.label !== advice && <StatusBadge status={c.status} />}</td>
           </tr>
         ))}
       </tbody>

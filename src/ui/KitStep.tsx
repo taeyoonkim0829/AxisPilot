@@ -1,4 +1,4 @@
-import { orderKits, type KitEvaluation, type KitMatch, type KitNote, type KitType } from '../calc/kitSelection'
+import { MOTOR_MAX_LABEL, orderKits, type KitEvaluation, type KitMatch, type KitNote, type KitType } from '../calc/kitSelection'
 import type { Kit } from '../data/types'
 import { useT } from '../i18n'
 import type { Settings } from '../calc/types'
@@ -152,7 +152,7 @@ function KitDetail({ evaluation }: { evaluation: KitEvaluation }) {
   return (
     <div className="detail">
       <h4>{t('{model} 세부사항', { model: kit.product })}</h4>
-      <CheckTable checks={checks} />
+      <CheckTable checks={checks} bare advice={MOTOR_MAX_LABEL} />
       <KitSpecs kit={kit} />
       {notes.length > 0 && <KitNotes notes={notes} />}
     </div>

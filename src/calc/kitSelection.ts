@@ -94,19 +94,20 @@ export function evaluateKit(axisEval: AxisEvaluation, drive: DriveEvaluation, ki
   if (parallelFx != null && fx && (fx.limit == null || parallelFx < fx.limit)) {
     checks.push(check('이송력 Fx (병렬 키트)', fx.value, parallelFx, 'N'))
   }
-  if (kit.transmissibleTorque != null && motorMax > kit.transmissibleTorque) {
-    checks.push({
-      ...check(MOTOR_MAX_LABEL, motorMax, kit.transmissibleTorque, 'Nm'),
-      status: 'warn',
-      note: '드라이브 토크(전류) 제한을 키트 전달 토크 이하로 설정하세요',
-    })
-  }
   if (kit.inertia != null) {
     checks.push(
       check('최대 토크 (키트 포함)', motorPeak, motor.peakTorque, 'Nm'),
       check('실효 토크 (키트 포함)', motorRms, motor.ratedTorque, 'Nm'),
       check('관성비 (키트 포함)', inertiaRatio, motor.allowableInertiaRatio ?? settings.defaultInertiaRatio, '배'),
     )
+  }
+  // advice only, listed last
+  if (kit.transmissibleTorque != null && motorMax > kit.transmissibleTorque) {
+    checks.push({
+      ...check(MOTOR_MAX_LABEL, motorMax, kit.transmissibleTorque, 'Nm'),
+      status: 'warn',
+      note: '드라이브 토크(전류) 제한을 키트 전달 토크 이하로 설정하세요',
+    })
   }
 
   const notes: KitNote[] = []
