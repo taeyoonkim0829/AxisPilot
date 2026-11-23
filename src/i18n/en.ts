@@ -737,6 +737,8 @@ export const en: Record<string, string> = {
   '방문 통계를 위해 Google Analytics(쿠키)를 사용합니다. 입력값과 선정 결과는 수집하지 않습니다.':
     'This site uses Google Analytics (cookies) for visitor statistics. Inputs and selections are not collected.',
   '등각': 'Isometric',
+  '입력한 스트로크에 맞는 표준 스트로크 제품이 없습니다. 표준 스트로크를 끄면 모듈러 제품을 볼 수 있습니다.':
+    'No product has a standard stroke long enough for the entered stroke. Turn off standard stroke to see the modular products.',
   '정면': 'Front',
   '평면': 'Top',
   '우측면': 'Right',

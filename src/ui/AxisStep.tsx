@@ -272,7 +272,9 @@ export function AxisStep({ results, selectedId, onSelect, settings, onSettings, 
         <p className="field-hint application-hint">{t('ESBF 수평 설치: 로드는 횡하중에 약하므로 가이드 축 추가를 권장합니다')}</p>
       )}
 
-      {rows.length === 0 ? (
+      {results.length === 0 && settings.standardStroke ? (
+        <p className="empty">{t('입력한 스트로크에 맞는 표준 스트로크 제품이 없습니다. 표준 스트로크를 끄면 모듈러 제품을 볼 수 있습니다.')}</p>
+      ) : rows.length === 0 ? (
         <p className="empty">{t('조건을 만족하는 축이 없습니다. 부적합 포함을 켜서 초과 항목을 확인하세요.')}</p>
       ) : (
         <div className="table-wrap">
