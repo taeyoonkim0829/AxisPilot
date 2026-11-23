@@ -10,7 +10,6 @@ import { verticalForward, type Requirements, type Settings, type Status } from '
 import { MOTOR_MAX_LABEL, type KitEvaluation } from '../calc/kitSelection'
 import {
   assemblyWarnings,
-  connectorSide,
   drivePositionWords,
   mirroredDrive,
   shaftDrivePosition,
@@ -434,41 +433,32 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
         </Chapter>
       )}
 
-      <Chapter no={5} axis={gantry?.axis} title={t('감속기 세부사항')}>
-        {!drive ? (
-          noMotor
-        ) : (
-          <>
-            {g ? (
-              <>
-                <h3>
-                  {g.maker} {g.model}
-                </h3>
-                <SpecTable
-                  rows={[
-                    ['감속비', `${g.ratio}:1`],
-                    ['주문번호', g.partNumber ?? '—'],
-                    ['단수', g.stage == null ? '—' : t('{n}단', { n: g.stage })],
-                    ['플랜지 크기', q(g.flangeSize, 'mm', 0)],
-                    ['정격 출력 토크', q(g.continuousTorque, 'Nm')],
-                    ['최대 출력 토크', q(g.maxTorque, 'Nm')],
-                    ['최대 입력 회전수', q(g.maxInputSpeed, 'rpm', 0)],
-                    ['관성 (입력측)', q(g.inertia, 'kg·cm²', 4)],
-                    ['효율', q(g.efficiency, '%', 1)],
-                    ['인터페이스 코드 (출력측)', g.interfaceCode ?? '—'],
-                  ]}
-                />
-                <h3>{t('검토 항목')}</h3>
-                <CheckTable checks={gearboxChecks(drive)} />
-              </>
-            ) : (
-              <p className="report-note">{t('감속기를 사용하지 않습니다 (축 - 연결키트 - 모터).')}</p>
-            )}
-          </>
-        )}
-      </Chapter>
+      {/* no gearbox chapter without a gearbox; the kit is then chapter 5, as in the steps */}
+      {drive && g && (
+        <Chapter no={5} axis={gantry?.axis} title={t('감속기 세부사항')}>
+          <h3>
+            {g.maker} {g.model}
+          </h3>
+          <SpecTable
+            rows={[
+              ['감속비', `${g.ratio}:1`],
+              ['주문번호', g.partNumber ?? '—'],
+              ['단수', g.stage == null ? '—' : t('{n}단', { n: g.stage })],
+              ['플랜지 크기', q(g.flangeSize, 'mm', 0)],
+              ['정격 출력 토크', q(g.continuousTorque, 'Nm')],
+              ['최대 출력 토크', q(g.maxTorque, 'Nm')],
+              ['최대 입력 회전수', q(g.maxInputSpeed, 'rpm', 0)],
+              ['관성 (입력측)', q(g.inertia, 'kg·cm²', 4)],
+              ['효율', q(g.efficiency, '%', 1)],
+              ['인터페이스 코드 (출력측)', g.interfaceCode ?? '—'],
+            ]}
+          />
+          <h3>{t('검토 항목')}</h3>
+          <CheckTable checks={gearboxChecks(drive)} />
+        </Chapter>
+      )}
 
-      <Chapter no={6} axis={gantry?.axis} title={t('연결키트 세부사항')}>
+      <Chapter no={g ? 6 : 5} axis={gantry?.axis} title={t('연결키트 세부사항')}>
         {!kitMatch ? (
           noMotor
         ) : (
@@ -511,10 +501,6 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
                           [twinAssembly ? '키트 조립 방향 (첫 번째 축, 모터 위치)' : '키트 조립 방향 (모터 위치)', t(sideLabel[assembly.kitSide])],
                         ] as Row[])
                       : []),
-                    [
-                      twinAssembly ? '모터 조립 방향 (첫 번째 축, 커넥터)' : '모터 조립 방향 (커넥터)',
-                      t(sideLabel[connectorSide(assembly, kit.type === 'parallel')]),
-                    ],
                     ...(cylinder?.eagf ? ([['EAGF 취부 방향 (취부 홀 면)', t(sideLabel[assembly.guideSide ?? 'up'])]] as Row[]) : []),
                     ...(kit.type !== 'parallel' && kit.window && kitDrawingFor(kit)?.meta?.window
                       ? ([['키트 조립 방향 (견시창)', t(sideLabel[assembly.windowSide ?? 'up'])]] as Row[])
@@ -522,14 +508,8 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
                     ...(twinAssembly && kit.type === 'parallel'
                       ? ([['키트 조립 방향 (두 번째 축, 모터 위치)', t(sideLabel[twinAssembly.kitSide])]] as Row[])
                       : []),
-                    ...(twinAssembly
-                      ? ([
-                          ['모터 조립 방향 (두 번째 축, 커넥터)', t(sideLabel[connectorSide(twinAssembly, kit.type === 'parallel')])],
-                        ] as Row[])
-                      : []),
                   ]}
                 />
-                <p className="report-note">{t('모터 쪽 축 끝에서 축을 바라볼 때 기준이며, 슬라이드 면이 상입니다.')}</p>
                 {[
                   ...new Set([
                     ...assemblyWarnings(assembly, kit.type === 'parallel', cylinder),

@@ -18,6 +18,8 @@ export interface CableChoice {
   order: 'standard' | 'variable' | 'modular' | 'rounded'
   /** module name for `modular` (e.g. NEBM-LX/M17) */
   module?: string
+  /** m, the longest length orderable for this role (the motor cable also within the drive's limit); null unknown */
+  maxLength: number | null
 }
 
 export interface ResistorChoice {
@@ -36,6 +38,8 @@ export interface ControllerSelection {
   controller: Controller | null
   /** the maker's preferred drive for the motor (Festo), when it differs from the selected one */
   preferred: Controller | null
+  /** the maker's preferred drive for the motor (Festo), also when it is the selected one */
+  recommended: Controller | null
   /** A, required at the motor */
   rmsCurrent: number
   peakCurrent: number
@@ -135,12 +139,22 @@ export function selectController(
         length > c.range[0] &&
         length <= c.range[1],
     )
+  // m, the longest orderable length of a role's cables for this motor and drive
+  const longestOf = (role: Cable['role']) => {
+    const lengths = data.cables
+      .filter((c) => c.role === role && c.controller === family && new RegExp(c.motors).test(motor.model) && (!c.brakeOnly || motor.brake))
+      .map((c) => c.fixedLength ?? Math.min(c.range[1], Math.max(c.configurable?.max ?? 0, ...Object.keys(c.partNumbers).map(Number))))
+    return lengths.length ? Math.max(...lengths) : null
+  }
+  const longest = longestOf('motor')
+  const maxCableLength =
+    controller?.maxCableLength != null && longest != null ? Math.min(longest, controller.maxCableLength) : (controller?.maxCableLength ?? longest)
   const roles: Cable['role'][] = ['motor', 'encoder', 'adapter', 'brake']
   for (const role of roles) {
     const cable = pick(role)
     if (!cable) continue
     const l = cable.fixedLength ?? length
-    const base = { role, crossSection: cable.crossSection }
+    const base = { role, crossSection: cable.crossSection, maxLength: role === 'motor' ? maxCableLength : longestOf(role) }
     const standard = cable.partNumbers[lengthKey(l)]
     const conf = cable.configurable
     if (standard) {
@@ -175,12 +189,6 @@ export function selectController(
       })
     }
   }
-  const orderable = data.cables
-    .filter((c) => c.role === 'motor' && c.controller === family && new RegExp(c.motors).test(motor.model) && (!c.brakeOnly || motor.brake))
-    .map((c) => Math.min(c.range[1], Math.max(c.configurable?.max ?? 0, ...Object.keys(c.partNumbers).map(Number))))
-  const longest = orderable.length ? Math.max(...orderable) : null
-  const maxCableLength =
-    controller?.maxCableLength != null && longest != null ? Math.min(longest, controller.maxCableLength) : (controller?.maxCableLength ?? longest)
   const hasMotorCable = cableChoices.some((c) => c.role === 'motor')
   if (!hasMotorCable) {
     checks.push({
@@ -311,6 +319,7 @@ export function selectController(
   return {
     controller,
     preferred,
+    recommended: preferredItem,
     rmsCurrent,
     peakCurrent,
     cables: cableChoices,

@@ -25,7 +25,7 @@ export function DrivePackage({
   hideTitle?: boolean
 }) {
   const t = useT()
-  const { controller, preferred, cables, resistor } = selection
+  const { controller, recommended, cables, resistor } = selection
   return (
     <div className="drive-package">
       {/* h3 like the motor details title above it */}
@@ -59,15 +59,7 @@ export function DrivePackage({
               <td>{t('서보 드라이브')}</td>
               <td className="model">{controller?.model ?? '—'}</td>
               <td>{controller?.partNumber ?? '—'}</td>
-              <td className="muted">
-                {controller &&
-                  t('{supply} · 정격 {nominal} A / 최대 {peak} A', {
-                    supply: controller.supply,
-                    nominal: fmt(controller.nominalCurrent, 1),
-                    peak: fmt(controller.peakCurrent, 1),
-                  })}
-                {preferred && ` · ${t('Festo 추천 조합: {model}', { model: preferred.model })}`}
-              </td>
+              <td className="muted">{recommended && t('Festo 추천 조합: {model}', { model: recommended.model })}</td>
             </tr>
             {cables.map((c) => (
               <tr key={c.role}>
@@ -79,6 +71,7 @@ export function DrivePackage({
                     c.crossSection != null ? `${fmt(c.crossSection, 2)} mm²` : null,
                     `${fmt(c.length, 1)} m`,
                     c.order === 'standard' ? null : t(orderLabel[c.order], { module: c.module ?? '' }),
+                    c.maxLength != null ? t('최대 {n} m', { n: fmt(c.maxLength, 3) }) : null,
                   ]
                     .filter(Boolean)
                     .join(' · ')}
