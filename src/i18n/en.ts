@@ -417,6 +417,7 @@ export const en: Record<string, string> = {
   '반복 정밀도': 'Repeatability',
   '구동축 환산 관성': 'Inertia at the drive shaft',
   '구동 효율': 'Drive efficiency',
+  '마찰 계수': 'Friction coefficient',
   '인터페이스 코드': 'Interface code',
   '검토 항목': 'Checks',
   '참고값': 'Reference values',
