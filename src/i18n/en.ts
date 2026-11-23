@@ -115,6 +115,8 @@ export const en: Record<string, string> = {
   '휴지': 'Dwell',
   '최고 속도': 'Peak velocity',
   '설정 속도 미도달': 'set velocity not reached',
+  '사다리꼴': 'trapezoidal',
+  '수명': 'Service life',
   '최대 가속도': 'Max. acceleration',
   '등속 시간': 'Constant-velocity time',
   '이동 시간 (편도)': 'Move time (one way)',

@@ -39,7 +39,6 @@ import {
   sideLabel,
   supplyLabel,
 } from './format'
-import { ProfileNumbers } from './MotionProfile'
 import { ProfilePlot, type ProfileView } from './ProfileChart'
 
 interface Props {
@@ -170,6 +169,9 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
   const layout = axis.layout
   const selection = partRows(axis, drive, kitEval, t)
   const noMotor = <p className="empty">{t('모터를 선택하지 않았습니다.')}</p>
+  const p = axis.profile
+  // the report's 참고값 keep the service lives only (the screw's size is in the axis table)
+  const lives = axisDetailInfo(axis).filter((i) => i.label.includes('수명'))
 
   return (
     <div className="report">
@@ -192,7 +194,7 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
             ['속도', q(req.velocity, 'm/s')],
             ['가속도', q(req.acceleration, 'm/s²')],
             ['가속 시간', q(accelTimeFor(req.velocity, req.acceleration, req.jerk), 's')],
-            ['저크', req.jerk > 0 ? q(req.jerk, 'm/s³') : t('제한 없음 (사다리꼴)')],
+            ['저크', `${q(req.jerk, 'm/s³')}${req.jerk > 0 ? '' : ` (${t('사다리꼴')})`}`],
             ['휴지 시간', q(settings.dwellTime, 's')],
             ['어플리케이션', t(axis.press ? '프레싱' : '일반')],
             ...(axis.press
@@ -241,8 +243,6 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
             ...(settings.externalForce > 0
               ? [['Fc 작용점 y / z', `${fmt(settings.externalForcePoint.y)} / ${fmt(settings.externalForcePoint.z)} mm`] as [string, string]]
               : []),
-            ['가이드 저항 FG', q(settings.guideResistance, 'N')],
-            ['커플링 관성', q(settings.couplingInertia, 'kg·cm²', 4)],
             settings.support === 'floor'
               ? ['지지 방식', t('바닥 지지')]
               : settings.support === 'cantilever'
@@ -285,7 +285,25 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
       </Chapter>
 
       <Chapter no={2} axis={gantry?.axis} title={t('모션 프로파일')}>
-        <ProfileNumbers axis={axis} />
+        <SpecTable
+          rows={[
+            [
+              '최고 속도',
+              `${fmt(p.peakVelocity, 3)} m/s${p.reachedVelocity ? '' : ` (${t('설정 속도 미도달')})`}`,
+            ],
+            ['최대 가속도', `${fmt(p.peakAcceleration, 2)} m/s²`],
+            ['가속 시간', `${fmt(p.accelTime, 3)} s`],
+            ['등속 시간', `${fmt(p.constantTime, 3)} s`],
+            [axis.press ? '접근 시간' : '이동 시간 (편도)', `${fmt(p.moveTime, 3)} s`],
+            ...(axis.press
+              ? ([
+                  ['압착 시간', `${fmt(axis.press.profile.moveTime, 3)} s`],
+                  ['가압 유지', `${fmt(axis.press.holdTime, 3)} s`],
+                ] as Row[])
+              : []),
+            ['사이클 (왕복)', `${fmt(axis.cycleTime, 3)} s`],
+          ]}
+        />
         <figure className="profile-chart report-chart">
           <figcaption>
             {t(profileView === 'cycle' ? '왕복' : moveLabel(profileView === 'back', vertical))}
@@ -328,6 +346,12 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
             ['무부하 구동 토크', q(axis.noLoadTorque, 'Nm')],
             ['최대 구동 토크', q(a.maxDrivingTorque, 'Nm')],
             ['회전당 이송량', q(axis.feed, 'mm/rev')],
+            ...(a.drive === 'spindle'
+              ? ([
+                  ['볼스크류 직경', q(a.spindleDiameter, 'mm')],
+                  ['볼스크류 피치', q(a.spindlePitch, 'mm')],
+                ] as Row[])
+              : []),
             ['반복 정밀도', a.repeatability == null ? '—' : `±${fmt(a.repeatability, 3)} mm`],
             ['이동 질량', `${q(axis.movingMass, 'kg')} (${t('부하 + 슬라이드')})`],
             ['축 질량', q(axis.axisMass, 'kg')],
@@ -338,10 +362,10 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
         />
         <h3>{t('검토 항목')}</h3>
         <CheckTable checks={axisDetailChecks(axis)} />
-        {axisDetailInfo(axis).length > 0 && (
+        {lives.length > 0 && (
           <>
             <h3>{t('참고값')}</h3>
-            <SpecTable rows={axisDetailInfo(axis).map(infoRow)} />
+            <SpecTable rows={lives.map(infoRow)} />
           </>
         )}
         {guide && (

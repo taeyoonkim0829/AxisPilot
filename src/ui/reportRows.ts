@@ -40,14 +40,10 @@ export function partRows(
     ...(drive?.controller?.resistor.item && drive.controller.resistor.required
       ? ([[t('제동저항'), 'Festo', drive.controller.resistor.item.model, drive.controller.resistor.item.partNumber, nDrive, null]] as SelectionRow[])
       : []),
-    [
-      t('감속기'),
-      g?.maker ?? '—',
-      drive ? (g ? `${g.model} (${g.ratio}:1)` : t('감속기 미사용')) : '—',
-      g?.partNumber ?? null,
-      g ? nDrive : null,
-      drive ? gearboxStatus(drive) : null,
-    ],
+    // no row without a gearbox
+    ...(drive && g
+      ? ([[t('감속기'), g.maker, `${g.model} (${g.ratio}:1)`, g.partNumber ?? null, nDrive, gearboxStatus(drive)]] as SelectionRow[])
+      : []),
     [
       t('연결키트'),
       kit ? 'Festo' : '—',
