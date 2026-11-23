@@ -2119,7 +2119,7 @@ th.num {
 
 .report-chart {
   break-inside: avoid;
-  margin-top: 6px;
+  margin-top: 20px;
 }
 
 .report-chart figcaption {

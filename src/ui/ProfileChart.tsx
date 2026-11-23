@@ -10,7 +10,8 @@ import { fmt, moveLabel } from './format'
 const W = 1000
 const H = 92
 const PAD = { left: 160, right: 12, top: 22, bottom: 6 }
-const AXIS_H = 22
+/** the tick row and the time axis name below it */
+const AXIS_H = 40
 
 type Point = TracePoint & { torque: number }
 
@@ -233,8 +234,8 @@ export function ProfilePlot({
           <Panel trace={trace} series={s} x={x} hover={hover} />
         </g>
       ))}
-      {/* the time axis named like the panel titles, on its tick row */}
-      <text className="chart-title" x={4} y={plotH + 15}>
+      {/* the time axis name, centred below its ticks */}
+      <text className="chart-title" x={(PAD.left + W - PAD.right) / 2} y={plotH + 34} textAnchor="middle">
         {t('시간')} [s]
       </text>
       {ticks(0, moveTime, 6)
