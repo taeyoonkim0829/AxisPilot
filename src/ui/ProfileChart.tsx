@@ -233,6 +233,10 @@ export function ProfilePlot({
           <Panel trace={trace} series={s} x={x} hover={hover} />
         </g>
       ))}
+      {/* the time axis named like the panel titles, on its tick row */}
+      <text className="chart-title" x={4} y={plotH + 15}>
+        {t('시간')} [s]
+      </text>
       {ticks(0, moveTime, 6)
         .filter((time) => time <= moveTime)
         .map((time) => (

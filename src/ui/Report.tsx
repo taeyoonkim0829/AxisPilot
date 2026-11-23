@@ -307,7 +307,7 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
           <figcaption>
             {t(profileView === 'cycle' ? '왕복' : moveLabel(profileView === 'back', vertical))}
             {profileView !== 'back' && axis.press ? ` + ${t('압착')}` : ''}
-            {settings.dwellTime > 0 ? ` + ${t('휴지')}` : ''} ({t('가로축 시간 s')})
+            {settings.dwellTime > 0 ? ` + ${t('휴지')}` : ''}
           </figcaption>
           <ProfilePlot axis={axis} drive={drive} settings={settings} view={profileView} />
         </figure>

@@ -405,7 +405,7 @@ export const en: Record<string, string> = {
   '선정 모델': 'Selected models',
   '구분': 'Part',
   '주문번호': 'Part no.',
-  '가로축 시간 s': 'horizontal axis: time in s',
+  '시간': 'Time',
   '축 선정 세부사항': 'Axis selection details',
   '제품군': 'Product family',
   '구동 방식': 'Drive type',
