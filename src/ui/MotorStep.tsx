@@ -56,11 +56,13 @@ export function MotorStep({ results, selected, onSelect, settings, onSettings, l
   const [showFailed, setShowFailed] = useState(false)
   const [detailOpen, setDetailOpen] = useState(true)
   const passing = results.filter((r) => r.status !== 'fail')
+  const listed = showFailed ? results : passing
+  // the limit keeps the best ranked motors (the recommended one among them); the column sort orders those
   const {
-    sorted: listed,
+    sorted: rows,
     sort,
     toggle,
-  } = useSort(showFailed ? results : passing, {
+  } = useSort(listed.slice(0, ROW_LIMIT), {
     status: (d) => statusRank[d.status],
     model: (d) => lengthOrdered(d.motor.model),
     power: (d) => d.motor.ratedPower,
@@ -71,9 +73,8 @@ export function MotorStep({ results, selected, onSelect, settings, onSettings, l
     inertia: (d) => d.checks.find((c) => c.label === '관성비')?.ratio ?? null,
     kit: (d) => (d.kit ? statusRank[d.kit.status] : 3),
     controller: (d) => d.controller?.controller?.nominalCurrent ?? null,
-  })
+  }, { key: 'model', dir: 'desc' })
   const th = { sort, onSort: toggle }
-  const rows = listed.slice(0, ROW_LIMIT)
   const familyOptions = settings.makers.flatMap((m) => motorFamilies[m])
   const excluded = settings.excludedMotorFamilies
   const family = familyOptions.find((f) => !excluded.includes(f)) ?? familyOptions[0]

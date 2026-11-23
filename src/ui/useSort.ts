@@ -11,10 +11,10 @@ export const statusRank: Record<Status, number> = { ok: 0, warn: 1, fail: 2 }
 
 /**
  * Column sorting for a table. Clicking a column cycles ascending → descending → original order.
- * Missing values (null) always go last; ties keep the original order.
+ * Missing values (null) always go last; ties keep the original order. `initial`: the sort to start with.
  */
-export function useSort<T>(rows: T[], keys: Record<string, (row: T) => SortValue>) {
-  const [sort, setSort] = useState<SortState>(null)
+export function useSort<T>(rows: T[], keys: Record<string, (row: T) => SortValue>, initial: SortState = null) {
+  const [sort, setSort] = useState<SortState>(initial)
   const pick = sort && keys[sort.key]
   const sorted =
     sort && pick
