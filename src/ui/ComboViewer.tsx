@@ -21,8 +21,8 @@ const ROLE_COLORS: Record<PartRole, string> = {
 }
 const COG_COLOR = '#d6392b'
 
-/** the home view: isometric from the front right, above */
-const HOME: Vec3 = [0.85, -1.3, 0.9]
+/** the home view: isometric from the corner where the drawing's front (−Y), top (+Z) and right side (+X) views meet */
+const HOME: Vec3 = [1, -1, 1]
 
 /**
  * View cube faces in BoxGeometry order (+X, −X, +Y, −Y, +Z, −Z of the geometry). The cube is turned a quarter about X,
