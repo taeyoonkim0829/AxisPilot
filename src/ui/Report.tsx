@@ -100,7 +100,7 @@ function ReportMeta({ date }: { date: string }) {
   const t = useT()
   return (
     <p className="report-meta">
-      {t('직교 축 선정 계산서 · {date}', { date })} · <span className="report-link">{t('웹에서 이 계산 열기')}</span>
+      {t('직교 축 선정 자료 · {date}', { date })} · <span className="report-link">{t('웹에서 열기')}</span>
     </p>
   )
 }

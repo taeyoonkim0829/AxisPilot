@@ -392,7 +392,7 @@ export const en: Record<string, string> = {
 
   // Report
   '입력 데이터 · 선정 모델': 'Input data · selected models',
-  '직교 축 선정 계산서 · {date}': 'Linear axis selection report · {date}',
+  '직교 축 선정 자료 · {date}': 'Linear axis selection data · {date}',
   '무게 중심 X / Y / Z': 'Center of gravity X / Y / Z',
   '제한 없음 (사다리꼴)': 'Unlimited (trapezoidal)',
   '구동 효율 (볼스크류 / 벨트)': 'Efficiency (ball screw / belt)',
@@ -555,7 +555,7 @@ export const en: Record<string, string> = {
   '우': 'Right',
   '키트 조립 방향 (모터 위치)': 'Kit orientation (motor position)',
   '모터 조립 방향 (커넥터)': 'Motor orientation (connector)',
-  '웹에서 이 계산 열기': 'Open this calculation on the web',
+  '웹에서 열기': 'Open on the web',
   '키트 조립 방향 (첫 번째 축, 모터 위치)': 'Kit orientation (first axis, motor position)',
   '키트 조립 방향 (두 번째 축, 모터 위치)': 'Kit orientation (second axis, motor position)',
   '모터 조립 방향 (첫 번째 축, 커넥터)': 'Motor orientation (first axis, connector)',
