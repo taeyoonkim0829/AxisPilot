@@ -2941,7 +2941,22 @@ select.field-select {
   max-height: none;
 }
 
-.compare-spec .gauge-cell {
+/* fixed columns: the gauges stay centred however long the model names in the head are (they wrap instead) */
+.compare-spec {
+  table-layout: fixed;
+}
+
+.compare-spec th {
+  width: 27%;
+}
+
+.compare-spec th .model {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.compare-spec .gauge-cell,
+.compare-spec th.gauge-head {
   width: 46%;
 }
 
