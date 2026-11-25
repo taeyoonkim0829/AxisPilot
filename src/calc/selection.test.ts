@@ -1,11 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { axes, gearboxes, guides, kits, motors, shafts } from '../data'
+import { axes, brakingResistors, cables, controllers, gearboxes, guides, kits, motors, shafts } from '../data'
 import type { Axis, AxisFamily, DriveKind, Gearbox, Motor } from '../data/types'
-import { axisOptions, axisOrder, curveAt, evaluateAxis, guideLoads, memberLoads, parallelLayout, selectAxes, G } from './axisSelection'
-import { evaluateDrive, gearboxOptionsFor, gearboxStatus, selectMotors } from './motorSelection'
+import { axisOptions, axisOrder, curveAt, evaluateAxis, guideLoads, memberLoads, parallelLayout, selectAxes, G, type AxisEvaluation } from './axisSelection'
+import { attachController } from './controllerSelection'
+import { attachKit } from './kitSelection'
+import { evaluateDrive, gearboxOptionsFor, gearboxStatus, selectMotors, type DriveEvaluation } from './motorSelection'
 import { moveProfile } from './motionProfile'
 import { comboInputs, shaftTooShort } from '../ui/comboInputs'
-import { defaultParallel, defaultPress, defaultSettings as appDefaults, verticalForward, type Requirements } from './types'
+import { defaultParallel, defaultPress, defaultSettings as appDefaults, verticalForward, worstStatus, type Requirements } from './types'
 
 // every axis and motor filter on (the app's defaults narrow the lists)
 const defaultSettings = { ...appDefaults, families: ['ELGT', 'ELGD', 'EGC', 'EGC-HD', 'ESBF'], drives: ['spindle', 'belt'], supplies: ['ac230', 'ac400', 'dc48'], excludedMotorFamilies: [] } satisfies typeof appDefaults
@@ -592,15 +594,44 @@ describe('selection on real data', () => {
   })
 
   it('prefers a higher ratio that fits over a lower one that only warns (e.g. no kit)', () => {
-    const [first] = selectAxes(axes, baseReq, defaultSettings)
+    // a light load, so that some motor fits on more than one ratio
+    const [first] = selectAxes(axes, { ...baseReq, payload: 2, acceleration: 1, velocity: 0.2 }, defaultSettings)
     const settings = { ...defaultSettings, useGearbox: true }
-    const motor = motors.find((m) => gearboxOptionsFor(m).length >= 2)!
+    // a motor that fits on the lowest ratio and on a higher one
+    const fits = (m: Motor, g: Gearbox) => evaluateDrive(first, m, g, settings).status === 'ok'
+    const motor = motors.find((m) => {
+      const [low, ...higher] = gearboxOptionsFor(m)
+      return low && fits(m, low) && higher.some((g) => fits(m, g))
+    })!
     const lowest = gearboxOptionsFor(motor)[0]
-    // The lowest ratio has no kit (warn), every other ratio fits
+    // The lowest ratio has no kit (warn), every other ratio's kit fits; like attachKit, the hook only adds a verdict
     const [picked] = selectMotors(first, [motor], { ...settings, makers: [motor.maker], requireBrake: false }, (d) =>
-      ({ ...d, status: d.gearbox?.id === lowest.id ? 'warn' : 'ok' }),
+      ({ ...d, status: d.gearbox?.id === lowest.id ? worstStatus([d, { status: 'warn' }]) : d.status }),
     )
     expect(picked.status).toBe('ok')
     expect(picked.gearbox!.id).not.toBe(lowest.id)
   })
+})
+
+describe('gearbox choice', () => {
+  // the motor step's choice (lazy: options that cannot win are not attached) against every option attached
+  it('picks the same gearbox and verdict per motor as attaching every option', () => {
+    const settings = { ...defaultSettings, useGearbox: true }
+    const attach = (ax: AxisEvaluation) => (d: DriveEvaluation) => attachController(ax, attachKit(ax, d, kits, settings), settings, { controllers, resistors: brakingResistors, cables })
+    const order = { ok: 0, warn: 1, fail: 2 }
+    for (const maker of ['Festo', 'Siemens', 'Mitsubishi', 'LS'] as const)
+      for (const req of [baseReq, { ...baseReq, payload: 40, velocity: 1 }, { ...baseReq, mounting: 'vertical' as const, payload: 5 }]) {
+        const s = { ...settings, makers: [maker] }
+        const ax = selectAxes(axes, req, s, shafts, guides).find((r) => r.status !== 'fail')!
+        const lazy = new Map(selectMotors(ax, motors, s, attach(ax)).map((d) => [d.motor.id, `${d.gearbox?.id} ${d.status}`]))
+        const eager = new Map<string, string>()
+        for (const m of motors.filter((m) => lazy.has(m.id) || m.maker === maker)) {
+          const all = gearboxOptionsFor(m).map((g) => attach(ax)(evaluateDrive(ax, m, g, s)))
+          const best = all.reduce<DriveEvaluation | undefined>((b, e) => (!b || order[e.status] < order[b.status] ? e : b), undefined)
+          if (best && lazy.has(m.id)) eager.set(m.id, `${best.gearbox?.id} ${best.status}`)
+        }
+        expect(lazy.size, `${maker} ${req.mounting}`).toBeGreaterThan(0)
+        expect([...lazy], `${maker} ${req.mounting}`).toEqual([...lazy.keys()].map((id) => [id, eager.get(id)]))
+      }
+  }, 120000)
 })

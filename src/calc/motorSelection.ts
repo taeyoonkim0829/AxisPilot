@@ -229,12 +229,16 @@ export function selectMotors(
     )
     .flatMap((motor) => {
       if (!settings.useGearbox) return [attachKit(evaluateDrive(axisEval, motor, null, settings))]
-      const geared = gearboxOptionsFor(motor).map((g) => attachKit(evaluateDrive(axisEval, motor, g, settings)))
-      // Best verdict (kit included), lowest ratio among equals: geared is ratio-sorted
-      const best = geared.reduce<DriveEvaluation | undefined>(
-        (b, e) => (!b || statusOrder[e.status] < statusOrder[b.status] ? e : b),
-        undefined,
-      )
+      // Best verdict (kit included), lowest ratio among equals, in ratio order. `attachKit` only makes a verdict worse,
+      // so an option whose own verdict cannot beat the best so far is not attached (the costly part), and an `ok` ends it
+      let best: DriveEvaluation | undefined
+      for (const g of gearboxOptionsFor(motor)) {
+        const drive = evaluateDrive(axisEval, motor, g, settings)
+        if (best && statusOrder[drive.status] >= statusOrder[best.status]) continue
+        const option = attachKit(drive)
+        if (!best || statusOrder[option.status] < statusOrder[best.status]) best = option
+        if (best.status === 'ok') break
+      }
       return best ? [best] : []
     })
     .sort(
