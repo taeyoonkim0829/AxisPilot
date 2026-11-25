@@ -151,11 +151,11 @@ export function SpecRadar({ rows, reference, festo, zoomable = true }: Specs & {
               const [x, y] = at(i, r.ratio!)
               // beyond the zoomed scale: a hollow dot on the rim, the label keeps the true percentage
               return over(r.ratio!) ? (
-                <circle key={r.label} className="radar-dot radar-dot-over" cx={x} cy={y} r={6}>
+                <circle key={i} className="radar-dot radar-dot-over" cx={x} cy={y} r={6}>
                   <title>{t('눈금 밖 {pct}', { pct: pct(r.ratio!) })}</title>
                 </circle>
               ) : (
-                <circle key={r.label} className="radar-dot" cx={x} cy={y} r={4} />
+                <circle key={i} className="radar-dot" cx={x} cy={y} r={4} />
               )
             })}
             {charted.map((r, i) => {
@@ -170,7 +170,7 @@ export function SpecRadar({ rows, reference, festo, zoomable = true }: Specs & {
               const below = 16 + note.length * 14
               const y = CY + (R + 16) * sin + (sin < -0.3 ? -below - (sin < -0.9 ? 10 : 0) : sin > 0.3 ? 12 : -below / 2 + 4)
               return (
-                <text key={r.label} className="radar-label" x={x} y={y} textAnchor={anchor}>
+                <text key={i} className="radar-label" x={x} y={y} textAnchor={anchor}>
                   <tspan className="radar-name">{t(r.label)}</tspan>
                   <tspan className="radar-pct" dx={6}>
                     {over(r.ratio!) ? '▲ ' : ''}
@@ -197,8 +197,8 @@ export function SpecRadar({ rows, reference, festo, zoomable = true }: Specs & {
             <dt />
             <dd className="model">{festo}</dd>
           </div>
-          {listed.map((r) => (
-            <div key={r.label} className="radar-fact">
+          {listed.map((r, i) => (
+            <div key={i} className="radar-fact">
               <dd>{specCell(r.reference, t(r.unit))}</dd>
               <dt>
                 {t(r.label)}

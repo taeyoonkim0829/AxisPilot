@@ -266,8 +266,9 @@ function SpecRows({ rows, reference, festo }: Specs) {
         </tr>
       </thead>
       <tbody>
-        {rows.map((r) => (
-          <tr key={r.label}>
+        {/* the items a gauge cannot show (texts) below the gauges */}
+        {[...rows.filter((r) => r.ratio != null), ...rows.filter((r) => r.ratio == null)].map((r, i) => (
+          <tr key={i}>
             <td className="num">{cell(r.reference, t(r.unit))}</td>
             <td className="gauge-cell">
               <span className="gauge-label">
