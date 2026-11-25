@@ -213,15 +213,74 @@ function CompareBar({ reference, festo, onExport, exporting }: { reference: Item
   )
 }
 
-function SpecTable(specs: Specs) {
+/** 사양 비교 as a radar chart or as gauge bars; the PDF prints the one on screen */
+type SpecView = 'radar' | 'gauge'
+const SPEC_VIEWS = ['radar', 'gauge'] as const
+
+function SpecTable({ view, onView, ...specs }: Specs & { view: SpecView; onView: (v: SpecView) => void }) {
   const t = useT()
   return (
     <section className="panel step">
       <header className="step-head">
         <h2>{t('사양 비교')}</h2>
+        <RadioGroup options={SPEC_VIEWS} value={view} onChange={onView} label={(v) => t(v === 'radar' ? '레이더 차트' : '게이지 바')} ariaLabel={t('보기 방식')} />
       </header>
-      <SpecRadar {...specs} />
+      {view === 'radar' ? (
+        <SpecRadar {...specs} />
+      ) : (
+        <div className="table-wrap">
+          <SpecRows {...specs} />
+        </div>
+      )}
     </section>
+  )
+}
+
+/** The Festo product's value against the compared product's (= 100%): a 0–200% bar, the Festo share in blue from the right */
+function Gauge({ ratio }: { ratio: number | null }) {
+  const t = useT()
+  if (ratio == null) return <span className="gauge-none muted">{t('수치 비교 없음')}</span>
+  return (
+    <span className="gauge">
+      <span className="gauge-fill" style={{ width: `${(Math.min(ratio, 2) / 2) * 100}%` }} />
+      <span className="gauge-text">{pct(ratio)}</span>
+    </span>
+  )
+}
+
+const cell = (v: number | string | null, unit: string) => (v == null ? '—' : typeof v === 'number' ? `${fmt(v, 3)}${unit ? ` ${unit}` : ''}` : v)
+
+function SpecRows({ rows, reference, festo }: Specs) {
+  const t = useT()
+  return (
+    <table className="data-table compare-spec">
+      <thead>
+        <tr>
+          <th className="num">
+            <span className="model">{reference}</span>
+          </th>
+          <th className="gauge-head">{t('수치 비교')}</th>
+          <th>
+            <span className="model">{festo}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((r) => (
+          <tr key={r.label}>
+            <td className="num">{cell(r.reference, t(r.unit))}</td>
+            <td className="gauge-cell">
+              <span className="gauge-label">
+                {t(r.label)}
+                {r.note && <span className="gauge-note muted">{t(r.note, r.noteArgs)}</span>}
+              </span>
+              <Gauge ratio={r.ratio} />
+            </td>
+            <td className="num spec-other">{cell(r.other, t(r.unit))}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   )
 }
 
@@ -229,7 +288,7 @@ function SpecTable(specs: Specs) {
  * The PDF (one chapter, pdfExport): the pair and the data side by side. Mounted while exporting, off screen on
  * the body, outside `.app`, so it keeps the report's light look.
  */
-function CompareReport({ stageRef, kind, reference, festo, specs }: { stageRef: RefObject<HTMLDivElement | null>; kind: string; reference: Item; festo: Omit<Item, 'maker'>; specs: Specs }) {
+function CompareReport({ stageRef, kind, reference, festo, specs, view }: { stageRef: RefObject<HTMLDivElement | null>; kind: string; reference: Item; festo: Omit<Item, 'maker'>; specs: Specs; view: SpecView }) {
   const t = useT()
   const lang = useLang()
   const [today] = useState(() => new Date().toLocaleDateString(lang === 'ko' ? 'ko-KR' : 'en-US'))
@@ -258,7 +317,7 @@ function CompareReport({ stageRef, kind, reference, festo, specs }: { stageRef: 
             </tbody>
           </table>
           <h3>{t('사양 비교')}</h3>
-          <SpecRadar {...specs} zoomable={false} />
+          {view === 'radar' ? <SpecRadar {...specs} zoomable={false} /> : <SpecRows {...specs} />}
         </section>
       </div>
     </div>,
@@ -362,6 +421,7 @@ function AxisCompare() {
   const refModel = robostarModel(ref, opts) ?? ref.model
   const order = festo ? axisOrder(festo, opts.stroke) : null
   const festoModel = ref.drive === 'spindle' && order ? order.model : (festo?.model ?? '')
+  const [view, setView] = useState<SpecView>('radar')
   const { exporting, start, reportRef } = useCompareExport(refModel, festo ? festoModel : null)
   const reference = { maker: ref.maker, model: refModel, line: axisLine(ref, t) }
   const festoBar = festo ? { model: festoModel, line: `${axisLine(festo, t)}${ref.drive === 'spindle' && order?.partNumber ? ` · ${order.partNumber}` : ''}` } : null
@@ -466,10 +526,10 @@ function AxisCompare() {
             { head: t('속도 비교'), num: true, sort: (a) => a.maxSpeed, cell: (a) => pct(a.maxSpeed / ref.maxSpeed) },
           ]}
         />
-        {specs && <SpecTable {...specs} />}
+        {specs && <SpecTable {...specs} view={view} onView={setView} />}
         <Footer />
       </div>
-      {exporting && festoBar && specs && <CompareReport stageRef={reportRef} kind={t('직교 축')} reference={reference} festo={festoBar} specs={specs} />}
+      {exporting && festoBar && specs && <CompareReport stageRef={reportRef} kind={t('직교 축')} reference={reference} festo={festoBar} specs={specs} view={view} />}
     </main>
   )
 }
@@ -514,6 +574,7 @@ function MotorCompare() {
     const differs = match?.differs.length ? ` · ${t('선택 불가: {what}', { what: match.differs.map((k) => t(OPTION_LABEL[k])).join(', ') })}` : ''
     return `${motorLine(m)}${pn ? ` · ${pn}` : ''}${differs}`
   }
+  const [view, setView] = useState<SpecView>('radar')
   const { exporting, start, reportRef } = useCompareExport(refModel, festo ? festoModel : null)
   const reference = { maker: ref.maker, model: refModel, line: motorLine(ref) }
   const festoBar = festo ? { model: festoModel, line: festoLine(festo) } : null
@@ -626,10 +687,10 @@ function MotorCompare() {
             },
           ]}
         />
-        {specs && <SpecTable {...specs} />}
+        {specs && <SpecTable {...specs} view={view} onView={setView} />}
         <Footer />
       </div>
-      {exporting && festoBar && specs && <CompareReport stageRef={reportRef} kind={t('모터')} reference={reference} festo={festoBar} specs={specs} />}
+      {exporting && festoBar && specs && <CompareReport stageRef={reportRef} kind={t('모터')} reference={reference} festo={festoBar} specs={specs} view={view} />}
     </main>
   )
 }

@@ -2934,6 +2934,74 @@ select.field-select {
   --gauge: #0091dc;
 }
 
+/* 사양 비교 as gauge bars: the Festo value against the reference's (= 100%), 0 to 200%, the percentage inside the
+   bar; between the reference's value (right-aligned) and the replacement's (left-aligned) */
+.compare-spec .gauge-cell {
+  width: 46%;
+}
+
+.compare-spec .gauge-head {
+  text-align: center;
+}
+
+/* the item's name above its gauge; the values beside it sit level with the gauge */
+.compare-spec .gauge-label {
+  display: block;
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+.compare-spec .gauge-note {
+  display: block;
+  font-size: 12px;
+}
+
+.compare-spec td.num,
+.compare-spec td.spec-other {
+  vertical-align: bottom;
+}
+
+.compare-spec .spec-other {
+  text-align: left;
+}
+
+.gauge {
+  position: relative;
+  display: block;
+  height: 22px;
+  border-radius: 6px;
+  /* the track: neutral, opaque */
+  background: linear-gradient(rgb(var(--ov) / 0.14), rgb(var(--ov) / 0.14)), var(--surface-solid);
+  overflow: hidden;
+}
+
+/* the Festo product's share, in Festo blue from the right */
+.gauge-fill {
+  position: absolute;
+  inset: 0 0 0 auto;
+  background: var(--gauge);
+}
+
+.gauge-text {
+  position: relative;
+  display: block;
+  line-height: 22px;
+  text-align: center;
+  font-family: var(--din);
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  /* a halo in the ground's colour, readable over the blue and over the empty track */
+  text-shadow:
+    0 0 3px rgb(var(--veil)),
+    0 0 6px rgb(var(--veil) / 0.8);
+}
+
+.gauge-none {
+  display: block;
+  text-align: center;
+}
+
 /* 사양 비교: radar chart, the compared product at 100% (dashed ring), the Festo product's area in blue */
 .radar {
   padding: 4px 0 8px;
