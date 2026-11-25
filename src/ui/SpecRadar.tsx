@@ -37,6 +37,18 @@ function stepZoom(z: number | null, fitted: number, d: 1 | -1): number {
   return (d > 0 ? ladder.filter((v) => v < cur).at(-1) : ladder.find((v) => v > cur)) ?? cur
 }
 
+/** The note's lines (11px) within `max` px: SVG text does not wrap; widths estimated, CJK at a full em */
+function wrapNote(text: string, max: number): string[] {
+  const width = (s: string) => [...s].reduce((w, c) => w + (c.charCodeAt(0) >= 0x2e80 ? 11 : 6.2), 0)
+  const lines: string[] = []
+  for (const word of text.split(' ')) {
+    const last = lines.at(-1)
+    if (last != null && width(`${last} ${word}`) <= max) lines[lines.length - 1] = `${last} ${word}`
+    else lines.push(word)
+  }
+  return lines
+}
+
 const specCell = (v: number | string | null, unit: string) =>
   v == null ? '—' : typeof v === 'number' ? `${fmt(v, 3)}${unit ? ` ${unit}` : ''}` : v
 
@@ -150,10 +162,13 @@ export function SpecRadar({ rows, reference, festo, zoomable = true }: Specs & {
               const cos = Math.cos(angle(i))
               const sin = Math.sin(angle(i))
               const x = CX + (R + 16) * cos
-              // labels above the top spokes end at the ring, those below start at it
-              const lines = 2 + (r.note ? 1 : 0)
-              const y = CY + (R + 16) * sin + (sin < -0.3 ? -(lines - 1) * 16 - (sin < -0.9 ? 10 : 0) : sin > 0.3 ? 12 : -((lines - 1) * 16) / 2 + 4)
               const anchor = cos > 0.3 ? 'start' : cos < -0.3 ? 'end' : 'middle'
+              // the note wraps within the room between the label's anchor and the chart's edge
+              const room = anchor === 'start' ? W - x : anchor === 'end' ? x : 2 * Math.min(x, W - x)
+              const note = r.note ? wrapNote(t(r.note, r.noteArgs), room - 12) : []
+              // labels above the top spokes end at the ring, those below start at it
+              const below = 16 + note.length * 14
+              const y = CY + (R + 16) * sin + (sin < -0.3 ? -below - (sin < -0.9 ? 10 : 0) : sin > 0.3 ? 12 : -below / 2 + 4)
               return (
                 <text key={r.label} className="radar-label" x={x} y={y} textAnchor={anchor}>
                   <tspan className="radar-name">{t(r.label)}</tspan>
@@ -164,11 +179,11 @@ export function SpecRadar({ rows, reference, festo, zoomable = true }: Specs & {
                   <tspan className="radar-values" x={x} dy={16}>
                     {specCell(r.reference, t(r.unit))} → {specCell(r.other, t(r.unit))}
                   </tspan>
-                  {r.note && (
-                    <tspan className="radar-note" x={x} dy={16}>
-                      {t(r.note, r.noteArgs)}
+                  {note.map((line, k) => (
+                    <tspan key={k} className="radar-note" x={x} dy={k === 0 ? 16 : 14}>
+                      {line}
                     </tspan>
-                  )}
+                  ))}
                 </text>
               )
             })}
