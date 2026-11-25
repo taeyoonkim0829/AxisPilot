@@ -115,7 +115,7 @@ export function axisSpecRows(ref: ThirdPartyAxis, festo: Axis): SpecRow[] {
   const thrust = ref.drive === 'spindle' && ref.screwLead ? Math.round(estimatedThrust(ref.motorPower, ref.screwLead)) : null
   rows.push({
     ...row('최대 이송력', 'N', thrust, festo.maxFeedForce || null),
-    ...(thrust != null ? { note: '로보스타: 모터 사양 고정으로 제한됨 (모터 정격 토크 × 볼스크류로 추정, 정격 {rpm} rpm, 효율 {eta})', noteArgs: { rpm: RATED_RPM, eta: SCREW_EFFICIENCY } } : {}),
+    ...(thrust != null ? { note: '로보스타: 모터 사양 고정으로 제한됨' } : {}),
   })
   // The catalog's moment ratings as allowable overhangs: the Festo axis's at the same payload and acceleration
   for (const o of ref.overhang ?? []) {
