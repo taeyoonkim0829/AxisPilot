@@ -228,7 +228,7 @@ function SpecTable({ view, onView, ...specs }: Specs & { view: SpecView; onView:
       {view === 'radar' ? (
         <SpecRadar {...specs} />
       ) : (
-        <div className="table-wrap">
+        <div className="table-wrap spec-wrap">
           <SpecRows {...specs} />
         </div>
       )}

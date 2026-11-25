@@ -2936,6 +2936,11 @@ select.field-select {
 
 /* 사양 비교 as gauge bars: the Festo value against the reference's (= 100%), 0 to 200%, the percentage inside the
    bar; between the reference's value (right-aligned) and the replacement's (left-aligned) */
+/* every item at once, no scroll box like the candidates' */
+.table-wrap.spec-wrap {
+  max-height: none;
+}
+
 .compare-spec .gauge-cell {
   width: 46%;
 }
