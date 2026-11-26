@@ -460,11 +460,12 @@ function wrap(line: string, width: number): string[] {
   const out: string[] = []
   let rest = line.trim()
   while (textWidth(rest) > width) {
-    // the last whole character within the width, back to a space when there is one in its second half
+    // the last whole character within the width, back to the last space before it: lines break between words, a word
+    // is cut only when it is longer than the line
     let end = 0
     for (let w = 0; end < rest.length && w + textWidth(rest[end]) <= width; end++) w += textWidth(rest[end])
     const cut = rest.lastIndexOf(' ', end)
-    const at = cut > end / 2 ? cut : Math.max(1, end)
+    const at = cut > 0 ? cut : Math.max(1, end)
     out.push(rest.slice(0, at).trimEnd())
     rest = rest.slice(at).trimStart()
   }

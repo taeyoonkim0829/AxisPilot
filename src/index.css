@@ -68,6 +68,9 @@
   color: var(--text);
   background: var(--bg);
   color-scheme: dark;
+  /* lines break between words, never inside a Korean word; only a word longer than its line breaks */
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 :root[data-theme='light'] {
