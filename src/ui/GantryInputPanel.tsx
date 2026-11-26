@@ -240,6 +240,7 @@ export function GantryInputPanel({ gantry, onGantry, settings, onSettings, baseS
       </section>
 
       <ParallelSection
+        gantry
         parallel={parallel}
         onParallel={(p) => set('parallel', { ...gantry.parallel, [base]: p })}
         title={base === 'x' ? 'X축 구성' : 'Y축 구성'}
