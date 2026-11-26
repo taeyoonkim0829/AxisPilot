@@ -3,7 +3,7 @@
 import { selectAxes, type AxisEvaluation } from './calc/axisSelection'
 import { attachController } from './calc/controllerSelection'
 import { attachKit, findKits, type KitEvaluation, type KitMatch } from './calc/kitSelection'
-import { evaluateDrive, gearboxOptionsFor, selectMotors, type DriveEvaluation } from './calc/motorSelection'
+import { bestOption, evaluateDrive, gearboxOptionsFor, motorListed, selectMotors, type DriveEvaluation } from './calc/motorSelection'
 import { baseParallel, gantryBase, gantryChain, gantryRequirements, provisionalMotorMass, stageOf, withBaseSpacing, type GantryAxis, type GantryInputs, type Stage } from './calc/gantry'
 import type { Requirements, Settings } from './calc/types'
 import { gantryJoint, jointMass, kitList, type GantryJoint } from './calc/gantryKits'
@@ -23,7 +23,6 @@ export const noPicks: Picks = { axisId: null, motorId: null, gearboxId: null, ki
 export interface Selection {
   axisResults: AxisEvaluation[]
   selectedAxis: AxisEvaluation | null
-  motorResults: DriveEvaluation[]
   gearboxOptions: DriveEvaluation[]
   selectedDrive: DriveEvaluation | null
   kitMatch: KitMatch | null
@@ -53,9 +52,8 @@ export function computeSelection(req: Requirements, settings: Settings, picks: P
   const axisResults = selectAxes(axes, req, settings, shafts, guides, sensors)
   // Keep the user's pick while it is still listed; otherwise fall back to the best candidate.
   const selectedAxis = axisResults.find((r) => r.axis.id === picks.axisId) ?? recommendedAxis(axisResults)
-  const motorResults = selectedAxis ? selectMotors(selectedAxis, motors, settings, (d) => attachParts(selectedAxis, d, settings)) : []
-  const motorResult = motorResults.find((r) => r.motor.id === picks.motorId) ?? null
-  const selectedMotor = motorResult?.motor ?? null
+  // The picked motor while the motor step lists it (the list itself is `motorList`, built apart: the costly part)
+  const selectedMotor = (selectedAxis && motors.find((m) => m.id === picks.motorId && motorListed(m, settings))) || null
   // Direct drive only, or each compatible gearbox when the motor step is set to use one; only a handful.
   const gearboxOptions =
     selectedAxis && selectedMotor
@@ -63,17 +61,23 @@ export function computeSelection(req: Requirements, settings: Settings, picks: P
           attachParts(selectedAxis, evaluateDrive(selectedAxis, selectedMotor, g, settings), settings),
         )
       : []
-  // The user's gearbox pick in step 3, else the one the motor step recommended.
-  const selectedDrive =
-    gearboxOptions.find((o) => o.gearbox && o.gearbox.id === picks.gearboxId) ??
-    gearboxOptions.find((o) => (o.gearbox?.id ?? null) === (motorResult?.gearbox?.id ?? null)) ??
-    gearboxOptions[0] ??
-    null
+  // The user's gearbox pick in step 3, else the one the motor step recommends (its list row's)
+  const selectedDrive = gearboxOptions.find((o) => o.gearbox && o.gearbox.id === picks.gearboxId) ?? bestOption(gearboxOptions)
   const kitMatch = selectedAxis && selectedDrive ? findKits(selectedAxis.axis, selectedDrive.motor, selectedDrive.gearbox, kits, settings.kitType) : null
   const kitEvals = selectedDrive?.kits ?? []
   // The user's pick, else the drive's recommended kit
   const selectedKitEval = kitEvals.find((e) => e.kit.id === picks.kitId) ?? selectedDrive?.kit ?? null
-  return { axisResults, selectedAxis, motorResults, gearboxOptions, selectedDrive, kitMatch, kitEvals, selectedKitEval }
+  return { axisResults, selectedAxis, gearboxOptions, selectedDrive, kitMatch, kitEvals, selectedKitEval }
+}
+
+/**
+ * The motor step's list for the selected axis (`axisId`): one drive option per listed motor, kit and drive package
+ * attached. The costly part of the selection (every motor, with 감속기 사용 every gearbox of each): the page builds it
+ * in a worker (`ui/useMotorList.ts`) while the rest of the selection stays on the page.
+ */
+export function motorList(req: Requirements, settings: Settings, axisId: string): DriveEvaluation[] {
+  const axisEval = selectAxes(axes, req, settings, shafts, guides, sensors).find((r) => r.axis.id === axisId)
+  return axisEval ? selectMotors(axisEval, motors, settings, (d) => attachParts(axisEval, d, settings)) : []
 }
 
 /** kg of the drive on the axis: motor, gearbox and kit; a provisional motor mass until a motor is picked. */

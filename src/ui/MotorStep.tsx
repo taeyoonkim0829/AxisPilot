@@ -14,6 +14,8 @@ import { fmt, supplyLabel } from './format'
 interface Props {
   /** One row per motor: direct drive, or with its recommended gearbox when settings.useGearbox */
   results: DriveEvaluation[]
+  /** a newer list is being built (the rows shown are the last one) */
+  pending?: boolean
   /** The selected motor with the gearbox actually used (the recommendation unless changed below the list) */
   selected: DriveEvaluation | null
   onSelect: (id: string) => void
@@ -49,7 +51,7 @@ const lengthOrdered = (model: string) => model.replace(/^(EM[A-Z]+-[A-Z]+-\d+-)(
 
 const ROW_LIMIT = 60
 
-export function MotorStep({ results, selected, onSelect, settings, onSettings, layout, gearboxOptions, onSelectGearbox }: Props) {
+export function MotorStep({ results, pending = false, selected, onSelect, settings, onSettings, layout, gearboxOptions, onSelectGearbox }: Props) {
   const t = useT()
   const lang = useLang()
   const selectedId = selected?.motor.id ?? null
@@ -133,14 +135,18 @@ export function MotorStep({ results, selected, onSelect, settings, onSettings, l
         />
       </div>
 
-      {rows.length === 0 ? (
+      {rows.length === 0 && pending ? (
+        <p className="empty" aria-busy="true">
+          {t('모터 검토 중…')}
+        </p>
+      ) : rows.length === 0 ? (
         <p className="empty">
           {settings.useGearbox
             ? t('조건을 만족하는 모터가 없습니다. 감속기 데이터가 있는 모터만 검토합니다. 다른 축이나 감속기 미사용을 선택해 보세요.')
             : t('조건을 만족하는 모터가 없습니다. 감속기 사용을 선택하거나 다른 축을 선택해 보세요.')}
         </p>
       ) : (
-        <div className="table-wrap">
+        <div className={`table-wrap${pending ? ' pending' : ''}`} aria-busy={pending}>
           <table className="data-table">
             <thead>
               <tr>

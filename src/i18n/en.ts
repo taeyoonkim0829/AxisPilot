@@ -249,6 +249,7 @@ export const en: Record<string, string> = {
   '볼스크류 Ø / 리드': 'Ball screw Ø / lead',
   '볼스크류 직경 × 피치': 'Ball screw diameter × pitch',
   '사양 비교': 'Specifications compared',
+  '모터 검토 중…': 'Checking motors…',
   '레이더 차트': 'Radar chart',
   '게이지 바': 'Gauge bars',
   '보기 방식': 'View',

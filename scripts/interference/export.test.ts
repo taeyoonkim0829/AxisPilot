@@ -16,7 +16,7 @@ import { adapterDrawingFor, mountingDrawingFor, parseDrawingPath, shaftDrawingFo
 import { buildGantry, type GantryAxisDrawing, type GantryJointDrawing } from '../../src/cad/gantry'
 import { apply, rotate } from '../../src/cad/geometry'
 import { stretchedOrigin } from '../../src/cad/stretch'
-import { computeGantry, noPicks } from '../../src/selection'
+import { computeGantry, motorList, noPicks } from '../../src/selection'
 
 const out = process.env.AXISPILOT_EXPORT
 const only = process.env.AXISPILOT_SCENARIO
@@ -89,8 +89,9 @@ describe.skipIf(!out)('export gantry drawings for the interference check', () =>
       for (const a of ['z', 'y', 'x'] as GantryAxis[]) {
         const r = results.find((x) => x.axis === a)
         if (!r?.sel) continue
-        const drawn = (m: (typeof r.sel.motorResults)[number]) => m.kit && comboDrawings({ axis: r.sel!.selectedAxis!.axis, axisModel: '', stroke: 0, motor: m.motor, gearbox: m.gearbox, kit: m.kit.kit }, all).missing.length === 0
-        const motor = r.sel.motorResults.find((m) => m.status !== 'fail' && drawn(m)) ?? r.sel.motorResults.find(drawn)
+        const rows = r.sel.selectedAxis ? motorList(r.req!, sc.s[a], r.sel.selectedAxis.axis.id) : []
+        const drawn = (m: (typeof rows)[number]) => m.kit && comboDrawings({ axis: r.sel!.selectedAxis!.axis, axisModel: '', stroke: 0, motor: m.motor, gearbox: m.gearbox, kit: m.kit.kit }, all).missing.length === 0
+        const motor = rows.find((m) => m.status !== 'fail' && drawn(m)) ?? rows.find(drawn)
         if (!motor) throw new Error(`${sc.name}: no motor with drawings for ${a}`)
         if (sc.ids?.[a] && r.sel.selectedAxis!.axis.id !== sc.ids[a]) throw new Error(`${sc.name}: ${sc.ids[a]} not listed for ${a}`)
         picks[a] = { ...noPicks, axisId: r.sel.selectedAxis!.axis.id, motorId: motor.motor.id }

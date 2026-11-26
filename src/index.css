@@ -1326,6 +1326,12 @@ details summary:hover {
   border-radius: 6px;
 }
 
+/* a newer list is on its way (the motor list, built in a worker): the last one dimmed */
+.table-wrap.pending {
+  opacity: 0.55;
+  transition: opacity 0.15s 0.15s;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;

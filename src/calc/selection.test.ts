@@ -7,7 +7,7 @@ import { attachKit } from './kitSelection'
 import { evaluateDrive, gearboxOptionsFor, gearboxStatus, selectMotors, type DriveEvaluation } from './motorSelection'
 import { moveProfile } from './motionProfile'
 import { comboInputs, shaftTooShort } from '../ui/comboInputs'
-import { recommendedAxis } from '../selection'
+import { computeSelection, motorList, noPicks, recommendedAxis } from '../selection'
 import { defaultParallel, defaultPress, defaultSettings as appDefaults, verticalForward, worstStatus, type Requirements } from './types'
 
 // every axis and motor filter on (the app's defaults narrow the lists)
@@ -647,5 +647,22 @@ describe('recommended axis', () => {
     const warned = results.map((r) => (r.order.model === 'ELGT-BS-90-500-10P' ? { ...r, status: 'warn' as const } : r))
     expect(recommendedAxis(warned)?.order.model).toBe('ELGT-BS-90-500-20P')
     expect(recommendedAxis(results.map((r) => ({ ...r, status: 'fail' as const })))).toBeNull()
+  })
+})
+
+describe('motor list', () => {
+  it('crosses to the page from its worker (structured clone) and agrees with the picked motor\'s drive', () => {
+    for (const settings of [appDefaults, { ...appDefaults, useGearbox: true, makers: ['Siemens' as const] }]) {
+      const req: Requirements = { ...baseReq, acceleration: 2, cog: { x: 0, y: 0, z: 50 } }
+      const axisId = computeSelection(req, settings, noPicks).selectedAxis!.axis.id
+      const rows = motorList(req, settings, axisId)
+      expect(rows.length).toBeGreaterThan(0)
+      expect(structuredClone(rows)).toEqual(rows)
+      // picking a row's motor: the selection's drive is that row's (same gearbox, same verdict)
+      for (const row of rows.slice(0, 8)) {
+        const drive = computeSelection(req, settings, { ...noPicks, axisId, motorId: row.motor.id }).selectedDrive!
+        expect([drive.gearbox?.id, drive.status]).toEqual([row.gearbox?.id, row.status])
+      }
+    }
   })
 })

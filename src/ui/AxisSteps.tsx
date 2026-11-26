@@ -9,6 +9,7 @@ import { KitStep } from './KitStep'
 import { MotionProfile } from './MotionProfile'
 import { MotorStep } from './MotorStep'
 import type { ProfileView } from './ProfileChart'
+import { useMotorList } from './useMotorList'
 
 interface Props {
   sel: Selection
@@ -34,6 +35,8 @@ interface Props {
 export function AxisSteps({ sel, req, calcSettings, settings, onSettings, picks, onPicks, profileView, onProfileView, assembly, onAssembly, gantry = false, drawing }: Props) {
   const t = useT()
   const { selectedAxis, selectedDrive } = sel
+  // the motor list, built in a worker (the costly part of the selection)
+  const motorList = useMotorList(req, calcSettings, selectedAxis?.axis.id ?? null)
   return (
     <>
       {selectedAxis && (
@@ -57,7 +60,8 @@ export function AxisSteps({ sel, req, calcSettings, settings, onSettings, picks,
       />
       {selectedAxis ? (
         <MotorStep
-          results={sel.motorResults}
+          results={motorList.rows}
+          pending={motorList.pending}
           selected={selectedDrive}
           onSelect={(id) => onPicks({ ...picks, motorId: id, gearboxId: null })}
           settings={settings}

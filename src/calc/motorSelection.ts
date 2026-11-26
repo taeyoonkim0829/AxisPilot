@@ -213,6 +213,18 @@ export function motorSupply(m: Motor): Supply | null {
  * verdict (kit included), lowest ratio among equals, and motors without a compatible gearbox drop out.
  * `attachKit` (kitSelection) adds the mounting kit and its verdict to each option before choosing and sorting.
  */
+/** The motors the step's filters list (maker, supply, family, brake) */
+export const motorListed = (m: Motor, settings: Settings) =>
+  settings.makers.includes(m.maker) &&
+  [null, ...settings.supplies].includes(motorSupply(m)) &&
+  !settings.excludedMotorFamilies.includes(m.family) &&
+  (!settings.requireBrake || m.brake)
+
+/** The best of a motor's drive options (ratio-sorted): the best verdict, the lowest ratio among equals */
+export function bestOption(options: DriveEvaluation[]): DriveEvaluation | null {
+  return options.reduce<DriveEvaluation | null>((b, e) => (!b || statusOrder[e.status] < statusOrder[b.status] ? e : b), null)
+}
+
 export function selectMotors(
   axisEval: AxisEvaluation,
   all: Motor[],
@@ -220,13 +232,7 @@ export function selectMotors(
   attachKit: (drive: DriveEvaluation) => DriveEvaluation = (d) => d,
 ): DriveEvaluation[] {
   return all
-    .filter(
-      (m) =>
-        settings.makers.includes(m.maker) &&
-        [null, ...settings.supplies].includes(motorSupply(m)) &&
-        !settings.excludedMotorFamilies.includes(m.family) &&
-        (!settings.requireBrake || m.brake),
-    )
+    .filter((m) => motorListed(m, settings))
     .flatMap((motor) => {
       if (!settings.useGearbox) return [attachKit(evaluateDrive(axisEval, motor, null, settings))]
       // Best verdict (kit included), lowest ratio among equals, in ratio order. `attachKit` only makes a verdict worse,
