@@ -337,7 +337,6 @@ export function Report({ req, settings, axis, drive, kitMatch, kit: kitEval, pro
             ...(axis.options?.mounting
               ? ([['취부 방식', t(axis.options.mounting === 'M' ? '직접 체결 M' : '전면 사용 M7')]] as Row[])
               : []),
-            ['제품군', [a.family, a.variant].filter(Boolean).join('-')],
             ['구동 방식', t(driveLabel[a.drive])],
             ['최대 스트로크', q(maxStrokeOf(a, axis.options), 'mm')],
             ['최대 속도', q(a.maxSpeed, 'm/s')],
