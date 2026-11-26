@@ -323,7 +323,7 @@ export function ParallelSection({
   cylinder,
   gantry,
 }: {
-  /** the gantry screen: 2축 · 모터 동기 listed without admin mode */
+  /** the gantry screen: both 2축 동기 arrangements listed without admin mode */
   gantry?: boolean
   parallel: ParallelConfig
   onParallel: (p: ParallelConfig) => void
@@ -341,10 +341,10 @@ export function ParallelSection({
   const guides = parallel.mode === 'guides'
   // the EAGF: one unit on the cylinder, no count, spacing or mass to enter
   const eagf = guides && parallel.guideAxis && cylinder
-  // 2축 동기 only in admin mode (a shared link with one keeps it listed); the gantry offers motor sync to everyone
+  // 2축 동기 only in admin mode (a shared link with one keeps it listed); the gantry offers both to everyone
   const admin = useAdmin()
   const modes = (Object.keys(parallelModeLabel) as ParallelMode[]).filter(
-    (m) => admin || m === 'single' || m === 'guides' || m === parallel.mode || (gantry && m === 'twinMotor'),
+    (m) => admin || gantry || m === 'single' || m === 'guides' || m === parallel.mode,
   )
   return (
     <section className="panel application">
