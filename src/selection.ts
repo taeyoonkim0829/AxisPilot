@@ -37,11 +37,22 @@ function attachParts(axisEval: AxisEvaluation, drive: DriveEvaluation, settings:
   return attachController(axisEval, attachKit(axisEval, drive, kits, settings), settings, { controllers, resistors: brakingResistors, cables })
 }
 
+const byModel = new Intl.Collator(undefined, { numeric: true })
+
+/**
+ * The recommended axis: of those with the best verdict (not failing), the first by model name, the top row of the
+ * axis table as it opens (sorted by model, sizes by value: ELGT-BS-90-…-10P before -20P and -120-…)
+ */
+export function recommendedAxis(results: AxisEvaluation[]): AxisEvaluation | null {
+  const best = results.find((r) => r.status !== 'fail')
+  if (!best) return null
+  return results.filter((r) => r.status === best.status).reduce((a, r) => (byModel.compare(r.order.model, a.order.model) < 0 ? r : a))
+}
+
 export function computeSelection(req: Requirements, settings: Settings, picks: Picks): Selection {
   const axisResults = selectAxes(axes, req, settings, shafts, guides, sensors)
   // Keep the user's pick while it is still listed; otherwise fall back to the best candidate.
-  const selectedAxis =
-    axisResults.find((r) => r.axis.id === picks.axisId) ?? axisResults.find((r) => r.status !== 'fail') ?? null
+  const selectedAxis = axisResults.find((r) => r.axis.id === picks.axisId) ?? recommendedAxis(axisResults)
   const motorResults = selectedAxis ? selectMotors(selectedAxis, motors, settings, (d) => attachParts(selectedAxis, d, settings)) : []
   const motorResult = motorResults.find((r) => r.motor.id === picks.motorId) ?? null
   const selectedMotor = motorResult?.motor ?? null

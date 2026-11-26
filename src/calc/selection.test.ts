@@ -7,6 +7,7 @@ import { attachKit } from './kitSelection'
 import { evaluateDrive, gearboxOptionsFor, gearboxStatus, selectMotors, type DriveEvaluation } from './motorSelection'
 import { moveProfile } from './motionProfile'
 import { comboInputs, shaftTooShort } from '../ui/comboInputs'
+import { recommendedAxis } from '../selection'
 import { defaultParallel, defaultPress, defaultSettings as appDefaults, verticalForward, worstStatus, type Requirements } from './types'
 
 // every axis and motor filter on (the app's defaults narrow the lists)
@@ -634,4 +635,17 @@ describe('gearbox choice', () => {
         expect([...lazy], `${maker} ${req.mounting}`).toEqual([...lazy.keys()].map((id) => [id, eager.get(id)]))
       }
   }, 120000)
+})
+
+describe('recommended axis', () => {
+  it('opens on the top row of the axis table: the best verdict, then the first by model name (ELGT-BS-90-…-10P, not the lighter -20P)', () => {
+    const req: Requirements = { ...baseReq, acceleration: 2, cog: { x: 0, y: 0, z: 50 } }
+    const results = selectAxes(axes, req, { ...appDefaults }, shafts, guides)
+    expect(results[0].order.model).toBe('ELGT-BS-90-500-20P')
+    expect(recommendedAxis(results)?.order.model).toBe('ELGT-BS-90-500-10P')
+    // a passing axis before a warning one, whatever their names
+    const warned = results.map((r) => (r.order.model === 'ELGT-BS-90-500-10P' ? { ...r, status: 'warn' as const } : r))
+    expect(recommendedAxis(warned)?.order.model).toBe('ELGT-BS-90-500-20P')
+    expect(recommendedAxis(results.map((r) => ({ ...r, status: 'fail' as const })))).toBeNull()
+  })
 })
