@@ -21,13 +21,20 @@
 이송 조건(스트로크, 속도, 가속도 또는 가속 시간, 저크, 부하 질량, 부하 무게 중심, 설치 방향 바닥 / 벽면 / 수직)을
 넣으면 주문할 수 있는 조합을 순서대로 고릅니다. 각 단계는 앞 단계의 선택을 바탕으로 합니다.
 
-1. **직교 축**: Festo ELGT, ELGD, EGC (EGC-HD, ELGD-WD 포함), ESBF 전동 실린더
-2. **모터**: Festo (EMMT-AS, EMMT-EC, EMMB-AS, EMMT-ST, EMMB-ST), Siemens (1FK2, 1FL6), Mitsubishi (HK, HG),
-   LS Mecapion (APM). 서보 드라이브(CMMT, S210 / V90, MR-J5 / MR-J4, L7NH), 모터 케이블, 제동저항까지 함께 선정.
-   전원은 AC 380–480 V, AC 200–240 V, DC 48 V, DC 24 V
-3. **감속기**: 선택 사항 (직결 또는 맞는 Festo EMGA / Apex 감속기)
-4. **연결키트**: Festo 모터-축 연결키트를 인터페이스 코드로 매칭하고 데이터시트 값으로 검토
-5. **조합 도면**: 제조사 CAD 모델(STEP)을 조립한 3D 미리보기, STEP · DXF · PDF 도면 내보내기
+1. 직교 축
+   - Festo ELGT, ELGD, EGC, EGC-HD, ESBF 전동 실린더
+2. 모터
+   - Festo (EMMT-AS, EMMT-EC, EMMB-AS, EMMT-ST, EMMB-ST)
+   - Siemens (1FK2, 1FL6)
+   - Mitsubishi (HK, HG)
+   - LS Mecapion (APM)
+   - 서보 드라이브(CMMT, S210 / V90, MR-J5 / MR-J4, L7NH), 모터 케이블, 제동저항까지 함께 선정.
+3. 감속기
+   - 선택 사항 (직결 또는 맞는 Festo EMGA / Apex 감속기)
+4. 연결키트
+   - Festo 모터-축 연결키트를 인터페이스 코드로 매칭하고 데이터시트 값으로 검토
+5. 조합 도면
+   - 제조사 CAD 모델(STEP)을 조립한 3D 미리보기, STEP · DXF · PDF 도면 내보내기
 
 모든 검토 항목은 계산값, 허용값, 부하율과 함께 `적합` / `주의` / `부적합`으로 보여 줍니다. 결과만이 아니라
 왜 맞는지를 화면과 보고서에서 확인할 수 있습니다.
