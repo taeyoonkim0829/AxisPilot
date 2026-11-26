@@ -162,7 +162,25 @@ function hasCards(node: ReactNode): boolean {
   )
 }
 
-const POPOVER_W = 320
+/** A help card's head: the gem ? badge, the title and a close button. */
+function HelpHead({ id, title, onClose }: { id: string; title: string; onClose: () => void }) {
+  const t = useT()
+  return (
+    <div className="help-head">
+      <span className="help-badge" aria-hidden="true">
+        ?
+      </span>
+      <h2 id={id}>{title}</h2>
+      <button type="button" className="help-close" aria-label={t('닫기')} title={t('닫기')} onClick={onClose}>
+        <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+          <path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+      </button>
+    </div>
+  )
+}
+
+const POPOVER_W = 340
 const GAP = 8
 
 /**
@@ -178,7 +196,7 @@ export function HelpTip({ title, children }: { title: string; children: ReactNod
   const dialog = useRef<HTMLDialogElement>(null)
   const [popover, setPopover] = useState(false)
   const [modal, setModal] = useState(false)
-  const [place, setPlace] = useState<{ left: number; top: number; arrow: number; above: boolean; maxHeight: number } | null>(null)
+  const [place, setPlace] = useState<{ left: number; top: number; maxHeight: number } | null>(null)
   const [picture, setPicture] = useState(false)
   const cards = hasCards(children)
   const name = t('{title} 도움말', { title })
@@ -203,7 +221,7 @@ export function HelpTip({ title, children }: { title: string; children: ReactNod
       const aboveRoom = r.top - 2 * GAP
       const above = h > below && aboveRoom > below
       const maxHeight = Math.max(120, above ? aboveRoom : below)
-      setPlace({ left, top: above ? r.top - GAP - Math.min(h, maxHeight) : r.bottom + GAP, arrow: centre - left, above, maxHeight })
+      setPlace({ left, top: above ? r.top - GAP - Math.min(h, maxHeight) : r.bottom + GAP, maxHeight })
     }
     update()
     setPicture(!!pop.current?.querySelector('img'))
@@ -249,17 +267,22 @@ export function HelpTip({ title, children }: { title: string; children: ReactNod
         createPortal(
           <div
             ref={pop}
-            className={`help-pop${place?.above ? ' above' : ''}`}
+            className="help-pop"
             role="dialog"
             aria-labelledby={id}
-            style={place ? { left: place.left, top: place.top, maxHeight: place.maxHeight, ['--arrow' as string]: `${place.arrow}px` } : { visibility: 'hidden' }}
+            style={place ? { left: place.left, top: place.top, maxHeight: place.maxHeight } : { visibility: 'hidden' }}
           >
-            <h2 id={id}>{title}</h2>
+            <HelpHead id={id} title={title} onClose={() => {
+              setPopover(false)
+              button.current?.focus()
+            }} />
             <div className="help-pop-body">{children}</div>
             {picture && (
-              <button type="button" className="help-pop-more" onClick={openModal}>
-                {t('그림 크게 보기')}
-              </button>
+              <div className="help-foot">
+                <button type="button" className="help-pill" onClick={openModal}>
+                  {t('그림 크게 보기')}
+                </button>
+              </div>
             )}
           </div>,
           document.body,
@@ -268,15 +291,15 @@ export function HelpTip({ title, children }: { title: string; children: ReactNod
         // the dialog itself only takes clicks on its backdrop: its content covers the box
         <dialog
           ref={dialog}
-          className="notice"
+          className="notice help-dialog"
           aria-labelledby={`${id}-modal`}
           onClose={() => setModal(false)}
           onClick={(e) => e.target === dialog.current && dialog.current.close()}
         >
-          <h2 id={`${id}-modal`}>{title}</h2>
+          <HelpHead id={`${id}-modal`} title={title} onClose={() => dialog.current?.close()} />
           <div className="notice-text">{modal && children}</div>
           <form method="dialog">
-            <button type="submit" className="notice-ok" autoFocus>
+            <button type="submit" className="help-pill" autoFocus>
               {t('확인')}
             </button>
           </form>

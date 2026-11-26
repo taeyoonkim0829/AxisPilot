@@ -17,6 +17,7 @@ export const en: Record<string, string> = {
   '{items} 선정되지 않았습니다.': 'Not selected yet: {items}.',
   '직교 축, 모터, 연결키트를 먼저 선정하세요.': 'Select the linear axis, motor and mounting kit first.',
   '확인': 'OK',
+  '닫기': 'Close',
   '그림 크게 보기': 'Larger picture',
   '{title} 도움말': '{title} help',
   '축 1개가 구동하고 가이드가 부하를 함께 지지': 'One axis drives; the guides share the load',
