@@ -39,6 +39,12 @@
 모든 검토 항목은 계산값, 허용값, 부하율과 함께 `적합` / `주의` / `부적합`으로 보여 줍니다. 결과만이 아니라
 왜 맞는지를 화면과 보고서에서 확인할 수 있습니다.
 
+<p align="center">
+  <img src="images/selection-flow.webp" alt="단축 선정 흐름: 직교 축, 모터, 감속기, 연결키트 선정 후 조합 모델 3D 미리보기 (Single axis selection: axis, motor, gearbox, mounting kit, then the 3D preview)" width="100%"><br>
+  <sub>단축 선정: 직교 축(벨트) → 모터 → 감속기 → 연결키트 → 도면 3D 미리보기 ·
+  Single axis selection: axis (toothed belt) → motor → gearbox → mounting kit → 3D preview of the drawing.</sub>
+</p>
+
 ## 화면
 
 - **제품 선정 → 단축 선정**: 축 하나와 그 구동계
