@@ -2145,6 +2145,20 @@ th.num {
   font-size: 11px;
 }
 
+/* verdict and load ratio in the table's own size; 계산값, 허용값 and 부하율 equally wide, 부하율 flush right over its bar */
+.report .check-table .badge,
+.report .check-table .ratio {
+  font-size: inherit;
+}
+
+.report .check-table:not(.info-table) :is(th, td):is(:nth-child(2), :nth-child(3), :nth-child(4)) {
+  width: 17%;
+}
+
+.report .check-table:not(.info-table) :is(th, td):nth-child(4) {
+  text-align: right;
+}
+
 .report-spec th {
   width: 25%;
   box-shadow: none;
