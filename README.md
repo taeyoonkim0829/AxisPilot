@@ -8,7 +8,13 @@
   · <a href="#english">English</a>
 </p>
 
-![AxisPilot 단축 선정 화면](images/screenshot.png)
+<p align="center">
+  <a href="https://taeyoonkim0829.github.io/AxisPilot/theme-compare/">
+    <img src="images/theme-compare.webp" alt="AxisPilot 단축 선정 화면, 다크 모드와 라이트 모드 비교 (Dark and light theme compared)" width="100%">
+  </a><br>
+  <sub>다크 / 라이트 모드: 노란 막대 왼쪽이 다크, 오른쪽이 라이트. 이미지를 누르면 직접 끌어 비교할 수 있습니다. ·
+  Dark / light theme: dark left of the yellow bar, light right of it. Click the image to drag it yourself.</sub>
+</p>
 
 ## 무엇을 하나요
 

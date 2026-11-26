@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AxisPilot 다크 / 라이트 모드</title>
+    <meta name="description" content="AxisPilot의 다크 모드와 라이트 모드를 같은 화면에서 비교합니다. Drag to compare the dark and light themes." />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <style>
+      /* the README's dark / light comparison, to drag by hand: the light screen cut at the bar over the dark one */
+      :root {
+        --ground: #060a12;
+        --glass: rgb(255 255 255 / 0.055);
+        --line: rgb(255 255 255 / 0.12);
+        --text: #e6edf5;
+        --muted: #a3b1c2;
+        --signal: #f2b705;
+        color-scheme: dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--ground);
+        color: var(--text);
+        font: 15px/1.6 'Pretendard Variable', Pretendard, 'Malgun Gothic', system-ui, sans-serif;
+      }
+      main {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 32px 16px 64px;
+        display: grid;
+        gap: 20px;
+      }
+      h1 {
+        font-size: 26px;
+        margin: 0;
+      }
+      p {
+        margin: 0;
+        color: var(--muted);
+      }
+      a {
+        color: var(--signal);
+      }
+      .compare {
+        position: relative;
+        aspect-ratio: 1600 / 1000;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        user-select: none;
+      }
+      .compare img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .compare .after {
+        clip-path: inset(0 0 0 var(--cut, 50%));
+      }
+      .divider {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: var(--cut, 50%);
+        width: 2px;
+        background: var(--signal);
+        transform: translateX(-1px);
+        pointer-events: none;
+      }
+      .tag {
+        position: absolute;
+        bottom: 10px;
+        font-weight: 600;
+        font-size: 13px;
+        background: rgb(0 0 0 / 0.65);
+        color: var(--text);
+        padding: 2px 10px;
+        border-radius: 6px;
+        pointer-events: none;
+      }
+      .tag.l {
+        left: 10px;
+      }
+      .tag.r {
+        right: 10px;
+      }
+      .compare input {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: ew-resize;
+        margin: 0;
+      }
+      .compare:has(input:focus-visible) {
+        outline: 2px solid var(--signal);
+        outline-offset: 3px;
+      }
+      .hint {
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header style="display: grid; gap: 8px">
+        <h1>AxisPilot 다크 / 라이트 모드</h1>
+        <p>
+          같은 단축 선정 화면을 1600×1000에서 캡처했습니다. 이미지 위를 좌우로 끌면 왼쪽이 다크 모드, 오른쪽이 라이트 모드입니다.
+          앱에서는 언어 버튼 옆의 해·달 버튼으로 바꿉니다. <a href="../">앱 열기</a>
+        </p>
+        <p lang="en">Drag across the image: dark theme on the left, light on the right. In the app, the sun / moon button switches them.</p>
+      </header>
+      <div class="compare">
+        <img src="dark.webp" alt="AxisPilot 다크 모드, 단축 선정 화면" width="1600" height="1000" />
+        <img class="after" src="light.webp" alt="AxisPilot 라이트 모드, 단축 선정 화면" width="1600" height="1000" />
+        <div class="divider"></div>
+        <span class="tag l">다크 모드 · Dark</span><span class="tag r">라이트 모드 · Light</span>
+        <input type="range" min="0" max="100" value="50" aria-label="다크 / 라이트 비교 위치 (Dark / light comparison position)" />
+      </div>
+      <p class="hint">키보드로는 비교 영역에 포커스한 뒤 ← → 키로 움직입니다. · Keyboard: focus the image, then ← →.</p>
+    </main>
+    <script>
+      document.querySelectorAll('.compare').forEach((box) => {
+        const input = box.querySelector('input')
+        const set = () => box.style.setProperty('--cut', input.value + '%')
+        input.addEventListener('input', set)
+        set()
+      })
+    </script>
+  </body>
+</html>
