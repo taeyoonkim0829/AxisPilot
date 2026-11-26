@@ -4,7 +4,7 @@
 
 <p align="center">
   Festo 직교축 · 모터 · 감속기 · 연결키트 선정 웹 앱<br>
-  <a href="https://taeyoonkim0829.github.io/AxisPilot/"><b>앱 열기 → taeyoonkim0829.github.io/AxisPilot</b></a>
+  <a href="https://taeyoonkim0829.github.io/AxisPilot/"><b>앱 열기</b></a>
   · <a href="#english">English</a>
 </p>
 
